@@ -121,10 +121,10 @@ namespace Pathfinding {
 					data = upgradeData;
 					upgradeData = null;
 				}
-				return dataString != null ? System.Convert.FromBase64String(dataString) : null;
+				return dataString != null? System.Convert.FromBase64String (dataString) : null;
 			}
 			set {
-				dataString = value != null ? System.Convert.ToBase64String(value) : null;
+				dataString = value != null? System.Convert.ToBase64String (value) : null;
 			}
 		}
 
@@ -309,9 +309,9 @@ namespace Pathfinding {
 			sr.SerializeExtraInfo();
 			byte[] bytes = sr.CloseSerialize();
 			checksum = sr.GetChecksum();
-	#if ASTARDEBUG
+#if ASTARDEBUG
 			Debug.Log("Got a whole bunch of data, "+bytes.Length+" bytes");
-	#endif
+#endif
 			graphLock.Release();
 			return bytes;
 		}

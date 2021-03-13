@@ -244,7 +244,7 @@ namespace Pathfinding {
 				}
 				forcedReloadRects.ClearFast();
 
-				if (hasBeenUpdated == null) hasBeenUpdated = ListPool<NavmeshClipper>.Claim();
+				if (hasBeenUpdated == null) hasBeenUpdated = ListPool<NavmeshClipper>.Claim ();
 
 				// Reload all bounds touching the previous bounds and current bounds
 				// of navmesh cuts that have moved or changed in some other way
@@ -275,7 +275,7 @@ namespace Pathfinding {
 					hasBeenUpdated[i].NotifyUpdated();
 				}
 
-				ListPool<NavmeshClipper>.Release(ref hasBeenUpdated);
+				ListPool<NavmeshClipper>.Release (ref hasBeenUpdated);
 			}
 		}
 	}

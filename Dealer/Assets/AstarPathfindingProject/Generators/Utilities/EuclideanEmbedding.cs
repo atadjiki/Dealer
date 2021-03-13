@@ -66,7 +66,7 @@ namespace Pathfinding {
 		 */
 		uint rval;
 
-		System.Object lockObj = new object ();
+		System.Object lockObj = new object();
 
 		/// <summary>
 		/// Simple linear congruential generator.
@@ -181,12 +181,12 @@ namespace Pathfinding {
 			rval = (uint)seed;
 
 			// Get a List<GraphNode> from a pool
-			var pivotList = Pathfinding.Util.ListPool<GraphNode>.Claim();
+			var pivotList = Pathfinding.Util.ListPool<GraphNode>.Claim ();
 
 			switch (mode) {
 			case HeuristicOptimizationMode.Custom:
 				if (pivotPointRoot == null) throw new System.Exception("heuristicOptimizationMode is HeuristicOptimizationMode.Custom, " +
-						"but no 'customHeuristicOptimizationPivotsRoot' is set");
+					"but no 'customHeuristicOptimizationPivotsRoot' is set");
 
 				GetClosestWalkableNodesToChildrenRecursively(pivotPointRoot, pivotList);
 				break;
@@ -206,7 +206,7 @@ namespace Pathfinding {
 						pivotList.Add(first);
 					} else {
 						Debug.LogError("Could not find any walkable node in any of the graphs.");
-						Pathfinding.Util.ListPool<GraphNode>.Release(ref pivotList);
+						Pathfinding.Util.ListPool<GraphNode>.Release (ref pivotList);
 						return;
 					}
 				}
@@ -221,7 +221,7 @@ namespace Pathfinding {
 
 			pivots = pivotList.ToArray();
 
-			Pathfinding.Util.ListPool<GraphNode>.Release(ref pivotList);
+			Pathfinding.Util.ListPool<GraphNode>.Release (ref pivotList);
 		}
 
 		public void RecalculateCosts () {

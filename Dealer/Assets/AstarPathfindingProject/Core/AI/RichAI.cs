@@ -220,7 +220,7 @@ namespace Pathfinding {
 		/// </summary>
 		public override void Teleport (Vector3 newPosition, bool clearPath = true) {
 			// Clamp the new position to the navmesh
-			var nearest = AstarPath.active != null ? AstarPath.active.GetNearest(newPosition) : new NNInfo();
+			var nearest = AstarPath.active != null? AstarPath.active.GetNearest (newPosition) : new NNInfo();
 			float elevation;
 
 			movementPlane.ToPlane(newPosition, out elevation);
@@ -310,6 +310,11 @@ namespace Pathfinding {
 					OnTargetReached();
 				}
 			}
+		}
+
+		/// <summary>\copydoc Pathfinding::IAstarAI::GetRemainingPath</summary>
+		public void GetRemainingPath (List<Vector3> buffer, out bool stale) {
+			richPath.GetRemainingPath(buffer, simulatedPosition, out stale);
 		}
 
 		/// <summary>Called when the end of the path is reached</summary>
@@ -410,7 +415,7 @@ namespace Pathfinding {
 
 			// Distance to the end of the path (almost as the crow flies)
 			var distanceToEndOfPath = distanceToSteeringTarget + Vector3.Distance(steeringTarget, fn.exactEnd);
-			var slowdownFactor = distanceToEndOfPath < maxSpeed * slowdownTime ? Mathf.Sqrt(distanceToEndOfPath / (maxSpeed * slowdownTime)) : 1;
+			var slowdownFactor = distanceToEndOfPath < maxSpeed * slowdownTime? Mathf.Sqrt (distanceToEndOfPath / (maxSpeed * slowdownTime)) : 1;
 			FinalMovement(position3D, deltaTime, distanceToEndOfPath, slowdownFactor, out nextPosition, out nextRotation);
 		}
 
@@ -511,7 +516,7 @@ namespace Pathfinding {
 			// The current path part is a special part, for example a link
 			// Movement during this part of the path is handled by the TraverseSpecial coroutine
 			velocity2D = Vector3.zero;
-			var offMeshLinkCoroutine = onTraverseOffMeshLink != null ? onTraverseOffMeshLink(link) : TraverseOffMeshLinkFallback(link);
+			var offMeshLinkCoroutine = onTraverseOffMeshLink != null? onTraverseOffMeshLink (link) : TraverseOffMeshLinkFallback(link);
 			yield return StartCoroutine(offMeshLinkCoroutine);
 
 			// Off-mesh link traversal completed
