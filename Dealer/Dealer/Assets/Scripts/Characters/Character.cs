@@ -1,0 +1,149 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Pathfinding;
+
+[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(AIPath))]
+[RequireComponent(typeof(Animator))]
+public class Character : MonoBehaviour
+{
+    public enum State { Idle, Moving, Interacting, Talking, Unavailable, Sitting };
+    public State CurrentState;
+
+    internal AIBase _AI;
+    private Animator _animator;
+
+    public AnimationConstants.Animations DefaultAnimation = AnimationConstants.Animations.Idle;
+
+    internal void Initialize()
+    {
+        _AI = GetComponent<AIPath>();
+        _animator = GetComponent<Animator>();
+
+        PlayDefaultAnimation();
+        CurrentState = State.Idle;
+
+        _AI.gravity = Vector3.zero;
+    }
+
+    public void PlayDefaultAnimation()
+    {
+        FadeToAnimation(AnimationConstants.GetAnimByEnum(DefaultAnimation), 0.3f);
+    }
+
+    internal bool CanCharacterUpdate()
+    {
+        if (LevelManager.Instance.isLoading()) { return false; }
+        else
+        {
+            return true;
+        }
+    }
+
+    public bool MoveToLocation(Vector3 location)
+    {
+        NNInfo NearestNode_origin = AstarPath.active.GetNearest(this.transform.position, NNConstraint.Default);
+        NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
+
+        //check distances
+        if(Vector3.Distance(NearestNode_origin.position, this.transform.position) > 1)
+        {
+            Debug.Log("No nodes available around origin");
+            return false;
+        }
+        else if(Vector3.Distance(NearestNode_destination.position, location) > 1)
+        {
+            Debug.Log("No nodes available around destination");
+            return false;
+        }
+
+        if(PathUtilities.IsPathPossible(NearestNode_origin.node, NearestNode_destination.node))
+        {
+            StartCoroutine(DoMoveToLocation(location));
+            return true;
+        }
+        else
+        {
+            Debug.Log(name + ": " + "Path not possible between " + NearestNode_origin.position + " and " + NearestNode_destination.position);
+            return false;
+        }
+    }
+
+    public IEnumerator DoMoveToLocation(Vector3 Destination)
+    {
+        ToMoving();
+        _AI.destination = Destination;
+        _AI.SearchPath(); // Start to search for a path to the destination immediately
+
+        // Wait until the agent has reached the destination
+        while (true)
+        {
+            yield return null;
+
+            if(Vector3.Distance(this.transform.position, _AI.destination) < 1)
+            {
+                break;
+            }
+        }
+
+        // The agent has reached the destination now
+        ToIdle();
+    }
+
+    public void ToIdle()
+    {
+        CurrentState = State.Idle;
+        _animator.CrossFade(AnimationConstants.Idle, 0.5f);
+        _AI.canMove = false;
+    }
+
+    public void ToMoving()
+    {
+        CurrentState = State.Moving;
+        _animator.CrossFade(AnimationConstants.Walking, 0.3f);
+        _AI.canMove = true;
+    }
+
+    public void ToInteracting()
+    {
+        StopAllCoroutines();
+        CurrentState = State.Interacting;
+        _animator.CrossFade(AnimationConstants.ButtonPush, 0.3f);
+        _AI.canMove = false;
+
+    }
+
+    public void ToTalking()
+    {
+        StopAllCoroutines();
+        CurrentState = State.Talking;
+        _animator.CrossFade(AnimationConstants.Talking, 0.3f);
+        _AI.canMove = false;
+    }
+
+    public void ToSitting()
+    {
+        StopAllCoroutines();
+        CurrentState = State.Sitting;
+        FadeToAnimation(AnimationConstants.Male_Sitting_2, 0.35f);
+        _AI.canMove = false;
+    }
+
+    public void ToggleMovement(bool flag)
+    {
+        if (flag)
+        {
+            _AI.isStopped = false;
+        }
+        else
+        {
+            _AI.isStopped = true;
+        }
+    }
+
+    public void FadeToAnimation(string animation, float time)
+    {
+        _animator.CrossFade(animation, time);
+    }
+}
