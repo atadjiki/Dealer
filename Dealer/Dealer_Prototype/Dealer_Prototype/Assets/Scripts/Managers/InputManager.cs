@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Pointer click at " + Input.mousePosition);
+            if(DebugManager.Instance.LogInput) Debug.Log("Pointer click at " + Input.mousePosition);
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

@@ -54,12 +54,12 @@ public class CharacterComponent : MonoBehaviour
         //check distances
         if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 1)
         {
-            Debug.Log("No nodes available around origin");
+            if(DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around origin");
             return false;
         }
         else if (Vector3.Distance(NearestNode_destination.position, location) > 1)
         {
-            Debug.Log("No nodes available around destination");
+            if (DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around destination");
             return false;
         }
 
@@ -70,7 +70,7 @@ public class CharacterComponent : MonoBehaviour
         }
         else
         {
-            Debug.Log(name + ": " + "Path not possible between " + NearestNode_origin.position + " and " + NearestNode_destination.position);
+            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible between " + NearestNode_origin.position + " and " + NearestNode_destination.position);
             return false;
         }
     }
