@@ -13,6 +13,7 @@ public class CharacterComponent : MonoBehaviour
     public State CurrentState;
 
     internal AIBase _AI;
+    internal Seeker _Seeker;
     private Animator _animator;
 
     private float moveRadius = 30;
@@ -22,6 +23,7 @@ public class CharacterComponent : MonoBehaviour
     internal void Initialize()
     {
         _AI = GetComponent<AIPath>();
+        _Seeker = GetComponent<Seeker>();
         _animator = GetComponent<Animator>();
 
         PlayDefaultAnimation();
@@ -74,17 +76,15 @@ public class CharacterComponent : MonoBehaviour
     }
 
     public virtual void OnNewDestination(Vector3 destination) { }
-    public virtual void OnReachedLocation(Vector3 location) { }
+    public virtual void OnDestinationReached(Vector3 destination) { }
 
     public IEnumerator DoMoveToLocation(Vector3 Destination)
     {
         ToMoving();
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
-        
-        OnNewDestination(Destination);
 
-        
+        OnNewDestination(Destination);
 
         // Wait until the agent has reached the destination
         while (true)
@@ -98,7 +98,7 @@ public class CharacterComponent : MonoBehaviour
         }
 
         // The agent has reached the destination now
-        OnReachedLocation(Destination);
+        OnDestinationReached(Destination);
 
         ToIdle();
     }

@@ -6,12 +6,13 @@ using TMPro;
 
 public class PlayerController : CharacterComponent
 {
-    private GameObject SelectionPrefab;
-    private Dictionary<Vector3, GameObject> Spawned;
+    private GameObject NavPoint_Prefab;
 
     private static PlayerController _instance;
 
     public static PlayerController Instance { get { return _instance; } }
+
+    private HashSet<GameObject> NavPointPrefabs;
 
     private void Awake()
     {
@@ -31,8 +32,8 @@ public class PlayerController : CharacterComponent
     {
         Initialize();
 
-        SelectionPrefab = Resources.Load<GameObject>("NavPoint_Player");
-        Spawned = new Dictionary<Vector3, GameObject>();
+        NavPoint_Prefab = Resources.Load<GameObject>("NavPoint_Player");
+        NavPointPrefabs = new HashSet<GameObject>();
 
     }
 
@@ -40,25 +41,29 @@ public class PlayerController : CharacterComponent
     {
         base.OnNewDestination(destination);
 
-        SpawnSelectionPrefab(destination);
-    }
-
-    public override void OnReachedLocation(Vector3 location)
-    {
-        base.OnReachedLocation(location);
-
-        if(Spawned.ContainsKey(location))
+        //get rid of any existing prefabs that are out there first
+        foreach(GameObject todestroy in NavPointPrefabs)
         {
-            GameObject SelectionPoint = Spawned[location];
-            Spawned.Remove(location);
-            GameObject.Destroy(SelectionPoint);
+            Destroy(todestroy);
         }
-        
+
+        SpawnNavPointPrefab(destination);
     }
 
-    private void SpawnSelectionPrefab(Vector3 location)
+    public override void OnDestinationReached(Vector3 destination)
     {
-        GameObject SelectionEffect = Instantiate<GameObject>(SelectionPrefab, location, SelectionPrefab.transform.rotation, null);
-        Spawned.Add(location, SelectionEffect);
+        base.OnDestinationReached(destination);
+
+        //get rid of any existing prefabs that are out there first
+        foreach (GameObject todestroy in NavPointPrefabs)
+        {
+            Destroy(todestroy);
+        }
+    }
+
+    private void SpawnNavPointPrefab(Vector3 prefabLocation)
+    {
+        GameObject NavPointEffect = Instantiate<GameObject>(NavPoint_Prefab, prefabLocation, NavPoint_Prefab.transform.rotation, null);
+        NavPointPrefabs.Add(NavPointEffect);
     }
 }
