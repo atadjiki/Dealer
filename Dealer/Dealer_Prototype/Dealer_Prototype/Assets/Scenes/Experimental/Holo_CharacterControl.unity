@@ -2941,7 +2941,7 @@ MonoBehaviour:
   version: 5
   radius: 0.5
   height: 2
-  canMove: 1
+  canMove: 0
   maxSpeed: 1
   gravity: {x: 0, y: 0, z: 0}
   groundMask:
@@ -2954,20 +2954,20 @@ MonoBehaviour:
   enableRotation: 1
   autoRepath:
     mode: 0
-    interval: 0.5
+    interval: NaN
     sensitivity: 10
     maximumInterval: 2
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
-  rotationSpeed: 360
-  slowdownDistance: 1
+  rotationSpeed: 32400
+  slowdownDistance: 0
   pickNextWaypointDist: 2
   endReachedDistance: 0.5
-  alwaysDrawGizmos: 1
+  alwaysDrawGizmos: 0
   slowWhenNotFacingTarget: 1
-  whenCloseToDestination: 1
-  constrainInsideGraph: 1
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
 --- !u!114 &5658537718227672417
 MonoBehaviour:
   m_ObjectHideFlags: 0
