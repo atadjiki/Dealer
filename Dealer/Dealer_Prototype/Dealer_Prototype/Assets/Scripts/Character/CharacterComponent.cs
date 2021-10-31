@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Pathfinding;
+using UnityEngine;
+
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(AIPath))]
@@ -72,11 +73,18 @@ public class CharacterComponent : MonoBehaviour
         }
     }
 
+    public virtual void OnNewDestination(Vector3 destination) { }
+    public virtual void OnReachedLocation(Vector3 location) { }
+
     public IEnumerator DoMoveToLocation(Vector3 Destination)
     {
         ToMoving();
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
+        
+        OnNewDestination(Destination);
+
+        
 
         // Wait until the agent has reached the destination
         while (true)
@@ -90,6 +98,8 @@ public class CharacterComponent : MonoBehaviour
         }
 
         // The agent has reached the destination now
+        OnReachedLocation(Destination);
+
         ToIdle();
     }
 
