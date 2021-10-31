@@ -113,7 +113,7 @@ public class CharacterComponent : MonoBehaviour
     public void ToMoving()
     {
         CurrentState = State.Moving;
-        _animator.CrossFade(AnimationConstants.Walking, 0.3f);
+        _animator.CrossFade(AnimationConstants.Walking, 0.1f);
         _AI.canMove = true;
     }
 
