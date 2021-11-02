@@ -16,7 +16,7 @@ public class CharacterComponent : MonoBehaviour
     internal Seeker _Seeker;
     private Animator _animator;
 
-    private float moveRadius = 30;
+    internal float moveRadius = 30;
 
     public AnimationConstants.Animations DefaultAnimation = AnimationConstants.Animations.Idle;
 
