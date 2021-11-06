@@ -30,6 +30,14 @@ public class CharacterComponent : MonoBehaviour
         CurrentState = State.Idle;
 
         _AI.gravity = Vector3.zero;
+
+        CameraManager.Instance.RegisterCharacterCamera(this);
+
+    }
+
+    private void OnDestroy()
+    {
+        CameraManager.Instance.UnRegisterCharacterCamera(this);
     }
 
     public void PlayDefaultAnimation()

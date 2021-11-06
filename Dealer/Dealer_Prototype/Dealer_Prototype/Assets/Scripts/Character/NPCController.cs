@@ -24,8 +24,6 @@ public class NPCController : CharacterComponent
 
     private void Build()
     {
-        base.Initialize();
-
         Initialize();
 
         BehaviorUpdate();
