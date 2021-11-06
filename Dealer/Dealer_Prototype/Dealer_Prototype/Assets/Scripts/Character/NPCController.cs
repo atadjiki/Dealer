@@ -9,8 +9,9 @@ public class NPCController : CharacterComponent
     public enum Behavior { Stationary, Wander, None };
     public enum StationType { Conversation, Bar, Leaning, None };
 
-    public enum ActionType { Moved, Idled, None };
+    public enum ActionType { Move, Idle, None };
     private ActionType LastAction = ActionType.None;
+    public ActionType GetLastAction() { return LastAction; }
 
     public Behavior BehaviorMode = Behavior.Wander;
     public List<StationType> AvailableStations;
@@ -18,7 +19,10 @@ public class NPCController : CharacterComponent
     private float Wander_SecondsBeforeMoving_Min = 4.0f;
     private float Wander_SecondsBeforeMoving_Max = 7.0f;
 
-    private Coroutine WanderCoroutine;
+    private Coroutine ActionCoroutine;
+
+    public enum UpdateState { Ready, Busy, None };
+    public UpdateState updateState = UpdateState.None;
 
     private void Awake()
     {
@@ -27,36 +31,26 @@ public class NPCController : CharacterComponent
 
     private void Build()
     {
+        if (NPCManager.Instance.RegisterNPC(this) == false)
+        {
+            Destroy(this.gameObject);
+        }
+
         Initialize();
 
-        BehaviorUpdate();
+        updateState = UpdateState.Ready;
+      //  BehaviorUpdate();
         
     }
 
-    private void BehaviorUpdate()
+    private void OnDestroy()
     {
-        if (BehaviorMode == Behavior.Wander)
-        {
-            if (LastAction == ActionType.Idled)
-            {
-                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - MoveToRandomPoint");
-                WanderCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
-            }
-            else if (LastAction == ActionType.Moved || LastAction == ActionType.None)
-            {
-                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
-                WanderCoroutine = StartCoroutine(PerformAction_Idle());
-            }
-            
-        }
-        else if(BehaviorMode == Behavior.Stationary)
-        {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
-            WanderCoroutine = StartCoroutine(PerformAction_Idle());
-        }
+        NPCManager.Instance.UnRegisterNPC(this);
     }
 
-    Vector3 PickRandomPoint()
+    
+
+    private Vector3 PickRandomPoint()
     {
         var point = Random.onUnitSphere * Random.Range(moveRadius, moveRadius*1.5f);
         point.y = 0;
@@ -74,9 +68,23 @@ public class NPCController : CharacterComponent
         }   
     }
 
-    public IEnumerator PerformAction_MoveToRandomPoint()
+    public void PerformAction(ActionType action)
     {
-        LastAction = ActionType.Moved;
+        if(action == ActionType.Idle)
+        {
+            ActionCoroutine = StartCoroutine(PerformAction_Idle());
+        }
+        else if(action == ActionType.Move)
+        {
+            ActionCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
+        }
+    }
+
+
+    private IEnumerator PerformAction_MoveToRandomPoint()
+    {
+        LastAction = ActionType.Move;
+        updateState = UpdateState.Busy;
 
         while (true)
         {
@@ -87,21 +95,23 @@ public class NPCController : CharacterComponent
         }
     }
 
-    public IEnumerator PerformAction_Idle()
+    private IEnumerator PerformAction_Idle()
     {
-        LastAction = ActionType.Idled;
+        LastAction = ActionType.Idle;
+        updateState = UpdateState.Busy;
 
         yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
 
-        BehaviorUpdate();
+        updateState = UpdateState.Ready;
     }
 
     public override void OnDestinationReached(Vector3 destination)
     {
         base.OnDestinationReached(destination);
 
-        if(WanderCoroutine != null) StopCoroutine(WanderCoroutine);
+        if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
 
-        BehaviorUpdate();
+        updateState = UpdateState.Ready;
     }
+
 }

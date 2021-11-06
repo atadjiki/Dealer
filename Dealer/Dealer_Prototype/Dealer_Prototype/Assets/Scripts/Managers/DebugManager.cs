@@ -12,6 +12,7 @@ public class DebugManager : MonoBehaviour
     public bool LogCharacter = true;
     public bool LogInput = false;
     public bool LogAStar = false;
+    public bool LogNPCManager = true;
 
     public AstarPath _astarPath;
 
