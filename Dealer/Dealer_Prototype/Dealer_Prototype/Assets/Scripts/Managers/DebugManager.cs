@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
+using UnityEngine.UI;
+using TMPro;
 using UnityEngine;
 
 public class DebugManager : MonoBehaviour
@@ -15,6 +17,11 @@ public class DebugManager : MonoBehaviour
     public bool LogNPCManager = true;
 
     public AstarPath _astarPath;
+
+    public GameObject debugPanel;
+    public GameObject npcPanel;
+    public TMPro.TextMeshProUGUI nameText;
+    public TextMeshProUGUI stateText;
 
     private void Awake()
     {
@@ -35,6 +42,20 @@ public class DebugManager : MonoBehaviour
         if(_astarPath != null && LogAStar)
         {
             _astarPath.logPathResults = PathLog.Normal;
+        }
+    }
+
+    private void Update()
+    {
+        if(NPCManager.Instance.IsNPCCurrentlySelected())
+        {
+            npcPanel.SetActive(true);
+            nameText.SetText(NPCManager.Instance.GetSelectedNPC().name);
+            stateText.SetText(NPCManager.Instance.GetSelectedNPC().CurrentState.ToString());
+        }
+        else
+        {
+            npcPanel.SetActive(false);
         }
     }
 }

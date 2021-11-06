@@ -9,11 +9,13 @@ public class NPCManager : MonoBehaviour
 
     public static NPCManager Instance { get { return _instance; } }
 
-    public List<NPCController> Characters;
+    private List<NPCController> Characters;
     private int _popCap = 5;
 
     private int _updateEveryFrames = 120;
     private int _currentFrames = 0;
+
+    private NPCController selectedNPC = null;
 
     private void Awake()
     {
@@ -43,6 +45,8 @@ public class NPCManager : MonoBehaviour
         }
 
         Characters.Add(npc);
+        selectedNPC = npc;
+
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Registered NPC " + npc.name);
         return true;
     }
@@ -55,7 +59,7 @@ public class NPCManager : MonoBehaviour
 
     private void Update()
     {
-        if(_currentFrames >= _updateEveryFrames)
+        if (_currentFrames >= _updateEveryFrames)
         {
             _currentFrames = 0;
             BehaviorUpdate();
@@ -64,14 +68,10 @@ public class NPCManager : MonoBehaviour
         {
             _currentFrames++;
         }
-       
     }
 
     private void BehaviorUpdate()
     {
-
-        //if (DebugManager.Instance.LogNPCManager) Debug.Log("NPC Manager - Behavior Update");
-
         foreach (NPCController npc in Characters)
         {
 
@@ -100,6 +100,16 @@ public class NPCManager : MonoBehaviour
             }
         }
         
+    }
+
+    public bool IsNPCCurrentlySelected()
+    {
+        return (selectedNPC != null);
+    }
+
+    public NPCController GetSelectedNPC()
+    {
+        return selectedNPC;
     }
 
 }
