@@ -1,3 +1,6 @@
+## 4.2.17 (2021-11-06)
+- Fixed RVO example scenes not working properly (regression introduced in 4.2.16).
+
 ## 4.2.16 (2021-10-24)
 - This release contains fixes and features that have been backported from the 4.3 beta.
 		You can download the 4.3 beta at https://www.arongranberg.com/astar/download.

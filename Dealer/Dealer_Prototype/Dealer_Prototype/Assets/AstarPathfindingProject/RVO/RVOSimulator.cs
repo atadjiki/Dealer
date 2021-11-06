@@ -105,6 +105,9 @@ namespace Pathfinding.RVO {
 
 		protected override void Awake () {
 			base.Awake();
+			// We need to set active during Awake as well to ensure it is set when graphs are being scanned.
+			// That is important if the RVONavmesh component is being used.
+			active = this;
 			if (simulator == null && Application.isPlaying) {
 				int threadCount = AstarPath.CalculateThreadCount(workerThreads);
 				simulator = new Pathfinding.RVO.Simulator(threadCount, doubleBuffering, movementPlane);

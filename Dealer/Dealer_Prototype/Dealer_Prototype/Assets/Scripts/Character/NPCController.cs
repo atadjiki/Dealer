@@ -15,6 +15,8 @@ public class NPCController : CharacterComponent
     private float Wander_SecondsBeforeMoving_Min = 2.0f;
     private float Wander_SecondsBeforeMoving_Max = 5.0f;
 
+    private Coroutine WanderCoroutine;
+
     private void Awake()
     {
         Build();
@@ -22,11 +24,13 @@ public class NPCController : CharacterComponent
 
     private void Build()
     {
+        base.Initialize();
+
         Initialize();
 
         if(BehaviorMode == Behavior.Wander)
         {
-            StartCoroutine(WanderMode());
+            WanderCoroutine = StartCoroutine(WanderMode());
         }
     }
 
@@ -41,18 +45,29 @@ public class NPCController : CharacterComponent
 
     public IEnumerator WanderMode()
     {
-        while(BehaviorMode == Behavior.Wander)
+        yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
+
+        while (true)
         {
-            RandomPath path = RandomPath.Construct(transform.position, (int)moveRadius);
-            path.spread = 100;
-            _Seeker.StartPath(path);
-
-            yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
+            if (MoveToLocation(PickRandomPoint()))
+            {
+                yield return new WaitForSeconds(1.0f);
+            }
         }
-        
+ 
+ 
+    }
 
-     
-        
+    public override void OnDestinationReached(Vector3 destination)
+    {
+        base.OnDestinationReached(destination);
+
+        StopCoroutine(WanderCoroutine);
+
+        if (BehaviorMode == Behavior.Wander)
+        {
+            WanderCoroutine = StartCoroutine(WanderMode());
+        }
     }
 
 }
