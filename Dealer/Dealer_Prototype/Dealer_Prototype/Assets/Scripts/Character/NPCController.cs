@@ -6,14 +6,17 @@ using UnityEngine;
 public class NPCController : CharacterComponent
 {
 
-    public enum Behavior { Idle, Wander };
-    public enum StationType { Conversation, Bar, Leaning };
+    public enum Behavior { Stationary, Wander, None };
+    public enum StationType { Conversation, Bar, Leaning, None };
 
-    public Behavior BehaviorMode = Behavior.Idle;
+    public enum ActionType { Moved, Idled, None };
+    private ActionType LastAction = ActionType.None;
+
+    public Behavior BehaviorMode = Behavior.Wander;
     public List<StationType> AvailableStations;
 
-    private float Wander_SecondsBeforeMoving_Min = 2.0f;
-    private float Wander_SecondsBeforeMoving_Max = 5.0f;
+    private float Wander_SecondsBeforeMoving_Min = 4.0f;
+    private float Wander_SecondsBeforeMoving_Max = 7.0f;
 
     private Coroutine WanderCoroutine;
 
@@ -34,14 +37,28 @@ public class NPCController : CharacterComponent
     {
         if (BehaviorMode == Behavior.Wander)
         {
-            WanderCoroutine = StartCoroutine(WanderMode());
-            if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior Update - Wander");
+            if (LastAction == ActionType.Idled)
+            {
+                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - MoveToRandomPoint");
+                WanderCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
+            }
+            else if (LastAction == ActionType.Moved || LastAction == ActionType.None)
+            {
+                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
+                WanderCoroutine = StartCoroutine(PerformAction_Idle());
+            }
+            
+        }
+        else if(BehaviorMode == Behavior.Stationary)
+        {
+            if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
+            WanderCoroutine = StartCoroutine(PerformAction_Idle());
         }
     }
 
     Vector3 PickRandomPoint()
     {
-        var point = Random.insideUnitSphere * moveRadius;
+        var point = Random.onUnitSphere * Random.Range(moveRadius, moveRadius*1.5f);
         point.y = 0;
         point += this.transform.position;
 
@@ -54,15 +71,12 @@ public class NPCController : CharacterComponent
         else
         {
             return point;
-        }
-
-        
+        }   
     }
 
-
-    public IEnumerator WanderMode()
+    public IEnumerator PerformAction_MoveToRandomPoint()
     {
-        yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
+        LastAction = ActionType.Moved;
 
         while (true)
         {
@@ -71,17 +85,23 @@ public class NPCController : CharacterComponent
                 yield break;
             }
         }
- 
- 
+    }
+
+    public IEnumerator PerformAction_Idle()
+    {
+        LastAction = ActionType.Idled;
+
+        yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
+
+        BehaviorUpdate();
     }
 
     public override void OnDestinationReached(Vector3 destination)
     {
         base.OnDestinationReached(destination);
 
-        StopCoroutine(WanderCoroutine);
+        if(WanderCoroutine != null) StopCoroutine(WanderCoroutine);
 
         BehaviorUpdate();
     }
-
 }
