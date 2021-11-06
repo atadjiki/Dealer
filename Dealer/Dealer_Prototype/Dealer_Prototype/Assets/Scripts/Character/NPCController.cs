@@ -28,9 +28,16 @@ public class NPCController : CharacterComponent
 
         Initialize();
 
-        if(BehaviorMode == Behavior.Wander)
+        BehaviorUpdate();
+        
+    }
+
+    private void BehaviorUpdate()
+    {
+        if (BehaviorMode == Behavior.Wander)
         {
             WanderCoroutine = StartCoroutine(WanderMode());
+            if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior Update - Wander");
         }
     }
 
@@ -39,7 +46,19 @@ public class NPCController : CharacterComponent
         var point = Random.insideUnitSphere * moveRadius;
         point.y = 0;
         point += this.transform.position;
-        return point;
+
+        var graph = AstarPath.active.data.recastGraph;
+
+        if(graph != null)
+        {
+            return graph.GetNearest(point, NNConstraint.Default).clampedPosition;
+        }
+        else
+        {
+            return point;
+        }
+
+        
     }
 
 
@@ -64,10 +83,7 @@ public class NPCController : CharacterComponent
 
         StopCoroutine(WanderCoroutine);
 
-        if (BehaviorMode == Behavior.Wander)
-        {
-            WanderCoroutine = StartCoroutine(WanderMode());
-        }
+        BehaviorUpdate();
     }
 
 }
