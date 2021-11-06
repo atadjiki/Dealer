@@ -51,7 +51,7 @@ public class NPCController : CharacterComponent
         {
             if (MoveToLocation(PickRandomPoint()))
             {
-                yield return new WaitForSeconds(1.0f);
+                yield break;
             }
         }
  
