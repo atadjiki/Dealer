@@ -10,7 +10,12 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance { get { return _instance; } }
 
     private Dictionary<CharacterComponent, CinemachineVirtualCamera> CharacterCameras;
+    private CinemachineVirtualCamera PlayerCamera;
     private GameObject CharacterCameraPrefab;
+
+    private int _npcPriority = 10;
+    private int _playerPriority = 15;
+    //private int _defaultPriority = 5;
 
     private void Awake()
     {
@@ -36,21 +41,41 @@ public class CameraManager : MonoBehaviour
     {
         GameObject newCamera = Instantiate<GameObject>(CharacterCameraPrefab, this.transform);
         newCamera.transform.parent = this.transform;
-        newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.gameObject.transform;
-        CharacterCameras.Add(character, newCamera.GetComponent<CinemachineVirtualCamera>());
+
+        newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<Navigator>().transform;
+
+        if(character.gameObject.GetComponent<PlayerController>())
+        {
+            newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _playerPriority;
+            PlayerCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
+        }
+        else if(character.gameObject.GetComponent<NPCController>())
+        {
+            newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _npcPriority;
+            CharacterCameras.Add(character, newCamera.GetComponent<CinemachineVirtualCamera>());
+        }
     }
 
     public void UnRegisterCharacterCamera(CharacterComponent character)
     {
-        GameObject camera = null;
-
-        if (CharacterCameras[character] != null)
+        if(character.gameObject.GetComponent<NPCController>())
         {
-            camera = CharacterCameras[character].gameObject;
-        }
-            
-        CharacterCameras.Remove(character);
+            GameObject camera = null;
 
-        Destroy(camera);
+            if (CharacterCameras[character] != null)
+            {
+                camera = CharacterCameras[character].gameObject;
+            }
+
+            CharacterCameras.Remove(character);
+
+            Destroy(camera);
+        }
+        else if(character.gameObject.GetComponent<PlayerController>())
+        {
+            if(PlayerCamera != null)
+                Destroy(PlayerCamera.gameObject);
+        }
+        
     }
 }

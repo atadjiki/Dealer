@@ -1,28 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
+using Constants;
 using UnityEngine;
 
 public class NPCController : CharacterComponent
 {
+    
+    private CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
+    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 
-    public enum Behavior { Stationary, Wander, None };
-    public enum StationType { Conversation, Bar, Leaning, None };
-
-    public enum ActionType { Move, Idle, None };
-    private ActionType LastAction = ActionType.None;
-    public ActionType GetLastAction() { return LastAction; }
-
-    public Behavior BehaviorMode = Behavior.Wander;
-    public List<StationType> AvailableStations;
+    public CharacterConstants.Behavior BehaviorMode = CharacterConstants.Behavior.Wander;
+    public List<CharacterConstants.StationType> AvailableStations;
 
     private float Wander_SecondsBeforeMoving_Min = 4.0f;
     private float Wander_SecondsBeforeMoving_Max = 7.0f;
 
     private Coroutine ActionCoroutine;
-
-    public enum UpdateState { Ready, Busy, None };
-    public UpdateState updateState = UpdateState.None;
+    
+    public CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
 
     private void Awake()
     {
@@ -36,11 +31,9 @@ public class NPCController : CharacterComponent
             Destroy(this.gameObject);
         }
 
-        Initialize();
+        Initialize(); //now that we are registered, do some setup stuff
 
-        updateState = UpdateState.Ready;
-      //  BehaviorUpdate();
-        
+        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
     }
 
     private void OnDestroy()
@@ -48,33 +41,13 @@ public class NPCController : CharacterComponent
         NPCManager.Instance.UnRegisterNPC(this);
     }
 
-    
-
-    private Vector3 PickRandomPoint()
+    public void PerformAction(CharacterConstants.ActionType action)
     {
-        var point = Random.onUnitSphere * Random.Range(moveRadius, moveRadius*1.5f);
-        point.y = 0;
-        point += this.transform.position;
-
-        var graph = AstarPath.active.data.recastGraph;
-
-        if(graph != null)
-        {
-            return graph.GetNearest(point, NNConstraint.Default).clampedPosition;
-        }
-        else
-        {
-            return point;
-        }   
-    }
-
-    public void PerformAction(ActionType action)
-    {
-        if(action == ActionType.Idle)
+        if(action == CharacterConstants.ActionType.Idle)
         {
             ActionCoroutine = StartCoroutine(PerformAction_Idle());
         }
-        else if(action == ActionType.Move)
+        else if(action == CharacterConstants.ActionType.Move)
         {
             ActionCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
         }
@@ -83,12 +56,12 @@ public class NPCController : CharacterComponent
 
     private IEnumerator PerformAction_MoveToRandomPoint()
     {
-        LastAction = ActionType.Move;
-        updateState = UpdateState.Busy;
+        LastAction = CharacterConstants.ActionType.Move;
+        updateState = CharacterConstants.UpdateState.Busy;
 
         while (true)
         {
-            if (MoveToLocation(PickRandomPoint()))
+            if (_navigator.MoveToRandomLocation())
             {
                 yield break;
             }
@@ -97,12 +70,12 @@ public class NPCController : CharacterComponent
 
     private IEnumerator PerformAction_Idle()
     {
-        LastAction = ActionType.Idle;
-        updateState = UpdateState.Busy;
+        LastAction = CharacterConstants.ActionType.Idle;
+        updateState = CharacterConstants.UpdateState.Busy;
 
         yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
 
-        updateState = UpdateState.Ready;
+        updateState = CharacterConstants.UpdateState.Ready;
     }
 
     public override void OnDestinationReached(Vector3 destination)
@@ -111,7 +84,7 @@ public class NPCController : CharacterComponent
 
         if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
 
-        updateState = UpdateState.Ready;
+        updateState = CharacterConstants.UpdateState.Ready;
     }
 
 }

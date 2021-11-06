@@ -44,7 +44,7 @@ public class InputManager : MonoBehaviour
                 if (hit.collider.tag == "Ground")
                 {
                     if(PlayerController.Instance != null)
-                        PlayerController.Instance.MoveToLocation(hit.point);
+                        PlayerController.Instance._navigator.MoveToLocation(hit.point);
                 }
             }
         }

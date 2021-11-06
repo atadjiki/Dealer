@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class NPCManager : MonoBehaviour
@@ -74,27 +75,27 @@ public class NPCManager : MonoBehaviour
         foreach (NPCController npc in Characters)
         {
 
-            if(npc.updateState == NPCController.UpdateState.Ready)
+            if(npc.updateState == CharacterConstants.UpdateState.Ready)
             {
-                if (npc.BehaviorMode == NPCController.Behavior.Wander)
+                if (npc.BehaviorMode == CharacterConstants.Behavior.Wander)
                 {
-                    if (npc.GetLastAction() == NPCController.ActionType.Idle)
+                    if (npc.GetLastAction() == CharacterConstants.ActionType.Idle)
                     {
                         if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - MoveToRandomPoint");
-                        npc.PerformAction(NPCController.ActionType.Move);
+                        npc.PerformAction(CharacterConstants.ActionType.Move);
 
                     }
-                    else if (npc.GetLastAction() == NPCController.ActionType.Move || npc.GetLastAction() == NPCController.ActionType.None)
+                    else if (npc.GetLastAction() == CharacterConstants.ActionType.Move || npc.GetLastAction() == CharacterConstants.ActionType.None)
                     {
                         if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
-                        npc.PerformAction(NPCController.ActionType.Idle);
+                        npc.PerformAction(CharacterConstants.ActionType.Idle);
                     }
 
                 }
-                else if (npc.BehaviorMode == NPCController.Behavior.Stationary)
+                else if (npc.BehaviorMode == CharacterConstants.Behavior.Stationary)
                 {
                     if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
-                    npc.PerformAction(NPCController.ActionType.Idle);
+                    npc.PerformAction(CharacterConstants.ActionType.Idle);
                 }
             }
         }
