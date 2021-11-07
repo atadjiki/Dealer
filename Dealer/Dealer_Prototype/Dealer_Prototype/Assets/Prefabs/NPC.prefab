@@ -952,16 +952,16 @@ LineRenderer:
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.12
         inSlope: 0
         outSlope: 0
-        tangentMode: 0
+        tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
@@ -997,11 +997,11 @@ LineRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 1
+    numCornerVertices: 3
     numCapVertices: 2
     alignment: 0
-    textureMode: 1
-    shadowBias: 0.5
+    textureMode: 3
+    shadowBias: 0
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
@@ -1846,7 +1846,7 @@ MonoBehaviour:
   BehaviorMode: 1
   updateState: 2
   AvailableStations: 
-  IdleSeconds_Max: 1.7
+  IdleSeconds_Max: 4
 --- !u!1 &6287419348340019900
 GameObject:
   m_ObjectHideFlags: 0

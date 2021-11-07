@@ -14,13 +14,18 @@ public class NavigatorComponent : MonoBehaviour
     private CharacterComponent parentCharacter;
     private LineRenderer pathRenderer;
 
+    private GameObject NavPoint_Prefab;
+    private HashSet<GameObject> NavPointPrefabs;
+
     private void Awake()
     {
         parentCharacter = GetComponentInParent<CharacterComponent>();
         _AI = GetComponentInChildren<AIPath>();
+        _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();
 
-        _AI.gravity = Vector3.zero;
+        NavPoint_Prefab = Resources.Load<GameObject>("NavPoint_Player");
+        NavPointPrefabs = new HashSet<GameObject>();
 
         pathRenderer = GetComponent<LineRenderer>();
         pathRenderer.positionCount = 2;
@@ -120,6 +125,14 @@ public class NavigatorComponent : MonoBehaviour
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
 
+        //get rid of any existing prefabs that are out there first
+        foreach (GameObject todestroy in NavPointPrefabs)
+        {
+            Destroy(todestroy);
+        }
+
+        SpawnNavPointPrefab(Destination);
+
         parentCharacter.OnNewDestination(Destination);
 
         // Wait until the agent has reached the destination
@@ -135,6 +148,12 @@ public class NavigatorComponent : MonoBehaviour
 
         // The agent has reached the destination now
         parentCharacter.OnDestinationReached(Destination);
+
+        //get rid of any existing prefabs that are out there first
+        foreach (GameObject todestroy in NavPointPrefabs)
+        {
+            Destroy(todestroy);
+        }
 
         pathRenderer.positionCount = 0;
 
@@ -156,5 +175,11 @@ public class NavigatorComponent : MonoBehaviour
     public void SetCanMove(bool flag)
     {
         _AI.canMove = flag;
+    }
+
+    private void SpawnNavPointPrefab(Vector3 prefabLocation)
+    {
+        GameObject NavPointEffect = Instantiate<GameObject>(NavPoint_Prefab, prefabLocation, NavPoint_Prefab.transform.rotation, null);
+        NavPointPrefabs.Add(NavPointEffect);
     }
 }
