@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using Cinemachine;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class CameraManager : MonoBehaviour
 
     private Dictionary<CharacterComponent, CinemachineVirtualCamera> CharacterCameras;
     private CinemachineVirtualCamera PlayerCamera;
-    private GameObject CharacterCameraPrefab;
+   
 
     private int _npcPriority = 10;
     private int _playerPriority = 15;
@@ -33,14 +34,14 @@ public class CameraManager : MonoBehaviour
 
     private void Build()
     {
-        CharacterCameraPrefab = Resources.Load<GameObject>("CM_Character");
+       // CharacterCameraPrefab = Resources.Load<GameObject>(ResourcePaths.CM_Character);
         CharacterCameras = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
     }
 
     public void RegisterCharacterCamera(CharacterComponent character)
     {
-        GameObject newCamera = Instantiate<GameObject>(CharacterCameraPrefab, this.transform);
-        newCamera.transform.parent = this.transform;
+        GameObject newCamera = PrefabFactory.Instance.CreatePrefab(Prefab.CM_Character, this.transform);
+       // newCamera.transform.parent = this.transform;
 
         newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<NavigatorComponent>().transform;
 
@@ -58,7 +59,7 @@ public class CameraManager : MonoBehaviour
 
     public void UnRegisterCharacterCamera(CharacterComponent character)
     {
-        if(character.gameObject.GetComponent<NPCComponent>())
+        if (character.gameObject.GetComponent<NPCComponent>())
         {
             GameObject camera = null;
 
@@ -71,11 +72,10 @@ public class CameraManager : MonoBehaviour
 
             Destroy(camera);
         }
-        else if(character.gameObject.GetComponent<PlayerComponent>())
+        else if (character.gameObject.GetComponent<PlayerComponent>())
         {
-            if(PlayerCamera != null)
+            if (PlayerCamera != null)
                 Destroy(PlayerCamera.gameObject);
         }
-        
     }
 }

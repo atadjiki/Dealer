@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using Pathfinding;
 using UnityEngine;
 
@@ -14,7 +15,6 @@ public class NavigatorComponent : MonoBehaviour
     private CharacterComponent parentCharacter;
     private LineRenderer pathRenderer;
 
-    private GameObject NavPoint_Prefab;
     private HashSet<GameObject> NavPointPrefabs;
 
     private void Awake()
@@ -24,7 +24,6 @@ public class NavigatorComponent : MonoBehaviour
         _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();
 
-        NavPoint_Prefab = Resources.Load<GameObject>("NavPoint_Player");
         NavPointPrefabs = new HashSet<GameObject>();
 
         pathRenderer = GetComponent<LineRenderer>();
@@ -179,7 +178,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void SpawnNavPointPrefab(Vector3 prefabLocation)
     {
-        GameObject NavPointEffect = Instantiate<GameObject>(NavPoint_Prefab, prefabLocation, NavPoint_Prefab.transform.rotation, null);
+        GameObject NavPointEffect = PrefabFactory.Instance.CreatePrefab(Prefab.NavPoint, prefabLocation, Quaternion.identity);
         NavPointPrefabs.Add(NavPointEffect);
     }
 }

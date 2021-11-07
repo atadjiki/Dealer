@@ -55,7 +55,6 @@ public class NPCComponent : CharacterComponent
         }
     }
 
-
     private IEnumerator PerformAction_MoveToRandomPoint()
     {
         LastAction = CharacterConstants.ActionType.Move;
