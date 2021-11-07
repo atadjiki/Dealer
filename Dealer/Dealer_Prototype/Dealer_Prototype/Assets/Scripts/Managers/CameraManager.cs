@@ -42,14 +42,14 @@ public class CameraManager : MonoBehaviour
         GameObject newCamera = Instantiate<GameObject>(CharacterCameraPrefab, this.transform);
         newCamera.transform.parent = this.transform;
 
-        newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<Navigator>().transform;
+        newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<NavigatorComponent>().transform;
 
-        if(character.gameObject.GetComponent<PlayerController>())
+        if(character.gameObject.GetComponent<PlayerComponent>())
         {
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _playerPriority;
             PlayerCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
         }
-        else if(character.gameObject.GetComponent<NPCController>())
+        else if(character.gameObject.GetComponent<NPCComponent>())
         {
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _npcPriority;
             CharacterCameras.Add(character, newCamera.GetComponent<CinemachineVirtualCamera>());
@@ -58,7 +58,7 @@ public class CameraManager : MonoBehaviour
 
     public void UnRegisterCharacterCamera(CharacterComponent character)
     {
-        if(character.gameObject.GetComponent<NPCController>())
+        if(character.gameObject.GetComponent<NPCComponent>())
         {
             GameObject camera = null;
 
@@ -71,7 +71,7 @@ public class CameraManager : MonoBehaviour
 
             Destroy(camera);
         }
-        else if(character.gameObject.GetComponent<PlayerController>())
+        else if(character.gameObject.GetComponent<PlayerComponent>())
         {
             if(PlayerCamera != null)
                 Destroy(PlayerCamera.gameObject);

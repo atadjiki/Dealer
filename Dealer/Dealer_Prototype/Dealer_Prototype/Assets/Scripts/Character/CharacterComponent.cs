@@ -9,7 +9,7 @@ public class CharacterComponent : MonoBehaviour
     public CharacterConstants.State CurrentState;
 
     internal Animator _animator;
-    internal Navigator _navigator;
+    internal NavigatorComponent _navigator;
 
     internal float moveRadius = 30;
 
@@ -19,7 +19,7 @@ public class CharacterComponent : MonoBehaviour
     {
         
         _animator = GetComponentInChildren<Animator>();
-        _navigator = GetComponentInChildren<Navigator>();
+        _navigator = GetComponentInChildren<NavigatorComponent>();
 
         PlayDefaultAnimation();
         CurrentState = CharacterConstants.State.Idle;

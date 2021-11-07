@@ -9,13 +9,13 @@ public class NPCManager : MonoBehaviour
 
     public static NPCManager Instance { get { return _instance; } }
 
-    private List<NPCController> Characters;
+    private List<NPCComponent> Characters;
     private int _popCap = 5;
 
     private int _updateEveryFrames = 120;
     private int _currentFrames = 0;
 
-    private NPCController selectedNPC = null;
+    private NPCComponent selectedNPC = null;
 
     private void Awake()
     {
@@ -33,10 +33,10 @@ public class NPCManager : MonoBehaviour
 
     private void Build()
     {
-        Characters = new List<NPCController>();
+        Characters = new List<NPCComponent>();
     }
 
-    public bool RegisterNPC(NPCController npc)
+    public bool RegisterNPC(NPCComponent npc)
     {
         if(Characters.Count == _popCap)
         {
@@ -51,7 +51,7 @@ public class NPCManager : MonoBehaviour
         return true;
     }
 
-    public void UnRegisterNPC(NPCController npc)
+    public void UnRegisterNPC(NPCComponent npc)
     {
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Unregistered NPC " + npc.name);
         Characters.Remove(npc);
@@ -72,7 +72,7 @@ public class NPCManager : MonoBehaviour
 
     private void BehaviorUpdate()
     {
-        foreach (NPCController npc in Characters)
+        foreach (NPCComponent npc in Characters)
         {
 
             if(npc.updateState == CharacterConstants.UpdateState.Ready)
@@ -107,7 +107,7 @@ public class NPCManager : MonoBehaviour
         return (selectedNPC != null);
     }
 
-    public NPCController GetSelectedNPC()
+    public NPCComponent GetSelectedNPC()
     {
         return selectedNPC;
     }

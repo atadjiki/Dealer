@@ -11,10 +11,11 @@ public class DebugManager : MonoBehaviour
 
     public static DebugManager Instance { get { return _instance; } }
 
-    public bool LogCharacter = true;
+    public bool LogCharacter = false;
     public bool LogInput = false;
     public bool LogAStar = false;
-    public bool LogNPCManager = true;
+    public bool LogNavigator = true;
+    public bool LogNPCManager = false;
 
     public AstarPath _astarPath;
 
