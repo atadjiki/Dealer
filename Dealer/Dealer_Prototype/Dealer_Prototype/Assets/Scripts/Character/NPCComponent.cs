@@ -33,8 +33,6 @@ public class NPCComponent : CharacterComponent
             Destroy(this.gameObject);
         }
 
-        Initialize(); //now that we are registered, do some setup stuff
-
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
     }
 

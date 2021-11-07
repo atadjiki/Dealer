@@ -10,8 +10,10 @@ public class PrefabFactory : MonoBehaviour
     public static PrefabFactory Instance { get { return _instance; } }
 
     //Prefabs
-    private GameObject Prefab_CharacterCamera;
-    private GameObject Prefab_NavPoint;
+    private GameObject Prefab_Camera_Character;
+    private GameObject Prefab_Navigation_NavPoint;
+    private GameObject Prefab_Model_Male1;
+    private GameObject Prefab_Character_NPC;
 
     private void Awake()
     {
@@ -29,20 +31,29 @@ public class PrefabFactory : MonoBehaviour
 
     private void Build()
     {
-        Prefab_CharacterCamera = Resources.Load<GameObject>(ResourcePaths.CM_Character);
-        Prefab_NavPoint = Resources.Load<GameObject>(ResourcePaths.NavPoint);
-
+        Prefab_Camera_Character = Resources.Load<GameObject>(ResourcePaths.CM_Character);
+        Prefab_Navigation_NavPoint = Resources.Load<GameObject>(ResourcePaths.NavPoint);
+        Prefab_Model_Male1 = Resources.Load<GameObject>(ResourcePaths.Model_Male1);
+        Prefab_Character_NPC = Resources.Load<GameObject>(ResourcePaths.NPC);
     }
 
     private GameObject GetPrefabFromEnum(Prefab prefab)
     {
         if (prefab == Prefab.CM_Character)
         {
-            return Prefab_CharacterCamera;
+            return Prefab_Camera_Character;
         }
         else if (prefab == Prefab.NavPoint)
         {
-            return Prefab_NavPoint;
+            return Prefab_Navigation_NavPoint;
+        }
+        else if(prefab == Prefab.Model_Male)
+        {
+            return Prefab_Model_Male1;
+        }
+        else if(prefab == Prefab.NPC)
+        {
+            return Prefab_Character_NPC;
         }
 
         return null;
