@@ -4,20 +4,22 @@ using Constants;
 using UnityEngine;
 
 public class NPCComponent : CharacterComponent
-{
-    
+{ 
+    [Header("Character State")]
     private CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
-    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
-
+    
     public CharacterConstants.Behavior BehaviorMode = CharacterConstants.Behavior.Wander;
+    public CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+
+    [Header("Stations")]
     public List<CharacterConstants.StationType> AvailableStations;
 
-    private float Wander_SecondsBeforeMoving_Min = 4.0f;
-    private float Wander_SecondsBeforeMoving_Max = 7.0f;
+    [Range(0.0f, 10.0f)]
+    public float IdleSeconds_Max = 5.0f;
 
     private Coroutine ActionCoroutine;
-    
-    public CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+
+    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 
     private void Awake()
     {
@@ -73,7 +75,7 @@ public class NPCComponent : CharacterComponent
         LastAction = CharacterConstants.ActionType.Idle;
         updateState = CharacterConstants.UpdateState.Busy;
 
-        yield return new WaitForSeconds(Random.Range(Wander_SecondsBeforeMoving_Min, Wander_SecondsBeforeMoving_Max));
+        yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
 
         updateState = CharacterConstants.UpdateState.Ready;
     }

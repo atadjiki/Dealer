@@ -27,6 +27,39 @@ public class NavigatorComponent : MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null)
+        {
+            if (parentCharacter.CurrentState == Constants.CharacterConstants.State.Moving)
+            {
+                Path path = _Seeker.GetCurrentPath();
+
+                if (path != null)
+                {
+                    List<Vector3> vectorPath = path.vectorPath;
+
+                    if (vectorPath.Count > 2)
+                    {
+                        Vector3[] simplifiedPath = new Vector3[3];
+
+                        //initial position
+                        simplifiedPath[0] = _AI.position;
+                        simplifiedPath[1] = vectorPath[vectorPath.Count / 2];
+                        simplifiedPath[2] = _AI.destination;
+
+                        pathRenderer.positionCount = simplifiedPath.Length;
+                        pathRenderer.SetPositions(simplifiedPath);
+                    }
+                }
+            }
+            else
+            {
+                pathRenderer.positionCount = 0;
+            }
+        }
+    }
+
     private Vector3 PickRandomPoint()
     {
         var point = Random.onUnitSphere * Random.Range(parentCharacter.moveRadius, parentCharacter.moveRadius * 1.5f);
@@ -97,31 +130,6 @@ public class NavigatorComponent : MonoBehaviour
             if (Vector3.Distance(this.transform.position, _AI.destination) < 1)
             {
                 break;
-            }
-
-            if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null)
-            {
-                if (parentCharacter.CurrentState == Constants.CharacterConstants.State.Moving)
-                {
-                    Path path = _Seeker.GetCurrentPath();
-
-                    if (path != null)
-                    {
-                        Vector3[] points = path.vectorPath.ToArray();
-
-                        if (points.Length >= 3)
-                        {
-                            Vector3[] simplifiedPath = new Vector3[3];
-
-                            simplifiedPath[0] = this.transform.position;
-                            simplifiedPath[1] = points[points.Length / 2];
-                            simplifiedPath[2] = points[points.Length - 1];
-
-                            pathRenderer.positionCount = 3;
-                            pathRenderer.SetPositions(simplifiedPath);
-                        }
-                    }
-                }
             }
         }
 
