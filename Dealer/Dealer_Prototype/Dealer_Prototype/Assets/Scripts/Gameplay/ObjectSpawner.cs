@@ -56,6 +56,10 @@ public class ObjectSpawner : MonoBehaviour
         {
             return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Male, this.transform);
         }
+        else if(ID == CharacterConstants.Characters.Female_1)
+        {
+            return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Female, this.transform);
+        }
 
         return null;
     }

@@ -13,6 +13,7 @@ public class PrefabFactory : MonoBehaviour
     private GameObject Prefab_Camera_Character;
     private GameObject Prefab_Navigation_NavPoint;
     private GameObject Prefab_Model_Male1;
+    private GameObject Prefab_Model_Female1;
     private GameObject Prefab_Character_NPC;
 
     private void Awake()
@@ -34,6 +35,7 @@ public class PrefabFactory : MonoBehaviour
         Prefab_Camera_Character = Resources.Load<GameObject>(ResourcePaths.CM_Character);
         Prefab_Navigation_NavPoint = Resources.Load<GameObject>(ResourcePaths.NavPoint);
         Prefab_Model_Male1 = Resources.Load<GameObject>(ResourcePaths.Model_Male1);
+        Prefab_Model_Female1 = Resources.Load<GameObject>(ResourcePaths.Model_Female1);
         Prefab_Character_NPC = Resources.Load<GameObject>(ResourcePaths.NPC);
     }
 
@@ -50,6 +52,10 @@ public class PrefabFactory : MonoBehaviour
         else if(prefab == Prefab.Model_Male)
         {
             return Prefab_Model_Male1;
+        }
+        else if(prefab == Prefab.Model_Female)
+        {
+            return Prefab_Model_Female1;
         }
         else if(prefab == Prefab.NPC)
         {
