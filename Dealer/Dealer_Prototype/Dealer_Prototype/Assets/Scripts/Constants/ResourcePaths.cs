@@ -1,6 +1,6 @@
 namespace Constants
 {
-    public enum Prefab { CM_Character, NavPoint, NPC, Model_Male, Model_Female, Character_Canvas };
+    public enum Prefab { CM_Character, NavPoint, NPC, Model_Male, Model_Female, Character_Canvas, Navigator };
 
     public class ResourcePaths
     {

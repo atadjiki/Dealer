@@ -27,19 +27,25 @@ public class CharacterComponent : MonoBehaviour
 
     internal void Initialize()
     {
+        //setup navigator
+        GameObject navigatorPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Navigator, this.transform);
+        _navigator = navigatorPrefab.GetComponent<NavigatorComponent>();
 
+        //setup character model and attach to navigator
         GameObject Model = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
-        Model.transform.parent = GetComponentInChildren<NavigatorComponent>().transform;
+        Model.transform.parent = navigatorPrefab.transform;
+        _animator = Model.GetComponent<Animator>();
 
-        _animator = GetComponentInChildren<Animator>();
-        _navigator = GetComponentInChildren<NavigatorComponent>();
+        //attach a UI canvas to the model 
+        _canvas = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, Model.transform);
 
-        _canvas = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, _animator.transform);
-
+        //idle to tart with 
         CurrentState = CharacterConstants.State.Idle;
 
+        //register camera
         CameraManager.Instance.RegisterCharacterCamera(this);
 
+        //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
     }
 
@@ -99,4 +105,16 @@ public class CharacterComponent : MonoBehaviour
 
 
     public CharacterConstants.ActionType GetLastAction() { return LastAction; }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if(updateState == CharacterConstants.UpdateState.None)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(this.transform.position, 0.5f);
+            Gizmos.DrawIcon(this.transform.position + new Vector3(0,0,0.5f), "Icon_Person_Male.png"); ;
+        }
+    }
+#endif
 }

@@ -15,7 +15,8 @@ public class PrefabFactory : MonoBehaviour
     private GameObject Prefab_Model_Male1;
     private GameObject Prefab_Model_Female1;
     private GameObject Prefab_Character_NPC;
-    private GameObject Prefab_Character_Canvas;
+    private GameObject Prefab_Component_CharacterCanvas;
+    private GameObject Prefab_Component_Navigator;
 
     private void Awake()
     {
@@ -38,7 +39,8 @@ public class PrefabFactory : MonoBehaviour
         Prefab_Model_Male1 = Resources.Load<GameObject>(ResourcePaths.Model_Male1);
         Prefab_Model_Female1 = Resources.Load<GameObject>(ResourcePaths.Model_Female1);
         Prefab_Character_NPC = Resources.Load<GameObject>(ResourcePaths.NPC);
-        Prefab_Character_Canvas = Resources.Load<GameObject>(ResourcePaths.CharacterCanvas);
+        Prefab_Component_CharacterCanvas = Resources.Load<GameObject>(ResourcePaths.CharacterCanvas);
+        Prefab_Component_Navigator = Resources.Load<GameObject>(ResourcePaths.Navigator);
     }
 
     private GameObject GetPrefabFromEnum(Prefab prefab)
@@ -65,7 +67,11 @@ public class PrefabFactory : MonoBehaviour
         }
         else if(prefab == Prefab.Character_Canvas)
         {
-            return Prefab_Character_Canvas;
+            return Prefab_Component_CharacterCanvas;
+        }
+        else if(prefab == Prefab.Navigator)
+        {
+            return Prefab_Component_Navigator;
         }
 
         return null;
