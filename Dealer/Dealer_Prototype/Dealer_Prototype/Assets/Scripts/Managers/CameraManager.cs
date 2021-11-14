@@ -10,6 +10,8 @@ public class CameraManager : MonoBehaviour
 
     public static CameraManager Instance { get { return _instance; } }
 
+    private Camera _mainCamera;
+
     private Dictionary<CharacterComponent, CinemachineVirtualCamera> CharacterCameras;
     private CinemachineVirtualCamera PlayerCamera;
    
@@ -36,6 +38,8 @@ public class CameraManager : MonoBehaviour
     {
        // CharacterCameraPrefab = Resources.Load<GameObject>(ResourcePaths.CM_Character);
         CharacterCameras = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
+
+        _mainCamera = GetComponentInChildren<Camera>();
     }
 
     public void RegisterCharacterCamera(CharacterComponent character)
@@ -77,5 +81,10 @@ public class CameraManager : MonoBehaviour
             if (PlayerCamera != null)
                 Destroy(PlayerCamera.gameObject);
         }
+    }
+
+    public Camera GetMainCamera()
+    {
+        return _mainCamera;
     }
 }
