@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
     internal Animator _animator;
     internal NavigatorComponent _navigator;
-    internal GameObject _canvas;
+    internal CharacterCanvas _charCanvas;
 
     [Header("Character ID")]
     [SerializeField] internal CharacterConstants.Characters CharacterID;
@@ -28,16 +29,18 @@ public class CharacterComponent : MonoBehaviour
     internal void Initialize()
     {
         //setup navigator
-        GameObject navigatorPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Navigator, this.transform);
-        _navigator = navigatorPrefab.GetComponent<NavigatorComponent>();
+        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Navigator, this.transform);
+        _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
 
         //setup character model and attach to navigator
-        GameObject Model = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
-        Model.transform.parent = navigatorPrefab.transform;
-        _animator = Model.GetComponent<Animator>();
+        GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
+        ModelPrefab.transform.parent = NavigtorPrefab.transform;
+        _animator = ModelPrefab.GetComponent<Animator>();
 
         //attach a UI canvas to the model 
-        _canvas = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, Model.transform);
+        GameObject CanvasPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, ModelPrefab.transform);
+        _charCanvas = CanvasPrefab.GetComponent<CharacterCanvas>();
+        _charCanvas.Set_Text_ID(this.CharacterID.ToString());
 
         //idle to tart with 
         CurrentState = CharacterConstants.State.Idle;

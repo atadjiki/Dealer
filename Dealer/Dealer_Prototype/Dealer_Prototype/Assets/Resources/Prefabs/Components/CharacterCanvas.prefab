@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5277934642203910665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3632626178599907982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d355b54223f8c4a45b3d9658d6934c15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enabled: 1
+  Text_ID: {fileID: 3632626177498953615}
 --- !u!1001 &4222629582010824765
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73,11 +87,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 644126313538702000, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.24
+      value: 0.23999023
       objectReference: {fileID: 0}
     - target: {fileID: 644126313538702000, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.07
+      value: 2.0700073
       objectReference: {fileID: 0}
     - target: {fileID: 644126313538702000, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -95,5 +109,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterCanvas
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 644126313538702007, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 644126314702540732, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
+      propertyPath: m_Name
+      value: Text_ID
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 644126313538702001, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
+--- !u!1 &3632626178599907982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 644126313538702003, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
+  m_PrefabInstance: {fileID: 4222629582010824765}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3632626177498953615 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 644126314702540722, guid: aef3dd57c5d3e4ea0ae166ac5e99b441, type: 3}
+  m_PrefabInstance: {fileID: 4222629582010824765}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
