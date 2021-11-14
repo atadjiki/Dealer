@@ -5,21 +5,11 @@ using UnityEngine;
 
 public class NPCComponent : CharacterComponent
 { 
-    [Header("Character State")]
-    private CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
-    
-    public CharacterConstants.Behavior BehaviorMode = CharacterConstants.Behavior.Wander;
-    public CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
-
     [Header("Stations")]
     public List<CharacterConstants.StationType> AvailableStations;
 
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
-
-    private Coroutine ActionCoroutine;
-
-    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 
     private void Awake()
     {
@@ -33,7 +23,7 @@ public class NPCComponent : CharacterComponent
             Destroy(this.gameObject);
         }
 
-        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
+        if(GetComponentInParent<ObjectSpawner>() == null) Initialize();
     }
 
     private void OnDestroy()

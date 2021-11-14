@@ -15,6 +15,7 @@ public class PrefabFactory : MonoBehaviour
     private GameObject Prefab_Model_Male1;
     private GameObject Prefab_Model_Female1;
     private GameObject Prefab_Character_NPC;
+    private GameObject Prefab_Character_Canvas;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class PrefabFactory : MonoBehaviour
         Prefab_Model_Male1 = Resources.Load<GameObject>(ResourcePaths.Model_Male1);
         Prefab_Model_Female1 = Resources.Load<GameObject>(ResourcePaths.Model_Female1);
         Prefab_Character_NPC = Resources.Load<GameObject>(ResourcePaths.NPC);
+        Prefab_Character_Canvas = Resources.Load<GameObject>(ResourcePaths.CharacterCanvas);
     }
 
     private GameObject GetPrefabFromEnum(Prefab prefab)
@@ -61,6 +63,10 @@ public class PrefabFactory : MonoBehaviour
         {
             return Prefab_Character_NPC;
         }
+        else if(prefab == Prefab.Character_Canvas)
+        {
+            return Prefab_Character_Canvas;
+        }
 
         return null;
     }
@@ -74,5 +80,19 @@ public class PrefabFactory : MonoBehaviour
     {
 
         return Instantiate<GameObject>(GetPrefabFromEnum(prefab), location, rotation, null);
+    }
+
+    public GameObject GetCharacterPrefab(CharacterConstants.Characters ID)
+    {
+        if (ID == CharacterConstants.Characters.Male_1)
+        {
+            return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Male, this.transform);
+        }
+        else if (ID == CharacterConstants.Characters.Female_1)
+        {
+            return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Female, this.transform);
+        }
+
+        return null;
     }
 }

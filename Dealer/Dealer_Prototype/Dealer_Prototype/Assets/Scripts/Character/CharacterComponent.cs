@@ -5,36 +5,47 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    
-    public CharacterConstants.State CurrentState;
-
     internal Animator _animator;
     internal NavigatorComponent _navigator;
+    internal GameObject _canvas;
 
+    [Header("Character ID")]
+    [SerializeField] internal CharacterConstants.Characters CharacterID;
+
+    [Header("Character Setup")]
+
+    [SerializeField] internal CharacterConstants.Behavior BehaviorMode = CharacterConstants.Behavior.Wander;
+
+    [Header("Debug")]
+
+    [SerializeField] internal CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+    [SerializeField] internal CharacterConstants.State CurrentState;
+
+    internal CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
+    internal Coroutine ActionCoroutine;
     internal float moveRadius = 30;
-
-    public AnimationConstants.Animations DefaultAnimation = AnimationConstants.Animations.Idle;
 
     internal void Initialize()
     {
-        
+
+        GameObject Model = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
+        Model.transform.parent = GetComponentInChildren<NavigatorComponent>().transform;
+
         _animator = GetComponentInChildren<Animator>();
         _navigator = GetComponentInChildren<NavigatorComponent>();
 
-        PlayDefaultAnimation();
+        _canvas = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, _animator.transform);
+
         CurrentState = CharacterConstants.State.Idle;
 
         CameraManager.Instance.RegisterCharacterCamera(this);
+
+        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
     }
 
     private void OnDestroy()
     {
         CameraManager.Instance.UnRegisterCharacterCamera(this);
-    }
-
-    public void PlayDefaultAnimation()
-    {
-        FadeToAnimation(AnimationConstants.GetAnimByEnum(DefaultAnimation), 0.3f);
     }
 
     public virtual void OnNewDestination(Vector3 destination) { }
@@ -85,4 +96,7 @@ public class CharacterComponent : MonoBehaviour
     {
         _animator.CrossFade(animation, time);
     }
+
+
+    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 }

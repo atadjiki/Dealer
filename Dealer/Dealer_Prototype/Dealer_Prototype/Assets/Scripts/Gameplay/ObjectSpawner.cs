@@ -41,27 +41,18 @@ public class ObjectSpawner : MonoBehaviour
     {
         State = ObjectSpawnerState.Spawning;
 
-        GameObject Model = GetCharacterPrefab(ID);
         GameObject NPC = PrefabFactory.Instance.CreatePrefab(Prefab.NPC, this.transform);
-        Model.transform.parent = NPC.GetComponentInChildren<NavigatorComponent>().transform;
-        NPC.GetComponent<NPCComponent>().Initialize();
+
+        NPCComponent npcComp = NPC.GetComponent<NPCComponent>();
+
+        if(npcComp != null)
+        {
+            npcComp.CharacterID = ID;
+            npcComp.Initialize();
+        }
 
         State = ObjectSpawnerState.Spawned;
 
-    }
-
-    private GameObject GetCharacterPrefab(CharacterConstants.Characters ID)
-    {
-        if(ID == CharacterConstants.Characters.Male_1)
-        {
-            return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Male, this.transform);
-        }
-        else if(ID == CharacterConstants.Characters.Female_1)
-        {
-            return PrefabFactory.Instance.CreatePrefab(Prefab.Model_Female, this.transform);
-        }
-
-        return null;
     }
 
 }
