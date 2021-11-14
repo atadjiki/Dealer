@@ -46,7 +46,7 @@ public class NPCComponent : CharacterComponent
     private IEnumerator PerformAction_MoveToRandomPoint()
     {
         LastAction = CharacterConstants.ActionType.Move;
-        updateState = CharacterConstants.UpdateState.Busy;
+        SetUpdateState(CharacterConstants.UpdateState.Busy);
 
         while (true)
         {
@@ -60,11 +60,11 @@ public class NPCComponent : CharacterComponent
     private IEnumerator PerformAction_Idle()
     {
         LastAction = CharacterConstants.ActionType.Idle;
-        updateState = CharacterConstants.UpdateState.Busy;
+        SetUpdateState(CharacterConstants.UpdateState.Busy);
 
         yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
 
-        updateState = CharacterConstants.UpdateState.Ready;
+        SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
     public override void OnDestinationReached(Vector3 destination)
@@ -73,7 +73,7 @@ public class NPCComponent : CharacterComponent
 
         if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
 
-        updateState = CharacterConstants.UpdateState.Ready;
+        SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
 }

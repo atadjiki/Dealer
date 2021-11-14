@@ -35,7 +35,7 @@ public class NavigatorComponent : MonoBehaviour
     {
         if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null)
         {
-            if (parentCharacter.CurrentState == Constants.CharacterConstants.State.Moving)
+            if (parentCharacter.GetCurrentState() == Constants.CharacterConstants.State.Moving)
             {
                 Path path = _Seeker.GetCurrentPath();
 

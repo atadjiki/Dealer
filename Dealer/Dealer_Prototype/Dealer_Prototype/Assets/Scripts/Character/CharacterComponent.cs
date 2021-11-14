@@ -19,8 +19,8 @@ public class CharacterComponent : MonoBehaviour
 
     [Header("Debug")]
 
-    [SerializeField] internal CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
-    [SerializeField] internal CharacterConstants.State CurrentState;
+    [SerializeField] private CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+    [SerializeField] private CharacterConstants.State CurrentState;
 
     internal CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
     internal Coroutine ActionCoroutine;
@@ -43,7 +43,7 @@ public class CharacterComponent : MonoBehaviour
         _charCanvas.Set_Text_ID(this.CharacterID.ToString());
 
         //idle to tart with 
-        CurrentState = CharacterConstants.State.Idle;
+        SetCurrentState(CharacterConstants.State.Idle);
 
         //register camera
         CameraManager.Instance.RegisterCharacterCamera(this);
@@ -62,14 +62,14 @@ public class CharacterComponent : MonoBehaviour
 
     public void ToIdle()
     {
-        CurrentState = CharacterConstants.State.Idle;
+        SetCurrentState(CharacterConstants.State.Idle);
         _animator.CrossFade(AnimationConstants.Idle, 0.5f);
         _navigator.SetCanMove(false);
     }
 
     public void ToMoving()
     {
-        CurrentState = CharacterConstants.State.Moving;
+        SetCurrentState(CharacterConstants.State.Moving);
         _animator.CrossFade(AnimationConstants.Walking, 0.1f);
         _navigator.SetCanMove(true);
     }
@@ -77,7 +77,7 @@ public class CharacterComponent : MonoBehaviour
     public void ToInteracting()
     {
         StopAllCoroutines();
-        CurrentState = CharacterConstants.State.Interacting;
+        SetCurrentState(CharacterConstants.State.Interacting);
         _animator.CrossFade(AnimationConstants.ButtonPush, 0.3f);
         _navigator.SetCanMove(false);
 
@@ -86,7 +86,7 @@ public class CharacterComponent : MonoBehaviour
     public void ToTalking()
     {
         StopAllCoroutines();
-        CurrentState = CharacterConstants.State.Talking;
+        SetCurrentState(CharacterConstants.State.Talking);
         _animator.CrossFade(AnimationConstants.Talking, 0.3f);
         _navigator.SetCanMove(false);
     }
@@ -94,18 +94,32 @@ public class CharacterComponent : MonoBehaviour
     public void ToSitting()
     {
         StopAllCoroutines();
-        CurrentState = CharacterConstants.State.Sitting;
+        SetCurrentState(CharacterConstants.State.Sitting);
         FadeToAnimation(AnimationConstants.Male_Sitting_2, 0.35f);
         _navigator.SetCanMove(false);
     }
 
    
 
-    public void FadeToAnimation(string animation, float time)
+    private void FadeToAnimation(string animation, float time)
     {
         _animator.CrossFade(animation, time);
     }
 
+    internal void SetCurrentState(CharacterConstants.State newState)
+    {
+        CurrentState = newState;
+        _charCanvas.Set_Text_State(CurrentState.ToString());
+    }
+
+    public CharacterConstants.State GetCurrentState() { return CurrentState; }
+
+    internal void SetUpdateState(CharacterConstants.UpdateState newState)
+    {
+        updateState = newState;
+    }
+
+    public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
 
     public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 

@@ -75,7 +75,7 @@ public class NPCManager : MonoBehaviour
         foreach (NPCComponent npc in Characters)
         {
 
-            if(npc.updateState == CharacterConstants.UpdateState.Ready)
+            if(npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
             {
                 if (npc.BehaviorMode == CharacterConstants.Behavior.Wander)
                 {
