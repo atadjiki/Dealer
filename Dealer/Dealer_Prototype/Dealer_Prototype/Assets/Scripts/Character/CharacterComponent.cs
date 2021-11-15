@@ -29,7 +29,7 @@ public class CharacterComponent : MonoBehaviour
     internal void Initialize()
     {
         //setup navigator
-        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Navigator, this.transform);
+        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
 
         //setup character model and attach to navigator
@@ -38,7 +38,7 @@ public class CharacterComponent : MonoBehaviour
         _animator = ModelPrefab.GetComponent<Animator>();
 
         //attach a UI canvas to the model 
-        GameObject CanvasPrefab = PrefabFactory.Instance.CreatePrefab(Prefab.Character_Canvas, ModelPrefab.transform);
+        GameObject CanvasPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);
         _charCanvas = CanvasPrefab.GetComponent<CharacterCanvas>();
         _charCanvas.Set_Text_ID(this.CharacterID.ToString());
 

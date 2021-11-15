@@ -7,7 +7,7 @@ using UnityEngine;
 public class ObjectSpawner : MonoBehaviour
 {
 
-    public Constants.CharacterConstants.Characters CharacterID;
+    public CharacterConstants.Characters CharacterID;
 
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
@@ -41,7 +41,9 @@ public class ObjectSpawner : MonoBehaviour
     {
         State = ObjectSpawnerState.Spawning;
 
-        GameObject NPC = PrefabFactory.Instance.CreatePrefab(Prefab.NPC, this.transform);
+        Debug.Log("Spawning character - " + ID.ToString());
+
+        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, this.transform);
 
         NPCComponent npcComp = NPC.GetComponent<NPCComponent>();
 

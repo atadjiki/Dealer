@@ -33,7 +33,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void Update()
     {
-        if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null)
+        if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
             if (parentCharacter.GetCurrentState() == Constants.CharacterConstants.State.Moving)
             {
@@ -178,7 +178,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void SpawnNavPointPrefab(Vector3 prefabLocation)
     {
-        GameObject NavPointEffect = PrefabFactory.Instance.CreatePrefab(Prefab.NavPoint, prefabLocation, Quaternion.identity);
+        GameObject NavPointEffect = PrefabFactory.Instance.CreatePrefab(RegistryID.NavPoint, prefabLocation, Quaternion.identity);
         NavPointPrefabs.Add(NavPointEffect);
     }
 }
