@@ -49,13 +49,13 @@ public class PrefabFactory : MonoBehaviour
         return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), location, rotation, null);
     }
 
-    public GameObject GetCharacterPrefab(CharacterConstants.Characters ID)
+    public GameObject GetCharacterPrefab(CharacterConstants.CharacterID ID)
     {
-        if (ID == CharacterConstants.Characters.Male_1)
+        if (ID == CharacterConstants.CharacterID.Male_1)
         {
             return PrefabFactory.Instance.CreatePrefab(RegistryID.Model_Male_1, this.transform);
         }
-        else if (ID == CharacterConstants.Characters.Female_1)
+        else if (ID == CharacterConstants.CharacterID.Female_1)
         {
             return PrefabFactory.Instance.CreatePrefab(RegistryID.Model_Female_1, this.transform);
         }

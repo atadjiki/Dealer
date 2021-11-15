@@ -7,7 +7,7 @@ using UnityEngine;
 public class ObjectSpawner : MonoBehaviour
 {
 
-    public CharacterConstants.Characters CharacterID;
+    public CharacterConstants.CharacterID CharacterID;
 
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
@@ -37,7 +37,7 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
-    public void SpawnCharacter(CharacterConstants.Characters ID)
+    public void SpawnCharacter(CharacterConstants.CharacterID ID)
     {
         State = ObjectSpawnerState.Spawning;
 

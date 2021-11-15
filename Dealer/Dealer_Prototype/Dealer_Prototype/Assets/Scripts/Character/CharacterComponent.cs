@@ -11,7 +11,7 @@ public class CharacterComponent : MonoBehaviour
     internal CharacterCanvas _charCanvas;
 
     [Header("Character ID")]
-    [SerializeField] internal CharacterConstants.Characters CharacterID;
+    [SerializeField] internal CharacterConstants.CharacterID CharacterID;
 
     [Header("Character Setup")]
 

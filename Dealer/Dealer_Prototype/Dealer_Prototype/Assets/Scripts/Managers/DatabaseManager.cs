@@ -10,6 +10,11 @@ public struct ResourceData
     public string Path { get; set; }
 }
 
+public struct CharacterDefinitionData
+{
+    [PrimaryKey] public string RegistryID { get; set; }
+}
+
 [RequireComponent(typeof(SimpleSQLManager))]
 public class DatabaseManager : MonoBehaviour
 {
@@ -37,6 +42,21 @@ public class DatabaseManager : MonoBehaviour
     {
         _dbManager = GetComponent<SimpleSQLManager>();
     
+    }
+
+    public List<string> GetCharacterIDs()
+    {
+        string sql = "SELECT * FROM CharacterDefinition";
+
+        List<CharacterDefinitionData> IDs = _dbManager.Query<CharacterDefinitionData>(sql);
+        List<string> stringIDs = new List<string>();
+
+        foreach(CharacterDefinitionData data in IDs)
+        {
+            stringIDs.Add(data.RegistryID);
+        }
+
+        return stringIDs;
     }
 
     public bool GetResourcePathFromRegistryID(RegistryID RegistryID, out string PathString)

@@ -8,6 +8,10 @@ namespace Constants
         public enum State { Idle, Moving, Interacting, Talking, Unavailable, Sitting };
         public enum ActionType { Move, Idle, None };
 
-        public enum Characters { Male_1, Female_1 };
+        public enum CharacterID
+        {
+            Male_1,
+            Female_1
+        };
     }
 }
