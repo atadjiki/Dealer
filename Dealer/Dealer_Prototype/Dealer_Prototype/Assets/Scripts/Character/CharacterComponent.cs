@@ -39,6 +39,8 @@ public class CharacterComponent : MonoBehaviour
 
     internal IEnumerator DoInitialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
     {
+        CharacterID = _CharacterID;
+
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
@@ -84,8 +86,6 @@ public class CharacterComponent : MonoBehaviour
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
-        CharacterID = _CharacterID;
-
         SetCurrentBehavior(_BehaviorMode);
 
         yield return null;
@@ -99,9 +99,7 @@ public class CharacterComponent : MonoBehaviour
     }
     public virtual void OnMouseEnter()
     {
-        _charCanvas.Toggle(true);
-
-    }
+        _charCanvas.Toggle(true);    }
 
     public virtual void OnMouseExit()
     {

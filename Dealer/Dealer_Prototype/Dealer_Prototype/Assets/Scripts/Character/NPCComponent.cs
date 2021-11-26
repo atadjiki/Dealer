@@ -85,6 +85,18 @@ public class NPCComponent : CharacterComponent
         SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
+    public override void OnMouseEnter()
+    {
+        base.OnMouseEnter();
+        GameplayCanvas.Instance.SetInteractionTipText(this);
+    }
+
+    public override void OnMouseExit()
+    {
+        base.OnMouseExit();
+        GameplayCanvas.Instance.ClearInteractionTipText();
+    }
+
     public override void OnMouseClicked()
     {
         base.OnMouseClicked();
