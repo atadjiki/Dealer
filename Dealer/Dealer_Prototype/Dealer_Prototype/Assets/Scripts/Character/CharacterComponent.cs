@@ -10,9 +10,8 @@ public class CharacterComponent : MonoBehaviour
     private NavigatorComponent _navigator;
     private CharacterCanvas _charCanvas;
     private InteractionComponent _interaction;
+    private CharacterStateComponent _characterState;
 
-    [Header("Character ID")]
-    [SerializeField] internal CharacterConstants.CharacterID CharacterID;
 
     [Header("Character Setup")]
 
@@ -39,10 +38,11 @@ public class CharacterComponent : MonoBehaviour
 
     internal IEnumerator DoInitialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
     {
-        CharacterID = _CharacterID;
+        _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
+        _characterState.SetCharacterID(_CharacterID);
 
         //setup navigator
-        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
+        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform) ;
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
 
         yield return new WaitWhile(() => _navigator == null);
@@ -50,8 +50,8 @@ public class CharacterComponent : MonoBehaviour
         //
 
         //setup character model and attach to navigator
-        GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
-        ModelPrefab.transform.parent = NavigtorPrefab.transform;
+        GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
+       // ModelPrefab.transform.parent = NavigtorPrefab.transform;
         _animator = ModelPrefab.GetComponent<Animator>();
 
         yield return new WaitWhile(() => _animator == null);
@@ -64,7 +64,7 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitWhile(() => _charCanvas == null);
 
-        _charCanvas.Set_Text_ID(this.CharacterID.ToString());
+        _charCanvas.Set_Text_ID(_characterState.GetID());
 
         ///
 
@@ -194,6 +194,11 @@ public class CharacterComponent : MonoBehaviour
     public bool MoveToLocation(Vector3 Location)
     {
         return _navigator.MoveToLocation(Location);
+    }
+
+    public string GetID()
+    {
+        return _characterState.GetID();
     }
 
 #if UNITY_EDITOR

@@ -40,7 +40,7 @@ public class PrefabFactory : MonoBehaviour
 
     public GameObject CreatePrefab(RegistryID ID, Transform transform)
     {
-        return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), transform);
+        return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), transform, false);
     }
 
     public GameObject CreatePrefab(RegistryID ID, Vector3 location, Quaternion rotation, Transform parent)
@@ -49,15 +49,15 @@ public class PrefabFactory : MonoBehaviour
         return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), location, rotation, parent);
     }
 
-    public GameObject GetCharacterPrefab(CharacterConstants.CharacterID ID)
+    public GameObject GetCharacterPrefab(string ID, Transform transform)
     {
-        if (ID == CharacterConstants.CharacterID.Male_1)
+        if (ID == CharacterConstants.CharacterID.Male_1.ToString())
         {
-            return CreatePrefab(RegistryID.Model_Male_1, this.transform);
+            return CreatePrefab(RegistryID.Model_Male_1, transform);
         }
-        else if (ID == CharacterConstants.CharacterID.Female_1)
+        else if (ID == CharacterConstants.CharacterID.Female_1.ToString())
         {
-            return CreatePrefab(RegistryID.Model_Female_1, this.transform);
+            return CreatePrefab(RegistryID.Model_Female_1, transform);
         }
 
         return null;

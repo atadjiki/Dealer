@@ -8,6 +8,8 @@ public class ObjectSpawner : MonoBehaviour
 {
     public List<SpawnGroup> SpawnGroups;
 
+    public List<SpawnLocation> SpawnLocations;
+
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
 
@@ -52,15 +54,18 @@ public class ObjectSpawner : MonoBehaviour
 
         if(DebugManager.Instance.LogSpawner) Debug.Log("Spawning character - " + ID.ToString());
 
-        Vector3 RandomLocation;
+        Transform SpawnTransform = this.transform;
 
-        RandomLocation.x = Random.Range(_bounds.min.x, _bounds.max.x);
-        RandomLocation.y = this.transform.position.y;
-        RandomLocation.z = Random.Range(_bounds.min.z, _bounds.max.z);
+        if(SpawnLocations.Count > 0)
+        {
+            SpawnLocation location = GetLeastUsedLocation();
+            
+            SpawnTransform = location.transform;
 
-        float RandomRotation = Random.Range(0, 360);
+            location.IncrementUses();
+        }
 
-        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, this.transform);
+        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, SpawnTransform);
         NPCComponent npcComp = NPC.GetComponent<NPCComponent>();
 
         yield return new WaitWhile(() => npcComp == null);
@@ -70,5 +75,20 @@ public class ObjectSpawner : MonoBehaviour
         State = ObjectSpawnerState.Spawned;
 
         yield return null;
+    }
+
+    private SpawnLocation GetLeastUsedLocation()
+    {
+        SpawnLocation current = SpawnLocations[0];
+
+        for(int i = 1; i < SpawnLocations.Count; i++)
+        {
+            if(SpawnLocations[i].GetUses() < current.GetUses())
+            {
+                current = SpawnLocations[i];
+            }
+        }
+
+        return current ;
     }
 }

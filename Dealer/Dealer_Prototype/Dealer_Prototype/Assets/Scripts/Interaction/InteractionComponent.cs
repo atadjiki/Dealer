@@ -16,16 +16,16 @@ public class InteractionComponent : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        MouseEnterEvent();
+        if(MouseEnterEvent != null) MouseEnterEvent();
     }
 
     void OnMouseExit()
     {
-        MouseExitEvent();
+        if(MouseExitEvent != null) MouseExitEvent();
     }
 
     private void OnMouseDown()
     {
-        MouseClickedEvent();
+        if(MouseClickedEvent != null) MouseClickedEvent();
     }
 }

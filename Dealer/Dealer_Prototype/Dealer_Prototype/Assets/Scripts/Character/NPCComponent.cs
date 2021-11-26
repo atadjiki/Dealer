@@ -22,8 +22,6 @@ public class NPCComponent : CharacterComponent
         {
             Destroy(this.gameObject);
         }
-
-        if(GetComponentInParent<ObjectSpawner>() == null) Destroy(this.gameObject);
     }
 
     private void OnDestroy()

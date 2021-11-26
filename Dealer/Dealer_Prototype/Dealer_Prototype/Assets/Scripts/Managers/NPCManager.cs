@@ -126,7 +126,7 @@ public class NPCManager : MonoBehaviour
     private void PossessNPC(NPCComponent NPC)
     {
         CameraManager.Instance.SelectCharacterCamera(NPC);
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.CharacterID);
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.GetID());
         selectedNPC = NPC;
         selectedNPC.SetCurrentBehavior(CharacterConstants.Behavior.Possesed);
         selectedNPC.GoToIdle();
@@ -135,7 +135,7 @@ public class NPCManager : MonoBehaviour
     private void UnpossessNPC()
     {
         CameraManager.Instance.UnselectCharacterCamera();
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.CharacterID);
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.GetID());
         selectedNPC.SetCurrentBehavior(selectedNPC.GetPreviousBehavior());
         selectedNPC.GoToIdle();
         selectedNPC = null;
