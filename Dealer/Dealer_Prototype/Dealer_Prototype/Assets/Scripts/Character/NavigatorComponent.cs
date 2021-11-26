@@ -130,7 +130,8 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-        SpawnNavPointPrefab(Destination);
+        if (DebugManager.Instance.LogNavigator)
+            SpawnNavPointPrefab(Destination);
 
         parentCharacter.OnNewDestination(Destination);
 

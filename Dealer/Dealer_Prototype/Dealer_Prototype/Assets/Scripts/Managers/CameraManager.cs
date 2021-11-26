@@ -13,12 +13,10 @@ public class CameraManager : MonoBehaviour
     private Camera _mainCamera;
 
     private Dictionary<CharacterComponent, CinemachineVirtualCamera> CharacterCameras;
-    private CinemachineVirtualCamera PlayerCamera;
-   
 
-    private int _npcPriority = 10;
-    private int _playerPriority = 15;
-    //private int _defaultPriority = 5;
+    private int _npcPriority = 0;
+    private int _defaultPriority = 15;
+    private int _selectedPriority = 20;
 
     private void Awake()
     {
@@ -44,16 +42,10 @@ public class CameraManager : MonoBehaviour
     public void RegisterCharacterCamera(CharacterComponent character)
     {
         GameObject newCamera = PrefabFactory.Instance.CreatePrefab(RegistryID.CM_Character, this.transform);
-       // newCamera.transform.parent = this.transform;
 
         newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<NavigatorComponent>().transform;
 
-        if(character.gameObject.GetComponent<PlayerController>())
-        {
-            newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _playerPriority;
-            PlayerCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
-        }
-        else if(character.gameObject.GetComponent<NPCComponent>() && CharacterCameras.ContainsKey(character) == false)
+        if(character.gameObject.GetComponent<NPCComponent>() && CharacterCameras.ContainsKey(character) == false)
         {
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _npcPriority;
             CharacterCameras.Add(character, newCamera.GetComponent<CinemachineVirtualCamera>());
@@ -75,15 +67,37 @@ public class CameraManager : MonoBehaviour
 
             Destroy(camera);
         }
-        else if (character.gameObject.GetComponent<PlayerController>())
-        {
-            if (PlayerCamera != null)
-                Destroy(PlayerCamera.gameObject);
-        }
     }
 
     public Camera GetMainCamera()
     {
         return _mainCamera;
+    }
+
+    public void SelectCharacterCamera(CharacterComponent npc)
+    {
+        CinemachineVirtualCamera camera = CharacterCameras[npc];
+
+        if(camera != null)
+        {
+            foreach(CinemachineVirtualCamera toSuppress in CharacterCameras.Values)
+            {
+                toSuppress.Priority = _npcPriority;
+            }
+        }
+
+        if (DebugManager.Instance.LogCameraManager) Debug.Log("Switching to camera " + camera);
+
+        camera.Priority = _selectedPriority;  
+    }
+
+    public void UnselectCharacterCamera()
+    {
+        foreach(CinemachineVirtualCamera toSuppress in CharacterCameras.Values)
+        {
+            toSuppress.Priority = _npcPriority;
+        }
+
+        if (DebugManager.Instance.LogCameraManager) Debug.Log("Switching to default camera");
     }
 }

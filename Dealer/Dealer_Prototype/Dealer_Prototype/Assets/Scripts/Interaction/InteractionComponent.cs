@@ -8,9 +8,11 @@ public class InteractionComponent : MonoBehaviour
 
     public delegate void OnMouseEnterEvent();
     public delegate void OnMouseExitEvent();
+    public delegate void OnMouseClickedEvent();
 
     public OnMouseEnterEvent MouseEnterEvent;
     public OnMouseExitEvent MouseExitEvent;
+    public OnMouseClickedEvent MouseClickedEvent;
 
     private void OnMouseEnter()
     {
@@ -20,5 +22,10 @@ public class InteractionComponent : MonoBehaviour
     void OnMouseExit()
     {
         MouseExitEvent();
+    }
+
+    private void OnMouseDown()
+    {
+        MouseClickedEvent();
     }
 }

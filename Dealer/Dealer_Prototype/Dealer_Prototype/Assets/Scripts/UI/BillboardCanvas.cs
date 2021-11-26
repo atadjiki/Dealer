@@ -4,25 +4,17 @@ using UnityEngine;
 
 public class BillboardCanvas : MonoBehaviour
 {
-    private Quaternion originalRotation;
     private Canvas _canvas;
 
     void Awake()
     {
-        originalRotation = transform.rotation;
-
         _canvas = GetComponent<Canvas>();
         _canvas.worldCamera = Camera.main;
     }
 
-    private void Update()
+    public void Update()
     {
-        UpdateRotation();
-    }
-
-    public void UpdateRotation()
-    {
-        transform.LookAt(Camera.main.transform);
+        transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.back, Camera.main.transform.rotation * Vector3.up);
     }
 
     public void Toggle(bool flag)

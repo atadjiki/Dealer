@@ -76,4 +76,11 @@ public class NPCComponent : CharacterComponent
         SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
+    public override void OnMouseClicked()
+    {
+        base.OnMouseClicked();
+
+        NPCManager.Instance.HandleNPCSelection(this);
+    }
+
 }

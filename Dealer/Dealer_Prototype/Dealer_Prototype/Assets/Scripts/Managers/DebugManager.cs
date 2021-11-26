@@ -13,9 +13,11 @@ public class DebugManager : MonoBehaviour
     public bool LogCharacter = false;
     public bool LogInput = false;
     public bool LogAStar = false;
-    public bool LogNavigator = true;
+    public bool LogNavigator = false;
     public bool LogNPCManager = false;
     public bool LogDatabase = false;
+    public bool LogSpawner = false;
+    public bool LogCameraManager = false;
 
     public AstarPath _astarPath;
 

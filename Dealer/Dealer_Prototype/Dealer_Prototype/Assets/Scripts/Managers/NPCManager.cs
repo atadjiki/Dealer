@@ -45,7 +45,6 @@ public class NPCManager : MonoBehaviour
         }
 
         Characters.Add(npc);
-        selectedNPC = npc;
 
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Registered NPC " + npc.name);
         return true;
@@ -100,6 +99,25 @@ public class NPCManager : MonoBehaviour
             }
         }
         
+    }
+
+    public void HandleNPCSelection(NPCComponent NPC)
+    {
+        //if nobody is selected, register
+        if(selectedNPC == null)
+        {
+            CameraManager.Instance.SelectCharacterCamera(NPC);
+            if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.CharacterID);
+            selectedNPC = NPC;
+
+        }
+        else
+        {
+            CameraManager.Instance.UnselectCharacterCamera();
+            if (DebugManager.Instance.LogNPCManager) Debug.Log("UnSelected " + selectedNPC.CharacterID);
+            selectedNPC = null;
+
+        }
     }
 
     public bool IsNPCCurrentlySelected()

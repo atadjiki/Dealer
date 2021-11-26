@@ -38,7 +38,7 @@ public class ObjectSpawner : MonoBehaviour
 
         for(int i = 0; i < group.Size; i++)
         {
-            StartCoroutine(SpawnCharacter(group.ID));
+            StartCoroutine(SpawnCharacter(group.ID, group.BehaviorMode));
 
           yield return new WaitForSeconds(group.Delay_Between);
         }
@@ -46,7 +46,7 @@ public class ObjectSpawner : MonoBehaviour
         yield return null;
     }
 
-    public IEnumerator SpawnCharacter(CharacterConstants.CharacterID ID)
+    public IEnumerator SpawnCharacter(CharacterConstants.CharacterID ID, CharacterConstants.Behavior Mode)
     {
         State = ObjectSpawnerState.Spawning;
 
@@ -65,12 +65,10 @@ public class ObjectSpawner : MonoBehaviour
 
         yield return new WaitWhile(() => npcComp == null);
 
-        if(npcComp != null)
-        {
-            npcComp.CharacterID = ID;
-            npcComp.Initialize();
+        npcComp.CharacterID = ID;
+        npcComp.BehaviorMode = Mode;
+        npcComp.Initialize();
           //  npcComp.SetPositionRotation(RandomLocation, Quaternion.Euler(0, RandomRotation, 0));
-        }
 
         State = ObjectSpawnerState.Spawned;
 

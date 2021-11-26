@@ -69,6 +69,7 @@ public class CharacterComponent : MonoBehaviour
 
         _interaction.MouseEnterEvent += OnMouseEnter;
         _interaction.MouseExitEvent += OnMouseExit;
+        _interaction.MouseClickedEvent += OnMouseClicked;
 
         //idle to tart with 
         SetCurrentState(CharacterConstants.State.Idle);
@@ -79,8 +80,6 @@ public class CharacterComponent : MonoBehaviour
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
-       
-
         yield return null;
     }
 
@@ -90,16 +89,18 @@ public class CharacterComponent : MonoBehaviour
         _navigator.gameObject.transform.rotation = Rotation;
 
     }
-    public void OnMouseEnter()
+    public virtual void OnMouseEnter()
     {
         _charCanvas.Toggle(true);
 
     }
 
-    public void OnMouseExit()
+    public virtual void OnMouseExit()
     {
         _charCanvas.Toggle(false);
     }
+
+    public virtual void OnMouseClicked() { }
 
     private void OnDestroy()
     {
