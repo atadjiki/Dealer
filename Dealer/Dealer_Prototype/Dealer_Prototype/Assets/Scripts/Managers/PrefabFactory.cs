@@ -53,11 +53,11 @@ public class PrefabFactory : MonoBehaviour
     {
         if (ID == CharacterConstants.CharacterID.Male_1)
         {
-            return PrefabFactory.Instance.CreatePrefab(RegistryID.Model_Male_1, this.transform);
+            return CreatePrefab(RegistryID.Model_Male_1, this.transform);
         }
         else if (ID == CharacterConstants.CharacterID.Female_1)
         {
-            return PrefabFactory.Instance.CreatePrefab(RegistryID.Model_Female_1, this.transform);
+            return CreatePrefab(RegistryID.Model_Female_1, this.transform);
         }
 
         return null;

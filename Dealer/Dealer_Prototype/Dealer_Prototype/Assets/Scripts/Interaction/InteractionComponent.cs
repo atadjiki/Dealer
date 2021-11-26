@@ -6,19 +6,19 @@ using UnityEngine;
 public class InteractionComponent : MonoBehaviour
 {
 
-    private string _InteractionID = "";
+    public delegate void OnMouseEnterEvent();
+    public delegate void OnMouseExitEvent();
 
-    public void SetInteractionID(string _id) { _InteractionID = _id; }
+    public OnMouseEnterEvent MouseEnterEvent;
+    public OnMouseExitEvent MouseExitEvent;
 
-    void OnMouseOver()
+    private void OnMouseEnter()
     {
-        //If your mouse hovers over the GameObject with the script attached, output this message
-        Debug.Log("Mouse is over " + _InteractionID);
+        MouseEnterEvent();
     }
 
     void OnMouseExit()
     {
-        //The mouse is no longer hovering over the GameObject so output this message each frame
-        Debug.Log("Mouse is no longer on " + _InteractionID);
+        MouseExitEvent();
     }
 }

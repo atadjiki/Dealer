@@ -9,6 +9,11 @@ public class CharacterCanvas : BillboardCanvas
     [SerializeField] internal TextMeshProUGUI Text_ID;
     [SerializeField] internal TextMeshProUGUI Text_State;
 
+    private void Awake()
+    {
+        Toggle(false);
+    }
+
     public void Set_Text_ID(string text)
     {
         if(Text_ID != null)

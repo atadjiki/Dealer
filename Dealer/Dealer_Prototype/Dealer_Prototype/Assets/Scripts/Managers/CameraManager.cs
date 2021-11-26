@@ -36,7 +36,6 @@ public class CameraManager : MonoBehaviour
 
     private void Build()
     {
-       // CharacterCameraPrefab = Resources.Load<GameObject>(ResourcePaths.CM_Character);
         CharacterCameras = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
 
         _mainCamera = GetComponentInChildren<Camera>();
@@ -49,7 +48,7 @@ public class CameraManager : MonoBehaviour
 
         newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<NavigatorComponent>().transform;
 
-        if(character.gameObject.GetComponent<PlayerComponent>())
+        if(character.gameObject.GetComponent<PlayerController>())
         {
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _playerPriority;
             PlayerCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
@@ -76,7 +75,7 @@ public class CameraManager : MonoBehaviour
 
             Destroy(camera);
         }
-        else if (character.gameObject.GetComponent<PlayerComponent>())
+        else if (character.gameObject.GetComponent<PlayerController>())
         {
             if (PlayerCamera != null)
                 Destroy(PlayerCamera.gameObject);

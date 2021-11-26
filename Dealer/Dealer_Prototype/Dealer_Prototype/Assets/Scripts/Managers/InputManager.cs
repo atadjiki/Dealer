@@ -43,8 +43,8 @@ public class InputManager : MonoBehaviour
                 //if the mouse just hit the ground, move to the specified location
                 if (hit.collider.tag == "Ground")
                 {
-                    if(PlayerComponent.Instance != null)
-                        PlayerComponent.Instance._navigator.MoveToLocation(hit.point);
+                    if(PlayerController.Instance != null)
+                        PlayerController.Instance.PerformMove(hit.point);
                 }
             }
         }
