@@ -6,55 +6,74 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class ObjectSpawner : MonoBehaviour
 {
-
-    public CharacterConstants.CharacterID CharacterID;
+    public List<SpawnGroup> SpawnGroups;
 
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
 
-    public enum ActivationMode { Trigger, AutoActivate, None };
-    public ActivationMode activationMode = ActivationMode.AutoActivate;
+    private Bounds _bounds;
 
     private void Awake()
     {
-        if(activationMode == ActivationMode.AutoActivate)
+        BoxCollider collider = GetComponent<BoxCollider>();
+        _bounds = collider.bounds;
+
+        if(State == ObjectSpawnerState.WaitingToSpawn)
         {
-            if(State == ObjectSpawnerState.WaitingToSpawn)
-            {
-                SpawnCharacter(CharacterID);
-            }
+            ProcessSpawnGroups();
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void ProcessSpawnGroups()
     {
-        if (activationMode == ActivationMode.Trigger)
+        foreach (SpawnGroup spawnGroup in SpawnGroups)
         {
-            if (State == ObjectSpawnerState.WaitingToSpawn)
-            {
-                SpawnCharacter(CharacterID);
-            }
+            StartCoroutine(ProcessSpawnGroup(spawnGroup));
         }
     }
 
-    public void SpawnCharacter(CharacterConstants.CharacterID ID)
+    private IEnumerator ProcessSpawnGroup(SpawnGroup group)
+    {
+        yield return new WaitForSeconds(group.Initial_Delay);
+
+        for(int i = 0; i < group.Size; i++)
+        {
+            StartCoroutine(SpawnCharacter(group.ID));
+
+          yield return new WaitForSeconds(group.Delay_Between);
+        }
+
+        yield return null;
+    }
+
+    public IEnumerator SpawnCharacter(CharacterConstants.CharacterID ID)
     {
         State = ObjectSpawnerState.Spawning;
 
         Debug.Log("Spawning character - " + ID.ToString());
 
-        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, this.transform);
+        Vector3 RandomLocation;
 
+        RandomLocation.x = Random.Range(_bounds.min.x, _bounds.max.x);
+        RandomLocation.y = this.transform.position.y;
+        RandomLocation.z = Random.Range(_bounds.min.z, _bounds.max.z);
+
+        float RandomRotation = Random.Range(0, 360);
+
+        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, this.transform);
         NPCComponent npcComp = NPC.GetComponent<NPCComponent>();
+
+        yield return new WaitWhile(() => npcComp == null);
 
         if(npcComp != null)
         {
             npcComp.CharacterID = ID;
             npcComp.Initialize();
+          //  npcComp.SetPositionRotation(RandomLocation, Quaternion.Euler(0, RandomRotation, 0));
         }
 
         State = ObjectSpawnerState.Spawned;
 
+        yield return null;
     }
-
 }

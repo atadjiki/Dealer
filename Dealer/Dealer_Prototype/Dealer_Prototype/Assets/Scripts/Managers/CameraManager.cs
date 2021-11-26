@@ -53,7 +53,7 @@ public class CameraManager : MonoBehaviour
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _playerPriority;
             PlayerCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
         }
-        else if(character.gameObject.GetComponent<NPCComponent>())
+        else if(character.gameObject.GetComponent<NPCComponent>() && CharacterCameras.ContainsKey(character) == false)
         {
             newCamera.GetComponent<CinemachineVirtualCamera>().Priority = _npcPriority;
             CharacterCameras.Add(character, newCamera.GetComponent<CinemachineVirtualCamera>());

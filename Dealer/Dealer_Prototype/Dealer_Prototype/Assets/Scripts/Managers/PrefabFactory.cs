@@ -43,10 +43,10 @@ public class PrefabFactory : MonoBehaviour
         return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), transform);
     }
 
-    public GameObject CreatePrefab(RegistryID ID, Vector3 location, Quaternion rotation)
+    public GameObject CreatePrefab(RegistryID ID, Vector3 location, Quaternion rotation, Transform parent)
     {
 
-        return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), location, rotation, null);
+        return Instantiate<GameObject>(GetPrefabFromRegistryID(ID), location, rotation, parent);
     }
 
     public GameObject GetCharacterPrefab(CharacterConstants.CharacterID ID)

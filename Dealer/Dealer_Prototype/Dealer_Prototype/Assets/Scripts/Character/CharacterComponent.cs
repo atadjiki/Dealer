@@ -84,6 +84,12 @@ public class CharacterComponent : MonoBehaviour
         yield return null;
     }
 
+    public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
+    {
+        _navigator.gameObject.transform.position = Position;
+        _navigator.gameObject.transform.rotation = Rotation;
+
+    }
     public void OnMouseEnter()
     {
         _charCanvas.Toggle(true);
