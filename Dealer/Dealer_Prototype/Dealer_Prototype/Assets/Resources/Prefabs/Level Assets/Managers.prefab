@@ -365,7 +365,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1156455232}
-  - component: {fileID: 1156455231}
   m_Layer: 0
   m_Name: DB Manager
   m_TagString: Untagged
@@ -387,25 +386,6 @@ Transform:
   m_Father: {fileID: 7247307076131792844}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1156455231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156455230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1705125264, guid: 8382d7f8352b70544aa11f6729f875f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  databaseFile: {fileID: 4900000, guid: 7d6f74cc0b9834a8abebfed81da60a58, type: 3}
-  overrideBasePath: 
-  overridePathMode: 0
-  changeWorkingName: 1
-  workingName: StaticDatabase.sqlite
-  overwriteIfExists: 0
-  debugTrace: 1
 --- !u!1 &1929991795
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,6 +769,7 @@ MonoBehaviour:
   LogAStar: 0
   LogNavigator: 1
   LogNPCManager: 0
+  LogDatabase: 0
   _astarPath: {fileID: 7247307076528436471}
 --- !u!1 &7247307076007174492
 GameObject:

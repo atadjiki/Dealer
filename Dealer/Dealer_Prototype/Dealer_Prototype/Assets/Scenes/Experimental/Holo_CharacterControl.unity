@@ -601,7 +601,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1156455230, guid: e16f673adf7ca481495525ca17e867e7, type: 3}
   m_PrefabInstance: {fileID: 7247307076026234326}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1156455233
+--- !u!114 &1156455232
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -613,6 +613,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812eb8705d9d040e2b098cbca5e05306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1156455233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156455230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1705125264, guid: 8382d7f8352b70544aa11f6729f875f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  databaseFile: {fileID: 4900000, guid: 41049352500c04e0fb446a229f836499, type: 3}
+  overrideBasePath: 
+  overridePathMode: 0
+  changeWorkingName: 0
+  workingName: StaticDatabase.sqlite
+  overwriteIfExists: 0
+  debugTrace: 1
 --- !u!1 &1275810116
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,9 +769,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1156455231, guid: e16f673adf7ca481495525ca17e867e7, type: 3}
-      propertyPath: debugTrace
-      value: 0
+    - target: {fileID: 7247307075405043901, guid: e16f673adf7ca481495525ca17e867e7, type: 3}
+      propertyPath: LogDatabase
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7247307076131792844, guid: e16f673adf7ca481495525ca17e867e7, type: 3}
       propertyPath: m_RootOrder

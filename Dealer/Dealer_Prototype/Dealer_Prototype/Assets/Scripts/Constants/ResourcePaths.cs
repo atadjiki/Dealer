@@ -5,6 +5,7 @@ namespace Constants
         Player,
         Navigator,
         NavPoint,
+        Interaction,
         NPC,
         Model_Male_1,
         Model_Female_1,

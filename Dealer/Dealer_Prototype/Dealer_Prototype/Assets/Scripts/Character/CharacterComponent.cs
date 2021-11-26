@@ -9,6 +9,7 @@ public class CharacterComponent : MonoBehaviour
     internal Animator _animator;
     internal NavigatorComponent _navigator;
     internal CharacterCanvas _charCanvas;
+    internal InteractionComponent _interaction;
 
     [Header("Character ID")]
     [SerializeField] internal CharacterConstants.CharacterID CharacterID;
@@ -31,6 +32,9 @@ public class CharacterComponent : MonoBehaviour
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
+
+        GameObject InteractionPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Interaction, NavigtorPrefab.transform);
+        _interaction = GetComponent<InteractionComponent>();
 
         //setup character model and attach to navigator
         GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(CharacterID);
