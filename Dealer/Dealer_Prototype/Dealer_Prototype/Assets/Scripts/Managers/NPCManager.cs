@@ -112,6 +112,11 @@ public class NPCManager : MonoBehaviour
         {
             PossessNPC(NPC);
         }
+        else if(selectedNPC != NPC)
+        {
+            UnpossessNPC();
+            PossessNPC(NPC);
+        }
         else
         {
             UnpossessNPC();

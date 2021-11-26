@@ -33,7 +33,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void Update()
     {
-        if (DebugManager.Instance.LogNavigator && pathRenderer != null && _Seeker != null && parentCharacter != null)
+        if (NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
             if (parentCharacter.GetCurrentState() == Constants.CharacterConstants.State.Moving)
             {
@@ -130,7 +130,7 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-        if (DebugManager.Instance.LogNavigator)
+        if (NPCManager.Instance.GetSelectedNPC() == parentCharacter)
             SpawnNavPointPrefab(Destination);
 
         parentCharacter.OnNewDestination(Destination);
