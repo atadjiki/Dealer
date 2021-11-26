@@ -10,12 +10,11 @@ public class CameraManager : MonoBehaviour
 
     public static CameraManager Instance { get { return _instance; } }
 
-    private Camera _mainCamera;
-
     private Dictionary<CharacterComponent, CinemachineVirtualCamera> CharacterCameras;
 
+    private CinemachineVirtualCamera OverheadCamera;
+
     private int _npcPriority = 0;
-    private int _defaultPriority = 15;
     private int _selectedPriority = 20;
 
     private void Awake()
@@ -35,8 +34,7 @@ public class CameraManager : MonoBehaviour
     private void Build()
     {
         CharacterCameras = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
-
-        _mainCamera = GetComponentInChildren<Camera>();
+        OverheadCamera = GetComponentInChildren<OverheadCamera>().GetComponent<CinemachineVirtualCamera>();
     }
 
     public void RegisterCharacterCamera(CharacterComponent character)
@@ -67,11 +65,6 @@ public class CameraManager : MonoBehaviour
 
             Destroy(camera);
         }
-    }
-
-    public Camera GetMainCamera()
-    {
-        return _mainCamera;
     }
 
     public void SelectCharacterCamera(CharacterComponent npc)

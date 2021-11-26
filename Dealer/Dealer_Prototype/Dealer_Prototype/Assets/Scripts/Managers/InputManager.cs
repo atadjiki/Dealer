@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            if(DebugManager.Instance.LogInput) Debug.Log("Pointer click at " + Input.mousePosition);
+            if (DebugManager.Instance.LogInput) Debug.Log("Pointer click at " + Input.mousePosition);
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -43,10 +43,17 @@ public class InputManager : MonoBehaviour
                 //if the mouse just hit the ground, move to the specified location
                 if (hit.collider.tag == "Ground")
                 {
-                    if(PlayerController.Instance != null)
-                        PlayerController.Instance.PerformMove(hit.point);
+                    if (NPCManager.Instance.GetSelectedNPC() != null)
+                    {
+                        NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
+                    }
                 }
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+
         }
     }
 

@@ -76,7 +76,7 @@ public class NPCManager : MonoBehaviour
 
             if(npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
             {
-                if (npc.BehaviorMode == CharacterConstants.Behavior.Wander)
+                if (npc.GetCurrentBehavior() == CharacterConstants.Behavior.Wander)
                 {
                     if (npc.GetLastAction() == CharacterConstants.ActionType.Idle)
                     {
@@ -91,10 +91,14 @@ public class NPCManager : MonoBehaviour
                     }
 
                 }
-                else if (npc.BehaviorMode == CharacterConstants.Behavior.Stationary)
+                else if (npc.GetCurrentBehavior() == CharacterConstants.Behavior.Stationary)
                 {
                     if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
                     npc.PerformAction(CharacterConstants.ActionType.Idle);
+                }
+                else if(npc.GetCurrentBehavior() == CharacterConstants.Behavior.Possesed)
+                {
+                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Possesed");
                 }
             }
         }
@@ -106,18 +110,30 @@ public class NPCManager : MonoBehaviour
         //if nobody is selected, register
         if(selectedNPC == null)
         {
-            CameraManager.Instance.SelectCharacterCamera(NPC);
-            if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.CharacterID);
-            selectedNPC = NPC;
-
+            PossessNPC(NPC);
         }
         else
         {
-            CameraManager.Instance.UnselectCharacterCamera();
-            if (DebugManager.Instance.LogNPCManager) Debug.Log("UnSelected " + selectedNPC.CharacterID);
-            selectedNPC = null;
-
+            UnpossessNPC();
         }
+    }
+
+    private void PossessNPC(NPCComponent NPC)
+    {
+        CameraManager.Instance.SelectCharacterCamera(NPC);
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.CharacterID);
+        selectedNPC = NPC;
+        selectedNPC.SetCurrentBehavior(CharacterConstants.Behavior.Possesed);
+        selectedNPC.GoToIdle();
+    }
+
+    private void UnpossessNPC()
+    {
+        CameraManager.Instance.UnselectCharacterCamera();
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.CharacterID);
+        selectedNPC.SetCurrentBehavior(selectedNPC.GetPreviousBehavior());
+        selectedNPC.GoToIdle();
+        selectedNPC = null;
     }
 
     public bool IsNPCCurrentlySelected()
@@ -128,6 +144,14 @@ public class NPCManager : MonoBehaviour
     public NPCComponent GetSelectedNPC()
     {
         return selectedNPC;
+    }
+
+    public void AttemptMoveOnPossesedNPC(Vector3 Location)
+    {
+        if (selectedNPC != null)
+        {
+            selectedNPC.MoveToLocation(Location);
+        }
     }
 
 }

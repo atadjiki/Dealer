@@ -8,6 +8,7 @@ public class CharacterCanvas : BillboardCanvas
 {
     [SerializeField] internal TextMeshProUGUI Text_ID;
     [SerializeField] internal TextMeshProUGUI Text_State;
+    [SerializeField] internal TextMeshProUGUI Text_Behavior;
 
     private void Awake()
     {
@@ -24,5 +25,11 @@ public class CharacterCanvas : BillboardCanvas
     {
         if (Text_State != null)
             Text_State.text = text;
+    }
+
+    public void Set_Text_Mode(string text)
+    {
+        if (Text_Behavior != null)
+            Text_Behavior.text = text;
     }
 }

@@ -50,7 +50,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         State = ObjectSpawnerState.Spawning;
 
-        Debug.Log("Spawning character - " + ID.ToString());
+        if(DebugManager.Instance.LogSpawner) Debug.Log("Spawning character - " + ID.ToString());
 
         Vector3 RandomLocation;
 
@@ -65,10 +65,7 @@ public class ObjectSpawner : MonoBehaviour
 
         yield return new WaitWhile(() => npcComp == null);
 
-        npcComp.CharacterID = ID;
-        npcComp.BehaviorMode = Mode;
-        npcComp.Initialize();
-          //  npcComp.SetPositionRotation(RandomLocation, Quaternion.Euler(0, RandomRotation, 0));
+        npcComp.Initialize(ID, Mode);
 
         State = ObjectSpawnerState.Spawned;
 

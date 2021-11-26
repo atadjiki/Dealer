@@ -6,17 +6,21 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    internal Animator _animator;
-    internal NavigatorComponent _navigator;
-    internal CharacterCanvas _charCanvas;
-    internal InteractionComponent _interaction;
+    private Animator _animator;
+    private NavigatorComponent _navigator;
+    private CharacterCanvas _charCanvas;
+    private InteractionComponent _interaction;
 
     [Header("Character ID")]
     [SerializeField] internal CharacterConstants.CharacterID CharacterID;
 
     [Header("Character Setup")]
 
-    [SerializeField] internal CharacterConstants.Behavior BehaviorMode = CharacterConstants.Behavior.Wander;
+    private CharacterConstants.Behavior PreviousBehavior = CharacterConstants.Behavior.None;
+    private CharacterConstants.Behavior CurrentBehavior = CharacterConstants.Behavior.None;
+
+    public CharacterConstants.Behavior GetCurrentBehavior() { return CurrentBehavior; }
+    public CharacterConstants.Behavior GetPreviousBehavior() { return PreviousBehavior; }
 
     [Header("Debug")]
 
@@ -28,12 +32,12 @@ public class CharacterComponent : MonoBehaviour
 
     internal float moveRadius = 30;
 
-    internal void Initialize()
+    internal void Initialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
     {
-        StartCoroutine(DoInitialize());
+        StartCoroutine(DoInitialize(_CharacterID, _BehaviorMode));
     }
 
-    internal IEnumerator DoInitialize()
+    internal IEnumerator DoInitialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
     {
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
@@ -79,6 +83,10 @@ public class CharacterComponent : MonoBehaviour
 
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
+
+        CharacterID = _CharacterID;
+
+        SetCurrentBehavior(_BehaviorMode);
 
         yield return null;
     }
@@ -153,13 +161,20 @@ public class CharacterComponent : MonoBehaviour
 
     private void FadeToAnimation(string animation, float time)
     {
-        _animator.CrossFade(animation, time);
+        if(_animator != null) _animator.CrossFade(animation, time);
     }
 
     internal void SetCurrentState(CharacterConstants.State newState)
     {
         CurrentState = newState;
-        _charCanvas.Set_Text_State(CurrentState.ToString());
+        if (_charCanvas != null) _charCanvas.Set_Text_State(CurrentState.ToString());
+    }
+
+    public void SetCurrentBehavior(CharacterConstants.Behavior NewMode)
+    {
+        PreviousBehavior = CurrentBehavior;
+        CurrentBehavior = NewMode;
+        if(_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
     }
 
     public CharacterConstants.State GetCurrentState() { return CurrentState; }
@@ -172,6 +187,16 @@ public class CharacterComponent : MonoBehaviour
     public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
 
     public CharacterConstants.ActionType GetLastAction() { return LastAction; }
+
+    public bool MoveToRandomLocation()
+    {
+        return _navigator.MoveToRandomLocation();
+    }
+
+    public bool MoveToLocation(Vector3 Location)
+    {
+        return _navigator.MoveToLocation(Location);
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()

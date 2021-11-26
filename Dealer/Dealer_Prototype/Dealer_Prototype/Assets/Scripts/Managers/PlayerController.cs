@@ -33,24 +33,4 @@ public class PlayerController : MonoBehaviour
     {
 
     }
-
-    public void PossessCharacter(NPCComponent _NPC)
-    {
-        _possesedCharacter = _NPC;
-    }
-
-    public void UnPossessCharacter()
-    {
-        _possesedCharacter = null;
-    }
-
-    public void PerformMove(Vector3 Location)
-    {
-        if(_possesedCharacter != null)
-        {
-            _possesedCharacter._navigator.MoveToLocation(Location);
-        }
-    }
-
-
 }

@@ -23,7 +23,7 @@ public class NPCComponent : CharacterComponent
             Destroy(this.gameObject);
         }
 
-        if(GetComponentInParent<ObjectSpawner>() == null) Initialize();
+        if(GetComponentInParent<ObjectSpawner>() == null) Destroy(this.gameObject);
     }
 
     private void OnDestroy()
@@ -50,7 +50,7 @@ public class NPCComponent : CharacterComponent
 
         while (true)
         {
-            if (_navigator.MoveToRandomLocation())
+            if (MoveToRandomLocation())
             {
                 yield break;
             }
@@ -65,6 +65,15 @@ public class NPCComponent : CharacterComponent
         yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
 
         SetUpdateState(CharacterConstants.UpdateState.Ready);
+    }
+
+    public void GoToIdle()
+    {
+        if(ActionCoroutine != null) StopCoroutine(ActionCoroutine);
+
+        PerformAction(CharacterConstants.ActionType.Idle);
+
+        ToIdle();
     }
 
     public override void OnDestinationReached(Vector3 destination)
