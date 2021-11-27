@@ -33,7 +33,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void Update()
     {
-        if (NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
+        if (DebugManager.Instance.LogNavigator && NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
             if (parentCharacter.GetCurrentState() == Constants.CharacterConstants.State.Moving)
             {

@@ -12,7 +12,7 @@ namespace Constants
         Managers,
         CharacterCanvas,
         CM_Character,
-        CharacterCameraRig
+        CharacterCameraRig,
+        SelectionComponent
     }
-
 }

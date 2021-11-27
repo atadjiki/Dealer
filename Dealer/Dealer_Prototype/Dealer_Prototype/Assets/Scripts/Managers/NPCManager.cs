@@ -10,7 +10,7 @@ public class NPCManager : MonoBehaviour
     public static NPCManager Instance { get { return _instance; } }
 
     private List<NPCComponent> Characters;
-    private int _popCap = 5;
+    private int _popCap = 20;
 
     private int _updateEveryFrames = 120;
     private int _currentFrames = 0;
@@ -34,6 +34,11 @@ public class NPCManager : MonoBehaviour
     private void Build()
     {
         Characters = new List<NPCComponent>();
+    }
+
+    public bool HasNotExceededPopCap()
+    {
+        return Characters.Count < _popCap;
     }
 
     public bool RegisterNPC(NPCComponent npc)
@@ -125,19 +130,15 @@ public class NPCManager : MonoBehaviour
 
     private void PossessNPC(NPCComponent NPC)
     {
-        CameraManager.Instance.SelectCharacterCamera(NPC);
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.GetID());
         selectedNPC = NPC;
-        selectedNPC.SetCurrentBehavior(CharacterConstants.Behavior.Possesed);
-        selectedNPC.GoToIdle();
+        selectedNPC.PerformSelect();
     }
 
     private void UnpossessNPC()
-    {
-        CameraManager.Instance.UnselectCharacterCamera();
+    { 
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.GetID());
-        selectedNPC.SetCurrentBehavior(selectedNPC.GetPreviousBehavior());
-        selectedNPC.GoToIdle();
+        selectedNPC.PerformUnselect();
         selectedNPC = null;
     }
 
@@ -158,5 +159,4 @@ public class NPCManager : MonoBehaviour
             selectedNPC.MoveToLocation(Location);
         }
     }
-
 }

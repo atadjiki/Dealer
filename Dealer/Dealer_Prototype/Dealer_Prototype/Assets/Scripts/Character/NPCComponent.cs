@@ -102,4 +102,16 @@ public class NPCComponent : CharacterComponent
         NPCManager.Instance.HandleNPCSelection(this);
     }
 
+    public override void PerformSelect()
+    {
+        base.PerformSelect();
+        GoToIdle();
+    }
+
+    public override void PerformUnselect()
+    {
+        base.PerformUnselect();
+        GoToIdle();
+    }
+
 }

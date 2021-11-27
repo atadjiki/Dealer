@@ -43,9 +43,13 @@ public class ObjectSpawner : MonoBehaviour
 
         for(int i = 0; i < group.Size; i++)
         {
-            StartCoroutine(SpawnCharacter(group.ID, group.BehaviorMode));
+            if(NPCManager.Instance.HasNotExceededPopCap())
+            {
+                StartCoroutine(SpawnCharacter(group.ID, group.BehaviorMode));
+            }
 
           yield return new WaitForSeconds(group.Delay_Between);
+
         }
 
         yield return null;

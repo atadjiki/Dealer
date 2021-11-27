@@ -12,6 +12,7 @@ public class CharacterComponent : MonoBehaviour
     private InteractionComponent _interaction;
     private CharacterStateComponent _characterState;
     private CharacterCameraRig _cameraRig;
+    private SelectionComponent _selection;
 
 
     [Header("Character Setup")]
@@ -77,6 +78,11 @@ public class CharacterComponent : MonoBehaviour
         _interaction.MouseExitEvent += OnMouseExit;
         _interaction.MouseClickedEvent += OnMouseClicked;
 
+        GameObject SelectionPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.SelectionComponent, NavigtorPrefab.transform);
+        _selection = SelectionPrefab.GetComponent<SelectionComponent>();
+
+        yield return new WaitWhile(() => _selection == null);
+
         //idle to tart with 
         SetCurrentState(CharacterConstants.State.Idle);
 
@@ -87,6 +93,8 @@ public class CharacterComponent : MonoBehaviour
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
         SetCurrentBehavior(_BehaviorMode);
+
+        _selection.SetUnposessed();
 
         yield return null;
     }
@@ -199,6 +207,20 @@ public class CharacterComponent : MonoBehaviour
     public string GetID()
     {
         return _characterState.GetID();
+    }
+
+    public virtual void PerformSelect()
+    {
+        CameraManager.Instance.SelectCharacterCamera(this);
+        SetCurrentBehavior(CharacterConstants.Behavior.Possesed);
+        _selection.SetPossesed();
+    }
+
+    public virtual void PerformUnselect()
+    {
+        CameraManager.Instance.UnselectCharacterCamera();
+        SetCurrentBehavior(GetPreviousBehavior());
+        _selection.SetUnposessed();
     }
 
 #if UNITY_EDITOR
