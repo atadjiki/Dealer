@@ -42,6 +42,11 @@ public class GameplayCanvas : MonoBehaviour
         Text_Interaction_Tip.text = npc.GetID();
     }
 
+    public void SetInteractionTipText(Interactable interactable)
+    {
+        Text_Interaction_Tip.text = interactable.GetID();
+    }
+
     public void ClearInteractionTipText()
     {
         Text_Interaction_Tip.text = "";
