@@ -11,6 +11,7 @@ public class CharacterComponent : MonoBehaviour
     private CharacterCanvas _charCanvas;
     private InteractionComponent _interaction;
     private CharacterStateComponent _characterState;
+    private CharacterCameraRig _cameraRig;
 
 
     [Header("Character Setup")]
@@ -47,7 +48,10 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitWhile(() => _navigator == null);
 
-        //
+        GameObject CameraRigPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.CharacterCameraRig, NavigtorPrefab.transform);
+        _cameraRig = CameraRigPrefab.GetComponent<CharacterCameraRig>();
+
+        yield return new WaitWhile(() => _cameraRig == null);
 
         //setup character model and attach to navigator
         GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
@@ -56,8 +60,6 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitWhile(() => _animator == null);
 
-        //
-
         //attach a UI canvas to the model 
         GameObject CanvasPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);
         _charCanvas = CanvasPrefab.GetComponent<CharacterCanvas>();
@@ -65,8 +67,6 @@ public class CharacterComponent : MonoBehaviour
         yield return new WaitWhile(() => _charCanvas == null);
 
         _charCanvas.Set_Text_ID(_characterState.GetID());
-
-        ///
 
         GameObject InteractionPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Interaction, NavigtorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();

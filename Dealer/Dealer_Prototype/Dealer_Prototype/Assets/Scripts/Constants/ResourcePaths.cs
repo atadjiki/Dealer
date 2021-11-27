@@ -11,7 +11,8 @@ namespace Constants
         Model_Female_1,
         Managers,
         CharacterCanvas,
-        CM_Character
+        CM_Character,
+        CharacterCameraRig
     }
 
 }

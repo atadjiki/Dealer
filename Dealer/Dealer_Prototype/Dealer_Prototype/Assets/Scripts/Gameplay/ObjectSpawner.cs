@@ -10,6 +10,9 @@ public class ObjectSpawner : MonoBehaviour
 
     public List<SpawnLocation> SpawnLocations;
 
+    public enum SpawnMode { AutoActivate, None };
+    public SpawnMode Mode = SpawnMode.AutoActivate;
+
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
 
@@ -20,7 +23,7 @@ public class ObjectSpawner : MonoBehaviour
         BoxCollider collider = GetComponent<BoxCollider>();
         _bounds = collider.bounds;
 
-        if(State == ObjectSpawnerState.WaitingToSpawn)
+        if(State == ObjectSpawnerState.WaitingToSpawn && Mode == SpawnMode.AutoActivate)
         {
             ProcessSpawnGroups();
         }
