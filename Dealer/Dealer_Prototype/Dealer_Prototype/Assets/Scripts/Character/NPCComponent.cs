@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class NPCComponent : CharacterComponent
 { 
-    [Header("Stations")]
-    public List<CharacterConstants.StationType> AvailableStations;
-
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
 

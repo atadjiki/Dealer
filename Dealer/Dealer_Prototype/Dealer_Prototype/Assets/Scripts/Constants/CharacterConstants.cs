@@ -2,11 +2,12 @@ namespace Constants
 {
     public class CharacterConstants
     {
-        public enum Behavior { Stationary, Wander, Possesed, None };
-        public enum StationType { Conversation, Bar, Leaning, None };
-        public enum UpdateState { Ready, Busy, None };
-        public enum State { Idle, Moving, Interacting, Talking, Unavailable, Sitting };
+        public enum Mode { Stationary, Wander, Possesed, None };
+        public enum Behavior { MoveToRandomLocation, FindInteractable };
         public enum ActionType { Move, Idle, None };
+
+        public enum UpdateState { Ready, Busy, None };
+        public enum State { Idle, Moving, Interacting, Talking, Sitting, Unavailable };
 
         public enum CharacterID
         {

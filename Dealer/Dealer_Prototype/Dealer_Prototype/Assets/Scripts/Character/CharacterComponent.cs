@@ -17,11 +17,18 @@ public class CharacterComponent : MonoBehaviour
 
     [Header("Character Setup")]
 
-    private CharacterConstants.Behavior PreviousBehavior = CharacterConstants.Behavior.None;
-    private CharacterConstants.Behavior CurrentBehavior = CharacterConstants.Behavior.None;
+    private CharacterConstants.Mode PreviousBehavior = CharacterConstants.Mode.None;
+    private CharacterConstants.Mode CurrentBehavior = CharacterConstants.Mode.None;
 
-    public CharacterConstants.Behavior GetCurrentBehavior() { return CurrentBehavior; }
-    public CharacterConstants.Behavior GetPreviousBehavior() { return PreviousBehavior; }
+    public CharacterConstants.Mode GetCurrentBehavior() { return CurrentBehavior; }
+    public CharacterConstants.Mode GetPreviousBehavior() { return PreviousBehavior; }
+
+    //Allowed behaviors
+    [SerializeField] private List<CharacterConstants.Behavior> AllowedBehaviors;
+    [SerializeField] private List<InteractableConstants.InteractableID> AllowedInteractables;
+
+    public List<CharacterConstants.Behavior> GetAllowedBehaviors() { return AllowedBehaviors; }
+    public List<InteractableConstants.InteractableID> GetAllowedInteractables() { return AllowedInteractables; }
 
     [Header("Debug")]
 
@@ -33,15 +40,15 @@ public class CharacterComponent : MonoBehaviour
 
     internal float moveRadius = 30;
 
-    internal void Initialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
+    internal void Initialize(SpawnData spawnData)
     {
-        StartCoroutine(DoInitialize(_CharacterID, _BehaviorMode));
+        StartCoroutine(DoInitialize(spawnData));
     }
 
-    internal IEnumerator DoInitialize(CharacterConstants.CharacterID _CharacterID, CharacterConstants.Behavior _BehaviorMode)
+    internal IEnumerator DoInitialize(SpawnData spawnData)
     {
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
-        _characterState.SetCharacterID(_CharacterID);
+        _characterState.SetCharacterID(spawnData.ID);
 
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform) ;
@@ -92,7 +99,10 @@ public class CharacterComponent : MonoBehaviour
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
-        SetCurrentBehavior(_BehaviorMode);
+        SetCurrentBehavior(spawnData.BehaviorMode);
+
+        AllowedBehaviors = spawnData.AllowedBehaviors;
+        AllowedInteractables = spawnData.AllowedInteractables;
 
         _selection.SetUnposessed();
 
@@ -176,7 +186,7 @@ public class CharacterComponent : MonoBehaviour
         if (_charCanvas != null) _charCanvas.Set_Text_State(CurrentState.ToString());
     }
 
-    public void SetCurrentBehavior(CharacterConstants.Behavior NewMode)
+    public void SetCurrentBehavior(CharacterConstants.Mode NewMode)
     {
         PreviousBehavior = CurrentBehavior;
         CurrentBehavior = NewMode;
@@ -212,7 +222,7 @@ public class CharacterComponent : MonoBehaviour
     public virtual void PerformSelect()
     {
         CameraManager.Instance.SelectCharacterCamera(this);
-        SetCurrentBehavior(CharacterConstants.Behavior.Possesed);
+        SetCurrentBehavior(CharacterConstants.Mode.Possesed);
         _selection.SetPossesed();
     }
 

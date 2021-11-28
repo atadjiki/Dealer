@@ -9,10 +9,12 @@ public class NPCManager : MonoBehaviour
 
     public static NPCManager Instance { get { return _instance; } }
 
-    private List<NPCComponent> Characters;
-    private int _popCap = 20;
+    private List<Interactable> Interactables;
 
-    private int _updateEveryFrames = 120;
+    private List<NPCComponent> Characters;
+    private int _popCap = 10;
+
+    private int _updateEveryFrames = 120*3;
     private int _currentFrames = 0;
 
     private NPCComponent selectedNPC = null;
@@ -33,6 +35,7 @@ public class NPCManager : MonoBehaviour
 
     private void Build()
     {
+        Interactables = new List<Interactable>();
         Characters = new List<NPCComponent>();
     }
 
@@ -51,14 +54,28 @@ public class NPCManager : MonoBehaviour
 
         Characters.Add(npc);
 
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Registered NPC " + npc.name);
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Registered NPC " + npc.GetID());
         return true;
     }
 
     public void UnRegisterNPC(NPCComponent npc)
     {
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unregistered NPC " + npc.name);
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unregistered NPC " + npc.GetID());
         Characters.Remove(npc);
+    }
+
+    public bool RegisterInteractable(Interactable interactable)
+    {
+        Interactables.Add(interactable);
+
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Registered Interactable " + interactable.GetID());
+        return true;
+    }
+
+    public void UnRegisterInteractable(Interactable interactable)
+    {
+        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unregistered Interactable " + interactable.GetID());
+        Interactables.Remove(interactable);
     }
 
     private void Update()
@@ -81,33 +98,84 @@ public class NPCManager : MonoBehaviour
 
             if(npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
             {
-                if (npc.GetCurrentBehavior() == CharacterConstants.Behavior.Wander)
+                if (npc.GetCurrentBehavior() == CharacterConstants.Mode.Wander)
                 {
-                    if (npc.GetLastAction() == CharacterConstants.ActionType.Idle)
-                    {
-                        if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - MoveToRandomPoint");
-                        npc.PerformAction(CharacterConstants.ActionType.Move);
-
-                    }
-                    else if (npc.GetLastAction() == CharacterConstants.ActionType.Move || npc.GetLastAction() == CharacterConstants.ActionType.None)
-                    {
-                        if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
-                        npc.PerformAction(CharacterConstants.ActionType.Idle);
-                    }
-
+                    WanderModeUpdate(npc);
                 }
-                else if (npc.GetCurrentBehavior() == CharacterConstants.Behavior.Stationary)
+                else if (npc.GetCurrentBehavior() == CharacterConstants.Mode.Stationary)
                 {
-                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Idle");
+                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Stationary");
                     npc.PerformAction(CharacterConstants.ActionType.Idle);
                 }
-                else if(npc.GetCurrentBehavior() == CharacterConstants.Behavior.Possesed)
+                else if(npc.GetCurrentBehavior() == CharacterConstants.Mode.Possesed)
                 {
-                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Behavior - Possesed");
+                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Possesed");
                 }
             }
         }
         
+    }
+
+    private void WanderModeUpdate(NPCComponent npc)
+    {
+
+        //what are my available behaviors?
+
+        //what behaviors have i done recently?
+        CharacterConstants.Behavior SelectedBehavior = npc.GetAllowedBehaviors()[Random.Range(0, npc.GetAllowedBehaviors().Count)];
+
+        Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
+        
+        if(SelectedBehavior == CharacterConstants.Behavior.MoveToRandomLocation)
+        {
+            if (npc.GetLastAction() == CharacterConstants.ActionType.Idle)
+            {
+                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Action - MoveToRandomPoint");
+                npc.PerformAction(CharacterConstants.ActionType.Move);
+
+            }
+            else if (npc.GetLastAction() == CharacterConstants.ActionType.Move || npc.GetLastAction() == CharacterConstants.ActionType.None)
+            {
+                if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Action - Idle");
+                npc.PerformAction(CharacterConstants.ActionType.Idle);
+            }
+        }
+        else if(SelectedBehavior == CharacterConstants.Behavior.FindInteractable)
+        {
+            InteractableConstants.InteractableID SelectedInteraction = npc.GetAllowedInteractables()[Random.Range(0, npc.GetAllowedInteractables().Count)];
+
+            if(SelectedInteraction == InteractableConstants.InteractableID.Jukebox)
+            {
+                Interactable jukeBox;
+                if (FindInteractableByID(SelectedInteraction, out jukeBox))
+                {
+                    if (jukeBox != null && jukeBox.HasBeenInteractedWith(npc) == false)
+                    {
+                        jukeBox.Interaction(npc);
+                    }
+                    else
+                    {
+                        Debug.Log(npc.GetID() + " has already interacted with " + jukeBox.GetID());
+                    }
+                }
+            }
+        }
+       
+    }
+
+    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out Interactable result)
+    {
+        foreach(Interactable interactable in Interactables)
+        {
+            if(interactable.GetID() == ID.ToString())
+            {
+                result = interactable;
+                return true;
+            }
+        }
+
+        result = null;
+        return false; 
     }
 
     public void HandleNPCSelection(NPCComponent NPC)
