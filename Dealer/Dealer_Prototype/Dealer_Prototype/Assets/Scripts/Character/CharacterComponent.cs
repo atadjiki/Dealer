@@ -40,7 +40,7 @@ public class CharacterComponent : MonoBehaviour
 
     internal float moveRadius = 30;
 
-    internal void Initialize(SpawnData spawnData)
+    internal virtual void Initialize(SpawnData spawnData)
     {
         StartCoroutine(DoInitialize(spawnData));
     }
@@ -96,15 +96,15 @@ public class CharacterComponent : MonoBehaviour
         //register camera
         CameraManager.Instance.RegisterCharacterCamera(this);
 
-        //ready to begin behaviors
-        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
-
         SetCurrentBehavior(spawnData.BehaviorMode);
 
         AllowedBehaviors = spawnData.AllowedBehaviors;
         AllowedInteractables = spawnData.AllowedInteractables;
 
         _selection.SetUnposessed();
+
+        //ready to begin behaviors
+        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
         yield return null;
     }
@@ -216,7 +216,10 @@ public class CharacterComponent : MonoBehaviour
 
     public string GetID()
     {
-        return _characterState.GetID();
+        if (_interaction != null)
+            return _characterState.GetID();
+        else
+            return "";
     }
 
     public virtual void PerformSelect()

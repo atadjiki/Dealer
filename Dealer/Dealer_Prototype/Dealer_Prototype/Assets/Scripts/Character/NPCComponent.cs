@@ -8,13 +8,10 @@ public class NPCComponent : CharacterComponent
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
 
-    private void Awake()
+    internal override void Initialize(SpawnData spawnData)
     {
-        Build();
-    }
+        base.Initialize(spawnData);
 
-    private void Build()
-    {
         if (NPCManager.Instance.RegisterNPC(this) == false)
         {
             Destroy(this.gameObject);
@@ -41,7 +38,6 @@ public class NPCComponent : CharacterComponent
     private IEnumerator PerformAction_MoveToRandomPoint()
     {
         LastAction = CharacterConstants.ActionType.Move;
-        SetUpdateState(CharacterConstants.UpdateState.Busy);
 
         while (true)
         {
@@ -55,11 +51,8 @@ public class NPCComponent : CharacterComponent
     private IEnumerator PerformAction_Idle()
     {
         LastAction = CharacterConstants.ActionType.Idle;
-        SetUpdateState(CharacterConstants.UpdateState.Busy);
 
         yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
-
-        SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
     public void GoToIdle()
@@ -76,8 +69,6 @@ public class NPCComponent : CharacterComponent
         base.OnDestinationReached(destination);
 
         if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
-
-        SetUpdateState(CharacterConstants.UpdateState.Ready);
     }
 
     public override void OnMouseEnter()

@@ -14,7 +14,6 @@ public class Interactable : MonoBehaviour
     public InteractableConstants.InteractionState GetState() { return CurrentState; }
     public void SetState(InteractableConstants.InteractionState newState) { CurrentState = newState; }
 
-    internal NPCComponent _interactee = null;
     internal HashSet<NPCComponent> _interactedWith;
 
     [SerializeField] internal Transform InteractionTransform;
@@ -28,17 +27,20 @@ public class Interactable : MonoBehaviour
 
     private IEnumerator DoInitialize()
     {
+        _interactedWith = new HashSet<NPCComponent>();
+
+        _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
+
+        yield return new WaitUntil(() => _interactionState != null);
+
+        _interactionState.SetInteractableID(ID);
+
+        SetState(InteractableConstants.InteractionState.Available);
+
         if (NPCManager.Instance.RegisterInteractable(this) == false)
         {
             Destroy(this.gameObject);
         }
-
-        _interactedWith = new HashSet<NPCComponent>();
-
-        _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
-        _interactionState.SetInteractableID(ID);
-
-        SetState(InteractableConstants.InteractionState.Available);
 
         yield return null;
 
@@ -66,21 +68,11 @@ public class Interactable : MonoBehaviour
 
     public virtual void OnMouseClicked() { }
 
-    internal virtual void Interaction(NPCComponent interactee)
-    {
-        SetState(InteractableConstants.InteractionState.Busy);
-
-        StartCoroutine(DoInteraction());
-    }
-
-    internal virtual IEnumerator DoInteraction()
-    {
-        SetState(InteractableConstants.InteractionState.Available);
-        yield return null;
-    }
-
     public string GetID()
     {
-        return _interactionState.GetID();
+        if (_interactionState != null)
+            return _interactionState.GetID();
+        else
+            return "";
     }
 }
