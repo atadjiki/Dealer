@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -336,7 +336,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 267b55bfb0b7d4cdca51655c5ce02df2, type: 2}
+  - {fileID: 2100000, guid: 891c0acdfabfa4a2195df373683803c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -542,6 +542,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: JukeBox
       objectReference: {fileID: 0}
+    - target: {fileID: 5622970193429460868, guid: 67d5907da73fc4befa6da6379d7102f8, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 91c8406fcc26146cdb36a93b70e6c332, type: 2}
     - target: {fileID: 5622970193429460870, guid: 67d5907da73fc4befa6da6379d7102f8, type: 3}
       propertyPath: m_RootOrder
       value: 1
