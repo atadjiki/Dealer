@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Interactable : MonoBehaviour, IInteractionInterface
+public class Interactable : MonoBehaviour, IInteraction
 {
     private InteractableStateComponent _interactionState;
     [SerializeField] private InteractableConstants.InteractableID ID;
@@ -63,7 +63,13 @@ public class Interactable : MonoBehaviour, IInteractionInterface
         GameplayCanvas.Instance.SetInteractionTipText(this);
     }
 
-    public virtual void MouseClick() { }
+    public virtual void MouseClick()
+    {
+        if (NPCManager.Instance.GetSelectedNPC() != null)
+        {
+            NPCManager.Instance.AttemptInteractWithPossesedNPC(this);
+        }
+    }
 
     public string GetID()
     {

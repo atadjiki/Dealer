@@ -45,33 +45,22 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            //if the mouse just hit the ground, move to the specified location
-            if (hit.collider.tag == "Ground")
+            if (DebugManager.Instance.LogInput) Debug.Log("Ray hit ground at " + hit.point);
+
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null)
             {
-                if (DebugManager.Instance.LogInput) Debug.Log("Ray hit ground at " + hit.point);
+                interactionInterface.MouseClick();
+            }
+            //if the mouse just hit the ground, move to the specified location
+            else if (hit.collider.tag == "Ground")
+            {
                 if (NPCManager.Instance.GetSelectedNPC() != null)
                 {
                     NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
                 }
             }
-            else if(hit.collider.gameObject.GetComponent<Interactable>())
-            {
-                Interactable interactable = hit.collider.GetComponent<Interactable>();
 
-                if(interactable != null)
-                {
-                    interactable.MouseClick();
-                }
-            }
-            else if(hit.collider.gameObject.GetComponent<InteractionComponent>())
-            {
-                InteractionComponent interactionComponent = hit.collider.GetComponent<InteractionComponent>();
-
-                if (interactionComponent != null)
-                {
-                    interactionComponent.MouseClick();
-                }
-            }
         }
     }
 
@@ -87,25 +76,11 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            if(hit.collider.GetComponent<Interactable>())
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null)
             {
-                Interactable interactable = hit.collider.GetComponent<Interactable>();
-
-                if (interactable != null)
-                {
-                    interactable.MouseEnter();
-                    mouseEvent = true;
-                }
-            }
-            else if(hit.collider.GetComponent<InteractionComponent>())
-            {
-                InteractionComponent interactionComponent = hit.collider.GetComponent<InteractionComponent>();
-
-                if (interactionComponent != null)
-                {
-                    interactionComponent.MouseEnter();
-                    mouseEvent = true;
-                }
+                interactionInterface.MouseEnter();
+                mouseEvent = true;
             }
         }
 

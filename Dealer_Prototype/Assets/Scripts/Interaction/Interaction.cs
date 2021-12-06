@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractionInterface
+public interface IInteraction
 {
     public abstract void MouseClick();
 

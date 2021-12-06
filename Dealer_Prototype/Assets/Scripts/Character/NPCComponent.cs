@@ -102,4 +102,27 @@ public class NPCComponent : CharacterComponent
         GoToIdle();
     }
 
+
+    public bool InteractWith(Interactable interactable)
+    {
+        if (interactable != null && interactable.HasBeenInteractedWith(this) == false)
+        {
+            InteractWithJukebox interactionscript
+                = NPCManager.Instance.CreateBehaviorObject(this.GetID() + " - " + interactable.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
+
+            NPCBehaviorScript.BehaviorData data = new NPCBehaviorScript.BehaviorData
+            {
+                NPC = this,
+                Interactable = interactable,
+                Behavior = interactionscript
+            };
+
+            interactionscript.BeginBehavior(data);
+
+            return true;
+        }
+
+        return false;
+    }
+
 }

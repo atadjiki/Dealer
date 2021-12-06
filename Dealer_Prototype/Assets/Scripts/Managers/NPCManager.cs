@@ -173,7 +173,7 @@ public class NPCManager : MonoBehaviour
        
     }
 
-    private GameObject CreateBehaviorObject(string name)
+    public GameObject CreateBehaviorObject(string name)
     {
         GameObject behaviorObject = new GameObject(name);
         behaviorObject.transform.parent = this.transform;
@@ -248,6 +248,14 @@ public class NPCManager : MonoBehaviour
         if (selectedNPC != null)
         {
             selectedNPC.MoveToLocation(Location);
+        }
+    }
+
+    public void AttemptInteractWithPossesedNPC(Interactable interactable)
+    {
+        if(selectedNPC != null)
+        {
+            selectedNPC.InteractWith(interactable);
         }
     }
 }

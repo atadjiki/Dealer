@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class InteractionComponent : MonoBehaviour, IInteractionInterface
+public class InteractionComponent : MonoBehaviour, IInteraction
 {
 
     public delegate void OnMouseEnterEvent();
