@@ -5,19 +5,14 @@ using UnityEngine;
 public class Jukebox : Interactable
 {
 
-    public override void OnMouseEnter()
+    public override void MouseEnter()
     {
-        base.OnMouseEnter();
+        base.MouseEnter();
     }
 
-    public override void OnMouseExit()
+    public override void MouseClick()
     {
-        base.OnMouseExit();
-    }
-
-    public override void OnMouseClicked()
-    {
-        base.OnMouseClicked();
+        base.MouseClick();
 
         Debug.Log("Clicked on " + GetID());
     }

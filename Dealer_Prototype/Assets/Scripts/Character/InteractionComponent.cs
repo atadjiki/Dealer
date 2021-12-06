@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class InteractionComponent : MonoBehaviour
+public class InteractionComponent : MonoBehaviour, IInteractionInterface
 {
 
     public delegate void OnMouseEnterEvent();
@@ -14,18 +14,13 @@ public class InteractionComponent : MonoBehaviour
     public OnMouseExitEvent MouseExitEvent;
     public OnMouseClickedEvent MouseClickedEvent;
 
-    private void OnMouseEnter()
+    public virtual void MouseEnter()
     {
-        if(MouseEnterEvent != null) MouseEnterEvent();
+        if (MouseEnterEvent != null) MouseEnterEvent();
     }
 
-    void OnMouseExit()
+    public virtual void MouseClick()
     {
-        if(MouseExitEvent != null) MouseExitEvent();
-    }
-
-    private void OnMouseDown()
-    {
-        if(MouseClickedEvent != null) MouseClickedEvent();
+        if (MouseClickedEvent != null) MouseClickedEvent();
     }
 }

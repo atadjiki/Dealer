@@ -28,7 +28,7 @@ public class NPCBehaviorScript : MonoBehaviour
         data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
 
-        Debug.Log("Begin Behavior - " + this.name);
+        if(DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
     }
 
     protected virtual IEnumerator Behavior()
@@ -39,7 +39,7 @@ public class NPCBehaviorScript : MonoBehaviour
 
     protected virtual void EndBehavior()
     {
-        Debug.Log("End Behavior - " + this.name);
+        if (DebugManager.Instance.LogBehavior) Debug.Log("End Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Completed);
         _data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
 

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Interactable : MonoBehaviour
+public class Interactable : MonoBehaviour, IInteractionInterface
 {
     private InteractableStateComponent _interactionState;
     [SerializeField] private InteractableConstants.InteractableID ID;
@@ -56,17 +57,13 @@ public class Interactable : MonoBehaviour
         return _interactedWith.Contains(npc);
     }
 
-    public virtual void OnMouseEnter()
+
+    public virtual void MouseEnter()
     {
         GameplayCanvas.Instance.SetInteractionTipText(this);
     }
 
-    public virtual void OnMouseExit()
-    {
-        GameplayCanvas.Instance.ClearInteractionTipText();
-    }
-
-    public virtual void OnMouseClicked() { }
+    public virtual void MouseClick() { }
 
     public string GetID()
     {
@@ -75,4 +72,5 @@ public class Interactable : MonoBehaviour
         else
             return "";
     }
+
 }

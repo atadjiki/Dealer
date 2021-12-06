@@ -1,0 +1,64 @@
+{
+    "name": "PlayerInputActions",
+    "maps": [
+        {
+            "name": "Mouse",
+            "id": "e94f4ea3-c475-48c1-a410-2efad53976dd",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "2bccbfbf-27d8-4aac-a193-a25b8a3f15b4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Aim",
+                    "type": "Value",
+                    "id": "ac7c791c-86c2-4d1d-8727-5ab3b8d7d359",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "00117c72-e4eb-47c6-91bb-8974ae843a1e",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ControlScheme",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae624fc7-3a51-4732-849d-49ec0fc7e051",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ControlScheme",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "ControlScheme",
+            "bindingGroup": "ControlScheme",
+            "devices": [
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

@@ -18,6 +18,7 @@ public class DebugManager : MonoBehaviour
     public bool LogDatabase = false;
     public bool LogSpawner = false;
     public bool LogCameraManager = false;
+    public bool LogBehavior = false;
 
     public AstarPath _astarPath;
 
