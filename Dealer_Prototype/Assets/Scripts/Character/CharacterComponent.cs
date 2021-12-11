@@ -225,14 +225,14 @@ public class CharacterComponent : MonoBehaviour
     public virtual void PerformSelect()
     {
         CameraManager.Instance.SelectCharacterCamera(this);
-        SetCurrentBehavior(CharacterConstants.Mode.Possesed);
+     //   SetCurrentBehavior(CharacterConstants.Mode.Possesed);
         _selection.SetPossesed();
     }
 
     public virtual void PerformUnselect()
     {
         CameraManager.Instance.UnselectCharacterCamera();
-        SetCurrentBehavior(GetPreviousBehavior());
+   //     SetCurrentBehavior(GetPreviousBehavior());
         _selection.SetUnposessed();
     }
 
