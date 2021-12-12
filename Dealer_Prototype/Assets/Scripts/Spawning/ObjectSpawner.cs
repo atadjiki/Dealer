@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
 public class ObjectSpawner : MonoBehaviour
 {
     public List<SpawnGroup> SpawnGroups;
@@ -16,13 +15,8 @@ public class ObjectSpawner : MonoBehaviour
     public enum ObjectSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private ObjectSpawnerState State = ObjectSpawnerState.WaitingToSpawn;
 
-    private Bounds _bounds;
-
     private void Awake()
     {
-        BoxCollider collider = GetComponent<BoxCollider>();
-        _bounds = collider.bounds;
-
         if(State == ObjectSpawnerState.WaitingToSpawn && Mode == SpawnMode.AutoActivate)
         {
             ProcessSpawnGroups();

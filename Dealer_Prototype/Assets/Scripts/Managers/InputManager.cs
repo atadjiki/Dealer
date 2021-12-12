@@ -47,19 +47,19 @@ public class InputManager : MonoBehaviour
         {
             if (DebugManager.Instance.LogInput) Debug.Log("Ray hit ground at " + hit.point);
 
-            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
-            if (interactionInterface != null)
-            {
-                interactionInterface.MouseClick();
-            }
-            //if the mouse just hit the ground, move to the specified location
-            else if (hit.collider.tag == "Ground")
-            {
-                if (NPCManager.Instance.GetSelectedNPC() != null)
-                {
-                    NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
-                }
-            }
+            //IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            //if (interactionInterface != null)
+            //{
+            //    interactionInterface.MouseClick();
+            //}
+            ////if the mouse just hit the ground, move to the specified location
+            //else if (hit.collider.tag == "Ground")
+            //{
+            //    if (NPCManager.Instance.GetSelectedNPC() != null)
+            //    {
+            //        NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
+            //    }
+            //}
 
         }
     }

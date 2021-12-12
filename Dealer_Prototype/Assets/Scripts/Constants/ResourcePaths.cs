@@ -53,7 +53,7 @@ namespace Constants
                     PathString = "Prefabs/Characters/NPC_Empty";
                     return true;
                 case RegistryID.Player:
-                    PathString = "Prefabs/Characters/Player";
+                    PathString = "Prefabs/Characters/Player_Empty";
                     return true;
                 case RegistryID.SelectionComponent:
                     PathString = "Prefabs/Components/SelectionComponent";

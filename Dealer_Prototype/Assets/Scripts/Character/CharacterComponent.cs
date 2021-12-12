@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    private Animator _animator;
-    private NavigatorComponent _navigator;
-    private CharacterCanvas _charCanvas;
-    private InteractionComponent _interaction;
-    private CharacterStateComponent _characterState;
-    private CharacterCameraRig _cameraRig;
-    private SelectionComponent _selection;
+    protected Animator _animator;
+    protected NavigatorComponent _navigator;
+    protected CharacterCanvas _charCanvas;
+    protected InteractionComponent _interaction;
+    protected CharacterStateComponent _characterState;
+    protected CharacterCameraRig _cameraRig;
+    protected SelectionComponent _selection;
 
 
     [Header("Character Setup")]
@@ -40,12 +40,15 @@ public class CharacterComponent : MonoBehaviour
 
     internal float moveRadius = 30;
 
-    internal virtual void Initialize(SpawnData spawnData)
+    protected SpawnData spawnData;
+
+    internal virtual void Initialize(SpawnData _spawnData)
     {
-        StartCoroutine(DoInitialize(spawnData));
+        spawnData = _spawnData;
+        StartCoroutine(DoInitialize());
     }
 
-    internal IEnumerator DoInitialize(SpawnData spawnData)
+    internal virtual IEnumerator DoInitialize()
     {
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
         _characterState.SetCharacterID(spawnData.ID);
@@ -66,6 +69,8 @@ public class CharacterComponent : MonoBehaviour
         GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
        // ModelPrefab.transform.parent = NavigtorPrefab.transform;
         _animator = ModelPrefab.GetComponent<Animator>();
+
+        ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 
         yield return new WaitWhile(() => _animator == null);
 
@@ -101,8 +106,6 @@ public class CharacterComponent : MonoBehaviour
 
         AllowedBehaviors = spawnData.AllowedBehaviors;
         AllowedInteractables = spawnData.AllowedInteractables;
-
-        ColorConstants.SetObjectToColor(ModelPrefab, ColorConstants.GetColorByTeam(_characterState.GetTeam()));
 
         _selection.SetUnposessed();
 
@@ -229,14 +232,14 @@ public class CharacterComponent : MonoBehaviour
     {
         CameraManager.Instance.SelectCharacterCamera(this);
      //   SetCurrentBehavior(CharacterConstants.Mode.Possesed);
-        _selection.SetPossesed();
+       // _selection.SetPossesed();
     }
 
     public virtual void PerformUnselect()
     {
         CameraManager.Instance.UnselectCharacterCamera();
    //     SetCurrentBehavior(GetPreviousBehavior());
-        _selection.SetUnposessed();
+      //  _selection.SetUnposessed();
     }
 
 #if UNITY_EDITOR

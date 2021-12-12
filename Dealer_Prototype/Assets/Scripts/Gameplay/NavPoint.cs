@@ -10,9 +10,9 @@ public class NavPoint : MonoBehaviour
 
     private void Awake()
     {
-       StartCoroutine(Countdown());
+        StartCoroutine(Countdown());
 
-        ColorConstants.SetObjectToColor(this.gameObject, ColorConstants.NavPoint);
+        ColorManager.Instance.SetObjectToColor(this.gameObject, ColorManager.Instance.GetNavPointColor());
     }
 
     public IEnumerator Countdown()
