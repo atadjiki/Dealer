@@ -251,7 +251,7 @@ Transform:
   m_Children:
   - {fileID: 1400445532}
   m_Father: {fileID: 7247307076131792844}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &696257249
 GameObject:
@@ -432,69 +432,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1156455230
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1156455232}
-  - component: {fileID: 145151975}
-  - component: {fileID: 145151976}
-  m_Layer: 0
-  m_Name: DB Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1156455232
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156455230}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7247307076131792844}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &145151975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156455230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 812eb8705d9d040e2b098cbca5e05306, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &145151976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156455230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1705125264, guid: 8382d7f8352b70544aa11f6729f875f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  databaseFile: {fileID: 4900000, guid: 41049352500c04e0fb446a229f836499, type: 3}
-  overrideBasePath: 
-  overridePathMode: 0
-  changeWorkingName: 0
-  workingName: 
-  overwriteIfExists: 1
-  debugTrace: 0
 --- !u!1 &1400445531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,7 +1478,6 @@ Transform:
   - {fileID: 7247307075405043900}
   - {fileID: 7247307074996430411}
   - {fileID: 1929991796}
-  - {fileID: 1156455232}
   - {fileID: 409774790}
   m_Father: {fileID: 0}
   m_RootOrder: 0

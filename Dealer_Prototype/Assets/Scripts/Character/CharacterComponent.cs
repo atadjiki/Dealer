@@ -101,6 +101,8 @@ public class CharacterComponent : MonoBehaviour
         AllowedBehaviors = spawnData.AllowedBehaviors;
         AllowedInteractables = spawnData.AllowedInteractables;
 
+        ColorConstants.SetObjectToColor(ModelPrefab, ColorConstants.Team_NPC);
+
         _selection.SetUnposessed();
 
         //ready to begin behaviors

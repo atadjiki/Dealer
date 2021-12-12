@@ -29,7 +29,7 @@ public class PrefabFactory : MonoBehaviour
     private GameObject GetPrefabFromRegistryID(RegistryID ID)
     {
         string FilePath;
-        if(DatabaseManager.Instance.GetResourcePathFromRegistryID(ID, out FilePath))
+        if(Registry.GetResourcePathFromRegistryID(ID, out FilePath))
         {
             GameObject PrefabObject = Resources.Load<GameObject>(FilePath);
             return PrefabObject;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class NavPoint : MonoBehaviour
@@ -10,6 +11,8 @@ public class NavPoint : MonoBehaviour
     private void Awake()
     {
        StartCoroutine(Countdown());
+
+        ColorConstants.SetObjectToColor(this.gameObject, ColorConstants.NavPoint);
     }
 
     public IEnumerator Countdown()
