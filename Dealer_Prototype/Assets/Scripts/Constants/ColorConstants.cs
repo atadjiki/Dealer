@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class ColorConstants 
@@ -11,6 +12,23 @@ public class ColorConstants
 
     public static string NavPoint = "#00FF14";
     public static string Selection = "#808080";
+
+    public static string GetColorByTeam(CharacterConstants.Team Team)
+    {
+        switch(Team)
+        {
+            case CharacterConstants.Team.Player:
+                return Team_Player;
+            case CharacterConstants.Team.Ally:
+                return Team_Ally;
+            case CharacterConstants.Team.NPC:
+                return Team_NPC;
+            case CharacterConstants.Team.Enemy:
+                return Team_Enemy;
+        }
+
+        return "ERROR";
+    }
 
     public static void SetObjectToColor(GameObject obj, string hexcode)
     {

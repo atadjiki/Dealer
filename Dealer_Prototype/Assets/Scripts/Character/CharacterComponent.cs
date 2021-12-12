@@ -49,6 +49,7 @@ public class CharacterComponent : MonoBehaviour
     {
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
         _characterState.SetCharacterID(spawnData.ID);
+        _characterState.SetTeam(spawnData.Team);
 
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform) ;
@@ -101,7 +102,7 @@ public class CharacterComponent : MonoBehaviour
         AllowedBehaviors = spawnData.AllowedBehaviors;
         AllowedInteractables = spawnData.AllowedInteractables;
 
-        ColorConstants.SetObjectToColor(ModelPrefab, ColorConstants.Team_NPC);
+        ColorConstants.SetObjectToColor(ModelPrefab, ColorConstants.GetColorByTeam(_characterState.GetTeam()));
 
         _selection.SetUnposessed();
 

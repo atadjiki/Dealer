@@ -9,6 +9,9 @@ namespace Constants
         public enum UpdateState { Ready, Busy, None };
         public enum State { Idle, Moving, Interacting, Talking, Sitting, Unavailable };
 
+
+        public enum Team { Player, NPC, Ally, Enemy };
+
         public enum CharacterID
         {
             Male_1,
