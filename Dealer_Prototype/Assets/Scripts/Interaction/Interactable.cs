@@ -65,10 +65,11 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public virtual void MouseClick()
     {
-        if (NPCManager.Instance.GetSelectedNPC() != null)
-        {
-            NPCManager.Instance.AttemptInteractWithPossesedNPC(this);
-        }
+        //if (NPCManager.Instance.GetSelectedNPC() != null)
+        //{
+        //    NPCManager.Instance.AttemptInteractWithPossesedNPC(this);
+        //}
+        PlayerComponent.Instance.InteractWith(this);
     }
 
     public string GetID()

@@ -304,4 +304,26 @@ public class CameraManager : MonoBehaviour
     {
         return GetVectorByDirection(_currentDirection);
     }
+
+    public void FocusOnCharacter(CharacterComponent character)
+    {
+        CameraController.Instance.AttachTo(character.GetComponentInChildren<NavigatorComponent>().transform);
+
+        foreach(OverheadCameraData data in OverheadCameras)
+        {
+            data.cam.Follow = character.transform;
+            data.cam.LookAt = character.transform;
+        }
+    }
+
+    public void UnFocus()
+    {
+        foreach(OverheadCameraData data in OverheadCameras)
+        {
+            CameraController.Instance.Release();
+
+            data.cam.Follow = CameraController.Instance.transform;
+            data.cam.LookAt = CameraController.Instance.transform;
+        }
+    }
 }

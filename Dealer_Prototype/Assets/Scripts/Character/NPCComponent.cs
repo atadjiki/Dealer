@@ -86,20 +86,18 @@ public class NPCComponent : CharacterComponent
     public override void OnMouseClicked()
     {
         base.OnMouseClicked();
-
-        NPCManager.Instance.HandleNPCSelection(this);
     }
 
     public override void PerformSelect()
     {
         base.PerformSelect();
-       // GoToIdle();
+        GoToIdle();
     }
 
     public override void PerformUnselect()
     {
         base.PerformUnselect();
-      //  GoToIdle();
+        GoToIdle();
     }
 
 

@@ -5,7 +5,23 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 public class PlayerComponent : NPCComponent
-{ 
+{
+    private static PlayerComponent _instance;
+
+    public static PlayerComponent Instance { get { return _instance; } }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     internal override IEnumerator DoInitialize()
     {
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
@@ -57,11 +73,29 @@ public class PlayerComponent : NPCComponent
         //idle to tart with 
         SetCurrentState(CharacterConstants.State.Idle);
 
-        //register camera
-        CameraManager.Instance.RegisterCharacterCamera(this);
-
         _selection.SetPossesed();
 
         yield return null;
+    }
+
+    public override void PerformSelect()
+    {
+        CameraManager.Instance.FocusOnCharacter(this);
+        SetCurrentBehavior(CharacterConstants.Mode.Possesed);
+        _selection.SetPossesed();
+        GoToIdle();
+    }
+
+    public override void PerformUnselect()
+    {
+        CameraManager.Instance.UnFocus();
+        SetCurrentBehavior(GetPreviousBehavior());
+        _selection.SetUnposessed();
+        GoToIdle();
+    }
+
+    public override void OnMouseClicked()
+    {
+        NPCManager.Instance.HandleNPCSelection(this);
     }
 }

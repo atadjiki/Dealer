@@ -57,17 +57,13 @@ public class InputManager : MonoBehaviour
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
             if (interactionInterface != null)
             {
-                //interactionInterface.MouseClick();
+                interactionInterface.MouseClick();
             }
             //if the mouse just hit the ground, move to the specified location
             else if (hit.collider.tag == "Ground")
             {
-                //if (NPCManager.Instance.GetSelectedNPC() != null)
-                //{
-                //    NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
-                //}
+                PlayerComponent.Instance.MoveToLocation(hit.point);
             }
-
         }
     }
 
