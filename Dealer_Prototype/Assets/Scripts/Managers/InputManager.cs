@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
 
     private Vector2 _screenMousePos;
 
+    public enum InputDirection { Up, Down, Left, Right };
+
     public static InputManager Instance { get { return _instance; } }
 
     private void Awake()
@@ -29,11 +31,16 @@ public class InputManager : MonoBehaviour
     {
         inputActions = new PlayerInputActions();
 
-        inputActions.Mouse.Select.performed += ctx => OnMouseActionPerformed(ctx);
+        inputActions.Default.Select.performed += ctx => OnMouseActionPerformed(ctx);
+
+        inputActions.Default.RotateClockwise.performed += ctx => CameraManager.Instance.RotateClockwise();
+        inputActions.Default.RotateCounterClockwise.performed += ctx => CameraManager.Instance.RotateCounterClockwise();
+
+        inputActions.Default.ZoomOut.performed += ctx => CameraManager.Instance.ZoomOut();
+        inputActions.Default.ZoomIn.performed += ctx => CameraManager.Instance.ZoomIn();
 
         inputActions.Enable();
     }
-
 
     private void OnMouseActionPerformed(InputAction.CallbackContext context)
     {
@@ -47,26 +54,52 @@ public class InputManager : MonoBehaviour
         {
             if (DebugManager.Instance.LogInput) Debug.Log("Ray hit ground at " + hit.point);
 
-            //IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
-            //if (interactionInterface != null)
-            //{
-            //    interactionInterface.MouseClick();
-            //}
-            ////if the mouse just hit the ground, move to the specified location
-            //else if (hit.collider.tag == "Ground")
-            //{
-            //    if (NPCManager.Instance.GetSelectedNPC() != null)
-            //    {
-            //        NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
-            //    }
-            //}
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null)
+            {
+                //interactionInterface.MouseClick();
+            }
+            //if the mouse just hit the ground, move to the specified location
+            else if (hit.collider.tag == "Ground")
+            {
+                //if (NPCManager.Instance.GetSelectedNPC() != null)
+                //{
+                //    NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
+                //}
+            }
 
         }
     }
 
     private void FixedUpdate()
     {
-        _screenMousePos = inputActions.Mouse.Aim.ReadValue<Vector2>();
+        HandleKeyBoard();
+        HandleMouse();
+    }
+
+    private void HandleKeyBoard()
+    {
+        if(inputActions.Default.Up.ReadValue<float>() > 0)
+        {
+            CameraController.Instance.MoveInDirection(InputDirection.Up);
+        }
+        if (inputActions.Default.Down.ReadValue<float>() > 0)
+        {
+            CameraController.Instance.MoveInDirection(InputDirection.Down);
+        }
+        if (inputActions.Default.Left.ReadValue<float>() > 0)
+        {
+            CameraController.Instance.MoveInDirection(InputDirection.Left);
+        }
+        if (inputActions.Default.Right.ReadValue<float>() > 0)
+        {
+            CameraController.Instance.MoveInDirection(InputDirection.Right);
+        }
+    }
+
+    private void HandleMouse()
+    {
+        _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
 
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
 
@@ -84,7 +117,7 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        if(!mouseEvent)
+        if (!mouseEvent)
         {
             GameplayCanvas.Instance.ClearInteractionTipText();
         }
