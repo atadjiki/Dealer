@@ -107,9 +107,9 @@ public class NPCManager : MonoBehaviour
                     if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Stationary");
                     npc.PerformAction(CharacterConstants.ActionType.Idle);
                 }
-                else if(npc.GetCurrentBehavior() == CharacterConstants.Mode.Possesed)
+                else if(npc.GetCurrentBehavior() == CharacterConstants.Mode.Selected)
                 {
-                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Possesed");
+                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Selected");
                 }
             }
             else if(npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)

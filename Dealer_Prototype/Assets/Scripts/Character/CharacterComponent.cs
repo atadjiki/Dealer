@@ -24,16 +24,16 @@ public class CharacterComponent : MonoBehaviour
     public CharacterConstants.Mode GetPreviousBehavior() { return PreviousBehavior; }
 
     //Allowed behaviors
-    [SerializeField] private List<CharacterConstants.Behavior> AllowedBehaviors;
-    [SerializeField] private List<InteractableConstants.InteractableID> AllowedInteractables;
+    [SerializeField] protected List<CharacterConstants.Behavior> AllowedBehaviors;
+    [SerializeField] protected List<InteractableConstants.InteractableID> AllowedInteractables;
 
     public List<CharacterConstants.Behavior> GetAllowedBehaviors() { return AllowedBehaviors; }
     public List<InteractableConstants.InteractableID> GetAllowedInteractables() { return AllowedInteractables; }
 
     [Header("Debug")]
 
-    [SerializeField] private CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
-    [SerializeField] private CharacterConstants.State CurrentState;
+    [SerializeField] protected CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+    [SerializeField] protected CharacterConstants.State CurrentState;
 
     internal CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
     internal Coroutine ActionCoroutine;
@@ -93,26 +93,12 @@ public class CharacterComponent : MonoBehaviour
 
         GameObject SelectionPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.SelectionComponent, NavigtorPrefab.transform);
         _selection = SelectionPrefab.GetComponent<SelectionComponent>();
+        _selection.SetUnposessed();
 
         yield return new WaitWhile(() => _selection == null);
 
         //idle to tart with 
         SetCurrentState(CharacterConstants.State.Idle);
-
-        //register camera
-        CameraManager.Instance.RegisterCharacterCamera(this);
-
-        SetCurrentBehavior(spawnData.BehaviorMode);
-
-        AllowedBehaviors = spawnData.AllowedBehaviors;
-        AllowedInteractables = spawnData.AllowedInteractables;
-
-        _selection.SetUnposessed();
-
-        //ready to begin behaviors
-        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
-
-        yield return null;
     }
 
     public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
@@ -134,7 +120,7 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnDestroy()
     {
-        CameraManager.Instance.UnRegisterCharacterCamera(this);
+        CharacterCameraManager.Instance.UnRegisterCharacterCamera(this);
     }
 
     public virtual void OnNewDestination(Vector3 destination) { }
@@ -230,14 +216,14 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void PerformSelect()
     {
-        CameraManager.Instance.SelectCharacterCamera(this);
-        SetCurrentBehavior(CharacterConstants.Mode.Possesed);
+        CharacterCameraManager.Instance.SelectCharacterCamera(this);
+        SetCurrentBehavior(CharacterConstants.Mode.Selected);
         _selection.SetPossesed();
     }
 
     public virtual void PerformUnselect()
     {
-        CameraManager.Instance.UnselectCharacterCamera();
+        CharacterCameraManager.Instance.UnselectCharacterCamera();
         SetCurrentBehavior(GetPreviousBehavior());
         _selection.SetUnposessed();
     }

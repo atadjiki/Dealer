@@ -3,13 +3,20 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    private static InputManager _instance;
+    //cursor materials
+    [Header("Cursor Textures")]
+    [SerializeField] private Texture2D Cursor_default;
+    [SerializeField] private Texture2D Cursor_cancel;
+    [SerializeField] private Texture2D Cursor_interaction;
 
+    //
     private PlayerInputActions inputActions;
 
     private Vector2 _screenMousePos;
 
-    public enum InputDirection { Up, Down, Left, Right };
+    //singleton stuff 
+
+    private static InputManager _instance;
 
     public static InputManager Instance { get { return _instance; } }
 
@@ -33,13 +40,53 @@ public class InputManager : MonoBehaviour
 
         inputActions.Default.Select.performed += ctx => OnMouseActionPerformed(ctx);
 
-        inputActions.Default.RotateClockwise.performed += ctx => CameraManager.Instance.RotateClockwise();
-        inputActions.Default.RotateCounterClockwise.performed += ctx => CameraManager.Instance.RotateCounterClockwise();
-
-        inputActions.Default.ZoomOut.performed += ctx => CameraManager.Instance.ZoomOut();
-        inputActions.Default.ZoomIn.performed += ctx => CameraManager.Instance.ZoomIn();
-
         inputActions.Enable();
+    }
+
+
+    private void FixedUpdate()
+    {
+        HandleKeyboard();
+        HandleMouse();
+    }
+
+
+    private void HandleMouse()
+    {
+        _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
+
+        var ray = Camera.main.ScreenPointToRay(_screenMousePos);
+
+        RaycastHit hit = new RaycastHit();
+
+        bool mouseEvent = false;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null)
+            {
+                interactionInterface.MouseEnter();
+                Cursor.SetCursor(Cursor_interaction, new Vector2(Cursor_interaction.width / 2, Cursor_interaction.height / 2), CursorMode.Auto);
+                mouseEvent = true;
+            }
+        }
+
+        if (!mouseEvent)
+        {
+            GameplayCanvas.Instance.ClearInteractionTipText();
+            Cursor.SetCursor(Cursor_default, new Vector2(Cursor_default.width / 2, Cursor_default.height / 2), CursorMode.Auto);
+        }
+    }
+
+    private void HandleKeyboard()
+    {
+        //reading the input:
+        Vector2 InputVector = Vector2.zero;
+        InputVector.x = (-1*inputActions.Default.Left.ReadValue<float>()) + inputActions.Default.Right.ReadValue<float>();
+        InputVector.y = (-1*inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
+
+        CameraFollowTarget.Instance.MoveInDirection(InputVector);
     }
 
     private void OnMouseActionPerformed(InputAction.CallbackContext context)
@@ -62,61 +109,11 @@ public class InputManager : MonoBehaviour
             //if the mouse just hit the ground, move to the specified location
             else if (hit.collider.tag == "Ground")
             {
-                PlayerComponent.Instance.MoveToLocation(hit.point);
-            }
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        HandleKeyBoard();
-        HandleMouse();
-    }
-
-    private void HandleKeyBoard()
-    {
-        if(inputActions.Default.Up.ReadValue<float>() > 0)
-        {
-            CameraController.Instance.MoveInDirection(InputDirection.Up);
-        }
-        if (inputActions.Default.Down.ReadValue<float>() > 0)
-        {
-            CameraController.Instance.MoveInDirection(InputDirection.Down);
-        }
-        if (inputActions.Default.Left.ReadValue<float>() > 0)
-        {
-            CameraController.Instance.MoveInDirection(InputDirection.Left);
-        }
-        if (inputActions.Default.Right.ReadValue<float>() > 0)
-        {
-            CameraController.Instance.MoveInDirection(InputDirection.Right);
-        }
-    }
-
-    private void HandleMouse()
-    {
-        _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
-
-        var ray = Camera.main.ScreenPointToRay(_screenMousePos);
-
-        RaycastHit hit = new RaycastHit();
-
-        bool mouseEvent = false;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
-            if (interactionInterface != null)
-            {
-                interactionInterface.MouseEnter();
-                mouseEvent = true;
+                PlayerComponent.Instance.AttemptMove(hit.point);
             }
         }
 
-        if (!mouseEvent)
-        {
-            GameplayCanvas.Instance.ClearInteractionTipText();
-        }
+        CameraFollowTarget.Instance.MoveTo(hit.point);
     }
 
     public void LockControls()

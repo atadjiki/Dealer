@@ -47,16 +47,18 @@ public class NavigationUtilities : MonoBehaviour
         return false;
     }
 
-    public Vector3 GetValidLocation(Vector3 location)
+    public Vector3 GetValidLocation(Vector3 location, out bool valid)
     {
         if (ValidateDestination(location))
-        { 
+        {
+            valid = true;
             return graph.GetNearest(location, NNConstraint.Default).clampedPosition;
         }
         else
         {
-            Debug.Log("out of level bounds!");
-            return Vector3.zero;
+            if(DebugManager.Instance.LogNavigator) Debug.Log("out of level bounds!");
+            valid = false;
+            return location;
         }
     }
 }

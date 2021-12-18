@@ -2,7 +2,7 @@ namespace Constants
 {
     public class CharacterConstants
     {
-        public enum Mode { Stationary, Wander, Possesed, None };
+        public enum Mode { Stationary, Wander, Selected, None };
         public enum Behavior { MoveToRandomLocation, FindInteractable };
         public enum ActionType { Move, Idle, None };
 

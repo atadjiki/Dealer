@@ -18,6 +18,24 @@ public class NPCComponent : CharacterComponent
         }
     }
 
+    internal override IEnumerator DoInitialize()
+    {
+        yield return base.DoInitialize();
+
+        //register camera
+        CharacterCameraManager.Instance.RegisterCharacterCamera(this);
+
+        SetCurrentBehavior(spawnData.BehaviorMode);
+
+        AllowedBehaviors = spawnData.AllowedBehaviors;
+        AllowedInteractables = spawnData.AllowedInteractables;
+
+        //ready to begin behaviors
+        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
+
+        yield return null;
+    }
+
     private void OnDestroy()
     {
         NPCManager.Instance.UnRegisterNPC(this);
