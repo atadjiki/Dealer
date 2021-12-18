@@ -92,7 +92,15 @@ public class NPCComponent : CharacterComponent
     public override void OnMouseEnter()
     {
         base.OnMouseEnter();
-        GameplayCanvas.Instance.SetInteractionTipText(this);
+        if(GetCurrentBehavior() == CharacterConstants.Mode.Selected)
+        {
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
+        }
+        else
+        {
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
+        }
+        
     }
 
     public override void OnMouseExit()

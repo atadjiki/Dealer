@@ -13,6 +13,8 @@ public class GameplayCanvas : MonoBehaviour
     [SerializeField] internal GameObject GameplayPanel;
     [SerializeField] internal TextMeshProUGUI Text_Interaction_Tip;
 
+    public enum InteractionContext { Select, Deselect, Move, Interact, None };
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -37,14 +39,27 @@ public class GameplayCanvas : MonoBehaviour
         this.gameObject.SetActive(flag);
     }
 
-    public void SetInteractionTipText(NPCComponent npc)
+    public void SetInteractionTipTextContext(InteractionContext context)
     {
-        Text_Interaction_Tip.text = npc.GetID();
-    }
+        string text = "";
 
-    public void SetInteractionTipText(Interactable interactable)
-    {
-        Text_Interaction_Tip.text = interactable.GetID();
+        switch(context)
+        {
+            case InteractionContext.Select:
+                text = "Select";
+                break;
+            case InteractionContext.Deselect:
+                text = "Deselect";
+                break;
+            case InteractionContext.Move:
+                text = "Move";
+                break;
+            case InteractionContext.Interact:
+                text = "Interact";
+                break;
+        }
+
+        Text_Interaction_Tip.text = text;
     }
 
     public void ClearInteractionTipText()

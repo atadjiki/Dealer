@@ -60,7 +60,10 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public virtual void MouseEnter()
     {
-        GameplayCanvas.Instance.SetInteractionTipText(this);
+        if (NPCManager.Instance.IsNPCCurrentlySelected())
+        {
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Interact);
+        }
     }
 
     public virtual void MouseClick()

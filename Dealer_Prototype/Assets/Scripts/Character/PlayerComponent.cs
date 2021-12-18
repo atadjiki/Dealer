@@ -50,8 +50,7 @@ public class PlayerComponent : NPCComponent
 
     public override void OnMouseClicked()
     {
-        if(GetCurrentBehavior() != CharacterConstants.Mode.Selected) PerformSelect();
-        else { PerformUnselect(); }
+        NPCManager.Instance.HandleNPCSelection(this);
     }
 
     public void AttemptMove(Vector3 location)

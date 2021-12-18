@@ -70,12 +70,22 @@ public class InputManager : MonoBehaviour
                 Cursor.SetCursor(Cursor_interaction, new Vector2(Cursor_interaction.width / 2, Cursor_interaction.height / 2), CursorMode.Auto);
                 mouseEvent = true;
             }
+            else if (hit.collider.tag == "Ground")
+            {
+                if (NPCManager.Instance.IsNPCCurrentlySelected())
+                    GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Move);
+                else
+                    GameplayCanvas.Instance.ClearInteractionTipText();
+
+                Cursor.SetCursor(Cursor_default, new Vector2(Cursor_default.width / 2, Cursor_default.height / 2), CursorMode.Auto);
+                mouseEvent = true;
+            }
         }
 
         if (!mouseEvent)
         {
             GameplayCanvas.Instance.ClearInteractionTipText();
-            Cursor.SetCursor(Cursor_default, new Vector2(Cursor_default.width / 2, Cursor_default.height / 2), CursorMode.Auto);
+            Cursor.SetCursor(Cursor_cancel, new Vector2(Cursor_cancel.width / 2, Cursor_default.height / 2), CursorMode.Auto);
         }
     }
 

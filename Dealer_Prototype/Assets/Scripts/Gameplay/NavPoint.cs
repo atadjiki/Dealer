@@ -6,7 +6,7 @@ using UnityEngine;
 public class NavPoint : MonoBehaviour
 {
 
-    public static float CountdownSeconds = 10.0f;
+    public static float CountdownSeconds = 2.5f;
 
     private void Awake()
     {
