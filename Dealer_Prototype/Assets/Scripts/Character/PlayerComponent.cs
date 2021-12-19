@@ -53,6 +53,7 @@ public class PlayerComponent : NPCComponent
         NPCManager.Instance.HandleNPCSelection(this);
     }
 
+
     public void AttemptMove(Vector3 location)
     {
         if(GetCurrentBehavior() == CharacterConstants.Mode.Selected)

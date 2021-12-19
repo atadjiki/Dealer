@@ -19,6 +19,8 @@ public class NPCManager : MonoBehaviour
 
     private NPCComponent selectedNPC = null;
 
+    private PlayerComponent player;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -46,6 +48,14 @@ public class NPCManager : MonoBehaviour
 
     public bool RegisterNPC(NPCComponent npc)
     {
+
+        //check if player
+        if(npc.GetComponent<PlayerComponent>() != null)
+        {
+            player = npc.GetComponent<PlayerComponent>();
+            return true;
+        }
+
         if(Characters.Count == _popCap)
         {
             if (DebugManager.Instance.LogNPCManager) Debug.Log("Could not register NPC, reached pop cap");

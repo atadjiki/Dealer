@@ -73,15 +73,6 @@ public class NPCComponent : CharacterComponent
         yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
     }
 
-    public void GoToIdle()
-    {
-        if(ActionCoroutine != null) StopCoroutine(ActionCoroutine);
-
-        PerformAction(CharacterConstants.ActionType.Idle);
-
-        ToIdle();
-    }
-
     public override void OnDestinationReached(Vector3 destination)
     {
         base.OnDestinationReached(destination);
@@ -147,6 +138,12 @@ public class NPCComponent : CharacterComponent
         }
 
         return false;
+    }
+
+    public override void GoToIdle()
+    {
+        base.GoToIdle();
+        PerformAction(CharacterConstants.ActionType.Idle);
     }
 
 }

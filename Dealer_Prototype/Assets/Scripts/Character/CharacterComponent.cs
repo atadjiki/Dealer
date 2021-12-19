@@ -126,6 +126,13 @@ public class CharacterComponent : MonoBehaviour
     public virtual void OnNewDestination(Vector3 destination) { }
     public virtual void OnDestinationReached(Vector3 destination) { }
 
+    public virtual void GoToIdle()
+    {
+        if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
+
+        ToIdle();
+    }
+
     public void ToIdle()
     {
         SetCurrentState(CharacterConstants.State.Idle);
