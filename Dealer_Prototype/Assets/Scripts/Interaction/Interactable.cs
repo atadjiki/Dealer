@@ -15,7 +15,7 @@ public class Interactable : MonoBehaviour, IInteraction
     public InteractableConstants.InteractionState GetState() { return CurrentState; }
     public void SetState(InteractableConstants.InteractionState newState) { CurrentState = newState; }
 
-    internal HashSet<NPCComponent> _interactedWith;
+    internal HashSet<CharacterComponent> _interactedWith;
 
     [SerializeField] internal Transform InteractionTransform;
 
@@ -28,7 +28,7 @@ public class Interactable : MonoBehaviour, IInteraction
 
     private IEnumerator DoInitialize()
     {
-        _interactedWith = new HashSet<NPCComponent>();
+        _interactedWith = new HashSet<CharacterComponent>();
 
         _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
 
@@ -52,9 +52,9 @@ public class Interactable : MonoBehaviour, IInteraction
         NPCManager.Instance.UnRegisterInteractable(this);
     }
 
-    public bool HasBeenInteractedWith(NPCComponent npc)
+    public bool HasBeenInteractedWith(CharacterComponent character)
     {
-        return _interactedWith.Contains(npc);
+        return _interactedWith.Contains(character);
     }
 
 
@@ -81,5 +81,4 @@ public class Interactable : MonoBehaviour, IInteraction
         else
             return "";
     }
-
 }

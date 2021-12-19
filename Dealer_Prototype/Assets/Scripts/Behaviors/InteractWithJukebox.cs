@@ -2,33 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractWithJukebox : NPCBehaviorScript
+public class InteractWithJukebox : CharacterBehaviorScript
 {
     protected override IEnumerator Behavior()
     {
-        _data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
+        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
 
         //move NPC to interaction location
-        _data.NPC.MoveToLocation(_data.Interactable.GetInteractionTransform().position);
-         Debug.Log(_data.NPC.GetID() + " moving to  " + _data.Interactable.GetID());
+        _data.Character.GetNavigatorComponent().MoveToLocation(_data.Interactable.GetInteractionTransform().position);
+        if(DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " moving to  " + _data.Interactable.GetID());
 
-        yield return new WaitUntil(() => _data.NPC.GetCurrentState() != Constants.CharacterConstants.State.Moving);
+        yield return new WaitUntil(() => _data.Character.GetCurrentState() != Constants.CharacterConstants.State.Moving);
 
         //rotate NPC to interaction location
-        _data.NPC.GoToIdle();
-        Debug.Log(_data.NPC.GetID() + " idling at  " + _data.Interactable.GetID());
+        _data.Character.GoToIdle();
+        if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " idling at  " + _data.Interactable.GetID());
         yield return new WaitForSeconds(0.5f);
 
-        _data.NPC.ToInteracting();
+        _data.Character.ToInteracting();
 
-        Debug.Log(_data.NPC.GetID() + " interacting with " + _data.Interactable.GetID());
+        if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " interacting with " + _data.Interactable.GetID());
         yield return new WaitForSeconds(3.0f);
 
-        _data.NPC.GoToIdle();
+        _data.Character.GoToIdle();
 
-        Debug.Log(_data.NPC.GetID() + " finished interacting with " + _data.Interactable.GetID());
-        _data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
+        if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " finished interacting with " + _data.Interactable.GetID());
+        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
 
         StartCoroutine(base.Behavior());
+    }
+
+    internal override void AbortBehavior()
+    {
+        base.AbortBehavior();
     }
 }

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class NPCComponent : CharacterComponent
 { 
-    [Range(0.0f, 10.0f)]
-    public float IdleSeconds_Max = 5.0f;
 
     internal override void Initialize(SpawnData spawnData)
     {
@@ -39,38 +37,6 @@ public class NPCComponent : CharacterComponent
     private void OnDestroy()
     {
         NPCManager.Instance.UnRegisterNPC(this);
-    }
-
-    public void PerformAction(CharacterConstants.ActionType action)
-    {
-        if(action == CharacterConstants.ActionType.Idle)
-        {
-            ActionCoroutine = StartCoroutine(PerformAction_Idle());
-        }
-        else if(action == CharacterConstants.ActionType.Move)
-        {
-            ActionCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
-        }
-    }
-
-    private IEnumerator PerformAction_MoveToRandomPoint()
-    {
-        LastAction = CharacterConstants.ActionType.Move;
-
-        while (true)
-        {
-            if (MoveToRandomLocation())
-            {
-                yield break;
-            }
-        }
-    }
-
-    private IEnumerator PerformAction_Idle()
-    {
-        LastAction = CharacterConstants.ActionType.Idle;
-
-        yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
     }
 
     public override void OnDestinationReached(Vector3 destination)
@@ -115,29 +81,6 @@ public class NPCComponent : CharacterComponent
     {
         base.PerformUnselect();
         GoToIdle();
-    }
-
-
-    public bool InteractWith(Interactable interactable)
-    {
-        if (interactable != null && interactable.HasBeenInteractedWith(this) == false)
-        {
-            InteractWithJukebox interactionscript
-                = NPCManager.Instance.CreateBehaviorObject(this.GetID() + " - " + interactable.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
-
-            NPCBehaviorScript.BehaviorData data = new NPCBehaviorScript.BehaviorData
-            {
-                NPC = this,
-                Interactable = interactable,
-                Behavior = interactionscript
-            };
-
-            interactionscript.BeginBehavior(data);
-
-            return true;
-        }
-
-        return false;
     }
 
     public override void GoToIdle()

@@ -141,9 +141,9 @@ public class NPCManager : MonoBehaviour
             MoveToRandomLocation moveToRandomLocationScript
                 = CreateBehaviorObject(npc.GetID() + " move to random location behavior").AddComponent<MoveToRandomLocation>();
 
-            NPCBehaviorScript.BehaviorData behaviorData = new NPCBehaviorScript.BehaviorData
+            CharacterBehaviorScript.BehaviorData behaviorData = new CharacterBehaviorScript.BehaviorData
             {
-                NPC = npc,
+                Character = npc,
                 Behavior = moveToRandomLocationScript
             };
 
@@ -163,9 +163,9 @@ public class NPCManager : MonoBehaviour
                         InteractWithJukebox interactionscript
                             = CreateBehaviorObject(npc.GetID() + " - " + jukeBox.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
 
-                        NPCBehaviorScript.BehaviorData data = new NPCBehaviorScript.BehaviorData
+                        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
                         {
-                            NPC = npc,
+                            Character = npc,
                             Interactable = jukeBox,
                             Behavior = interactionscript
                         };
@@ -191,7 +191,7 @@ public class NPCManager : MonoBehaviour
         return behaviorObject;
     }
 
-    private void FireBehavior(NPCBehaviorScript behaviorScript, NPCBehaviorScript.BehaviorData data)
+    private void FireBehavior(CharacterBehaviorScript behaviorScript, CharacterBehaviorScript.BehaviorData data)
     {
        behaviorScript.BeginBehavior(data);
     }
@@ -257,7 +257,7 @@ public class NPCManager : MonoBehaviour
     {
         if (selectedNPC != null)
         {
-            selectedNPC.MoveToLocation(Location);
+            selectedNPC.MoveToBehavior(Location);
         }
     }
 
@@ -265,7 +265,7 @@ public class NPCManager : MonoBehaviour
     {
         if(selectedNPC != null)
         {
-            selectedNPC.InteractWith(interactable);
+            selectedNPC.InteractWithBehavior(interactable);
         }
     }
 }

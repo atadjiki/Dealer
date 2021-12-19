@@ -157,7 +157,7 @@ public class NavigatorComponent : MonoBehaviour
 
         pathRenderer.positionCount = 0;
 
-        parentCharacter.ToIdle();
+        parentCharacter.GoToIdle();
     }
 
     public void ToggleMovement(bool flag)

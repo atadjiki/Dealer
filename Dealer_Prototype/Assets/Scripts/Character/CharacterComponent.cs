@@ -35,12 +35,17 @@ public class CharacterComponent : MonoBehaviour
     [SerializeField] protected CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
     [SerializeField] protected CharacterConstants.State CurrentState;
 
+    [Range(0.0f, 10.0f)]
+    public float IdleSeconds_Max = 5.0f;
+
     internal CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
     internal Coroutine ActionCoroutine;
 
     internal float moveRadius = 30;
 
     protected SpawnData spawnData;
+
+    protected CharacterBehaviorScript _currentBehaviorScript;
 
     internal virtual void Initialize(SpawnData _spawnData)
     {
@@ -133,7 +138,7 @@ public class CharacterComponent : MonoBehaviour
         ToIdle();
     }
 
-    public void ToIdle()
+    private void ToIdle()
     {
         SetCurrentState(CharacterConstants.State.Idle);
         _animator.CrossFade(AnimationConstants.Idle, 0.5f);
@@ -203,14 +208,45 @@ public class CharacterComponent : MonoBehaviour
 
     public CharacterConstants.ActionType GetLastAction() { return LastAction; }
 
-    public bool MoveToRandomLocation()
+    public bool MoveToBehavior(Vector3 destination)
     {
-        return _navigator.MoveToRandomLocation();
+        _currentBehaviorScript
+            = NPCManager.Instance.CreateBehaviorObject(this.GetID() + "move to location " + destination.ToString()).AddComponent<MoveToLocation>();
+
+        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        {
+            Character = this,
+            Interactable = null,
+            Behavior = _currentBehaviorScript,
+            Destination = destination 
+        };
+
+        _currentBehaviorScript.BeginBehavior(data);
+
+        return true;
     }
 
-    public bool MoveToLocation(Vector3 Location)
+    public bool InteractWithBehavior(Interactable interactable)
     {
-        return _navigator.MoveToLocation(Location);
+        if (interactable != null && interactable.HasBeenInteractedWith(this) == false)
+        { 
+            _currentBehaviorScript
+                = NPCManager.Instance.CreateBehaviorObject(this.GetID() + " - " + interactable.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
+
+            CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+            {
+                Character = this,
+                Interactable = interactable,
+                Behavior = _currentBehaviorScript,
+                Destination = interactable.transform.position
+            };
+
+            _currentBehaviorScript.BeginBehavior(data);
+
+            return true;
+        }
+
+        return false;
     }
 
     public string GetID()
@@ -233,6 +269,50 @@ public class CharacterComponent : MonoBehaviour
         CharacterCameraManager.Instance.UnselectCharacterCamera();
         SetCurrentBehavior(GetPreviousBehavior());
         _selection.SetUnposessed();
+    }
+
+    public void PerformAction(CharacterConstants.ActionType action)
+    {
+        if (action == CharacterConstants.ActionType.Idle)
+        {
+            ActionCoroutine = StartCoroutine(PerformAction_Idle());
+        }
+        else if (action == CharacterConstants.ActionType.Move)
+        {
+            ActionCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
+        }
+    }
+
+    protected IEnumerator PerformAction_MoveToRandomPoint()
+    {
+        LastAction = CharacterConstants.ActionType.Move;
+
+        while (true)
+        {
+            if (_navigator.MoveToRandomLocation())
+            {
+                yield break;
+            }
+        }
+    }
+
+    protected IEnumerator PerformAction_Idle()
+    {
+        LastAction = CharacterConstants.ActionType.Idle;
+
+        yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
+    }
+
+    public void ClearBehaviors()
+    {
+        //abort any behaviors currently running
+        if (_currentBehaviorScript != null)
+            _currentBehaviorScript.AbortBehavior();
+    }
+
+    public NavigatorComponent GetNavigatorComponent()
+    {
+        return _navigator;
     }
 
 #if UNITY_EDITOR

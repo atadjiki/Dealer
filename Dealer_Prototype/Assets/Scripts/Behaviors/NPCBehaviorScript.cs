@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCBehaviorScript : MonoBehaviour
+public class CharacterBehaviorScript : MonoBehaviour
 {
     [System.Serializable]
     public struct BehaviorData
     {
-        public NPCComponent NPC;//what NPC is this running on
+        public CharacterComponent Character;//what NPC is this running on
         public Interactable Interactable;//if an interactable is involved
-        public NPCBehaviorScript Behavior;
+        public CharacterBehaviorScript Behavior;
+        public Vector3 Destination;
     }
 
     protected BehaviorData _data;
@@ -24,11 +25,17 @@ public class NPCBehaviorScript : MonoBehaviour
     internal virtual void BeginBehavior(BehaviorData data)
     {
         _data = data;
+
+        if (_data.Character != null)
+        {
+            _data.Character.ClearBehaviors();
+        }
+
         SetBehaviorState(BehaviorState.Busy);
-        data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
+        data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
 
-        if(DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
+        if (DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
     }
 
     protected virtual IEnumerator Behavior()
@@ -41,10 +48,9 @@ public class NPCBehaviorScript : MonoBehaviour
     {
         if (DebugManager.Instance.LogBehavior) Debug.Log("End Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Completed);
-        _data.NPC.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
+        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
 
-       // Debug.Log("On behavior finished");
-        _data.NPC.GoToIdle();
+        _data.Character.GoToIdle();
 
         Destroy(this.gameObject);
         //  OnBehaviorFinished(_data);
@@ -53,5 +59,6 @@ public class NPCBehaviorScript : MonoBehaviour
     internal virtual void AbortBehavior()
     {
         if(_coroutine != null) StopCoroutine(_coroutine);
+        if(DebugManager.Instance.LogBehavior) Debug.Log("Aborting script " + gameObject.name);
     }
 }

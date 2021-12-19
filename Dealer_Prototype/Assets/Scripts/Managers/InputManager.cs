@@ -2,14 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
-{
-    //cursor materials
-    [Header("Cursor Textures")]
-    [SerializeField] private Texture2D Cursor_default;
-    [SerializeField] private Texture2D Cursor_cancel;
-    [SerializeField] private Texture2D Cursor_interaction;
-
-    //
+{ 
     private PlayerInputActions inputActions;
 
     private Vector2 _screenMousePos;
@@ -67,7 +60,7 @@ public class InputManager : MonoBehaviour
             if (interactionInterface != null)
             {
                 interactionInterface.MouseEnter();
-                Cursor.SetCursor(Cursor_interaction, new Vector2(Cursor_interaction.width / 2, Cursor_interaction.height / 2), CursorMode.Auto);
+                CursorManager.Instance.ToInteract();
                 mouseEvent = true;
             }
             else if (hit.collider.tag == "Ground")
@@ -77,7 +70,7 @@ public class InputManager : MonoBehaviour
                 else
                     GameplayCanvas.Instance.ClearInteractionTipText();
 
-                Cursor.SetCursor(Cursor_default, new Vector2(Cursor_default.width / 2, Cursor_default.height / 2), CursorMode.Auto);
+                CursorManager.Instance.ToDefault();
                 mouseEvent = true;
             }
         }
@@ -85,7 +78,7 @@ public class InputManager : MonoBehaviour
         if (!mouseEvent)
         {
             GameplayCanvas.Instance.ClearInteractionTipText();
-            Cursor.SetCursor(Cursor_cancel, new Vector2(Cursor_cancel.width / 2, Cursor_default.height / 2), CursorMode.Auto);
+            CursorManager.Instance.ToCancel();
         }
     }
 
@@ -119,7 +112,7 @@ public class InputManager : MonoBehaviour
             //if the mouse just hit the ground, move to the specified location
             else if (hit.collider.tag == "Ground")
             {
-                PlayerComponent.Instance.AttemptMove(hit.point);
+                NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
             }
         }
 

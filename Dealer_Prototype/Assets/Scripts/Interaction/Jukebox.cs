@@ -13,7 +13,5 @@ public class Jukebox : Interactable
     public override void MouseClick()
     {
         base.MouseClick();
-
-        Debug.Log("Clicked on " + GetID());
     }
 }
