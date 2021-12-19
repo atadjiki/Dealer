@@ -17,6 +17,9 @@ public class NavigatorComponent : MonoBehaviour
 
     private HashSet<GameObject> NavPointPrefabs;
 
+    public enum MovementState { Stopped, Moving };
+    public MovementState State = MovementState.Stopped;
+
     private void Awake()
     {
         parentCharacter = GetComponentInParent<CharacterComponent>();
@@ -35,7 +38,7 @@ public class NavigatorComponent : MonoBehaviour
     {
         if (DebugManager.Instance.LogNavigator && NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
-            if (parentCharacter.GetCurrentState() == Constants.CharacterConstants.State.Moving)
+            if (State == MovementState.Moving)
             {
                 Path path = _Seeker.GetCurrentPath();
 
@@ -123,6 +126,7 @@ public class NavigatorComponent : MonoBehaviour
         parentCharacter.ToMoving();
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
+        State = MovementState.Moving;
 
         //get rid of any existing prefabs that are out there first
         foreach (GameObject todestroy in NavPointPrefabs)
@@ -148,6 +152,7 @@ public class NavigatorComponent : MonoBehaviour
 
         // The agent has reached the destination now
         parentCharacter.OnDestinationReached(Destination);
+        State = MovementState.Stopped;
 
         //get rid of any existing prefabs that are out there first
         foreach (GameObject todestroy in NavPointPrefabs)
@@ -157,7 +162,6 @@ public class NavigatorComponent : MonoBehaviour
 
         pathRenderer.positionCount = 0;
 
-        parentCharacter.GoToIdle();
     }
 
     public void ToggleMovement(bool flag)

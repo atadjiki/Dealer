@@ -23,11 +23,6 @@ public class NPCComponent : CharacterComponent
         //register camera
         CharacterCameraManager.Instance.RegisterCharacterCamera(this);
 
-        SetCurrentBehavior(spawnData.BehaviorMode);
-
-        AllowedBehaviors = spawnData.AllowedBehaviors;
-        AllowedInteractables = spawnData.AllowedInteractables;
-
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
@@ -42,14 +37,12 @@ public class NPCComponent : CharacterComponent
     public override void OnDestinationReached(Vector3 destination)
     {
         base.OnDestinationReached(destination);
-
-        if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
     }
 
     public override void OnMouseEnter()
     {
         base.OnMouseEnter();
-        if(GetCurrentBehavior() == CharacterConstants.Mode.Selected)
+        if (CharacterMode == CharacterConstants.Mode.Selected)
         {
             GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
         }
@@ -57,7 +50,7 @@ public class NPCComponent : CharacterComponent
         {
             GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
         }
-        
+
     }
 
     public override void OnMouseExit()
@@ -70,23 +63,4 @@ public class NPCComponent : CharacterComponent
     {
         base.OnMouseClicked();
     }
-
-    public override void PerformSelect()
-    {
-        base.PerformSelect();
-        GoToIdle();
-    }
-
-    public override void PerformUnselect()
-    {
-        base.PerformUnselect();
-        GoToIdle();
-    }
-
-    public override void GoToIdle()
-    {
-        base.GoToIdle();
-        PerformAction(CharacterConstants.ActionType.Idle);
-    }
-
 }

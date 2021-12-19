@@ -8,9 +8,6 @@ public struct SpawnData
 {
     public CharacterConstants.CharacterID ID;
     public CharacterConstants.Team Team;
-    public CharacterConstants.Mode BehaviorMode;
-    public List<CharacterConstants.Behavior> AllowedBehaviors;
-    public List<InteractableConstants.InteractableID> AllowedInteractables;
 }
 
 [System.Serializable]

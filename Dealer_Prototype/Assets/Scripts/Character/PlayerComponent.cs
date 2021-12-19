@@ -36,20 +36,30 @@ public class PlayerComponent : NPCComponent
 
     public override void PerformSelect()
     {
-        SetCurrentBehavior(CharacterConstants.Mode.Selected);
+        CharacterMode = CharacterConstants.Mode.Selected;
         _selection.SetPossesed();
-        GoToIdle();
+        ToIdle();
     }
 
     public override void PerformUnselect()
     {
-        SetCurrentBehavior(GetPreviousBehavior());
+        CharacterMode = CharacterConstants.Mode.Stationary;
         _selection.SetUnposessed();
-        GoToIdle();
+        ToIdle();
     }
 
     public override void OnMouseClicked()
     {
         NPCManager.Instance.HandleNPCSelection(this);
+    }
+
+    public override void OnMouseEnter()
+    {
+        base.OnMouseEnter();
+    }
+
+    public override void OnMouseExit()
+    {
+        base.OnMouseExit();
     }
 }

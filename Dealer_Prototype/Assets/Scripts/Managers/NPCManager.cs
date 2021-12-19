@@ -14,7 +14,7 @@ public class NPCManager : MonoBehaviour
     private List<NPCComponent> Characters;
     private int _popCap = 10;
 
-    private int _updateEveryFrames = 60*3;
+    private int _updateEveryFrames = 60 * 3;
     private int _currentFrames = 0;
 
     private NPCComponent selectedNPC = null;
@@ -50,13 +50,13 @@ public class NPCManager : MonoBehaviour
     {
 
         //check if player
-        if(npc.GetComponent<PlayerComponent>() != null)
+        if (npc.GetComponent<PlayerComponent>() != null)
         {
             player = npc.GetComponent<PlayerComponent>();
             return true;
         }
 
-        if(Characters.Count == _popCap)
+        if (Characters.Count == _popCap)
         {
             if (DebugManager.Instance.LogNPCManager) Debug.Log("Could not register NPC, reached pop cap");
             return false;
@@ -106,101 +106,69 @@ public class NPCManager : MonoBehaviour
         foreach (NPCComponent npc in Characters)
         {
 
-            if(npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
+            if (npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
             {
-                if (npc.GetCurrentBehavior() == CharacterConstants.Mode.Wander)
+                if (npc.CharacterMode == CharacterConstants.Mode.Wander)
                 {
                     WanderModeUpdate(npc);
                 }
-                else if (npc.GetCurrentBehavior() == CharacterConstants.Mode.Stationary)
+                else if (npc.CharacterMode == CharacterConstants.Mode.Stationary)
                 {
                     if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Stationary");
-                    npc.PerformAction(CharacterConstants.ActionType.Idle);
+
+                    bool success;
+                    BehaviorHelper.IdleBehavior(npc, out success);
                 }
-                else if(npc.GetCurrentBehavior() == CharacterConstants.Mode.Selected)
+                else if (npc.CharacterMode == CharacterConstants.Mode.Selected)
                 {
                     if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Selected");
                 }
             }
-            else if(npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)
+            else if (npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)
             {
-            //    if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + "- cannot update, NPC is busy");
+                //    if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + "- cannot update, NPC is busy");
             }
         }
-        
+
     }
 
     private void WanderModeUpdate(NPCComponent npc)
     {
-        CharacterConstants.Behavior SelectedBehavior = npc.GetAllowedBehaviors()[Random.Range(0, npc.GetAllowedBehaviors().Count)];
+        int randomIndex = Random.Range(0, 2);
 
         //if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
-        
-        if(SelectedBehavior == CharacterConstants.Behavior.MoveToRandomLocation)
+
+        if (randomIndex == 0)
         {
-            MoveToRandomLocation moveToRandomLocationScript
-                = CreateBehaviorObject(npc.GetID() + " move to random location behavior").AddComponent<MoveToRandomLocation>();
-
-            CharacterBehaviorScript.BehaviorData behaviorData = new CharacterBehaviorScript.BehaviorData
-            {
-                Character = npc,
-                Behavior = moveToRandomLocationScript
-            };
-
-            FireBehavior(moveToRandomLocationScript, behaviorData);
+            bool success;
+            BehaviorHelper.MoveToRandomLocation(npc, out success);
         }
-        else if(SelectedBehavior == CharacterConstants.Behavior.FindInteractable)
+        else if (randomIndex == 1)
         {
-            InteractableConstants.InteractableID SelectedInteraction = npc.GetAllowedInteractables()[Random.Range(0, npc.GetAllowedInteractables().Count)];
 
-            if(SelectedInteraction == InteractableConstants.InteractableID.Jukebox)
+            Interactable jukeBox;
+            if (FindInteractableByID(InteractableConstants.InteractableID.Jukebox, out jukeBox))
             {
-                Interactable jukeBox;
-                if (FindInteractableByID(SelectedInteraction, out jukeBox))
+                if (jukeBox != null && jukeBox.HasBeenInteractedWith(npc) == false)
                 {
-                    if (jukeBox != null && jukeBox.HasBeenInteractedWith(npc) == false)
-                    {
-                        InteractWithJukebox interactionscript
-                            = CreateBehaviorObject(npc.GetID() + " - " + jukeBox.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
-
-                        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
-                        {
-                            Character = npc,
-                            Interactable = jukeBox,
-                            Behavior = interactionscript
-                        };
-
-
-                        FireBehavior(interactionscript, data);
-                    }
-                    else
-                    {
-                        Debug.Log(npc.GetID() + " has already interacted with " + jukeBox.GetID());
-                    }
+                    bool success;
+                    BehaviorHelper.InteractWithBehavior(npc, jukeBox, out success);
+                }
+                else
+                {
+                    Debug.Log(npc.GetID() + " has already interacted with " + jukeBox.GetID());
                 }
             }
+
         }
-       
-    }
 
-    public GameObject CreateBehaviorObject(string name)
-    {
-        GameObject behaviorObject = new GameObject(name);
-        behaviorObject.transform.parent = this.transform;
-
-        return behaviorObject;
-    }
-
-    private void FireBehavior(CharacterBehaviorScript behaviorScript, CharacterBehaviorScript.BehaviorData data)
-    {
-       behaviorScript.BeginBehavior(data);
     }
 
     public bool FindInteractableByID(InteractableConstants.InteractableID ID, out Interactable result)
     {
-        foreach(Interactable interactable in Interactables)
+        foreach (Interactable interactable in Interactables)
         {
-            if(interactable.GetID() == ID.ToString())
+            if (interactable.GetID() == ID.ToString())
             {
                 result = interactable;
                 return true;
@@ -208,17 +176,17 @@ public class NPCManager : MonoBehaviour
         }
 
         result = null;
-        return false; 
+        return false;
     }
 
     public void HandleNPCSelection(NPCComponent NPC)
     {
         //if nobody is selected, register
-        if(selectedNPC == null)
+        if (selectedNPC == null)
         {
             PossessNPC(NPC);
         }
-        else if(selectedNPC != NPC)
+        else if (selectedNPC != NPC)
         {
             UnpossessNPC();
             PossessNPC(NPC);
@@ -237,7 +205,7 @@ public class NPCManager : MonoBehaviour
     }
 
     private void UnpossessNPC()
-    { 
+    {
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.GetID());
         selectedNPC.PerformUnselect();
         selectedNPC = null;
@@ -257,15 +225,17 @@ public class NPCManager : MonoBehaviour
     {
         if (selectedNPC != null)
         {
-            selectedNPC.MoveToBehavior(Location);
+            bool success;
+            CharacterBehaviorScript behaviorScript = BehaviorHelper.MoveToBehavior(selectedNPC, Location, out success);
         }
     }
 
     public void AttemptInteractWithPossesedNPC(Interactable interactable)
     {
-        if(selectedNPC != null)
+        if (selectedNPC != null)
         {
-            selectedNPC.InteractWithBehavior(interactable);
+            bool success;
+            CharacterBehaviorScript behaviorScript = BehaviorHelper.InteractWithBehavior(selectedNPC, interactable, out success);
         }
     }
 }

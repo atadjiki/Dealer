@@ -26,11 +26,6 @@ public class CharacterBehaviorScript : MonoBehaviour
     {
         _data = data;
 
-        if (_data.Character != null)
-        {
-            _data.Character.ClearBehaviors();
-        }
-
         SetBehaviorState(BehaviorState.Busy);
         data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
@@ -50,10 +45,9 @@ public class CharacterBehaviorScript : MonoBehaviour
         SetBehaviorState(BehaviorState.Completed);
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
 
-        _data.Character.GoToIdle();
+        _data.Character.ToIdle();
 
         Destroy(this.gameObject);
-        //  OnBehaviorFinished(_data);
     }
 
     internal virtual void AbortBehavior()

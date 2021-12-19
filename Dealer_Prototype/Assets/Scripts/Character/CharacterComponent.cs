@@ -17,29 +17,17 @@ public class CharacterComponent : MonoBehaviour
 
     [Header("Character Setup")]
 
-    private CharacterConstants.Mode PreviousBehavior = CharacterConstants.Mode.None;
-    private CharacterConstants.Mode CurrentBehavior = CharacterConstants.Mode.None;
+    public CharacterConstants.BehaviorType PreviousBehavior = CharacterConstants.BehaviorType.None;
+    public CharacterConstants.BehaviorType CurrentBehavior = CharacterConstants.BehaviorType.None;
 
-    public CharacterConstants.Mode GetCurrentBehavior() { return CurrentBehavior; }
-    public CharacterConstants.Mode GetPreviousBehavior() { return PreviousBehavior; }
-
-    //Allowed behaviors
-    [SerializeField] protected List<CharacterConstants.Behavior> AllowedBehaviors;
-    [SerializeField] protected List<InteractableConstants.InteractableID> AllowedInteractables;
-
-    public List<CharacterConstants.Behavior> GetAllowedBehaviors() { return AllowedBehaviors; }
-    public List<InteractableConstants.InteractableID> GetAllowedInteractables() { return AllowedInteractables; }
+    public CharacterConstants.Mode CharacterMode = CharacterConstants.Mode.None;
 
     [Header("Debug")]
 
     [SerializeField] protected CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
-    [SerializeField] protected CharacterConstants.State CurrentState;
 
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
-
-    internal CharacterConstants.ActionType LastAction = CharacterConstants.ActionType.None;
-    internal Coroutine ActionCoroutine;
 
     internal float moveRadius = 30;
 
@@ -101,9 +89,6 @@ public class CharacterComponent : MonoBehaviour
         _selection.SetUnposessed();
 
         yield return new WaitWhile(() => _selection == null);
-
-        //idle to tart with 
-        SetCurrentState(CharacterConstants.State.Idle);
     }
 
     public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
@@ -131,23 +116,14 @@ public class CharacterComponent : MonoBehaviour
     public virtual void OnNewDestination(Vector3 destination) { }
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public virtual void GoToIdle()
+    public void ToIdle()
     {
-        if (ActionCoroutine != null) StopCoroutine(ActionCoroutine);
-
-        ToIdle();
-    }
-
-    private void ToIdle()
-    {
-        SetCurrentState(CharacterConstants.State.Idle);
         _animator.CrossFade(AnimationConstants.Idle, 0.5f);
         _navigator.SetCanMove(false);
     }
 
     public void ToMoving()
     {
-        SetCurrentState(CharacterConstants.State.Moving);
         _animator.CrossFade(AnimationConstants.Walking, 0.1f);
         _navigator.SetCanMove(true);
     }
@@ -155,49 +131,22 @@ public class CharacterComponent : MonoBehaviour
     public void ToInteracting()
     {
         StopAllCoroutines();
-        SetCurrentState(CharacterConstants.State.Interacting);
         _animator.CrossFade(AnimationConstants.ButtonPush, 0.3f);
         _navigator.SetCanMove(false);
 
     }
-
-    public void ToTalking()
-    {
-        StopAllCoroutines();
-        SetCurrentState(CharacterConstants.State.Talking);
-        _animator.CrossFade(AnimationConstants.Talking, 0.3f);
-        _navigator.SetCanMove(false);
-    }
-
-    public void ToSitting()
-    {
-        StopAllCoroutines();
-        SetCurrentState(CharacterConstants.State.Sitting);
-        FadeToAnimation(AnimationConstants.Male_Sitting_2, 0.35f);
-        _navigator.SetCanMove(false);
-    }
-
-   
 
     private void FadeToAnimation(string animation, float time)
     {
         if(_animator != null) _animator.CrossFade(animation, time);
     }
 
-    internal void SetCurrentState(CharacterConstants.State newState)
-    {
-        CurrentState = newState;
-        if (_charCanvas != null) _charCanvas.Set_Text_State(CurrentState.ToString());
-    }
-
-    public void SetCurrentBehavior(CharacterConstants.Mode NewMode)
+    public void SetCurrentBehavior(CharacterConstants.BehaviorType NewBehavior)
     {
         PreviousBehavior = CurrentBehavior;
-        CurrentBehavior = NewMode;
+        CurrentBehavior = NewBehavior;
         if(_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
     }
-
-    public CharacterConstants.State GetCurrentState() { return CurrentState; }
 
     internal void SetUpdateState(CharacterConstants.UpdateState newState)
     {
@@ -205,49 +154,6 @@ public class CharacterComponent : MonoBehaviour
     }
 
     public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
-
-    public CharacterConstants.ActionType GetLastAction() { return LastAction; }
-
-    public bool MoveToBehavior(Vector3 destination)
-    {
-        _currentBehaviorScript
-            = NPCManager.Instance.CreateBehaviorObject(this.GetID() + "move to location " + destination.ToString()).AddComponent<MoveToLocation>();
-
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
-        {
-            Character = this,
-            Interactable = null,
-            Behavior = _currentBehaviorScript,
-            Destination = destination 
-        };
-
-        _currentBehaviorScript.BeginBehavior(data);
-
-        return true;
-    }
-
-    public bool InteractWithBehavior(Interactable interactable)
-    {
-        if (interactable != null && interactable.HasBeenInteractedWith(this) == false)
-        { 
-            _currentBehaviorScript
-                = NPCManager.Instance.CreateBehaviorObject(this.GetID() + " - " + interactable.GetID() + " interaction behavior").AddComponent<InteractWithJukebox>();
-
-            CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
-            {
-                Character = this,
-                Interactable = interactable,
-                Behavior = _currentBehaviorScript,
-                Destination = interactable.transform.position
-            };
-
-            _currentBehaviorScript.BeginBehavior(data);
-
-            return true;
-        }
-
-        return false;
-    }
 
     public string GetID()
     {
@@ -260,54 +166,16 @@ public class CharacterComponent : MonoBehaviour
     public virtual void PerformSelect()
     {
         CharacterCameraManager.Instance.SelectCharacterCamera(this);
-        SetCurrentBehavior(CharacterConstants.Mode.Selected);
         _selection.SetPossesed();
+        _charCanvas.Toggle(true);
     }
 
     public virtual void PerformUnselect()
     {
         CharacterCameraManager.Instance.UnselectCharacterCamera();
-        SetCurrentBehavior(GetPreviousBehavior());
+        CurrentBehavior = PreviousBehavior;
         _selection.SetUnposessed();
-    }
-
-    public void PerformAction(CharacterConstants.ActionType action)
-    {
-        if (action == CharacterConstants.ActionType.Idle)
-        {
-            ActionCoroutine = StartCoroutine(PerformAction_Idle());
-        }
-        else if (action == CharacterConstants.ActionType.Move)
-        {
-            ActionCoroutine = StartCoroutine(PerformAction_MoveToRandomPoint());
-        }
-    }
-
-    protected IEnumerator PerformAction_MoveToRandomPoint()
-    {
-        LastAction = CharacterConstants.ActionType.Move;
-
-        while (true)
-        {
-            if (_navigator.MoveToRandomLocation())
-            {
-                yield break;
-            }
-        }
-    }
-
-    protected IEnumerator PerformAction_Idle()
-    {
-        LastAction = CharacterConstants.ActionType.Idle;
-
-        yield return new WaitForSeconds(Random.Range(0.0f, IdleSeconds_Max));
-    }
-
-    public void ClearBehaviors()
-    {
-        //abort any behaviors currently running
-        if (_currentBehaviorScript != null)
-            _currentBehaviorScript.AbortBehavior();
+        _charCanvas.Toggle(false);
     }
 
     public NavigatorComponent GetNavigatorComponent()

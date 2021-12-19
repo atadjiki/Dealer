@@ -9,8 +9,8 @@ public class MoveToLocation : CharacterBehaviorScript
     {
         _data.Character.GetNavigatorComponent().MoveToLocation(_data.Destination);
 
-        yield return new WaitWhile(() => _data.Character.GetCurrentState() == CharacterConstants.State.Moving);
+        yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
 
-        StartCoroutine(base.Behavior());
+        yield return base.Behavior();
     }
 }

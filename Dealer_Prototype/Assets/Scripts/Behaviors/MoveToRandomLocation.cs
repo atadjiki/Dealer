@@ -7,20 +7,12 @@ public class MoveToRandomLocation : CharacterBehaviorScript
 {
     protected override IEnumerator Behavior()
     {
-        if (_data.Character.GetLastAction() == CharacterConstants.ActionType.Idle)
-        {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(_data.Character.GetID() + " - Action - MoveToRandomPoint");
-            _data.Character.PerformAction(CharacterConstants.ActionType.Move);
+        _data.Character.PreviousBehavior = CharacterConstants.BehaviorType.MoveToLocation;
 
-        }
-        else if (_data.Character.GetLastAction() == CharacterConstants.ActionType.Move || _data.Character.GetLastAction() == CharacterConstants.ActionType.None)
-        {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(_data.Character.GetID() + " - Action - Idle");
-            _data.Character.PerformAction(CharacterConstants.ActionType.Idle);
-        }
+        _data.Character.GetNavigatorComponent().MoveToRandomLocation();
 
-        yield return new WaitWhile(() => _data.Character.GetCurrentState() == CharacterConstants.State.Moving);
+        yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
 
-        StartCoroutine(base.Behavior());
+        yield return base.Behavior();
     }
 }
