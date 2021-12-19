@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class Idle : CharacterBehaviorScript
+public class Behavior_Idle : CharacterBehaviorScript
 {
     protected override IEnumerator Behavior()
     {

@@ -7,7 +7,7 @@ public class BehaviorHelper : MonoBehaviour
     public static CharacterBehaviorScript IdleBehavior(CharacterComponent character, out bool success)
     {
         CharacterBehaviorScript behaviorScript
-            = CreateBehaviorObject(character.GetID() + " idle ", character).AddComponent<Idle>();
+            = CreateBehaviorObject(character.GetID() + " idle ", character).AddComponent<Behavior_Idle>();
 
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
@@ -26,7 +26,7 @@ public class BehaviorHelper : MonoBehaviour
     public static CharacterBehaviorScript MoveToBehavior(CharacterComponent character, Vector3 destination, out bool success)
     {
        CharacterBehaviorScript behaviorScript
-            = CreateBehaviorObject(character.GetID() + " move to location " + destination.ToString(), character).AddComponent<MoveToLocation>();
+            = CreateBehaviorObject(character.GetID() + " move to location " + destination.ToString(), character).AddComponent<Behavior_MoveToLocation>();
 
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
@@ -45,7 +45,7 @@ public class BehaviorHelper : MonoBehaviour
     public static CharacterBehaviorScript MoveToRandomLocation(CharacterComponent character, out bool success)
     {
         CharacterBehaviorScript behaviorScript
-                = CreateBehaviorObject(character.GetID() + " move to random location behavior ", character).AddComponent<MoveToRandomLocation>();
+                = CreateBehaviorObject(character.GetID() + " move to random location behavior ", character).AddComponent<Behavior_MoveToRandomLocation>();
 
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
@@ -64,7 +64,7 @@ public class BehaviorHelper : MonoBehaviour
         if (interactable != null && interactable.HasBeenInteractedWith(character) == false)
         {
             CharacterBehaviorScript behaviorScript
-                =  CreateBehaviorObject(character.GetID() + " - " + interactable.GetID() + " interaction behavior ", character).AddComponent<InteractWith>();
+                =  CreateBehaviorObject(character.GetID() + " - " + interactable.GetID() + " interaction behavior ", character).AddComponent<Behavior_InteractWith>();
 
             CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
             {

@@ -114,9 +114,9 @@ public class InputManager : MonoBehaviour
             {
                 NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
             }
-        }
 
-        CameraFollowTarget.Instance.MoveTo(hit.point);
+            CameraFollowTarget.Instance.MoveTo(hit.point);
+        }
     }
 
     public void LockControls()

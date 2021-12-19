@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
@@ -34,7 +35,7 @@ public class NavigatorComponent : MonoBehaviour
         
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (DebugManager.Instance.LogNavigator && NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
@@ -67,32 +68,19 @@ public class NavigatorComponent : MonoBehaviour
         }
     }
 
-    private Vector3 PickRandomPoint()
-    {
-        var point = Random.onUnitSphere * Random.Range(parentCharacter.moveRadius, parentCharacter.moveRadius * 1.5f);
-        point.y = 0;
-        point += this.transform.position;
-
-        var graph = AstarPath.active.data.recastGraph;
-
-        if (graph != null)
-        {
-            return graph.GetNearest(point, NNConstraint.Default).clampedPosition;
-        }
-        else
-        {
-            return point;
-        }
-    }
-
     public bool MoveToRandomLocation()
     {
         return MoveToLocation(PickRandomPoint());
     }
 
-    public bool MoveToLocation(Vector3 location)
+    private Tuple<NNInfo, NNInfo> ValidateLocation(Vector3 location, bool checkPath, out bool success)
     {
-        if (Vector3.Distance(this.transform.position, location) > parentCharacter.moveRadius) return false;
+
+        if (Vector3.Distance(this.transform.position, location) > parentCharacter.moveRadius)
+        {
+            success = false;
+            return null;
+        }
 
         NNInfo NearestNode_origin = AstarPath.active.GetNearest(this.transform.position, NNConstraint.Default);
         NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
@@ -101,27 +89,66 @@ public class NavigatorComponent : MonoBehaviour
         if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 1)
         {
             if (DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around origin");
-            return false;
+
+            success = false;
+            return null;
         }
         else if (Vector3.Distance(NearestNode_destination.position, location) > 1)
         {
             if (DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around destination");
-            return false;
+
+            success = false;
+            return null;
         }
 
-        if (PathUtilities.IsPathPossible(NearestNode_origin.node, NearestNode_destination.node))
+        if (checkPath)
         {
-            StartCoroutine(DoMoveToLocation(location));
+            success = PathUtilities.IsPathPossible(NearestNode_origin.node, NearestNode_destination.node);
+            return null;
+        }
+        else
+        {
+            success = true;
+            return new Tuple<NNInfo, NNInfo>(NearestNode_origin, NearestNode_destination);
+        }
+    }
+
+    public bool TeleportToLocation(Transform transform)
+    {
+        bool success;
+        Tuple<NNInfo, NNInfo> VectorPair = ValidateLocation(transform.position, false, out success);
+
+        if (success)
+        {
+            this.transform.position = VectorPair.Item2.position;
+            this.transform.rotation = transform.rotation;
             return true;
         }
         else
         {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible between " + NearestNode_origin.position + " and " + NearestNode_destination.position);
+            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible to " + transform.position);
             return false;
         }
     }
 
-    public IEnumerator DoMoveToLocation(Vector3 Destination)
+    public bool MoveToLocation(Vector3 location)
+    {
+        bool success;
+        Tuple<NNInfo, NNInfo> VectorPair = ValidateLocation(location, false, out success);
+
+        if (success)
+        {
+            StartCoroutine(DoMoveToLocation(VectorPair.Item2.position));
+            return true;
+        }
+        else
+        {
+            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible to " + location);
+            return false;
+        }
+    }
+
+    private IEnumerator DoMoveToLocation(Vector3 Destination)
     {
         parentCharacter.ToMoving();
         _AI.destination = Destination;
@@ -162,6 +189,24 @@ public class NavigatorComponent : MonoBehaviour
 
         pathRenderer.positionCount = 0;
 
+    }
+
+    private Vector3 PickRandomPoint()
+    {
+        var point = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(parentCharacter.moveRadius, parentCharacter.moveRadius * 1.5f);
+        point.y = 0;
+        point += this.transform.position;
+
+        var graph = AstarPath.active.data.recastGraph;
+
+        if (graph != null)
+        {
+            return graph.GetNearest(point, NNConstraint.Default).clampedPosition;
+        }
+        else
+        {
+            return point;
+        }
     }
 
     public void ToggleMovement(bool flag)
