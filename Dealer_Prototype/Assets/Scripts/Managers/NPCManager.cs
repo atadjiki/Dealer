@@ -235,7 +235,17 @@ public class NPCManager : MonoBehaviour
         if (selectedNPC != null)
         {
             bool success;
-            CharacterBehaviorScript behaviorScript = BehaviorHelper.InteractWithBehavior(selectedNPC, interactable, out success);
+            CharacterBehaviorScript behaviorScript;
+
+            if (BehaviorHelper.IsInteractionAllowed(selectedNPC, interactable))
+            {
+                behaviorScript = BehaviorHelper.InteractWithBehavior(selectedNPC, interactable, out success);
+            }
+            else
+            {
+                behaviorScript = BehaviorHelper.ApproachBehavior(selectedNPC, interactable, out success);
+            }
+            
         }
     }
 }

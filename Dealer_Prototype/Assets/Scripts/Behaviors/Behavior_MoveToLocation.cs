@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Behavior_MoveToLocation : CharacterBehaviorScript
 {
+    internal override void BeginBehavior(BehaviorData data)
+    {
+        base.BeginBehavior(data);
+
+        _data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.MoveToLocation);
+    }
+
     protected override IEnumerator Behavior()
     {
         _data.Character.GetNavigatorComponent().MoveToLocation(_data.Destination);

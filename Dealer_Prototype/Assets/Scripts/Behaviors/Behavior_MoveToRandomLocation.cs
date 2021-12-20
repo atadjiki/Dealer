@@ -5,10 +5,15 @@ using UnityEngine;
 
 public class Behavior_MoveToRandomLocation : CharacterBehaviorScript
 {
+    internal override void BeginBehavior(BehaviorData data)
+    {
+        base.BeginBehavior(data);
+
+        _data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.MoveToRandomLocation);
+    }
+
     protected override IEnumerator Behavior()
     {
-        _data.Character.PreviousBehavior = CharacterConstants.BehaviorType.MoveToLocation;
-
         _data.Character.GetNavigatorComponent().MoveToRandomLocation();
 
         yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);

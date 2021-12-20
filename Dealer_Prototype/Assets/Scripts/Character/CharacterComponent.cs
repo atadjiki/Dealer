@@ -48,7 +48,7 @@ public class CharacterComponent : MonoBehaviour
         _characterState.SetTeam(spawnData.Team);
 
         //setup navigator
-        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform) ;
+        GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
 
         yield return new WaitWhile(() => _navigator == null);
@@ -60,7 +60,7 @@ public class CharacterComponent : MonoBehaviour
 
         //setup character model and attach to navigator
         GameObject ModelPrefab = PrefabFactory.Instance.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
-       // ModelPrefab.transform.parent = NavigtorPrefab.transform;
+        // ModelPrefab.transform.parent = NavigtorPrefab.transform;
         _animator = ModelPrefab.GetComponent<Animator>();
 
         ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
@@ -89,6 +89,8 @@ public class CharacterComponent : MonoBehaviour
         _selection.SetUnposessed();
 
         yield return new WaitWhile(() => _selection == null);
+
+        SetCurrentBehavior(CharacterConstants.BehaviorType.None);
     }
 
     public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
@@ -99,11 +101,19 @@ public class CharacterComponent : MonoBehaviour
     }
     public virtual void OnMouseEnter()
     {
-        _charCanvas.Toggle(true);    }
+        _charCanvas.Toggle(true);
+
+        if (CharacterMode == CharacterConstants.Mode.Selected)
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
+
+        else
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
+    }
 
     public virtual void OnMouseExit()
     {
         _charCanvas.Toggle(false);
+        GameplayCanvas.Instance.ClearInteractionTipText();
     }
 
     public virtual void OnMouseClicked() { }
@@ -138,14 +148,14 @@ public class CharacterComponent : MonoBehaviour
 
     private void FadeToAnimation(string animation, float time)
     {
-        if(_animator != null) _animator.CrossFade(animation, time);
+        if (_animator != null) _animator.CrossFade(animation, time);
     }
 
     public void SetCurrentBehavior(CharacterConstants.BehaviorType NewBehavior)
     {
         PreviousBehavior = CurrentBehavior;
         CurrentBehavior = NewBehavior;
-        if(_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
+        if (_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
     }
 
     internal void SetUpdateState(CharacterConstants.UpdateState newState)
@@ -186,11 +196,11 @@ public class CharacterComponent : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if(updateState == CharacterConstants.UpdateState.None)
+        if (updateState == CharacterConstants.UpdateState.None)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(this.transform.position, 0.5f);
-            Gizmos.DrawIcon(this.transform.position + new Vector3(0,0,0.5f), "Icon_Person_Male.png"); ;
+            Gizmos.DrawIcon(this.transform.position + new Vector3(0, 0, 0.5f), "Icon_Person_Male.png"); ;
         }
     }
 #endif

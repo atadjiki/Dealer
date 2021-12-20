@@ -42,6 +42,24 @@ public class BehaviorHelper : MonoBehaviour
         return behaviorScript;
     }
 
+    public static CharacterBehaviorScript ApproachBehavior(CharacterComponent character, Interactable interactable, out bool success)
+    {
+        CharacterBehaviorScript behaviorScript
+             = CreateBehaviorObject(character.GetID() + " approach " + interactable.GetID(), character).AddComponent<Behavior_Approach>();
+
+        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        {
+            Character = character,
+            Interactable = interactable,
+            Behavior = behaviorScript,
+        };
+
+        behaviorScript.BeginBehavior(data);
+
+        success = true;
+        return behaviorScript;
+    }
+
     public static CharacterBehaviorScript MoveToRandomLocation(CharacterComponent character, out bool success)
     {
         CharacterBehaviorScript behaviorScript
@@ -90,5 +108,13 @@ public class BehaviorHelper : MonoBehaviour
         behaviorObject.transform.parent = character.transform;
 
         return behaviorObject;
+    }
+
+    public static bool IsInteractionAllowed(CharacterComponent character, Interactable interactable)
+    {
+        Vector3 characterPos = character.GetNavigatorComponent().transform.position;
+        Vector3 interactionPos = interactable.GetInteractionTransform().position;
+
+        return (Vector3.Distance(characterPos, interactionPos) < 1f);
     }
 }

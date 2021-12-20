@@ -39,28 +39,4 @@ public class NPCComponent : CharacterComponent
         base.OnDestinationReached(destination);
     }
 
-    public override void OnMouseEnter()
-    {
-        base.OnMouseEnter();
-        if (CharacterMode == CharacterConstants.Mode.Selected)
-        {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
-        }
-        else
-        {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
-        }
-
-    }
-
-    public override void OnMouseExit()
-    {
-        base.OnMouseExit();
-        GameplayCanvas.Instance.ClearInteractionTipText();
-    }
-
-    public override void OnMouseClicked()
-    {
-        base.OnMouseClicked();
-    }
 }

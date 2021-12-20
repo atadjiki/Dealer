@@ -44,6 +44,7 @@ public class CharacterBehaviorScript : MonoBehaviour
         if (DebugManager.Instance.LogBehavior) Debug.Log("End Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Completed);
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
+        _data.Character.SetCurrentBehavior(Constants.CharacterConstants.BehaviorType.None);
 
         _data.Character.ToIdle();
 

@@ -13,7 +13,7 @@ public class GameplayCanvas : MonoBehaviour
     [SerializeField] internal GameObject GameplayPanel;
     [SerializeField] internal TextMeshProUGUI Text_Interaction_Tip;
 
-    public enum InteractionContext { Select, Deselect, Move, Interact, None };
+    public enum InteractionContext { Select, Deselect, Move, Approach, Interact, None };
 
     private void Awake()
     {
@@ -56,6 +56,9 @@ public class GameplayCanvas : MonoBehaviour
                 break;
             case InteractionContext.Interact:
                 text = "Interact";
+                break;
+            case InteractionContext.Approach:
+                text = "Approach";
                 break;
         }
 

@@ -62,7 +62,15 @@ public class Interactable : MonoBehaviour, IInteraction
     {
         if (NPCManager.Instance.IsNPCCurrentlySelected())
         {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Interact);
+            if(BehaviorHelper.IsInteractionAllowed(NPCManager.Instance.GetSelectedNPC(), this))
+            {
+                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Interact);
+            }
+            else
+            {
+                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Approach);
+            }
+            
         }
     }
 

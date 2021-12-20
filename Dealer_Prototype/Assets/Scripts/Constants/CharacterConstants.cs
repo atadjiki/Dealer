@@ -9,6 +9,7 @@ namespace Constants
             MoveToLocation,
             MoveToRandomLocation,
             Idle,
+            Approach,
             Interact,
             None
         };
