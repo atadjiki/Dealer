@@ -171,7 +171,7 @@ public class NavigatorComponent : MonoBehaviour
         {
             yield return null;
 
-            if (Vector3.Distance(this.transform.position, _AI.destination) < 1)
+            if (Vector3.Distance(this.transform.position, _AI.destination) < 0.1f)
             {
                 break;
             }

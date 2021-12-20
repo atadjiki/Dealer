@@ -26,6 +26,8 @@ public class CharacterComponent : MonoBehaviour
 
     [SerializeField] protected CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
 
+    public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
+
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
 
@@ -123,8 +125,15 @@ public class CharacterComponent : MonoBehaviour
         CharacterCameraManager.Instance.UnRegisterCharacterCamera(this);
     }
 
-    public virtual void OnNewDestination(Vector3 destination) { }
-    public virtual void OnDestinationReached(Vector3 destination) { }
+    public virtual void OnNewDestination(Vector3 destination)
+    {
+        DebugExtension.DebugWireSphere(destination, Color.green, 1, 1, false);
+    }
+
+    public virtual void OnDestinationReached(Vector3 destination)
+    {
+        DebugExtension.DebugWireSphere(destination, Color.green, 1, 1, false);
+    }
 
     public void ToIdle()
     {
@@ -162,8 +171,6 @@ public class CharacterComponent : MonoBehaviour
     {
         updateState = newState;
     }
-
-    public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
 
     public string GetID()
     {

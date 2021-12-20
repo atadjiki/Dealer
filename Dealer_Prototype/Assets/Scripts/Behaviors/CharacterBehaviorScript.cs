@@ -24,13 +24,13 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     internal virtual void BeginBehavior(BehaviorData data)
     {
+        if (DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
+
         _data = data;
 
         SetBehaviorState(BehaviorState.Busy);
         data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
-
-        if (DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
     }
 
     protected virtual IEnumerator Behavior()
@@ -53,7 +53,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     internal virtual void AbortBehavior()
     {
-        if(_coroutine != null) StopCoroutine(_coroutine);
         if(DebugManager.Instance.LogBehavior) Debug.Log("Aborting script " + gameObject.name);
+        if (_coroutine != null) StopCoroutine(_coroutine);
     }
 }

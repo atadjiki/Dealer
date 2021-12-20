@@ -15,6 +15,8 @@ public class Behavior_Idle : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
+        _data.Character.ToIdle();
+
         yield return new WaitForSeconds(Random.Range(0.0f, _data.Character.IdleSeconds_Max));
 
         yield return base.Behavior();
