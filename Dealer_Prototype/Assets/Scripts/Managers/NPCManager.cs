@@ -202,6 +202,8 @@ public class NPCManager : MonoBehaviour
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.GetID());
         selectedNPC = NPC;
         selectedNPC.PerformSelect();
+
+        GameplayCanvas.Instance.OnCharacterSelected(NPC);
     }
 
     private void UnpossessNPC()
@@ -209,6 +211,8 @@ public class NPCManager : MonoBehaviour
         if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.GetID());
         selectedNPC.PerformUnselect();
         selectedNPC = null;
+
+        GameplayCanvas.Instance.OnCharacterDeselected();
     }
 
     public bool IsNPCCurrentlySelected()
@@ -227,6 +231,8 @@ public class NPCManager : MonoBehaviour
         {
             bool success;
             CharacterBehaviorScript behaviorScript = BehaviorHelper.MoveToBehavior(selectedNPC, Location, out success);
+
+            selectedNPC.AddNewBehavior(behaviorScript);
         }
     }
 
@@ -245,7 +251,10 @@ public class NPCManager : MonoBehaviour
             {
                 behaviorScript = BehaviorHelper.ApproachBehavior(selectedNPC, interactable, out success);
             }
-            
+
+            selectedNPC.AddNewBehavior(behaviorScript);
+
+
         }
     }
 }

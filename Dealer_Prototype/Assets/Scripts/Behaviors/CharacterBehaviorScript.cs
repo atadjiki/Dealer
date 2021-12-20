@@ -21,15 +21,20 @@ public class CharacterBehaviorScript : MonoBehaviour
     private BehaviorState _behaviorState = BehaviorState.None;
 
     public void SetBehaviorState(BehaviorState newState) { _behaviorState = newState; }
+    public BehaviorState GetBehaviorState() { return _behaviorState; }
 
-    internal virtual void BeginBehavior(BehaviorData data)
+    internal virtual void Setup(BehaviorData data)
+    {
+        _data = data;
+        SetBehaviorState(BehaviorState.Ready);
+    }
+
+    internal virtual void BeginBehavior()
     {
         if (DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
 
-        _data = data;
-
         SetBehaviorState(BehaviorState.Busy);
-        data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
+        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
     }
 
@@ -46,7 +51,7 @@ public class CharacterBehaviorScript : MonoBehaviour
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
         _data.Character.SetCurrentBehavior(Constants.CharacterConstants.BehaviorType.None);
 
-        _data.Character.ToIdle();
+        ((PlayerComponent)_data.Character).OnBehaviorFinished(this);
 
         Destroy(this.gameObject);
     }

@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Behavior_MoveToLocation : CharacterBehaviorScript
 {
-    internal override void BeginBehavior(BehaviorData data)
+    internal override void BeginBehavior()
     {
-        base.BeginBehavior(data);
+        base.BeginBehavior();
 
         _data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.MoveToLocation);
     }

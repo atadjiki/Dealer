@@ -33,14 +33,12 @@ public class PlayerComponent : NPCComponent
     {
         CharacterMode = CharacterConstants.Mode.Selected;
         _selection.SetPossesed();
-        ToIdle();
     }
 
     public override void PerformUnselect()
     {
         CharacterMode = CharacterConstants.Mode.Stationary;
         _selection.SetUnposessed();
-        ToIdle();
     }
 
     public override void OnMouseClicked()

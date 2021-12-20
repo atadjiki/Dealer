@@ -17,10 +17,12 @@ public class CharacterComponent : MonoBehaviour
 
     [Header("Character Setup")]
 
-    public CharacterConstants.BehaviorType PreviousBehavior = CharacterConstants.BehaviorType.None;
-    public CharacterConstants.BehaviorType CurrentBehavior = CharacterConstants.BehaviorType.None;
+    private CharacterConstants.BehaviorType PreviousBehavior = CharacterConstants.BehaviorType.None;
+    private CharacterConstants.BehaviorType CurrentBehavior = CharacterConstants.BehaviorType.None;
 
     public CharacterConstants.Mode CharacterMode = CharacterConstants.Mode.None;
+
+    private AnimationConstants.Animations CurrentAnimation = AnimationConstants.Animations.Idle;
 
     [Header("Debug")]
 
@@ -35,7 +37,7 @@ public class CharacterComponent : MonoBehaviour
 
     protected SpawnData spawnData;
 
-    protected CharacterBehaviorScript _currentBehaviorScript;
+    private Queue<CharacterBehaviorScript> _behaviorQueue;
 
     internal virtual void Initialize(SpawnData _spawnData)
     {
@@ -52,6 +54,7 @@ public class CharacterComponent : MonoBehaviour
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.Instance.CreatePrefab(RegistryID.Navigator, this.transform);
         _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
+        _navigator.SetCanMove(true);
 
         yield return new WaitWhile(() => _navigator == null);
 
@@ -92,6 +95,8 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitWhile(() => _selection == null);
 
+        _behaviorQueue = new Queue<CharacterBehaviorScript>();
+
         SetCurrentBehavior(CharacterConstants.BehaviorType.None);
     }
 
@@ -125,34 +130,29 @@ public class CharacterComponent : MonoBehaviour
         CharacterCameraManager.Instance.UnRegisterCharacterCamera(this);
     }
 
-    public virtual void OnNewDestination(Vector3 destination)
-    {
-        DebugExtension.DebugWireSphere(destination, Color.green, 1, 1, false);
-    }
+    public virtual void OnNewDestination(Vector3 destination) { }
 
-    public virtual void OnDestinationReached(Vector3 destination)
-    {
-        DebugExtension.DebugWireSphere(destination, Color.green, 1, 1, false);
-    }
+    public virtual void OnDestinationReached(Vector3 destination) { }
 
     public void ToIdle()
     {
         _animator.CrossFade(AnimationConstants.Idle, 0.5f);
         _navigator.SetCanMove(false);
+        SetCurrentAnimation(AnimationConstants.Animations.Idle);
     }
 
     public void ToMoving()
     {
         _animator.CrossFade(AnimationConstants.Walking, 0.1f);
         _navigator.SetCanMove(true);
+        SetCurrentAnimation(AnimationConstants.Animations.Walking);
     }
 
     public void ToInteracting()
     {
-        StopAllCoroutines();
         _animator.CrossFade(AnimationConstants.ButtonPush, 0.3f);
         _navigator.SetCanMove(false);
-
+        SetCurrentAnimation(AnimationConstants.Animations.ButtonPush);
     }
 
     private void FadeToAnimation(string animation, float time)
@@ -160,11 +160,22 @@ public class CharacterComponent : MonoBehaviour
         if (_animator != null) _animator.CrossFade(animation, time);
     }
 
+    public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }
+
     public void SetCurrentBehavior(CharacterConstants.BehaviorType NewBehavior)
     {
         PreviousBehavior = CurrentBehavior;
         CurrentBehavior = NewBehavior;
         if (_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
+        GameplayCanvas.Instance.SetBehaviorText(CurrentBehavior);
+    }
+
+    public AnimationConstants.Animations GetCurrentAnimation() { return CurrentAnimation; }
+
+    public void SetCurrentAnimation(AnimationConstants.Animations anim)
+    {
+        CurrentAnimation = anim;
+        GameplayCanvas.Instance.SetAnimationText(anim);
     }
 
     internal void SetUpdateState(CharacterConstants.UpdateState newState)
@@ -198,6 +209,39 @@ public class CharacterComponent : MonoBehaviour
     public NavigatorComponent GetNavigatorComponent()
     {
         return _navigator;
+    }
+
+    public void AddNewBehavior(CharacterBehaviorScript behaviorScript)
+    {
+        _behaviorQueue.Enqueue(behaviorScript);
+
+        ProcessBehaviorQueue();
+    }
+
+    private void ProcessBehaviorQueue()
+    {
+        if (_behaviorQueue.Count == 0)
+        {
+            return;
+        }
+        else if (_behaviorQueue.Peek().GetBehaviorState() == CharacterBehaviorScript.BehaviorState.Ready)
+        {
+            _behaviorQueue.Peek().BeginBehavior();
+            return;
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    public void OnBehaviorFinished(CharacterBehaviorScript finishedBehavior)
+    {
+        if (_behaviorQueue.Peek() == finishedBehavior)
+        {
+            _behaviorQueue.Dequeue();
+            ProcessBehaviorQueue();
+        }
     }
 
 #if UNITY_EDITOR

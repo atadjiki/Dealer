@@ -56,7 +56,7 @@ public class NavigationUtilities : MonoBehaviour
         }
         else
         {
-            if(DebugManager.Instance.LogNavigator) Debug.Log("out of level bounds!");
+            if(DebugManager.Instance.LogNavigator) Debug.Log("Invalid destination");
             valid = false;
             return location;
         }

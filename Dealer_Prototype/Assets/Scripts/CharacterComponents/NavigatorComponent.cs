@@ -150,9 +150,9 @@ public class NavigatorComponent : MonoBehaviour
 
     private IEnumerator DoMoveToLocation(Vector3 Destination)
     {
-        parentCharacter.ToMoving();
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
+    
         State = MovementState.Moving;
 
         //get rid of any existing prefabs that are out there first
@@ -164,20 +164,30 @@ public class NavigatorComponent : MonoBehaviour
         if (NPCManager.Instance.GetSelectedNPC() == parentCharacter)
             SpawnNavPointPrefab(Destination);
 
+        parentCharacter.ToMoving();
+
+        if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
         parentCharacter.OnNewDestination(Destination);
 
         // Wait until the agent has reached the destination
         while (true)
         {
-            yield return null;
+            if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 0.25f, Time.fixedDeltaTime, false);
+            yield return new WaitForEndOfFrame();
 
-            if (Vector3.Distance(this.transform.position, _AI.destination) < 0.1f)
+            if (Vector3.Distance(this.transform.position, Destination) < 0.1f)
             {
                 break;
             }
         }
 
         // The agent has reached the destination now
+        if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
+
+        parentCharacter.ToIdle();
+
+        yield return new WaitForSeconds(0.1f);
+
         parentCharacter.OnDestinationReached(Destination);
         State = MovementState.Stopped;
 

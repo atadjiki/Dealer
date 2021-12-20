@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using Constants;
 
 public class GameplayCanvas : MonoBehaviour
 {
@@ -10,8 +11,17 @@ public class GameplayCanvas : MonoBehaviour
 
     public static GameplayCanvas Instance { get { return _instance; } }
 
-    [SerializeField] internal GameObject GameplayPanel;
-    [SerializeField] internal TextMeshProUGUI Text_Interaction_Tip;
+    [SerializeField] private GameObject GameplayPanel;
+    [SerializeField] private TextMeshProUGUI Text_Interaction_Tip;
+
+    [SerializeField] private GameObject Panel_SelectedCharacter;
+    [SerializeField] private TextMeshProUGUI Text_SelectedCharacter;
+
+    [SerializeField] private TextMeshProUGUI Text_BehaviorQueue;
+
+    [SerializeField] private GameObject Panel_CharacterState;
+    [SerializeField] private TextMeshProUGUI Text_CurrentAnimation;
+    [SerializeField] private TextMeshProUGUI Text_CurrentBehavior;
 
     public enum InteractionContext { Select, Deselect, Move, Approach, Interact, None };
 
@@ -37,6 +47,40 @@ public class GameplayCanvas : MonoBehaviour
     public void Toggle(bool flag)
     {
         this.gameObject.SetActive(flag);
+    }
+
+    public void OnCharacterSelected(CharacterComponent character)
+    {
+        ToggleCharacterPanels(true);
+
+        Text_SelectedCharacter.text = character.GetID();
+        Text_CurrentBehavior.text = character.GetCurrentBehavior().ToString();
+        Text_CurrentAnimation.text = character.GetCurrentAnimation().ToString();
+    }
+
+    public void OnCharacterDeselected()
+    {
+        ToggleCharacterPanels(false);
+
+        Text_SelectedCharacter.text = "";
+        Text_CurrentBehavior.text = "";
+        Text_CurrentAnimation.text = "";
+    }
+
+    private void ToggleCharacterPanels(bool flag)
+    {
+        Panel_SelectedCharacter.SetActive(flag);
+        Panel_CharacterState.SetActive(flag);
+    }
+
+    public void SetBehaviorText(CharacterConstants.BehaviorType behaviorType)
+    {
+        Text_CurrentBehavior.text = behaviorType.ToString();
+    }
+
+    public void SetAnimationText(AnimationConstants.Animations anim)
+    {
+        Text_CurrentAnimation.text = anim.ToString();
     }
 
     public void SetInteractionTipTextContext(InteractionContext context)

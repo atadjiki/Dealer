@@ -17,7 +17,7 @@ public class BehaviorHelper : MonoBehaviour
             Destination = Vector3.zero
         };
 
-        behaviorScript.BeginBehavior(data);
+        behaviorScript.Setup(data);
 
         success = true;
         return behaviorScript;
@@ -36,7 +36,7 @@ public class BehaviorHelper : MonoBehaviour
             Destination = destination
         };
 
-        behaviorScript.BeginBehavior(data);
+        behaviorScript.Setup(data);
 
         success = true;
         return behaviorScript;
@@ -54,7 +54,7 @@ public class BehaviorHelper : MonoBehaviour
             Behavior = behaviorScript,
         };
 
-        behaviorScript.BeginBehavior(data);
+        behaviorScript.Setup(data);
 
         success = true;
         return behaviorScript;
@@ -71,7 +71,7 @@ public class BehaviorHelper : MonoBehaviour
             Behavior = behaviorScript
         };
 
-        behaviorScript.BeginBehavior(data);
+        behaviorScript.Setup(data);
 
         success = true;
         return behaviorScript;
@@ -92,7 +92,7 @@ public class BehaviorHelper : MonoBehaviour
                 Destination = interactable.transform.position
             };
 
-            behaviorScript.BeginBehavior(data);
+            behaviorScript.Setup(data);
 
             success = true;
             return behaviorScript;

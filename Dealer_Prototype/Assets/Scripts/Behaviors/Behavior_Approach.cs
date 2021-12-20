@@ -6,16 +6,17 @@ using UnityEngine;
 public class Behavior_Approach : CharacterBehaviorScript
 {
 
-    internal override void BeginBehavior(BehaviorData data)
+    internal override void BeginBehavior()
     {
-        base.BeginBehavior(data);
+        base.BeginBehavior();
 
-        data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.Approach);
+        _data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.Approach);
     }
 
     protected override IEnumerator Behavior()
     {
         _data.Character.GetNavigatorComponent().MoveToLocation(_data.Interactable.GetInteractionTransform().position);
+       
         if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " approaching " + _data.Interactable.GetID());
 
         yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
