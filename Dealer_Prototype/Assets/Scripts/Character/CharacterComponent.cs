@@ -134,30 +134,11 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public void ToIdle()
+    public void FadeToAnimation(AnimationConstants.Animations animation, float time, bool canMove)
     {
-        _animator.CrossFade(AnimationConstants.Idle, 0.5f);
-        _navigator.SetCanMove(false);
-        SetCurrentAnimation(AnimationConstants.Animations.Idle);
-    }
-
-    public void ToMoving()
-    {
-        _animator.CrossFade(AnimationConstants.Walking, 0.1f);
-        _navigator.SetCanMove(true);
-        SetCurrentAnimation(AnimationConstants.Animations.Walking);
-    }
-
-    public void ToInteracting()
-    {
-        _animator.CrossFade(AnimationConstants.ButtonPush, 0.3f);
-        _navigator.SetCanMove(false);
-        SetCurrentAnimation(AnimationConstants.Animations.ButtonPush);
-    }
-
-    private void FadeToAnimation(string animation, float time)
-    {
-        if (_animator != null) _animator.CrossFade(animation, time);
+        if (_animator != null) _animator.CrossFade(animation.ToString(), time);
+        if(_navigator != null) _navigator.SetCanMove(canMove);
+        SetCurrentAnimation(animation);
     }
 
     public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }

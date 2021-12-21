@@ -20,12 +20,12 @@ public class Behavior_InteractWith : CharacterBehaviorScript
         _data.Character.GetNavigatorComponent().TeleportToLocation(_data.Interactable.GetInteractionTransform());
         if(DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
-        _data.Character.ToInteracting();
+        _data.Character.FadeToAnimation(AnimationConstants.Animations.ButtonPush, 0.5f, false);
 
         if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " interacting with " + _data.Interactable.GetID());
         yield return new WaitForSeconds(3.0f);
 
-        _data.Character.ToIdle();
+        _data.Character.FadeToAnimation(AnimationConstants.Animations.Idle, 0.25f, false);
 
         if (DebugManager.Instance.LogBehavior) Debug.Log(_data.Character.GetID() + " finished interacting with " + _data.Interactable.GetID());
         _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);
