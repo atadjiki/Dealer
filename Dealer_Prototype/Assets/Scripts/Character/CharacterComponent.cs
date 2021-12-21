@@ -37,7 +37,9 @@ public class CharacterComponent : MonoBehaviour
 
     protected SpawnData spawnData;
 
+    //behavior queue
     private Queue<CharacterBehaviorScript> _behaviorQueue;
+    private int _maxQueueSize = 3;
 
     internal virtual void Initialize(SpawnData _spawnData)
     {
@@ -194,26 +196,22 @@ public class CharacterComponent : MonoBehaviour
 
     public void AddNewBehavior(CharacterBehaviorScript behaviorScript)
     {
-        _behaviorQueue.Enqueue(behaviorScript);
+        if(_behaviorQueue.Count < _maxQueueSize)
+        {
+            _behaviorQueue.Enqueue(behaviorScript);
 
-        ProcessBehaviorQueue();
+            ProcessBehaviorQueue();
+        }
     }
 
     private void ProcessBehaviorQueue()
     {
-        if (_behaviorQueue.Count == 0)
-        {
-            return;
-        }
-        else if (_behaviorQueue.Peek().GetBehaviorState() == CharacterBehaviorScript.BehaviorState.Ready)
+        if (_behaviorQueue.Count > 0 && _behaviorQueue.Peek().GetBehaviorState() == CharacterBehaviorScript.BehaviorState.Ready)
         {
             _behaviorQueue.Peek().BeginBehavior();
-            return;
         }
-        else
-        {
-            return;
-        }
+
+        GameplayCanvas.Instance.UpdateBehaviorQueue(_behaviorQueue);
     }
 
     public void OnBehaviorFinished(CharacterBehaviorScript finishedBehavior)
