@@ -15,6 +15,10 @@ public class ColorManager : MonoBehaviour
     [Header("Decals")]
     [SerializeField] private Color NavPoint;
     [SerializeField] private Color Selection;
+    [SerializeField] private Color Behavior_Inactive;
+    [SerializeField] private Color Behavior_Active;
+    [SerializeField] private Color InteractionTransform;
+
 
     private static ColorManager _instance;
 
@@ -82,5 +86,22 @@ public class ColorManager : MonoBehaviour
     public Color GetSelectionColor()
     {
         return Selection;
+    }
+
+    public Color GetBehaviorDecalColor(bool active)
+    {
+        if(active)
+        {
+            return Behavior_Active;
+        }
+        else
+        {
+            return Behavior_Inactive;
+        }
+    }
+
+    public Color GetInteractionTransformColor()
+    {
+        return InteractionTransform;
     }
 }

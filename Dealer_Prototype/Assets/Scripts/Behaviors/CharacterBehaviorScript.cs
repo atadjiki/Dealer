@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
+using TMPro;
 using UnityEngine;
 
 public class CharacterBehaviorScript : MonoBehaviour
@@ -23,10 +25,18 @@ public class CharacterBehaviorScript : MonoBehaviour
     public void SetBehaviorState(BehaviorState newState) { _behaviorState = newState; }
     public BehaviorState GetBehaviorState() { return _behaviorState; }
 
+    private GameObject behaviorDecal;
+
     internal virtual void Setup(BehaviorData data)
     {
         _data = data;
         SetBehaviorState(BehaviorState.Ready);
+
+        behaviorDecal = PrefabFactory.Instance.CreatePrefab(RegistryID.BehaviorDecal, _data.Destination, Quaternion.identity, null);
+
+        behaviorDecal.transform.parent = this.gameObject.transform;
+
+        ColorManager.Instance.SetObjectToColor(behaviorDecal, ColorManager.Instance.GetBehaviorDecalColor(false));
     }
 
     internal virtual void BeginBehavior()
@@ -36,6 +46,8 @@ public class CharacterBehaviorScript : MonoBehaviour
         SetBehaviorState(BehaviorState.Busy);
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
+
+        ColorManager.Instance.SetObjectToColor(behaviorDecal, ColorManager.Instance.GetBehaviorDecalColor(true));
     }
 
     protected virtual IEnumerator Behavior()
@@ -53,6 +65,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
         ((PlayerComponent)_data.Character).OnBehaviorFinished(this);
 
+        Destroy(behaviorDecal.gameObject);
         Destroy(this.gameObject);
     }
 

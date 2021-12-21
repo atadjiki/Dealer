@@ -204,6 +204,7 @@ public class NPCManager : MonoBehaviour
         selectedNPC.PerformSelect();
 
         GameplayCanvas.Instance.OnCharacterSelected(NPC);
+        CameraFollowTarget.Instance.AttachTo(NPC);
     }
 
     private void UnpossessNPC()
@@ -213,6 +214,7 @@ public class NPCManager : MonoBehaviour
         selectedNPC = null;
 
         GameplayCanvas.Instance.OnCharacterDeselected();
+        CameraFollowTarget.Instance.Release();
     }
 
     public bool IsNPCCurrentlySelected()

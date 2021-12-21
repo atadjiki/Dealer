@@ -202,6 +202,10 @@ public class CharacterComponent : MonoBehaviour
 
             ProcessBehaviorQueue();
         }
+        else
+        {
+            Destroy(behaviorScript.gameObject);
+        }
     }
 
     private void ProcessBehaviorQueue()

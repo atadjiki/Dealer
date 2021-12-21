@@ -14,7 +14,7 @@ public class BehaviorHelper : MonoBehaviour
             Character = character,
             Interactable = null,
             Behavior = behaviorScript,
-            Destination = Vector3.zero
+            Destination = character.GetNavigatorComponent().transform.position
         };
 
         behaviorScript.Setup(data);
@@ -52,6 +52,7 @@ public class BehaviorHelper : MonoBehaviour
             Character = character,
             Interactable = interactable,
             Behavior = behaviorScript,
+            Destination = interactable.GetInteractionTransform().position
         };
 
         behaviorScript.Setup(data);
@@ -68,7 +69,8 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
             Character = character,
-            Behavior = behaviorScript
+            Behavior = behaviorScript,
+            Destination = Vector3.zero
         };
 
         behaviorScript.Setup(data);
@@ -89,7 +91,7 @@ public class BehaviorHelper : MonoBehaviour
                 Character = character,
                 Interactable = interactable,
                 Behavior = behaviorScript,
-                Destination = interactable.transform.position
+                Destination = interactable.GetInteractionTransform().position
             };
 
             behaviorScript.Setup(data);

@@ -11,6 +11,8 @@ public class CameraFollowTarget : MonoBehaviour
 
     private CameraMovementState State = CameraMovementState.Idle;
 
+    private bool attached = false;
+
     [SerializeField] private float MoveDistance = 0.5f;
     [SerializeField] private float LerpSpeed = 1.5f;
 
@@ -29,6 +31,8 @@ public class CameraFollowTarget : MonoBehaviour
 
     public void MoveInDirection(Vector2 InputVector)
     {
+        if (attached) return;
+
         Vector3 forward = OverheadCameraManager.Instance.transform.forward;
         var right = OverheadCameraManager.Instance.transform.right;
 
@@ -51,12 +55,14 @@ public class CameraFollowTarget : MonoBehaviour
 
     public void MoveTo(Vector3 destination)
     {
+        if (attached) return;
+
         if (State == CameraMovementState.Idle)
         {
             bool valid;
             destination = NavigationUtilities.Instance.GetValidLocation(destination, out valid);
 
-            if(valid)
+            if (valid)
             {
                 StartCoroutine(PerformMove(destination));
             }
@@ -68,7 +74,7 @@ public class CameraFollowTarget : MonoBehaviour
         State = CameraMovementState.Moving;
 
         Vector3 origin = this.transform.position;
-        
+
         float fraction = 0;
 
         while (!Mathf.Approximately(Vector3.Distance(this.transform.position, destination), 0))
@@ -80,5 +86,19 @@ public class CameraFollowTarget : MonoBehaviour
         State = CameraMovementState.Idle;
 
         yield return null;
+    }
+
+    public void AttachTo(CharacterComponent character)
+    {
+        attached = true;
+        this.transform.parent = character.GetNavigatorComponent().transform;
+        this.transform.localPosition = Vector3.zero;
+    }
+
+    public void Release()
+    {
+        attached = false;
+        this.transform.parent = CharacterCameraManager.Instance.transform;
+
     }
 }

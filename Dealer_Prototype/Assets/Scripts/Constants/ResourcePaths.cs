@@ -13,7 +13,8 @@ namespace Constants
         CharacterCanvas,
         CM_Character,
         CharacterCameraRig,
-        SelectionComponent
+        SelectionComponent,
+        BehaviorDecal
     }
 
     public class Registry
@@ -48,6 +49,9 @@ namespace Constants
                     return true;
                 case RegistryID.NavPoint:
                     PathString = "Prefabs/Navigation/NavPoint";
+                    return true;
+                case RegistryID.BehaviorDecal:
+                    PathString = "Prefabs/Behavior/BehaviorDecal";
                     return true;
                 case RegistryID.NPC:
                     PathString = "Prefabs/Characters/NPC_Empty";
