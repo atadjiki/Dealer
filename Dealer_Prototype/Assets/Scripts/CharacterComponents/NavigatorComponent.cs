@@ -32,12 +32,12 @@ public class NavigatorComponent : MonoBehaviour
 
         pathRenderer = GetComponent<LineRenderer>();
         pathRenderer.positionCount = 2;
-        
+
     }
 
     private void FixedUpdate()
     {
-        if (DebugManager.Instance.LogNavigator && NPCManager.Instance.GetSelectedNPC() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
+        if (DebugManager.Instance.LogNavigator && PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
             if (State == MovementState.Moving)
             {
@@ -152,7 +152,7 @@ public class NavigatorComponent : MonoBehaviour
     {
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
-    
+
         State = MovementState.Moving;
 
         //get rid of any existing prefabs that are out there first
@@ -161,7 +161,7 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-        if (NPCManager.Instance.GetSelectedNPC() == parentCharacter)
+        if (PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter)
             SpawnNavPointPrefab(Destination);
 
         parentCharacter.FadeToAnimation(AnimationConstants.Animations.Walking, 0.15f, true);

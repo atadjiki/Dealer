@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour
             }
             else if (hit.collider.tag == "Ground")
             {
-                if (NPCManager.Instance.IsNPCCurrentlySelected())
+                if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
                     GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Move);
                 else
                     GameplayCanvas.Instance.ClearInteractionTipText();
@@ -112,7 +112,7 @@ public class InputManager : MonoBehaviour
             //if the mouse just hit the ground, move to the specified location
             else if (hit.collider.tag == "Ground")
             {
-                NPCManager.Instance.AttemptMoveOnPossesedNPC(hit.point);
+                PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(hit.point);
             }
 
             CameraFollowTarget.Instance.MoveTo(hit.point);

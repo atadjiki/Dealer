@@ -26,8 +26,8 @@ public class PlayerSpawner : MonoBehaviour
 
         if (DebugManager.Instance.LogSpawner) Debug.Log("Spawning player");
 
-        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.Player, this.transform);
-        PlayerComponent playerComp = NPC.GetComponent<PlayerComponent>();
+        GameObject Character = PrefabFactory.Instance.CreatePrefab(RegistryID.Player, this.transform);
+        PlayableCharacterComponent playerComp = Character.GetComponent<PlayableCharacterComponent>();
 
         yield return new WaitWhile(() => playerComp == null);
 

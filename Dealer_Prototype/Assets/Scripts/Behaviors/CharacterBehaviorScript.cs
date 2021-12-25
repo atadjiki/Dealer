@@ -63,7 +63,7 @@ public class CharacterBehaviorScript : MonoBehaviour
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
         _data.Character.SetCurrentBehavior(Constants.CharacterConstants.BehaviorType.None);
 
-        ((PlayerComponent)_data.Character).OnBehaviorFinished(this);
+        _data.Character.OnBehaviorFinished(this);
 
         Destroy(behaviorDecal.gameObject);
         Destroy(this.gameObject);

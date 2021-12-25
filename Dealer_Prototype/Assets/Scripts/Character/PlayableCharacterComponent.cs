@@ -4,24 +4,8 @@ using Constants;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class PlayerComponent : NPCComponent
+public class PlayableCharacterComponent : NPCComponent
 {
-    private static PlayerComponent _instance;
-
-    public static PlayerComponent Instance { get { return _instance; } }
-
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
-
     internal override IEnumerator DoInitialize()
     {
         yield return base.DoInitialize();
@@ -43,6 +27,6 @@ public class PlayerComponent : NPCComponent
 
     public override void OnMouseClicked()
     {
-        NPCManager.Instance.HandleNPCSelection(this);
+        PlayableCharacterManager.Instance.HandleCharacterSelection(this);
     }
 }

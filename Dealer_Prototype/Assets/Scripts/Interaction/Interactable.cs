@@ -60,9 +60,9 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public virtual void MouseEnter()
     {
-        if (NPCManager.Instance.IsNPCCurrentlySelected())
+        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
         {
-            if(BehaviorHelper.IsInteractionAllowed(NPCManager.Instance.GetSelectedNPC(), this))
+            if(BehaviorHelper.IsInteractionAllowed(PlayableCharacterManager.Instance.GetSelectedCharacter(), this))
             {
                 GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Interact);
             }
@@ -76,9 +76,9 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public virtual void MouseClick()
     {
-        if (NPCManager.Instance.GetSelectedNPC() != null)
+        if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
         {
-            NPCManager.Instance.AttemptInteractWithPossesedNPC(this);
+            PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
         }
     }
 

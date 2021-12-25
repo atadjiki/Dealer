@@ -17,10 +17,6 @@ public class NPCManager : MonoBehaviour
     private int _updateEveryFrames = 60 * 3;
     private int _currentFrames = 0;
 
-    private NPCComponent selectedNPC = null;
-
-    private PlayerComponent player;
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -50,9 +46,8 @@ public class NPCManager : MonoBehaviour
     {
 
         //check if player
-        if (npc.GetComponent<PlayerComponent>() != null)
+        if (npc.GetComponent<PlayableCharacterComponent>() != null)
         {
-            player = npc.GetComponent<PlayerComponent>();
             return true;
         }
 
@@ -177,86 +172,5 @@ public class NPCManager : MonoBehaviour
 
         result = null;
         return false;
-    }
-
-    public void HandleNPCSelection(NPCComponent NPC)
-    {
-        //if nobody is selected, register
-        if (selectedNPC == null)
-        {
-            PossessNPC(NPC);
-        }
-        else if (selectedNPC != NPC)
-        {
-            UnpossessNPC();
-            PossessNPC(NPC);
-        }
-        else
-        {
-            UnpossessNPC();
-        }
-    }
-
-    private void PossessNPC(NPCComponent NPC)
-    {
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + NPC.GetID());
-        selectedNPC = NPC;
-        selectedNPC.PerformSelect();
-
-        GameplayCanvas.Instance.OnCharacterSelected(NPC);
-        CameraFollowTarget.Instance.AttachTo(NPC);
-    }
-
-    private void UnpossessNPC()
-    {
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedNPC.GetID());
-        selectedNPC.PerformUnselect();
-        selectedNPC = null;
-
-        GameplayCanvas.Instance.OnCharacterDeselected();
-        CameraFollowTarget.Instance.Release();
-    }
-
-    public bool IsNPCCurrentlySelected()
-    {
-        return (selectedNPC != null);
-    }
-
-    public NPCComponent GetSelectedNPC()
-    {
-        return selectedNPC;
-    }
-
-    public void AttemptMoveOnPossesedNPC(Vector3 Location)
-    {
-        if (selectedNPC != null)
-        {
-            bool success;
-            CharacterBehaviorScript behaviorScript = BehaviorHelper.MoveToBehavior(selectedNPC, Location, out success);
-
-            selectedNPC.AddNewBehavior(behaviorScript);
-        }
-    }
-
-    public void AttemptInteractWithPossesedNPC(Interactable interactable)
-    {
-        if (selectedNPC != null)
-        {
-            bool success;
-            CharacterBehaviorScript behaviorScript;
-
-            if (BehaviorHelper.IsInteractionAllowed(selectedNPC, interactable))
-            {
-                behaviorScript = BehaviorHelper.InteractWithBehavior(selectedNPC, interactable, out success);
-            }
-            else
-            {
-                behaviorScript = BehaviorHelper.ApproachBehavior(selectedNPC, interactable, out success);
-            }
-
-            selectedNPC.AddNewBehavior(behaviorScript);
-
-
-        }
     }
 }
