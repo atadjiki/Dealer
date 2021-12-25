@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayableCharacterManager : MonoBehaviour
+public class PlayableCharacterManager : CharacterManager
 {
     private static PlayableCharacterManager _instance;
 
     public static PlayableCharacterManager Instance { get { return _instance; } }
-
-    private List<PlayableCharacterComponent> Characters;
 
     private PlayableCharacterComponent selectedCharacter;
 
@@ -27,9 +25,37 @@ public class PlayableCharacterManager : MonoBehaviour
         Build();
     }
 
-    private void Build()
+    public override bool Register(CharacterComponent Character)
     {
-        Characters = new List<PlayableCharacterComponent>();
+        PlayableCharacterComponent playableCharacter = Character.GetComponent<PlayableCharacterComponent>();
+
+        if(playableCharacter != null)
+        {
+            if (Characters.Count == _popCap)
+            {
+                if (DebugManager.Instance.LogPlayableManager) Debug.Log("Could not register Playable Character, reached pop cap");
+                return false;
+            }
+
+            Characters.Add(playableCharacter);
+
+            if (DebugManager.Instance.LogPlayableManager && playableCharacter != null) Debug.Log("Registered Playable Character " + playableCharacter.GetID());
+            return true;
+        }
+
+        return false;
+    }
+
+    public override void UnRegister(CharacterComponent Character)
+    {
+        PlayableCharacterComponent playableCharacter = Character.GetComponent<PlayableCharacterComponent>();
+
+        if (playableCharacter != null)
+        {
+            if (DebugManager.Instance.LogPlayableManager && playableCharacter != null) Debug.Log("Unregistered Playable Character " + playableCharacter.GetID());
+            Characters.Remove(Character);
+        }
+            
     }
 
     public void HandleCharacterSelection(PlayableCharacterComponent Character)
@@ -52,7 +78,7 @@ public class PlayableCharacterManager : MonoBehaviour
 
     private void PossessCharacter(PlayableCharacterComponent Character)
     {
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Selected " + Character.GetID());
+        if (DebugManager.Instance.LogPlayableManager) Debug.Log("Selected " + Character.GetID());
         selectedCharacter = Character;
         selectedCharacter.PerformSelect();
 
@@ -62,7 +88,7 @@ public class PlayableCharacterManager : MonoBehaviour
 
     private void UnpossessCharacter()
     {
-        if (DebugManager.Instance.LogNPCManager) Debug.Log("Unselected " + selectedCharacter.GetID());
+        if (DebugManager.Instance.LogPlayableManager) Debug.Log("Unselected " + selectedCharacter.GetID());
         selectedCharacter.PerformUnselect();
         selectedCharacter = null;
 

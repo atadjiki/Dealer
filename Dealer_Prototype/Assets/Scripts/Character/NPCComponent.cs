@@ -10,7 +10,7 @@ public class NPCComponent : CharacterComponent
     {
         base.Initialize(spawnData);
 
-        if (NPCManager.Instance.RegisterNPC(this) == false)
+        if (NPCManager.Instance.Register(this) == false)
         {
             Destroy(this.gameObject);
         }
@@ -31,7 +31,7 @@ public class NPCComponent : CharacterComponent
 
     private void OnDestroy()
     {
-        NPCManager.Instance.UnRegisterNPC(this);
+        NPCManager.Instance.UnRegister(this);
     }
 
     public override void OnDestinationReached(Vector3 destination)

@@ -6,6 +6,16 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PlayableCharacterComponent : NPCComponent
 {
+    internal override void Initialize(SpawnData spawnData)
+    {
+        base.Initialize(spawnData);
+
+        if (NPCManager.Instance.Register(this) == false)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     internal override IEnumerator DoInitialize()
     {
         yield return base.DoInitialize();

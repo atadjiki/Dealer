@@ -4,7 +4,7 @@ using Constants;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class PlayerSpawner : MonoBehaviour
+public class PlayableCharacterSpawner : MonoBehaviour
 {
     public enum SpawnMode { AutoActivate, None };
     public SpawnMode Mode = SpawnMode.AutoActivate;
@@ -24,7 +24,7 @@ public class PlayerSpawner : MonoBehaviour
     {
         State = PlayerSpawnerState.Spawning;
 
-        if (DebugManager.Instance.LogSpawner) Debug.Log("Spawning player");
+        if (DebugManager.Instance.LogSpawner) Debug.Log("Spawning playable character");
 
         GameObject Character = PrefabFactory.Instance.CreatePrefab(RegistryID.Player, this.transform);
         PlayableCharacterComponent playerComp = Character.GetComponent<PlayableCharacterComponent>();

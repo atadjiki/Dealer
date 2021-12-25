@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class NPCManager : MonoBehaviour
+public class NPCManager : CharacterManager
 {
     private static NPCManager _instance;
 
     public static NPCManager Instance { get { return _instance; } }
 
     private List<Interactable> Interactables;
-
-    private List<NPCComponent> Characters;
-    private int _popCap = 10;
-
-    private int _updateEveryFrames = 60 * 3;
-    private int _currentFrames = 0;
 
     private void Awake()
     {
@@ -31,42 +25,51 @@ public class NPCManager : MonoBehaviour
         Build();
     }
 
-    private void Build()
+    protected override void Build()
     {
+        base.Build();
+
         Interactables = new List<Interactable>();
-        Characters = new List<NPCComponent>();
     }
 
-    public bool HasNotExceededPopCap()
-    {
-        return Characters.Count < _popCap;
-    }
-
-    public bool RegisterNPC(NPCComponent npc)
+    public override bool Register(CharacterComponent Character)
     {
 
-        //check if player
-        if (npc.GetComponent<PlayableCharacterComponent>() != null)
+        NPCComponent npc = Character.GetComponent<NPCComponent>();
+
+        if(npc != null)
         {
+            //check if player
+            if (npc.GetComponent<PlayableCharacterComponent>() != null)
+            {
+                return true;
+            }
+
+            if (Characters.Count == _popCap)
+            {
+                if (DebugManager.Instance.LogNPCManager) Debug.Log("Could not register NPC, reached pop cap");
+                return false;
+            }
+
+            Characters.Add(npc);
+
+            if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Registered NPC " + npc.GetID());
             return true;
         }
 
-        if (Characters.Count == _popCap)
-        {
-            if (DebugManager.Instance.LogNPCManager) Debug.Log("Could not register NPC, reached pop cap");
-            return false;
-        }
-
-        Characters.Add(npc);
-
-        if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Registered NPC " + npc.GetID());
-        return true;
+        return false;
     }
 
-    public void UnRegisterNPC(NPCComponent npc)
+    public override void UnRegister(CharacterComponent Character)
     {
-        if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Unregistered NPC " + npc.GetID());
-        Characters.Remove(npc);
+        NPCComponent npc = Character.GetComponent<NPCComponent>();
+
+        if (npc != null)
+        {
+            if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Unregistered NPC " + npc.GetID());
+            Characters.Remove(npc);
+
+        }  
     }
 
     public bool RegisterInteractable(Interactable interactable)
