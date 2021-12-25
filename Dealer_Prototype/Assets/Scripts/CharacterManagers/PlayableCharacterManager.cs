@@ -10,7 +10,6 @@ public class PlayableCharacterManager : CharacterManager
 
     private PlayableCharacterComponent selectedCharacter;
 
-
     private void Awake()
     {
         if (_instance != null && _instance != this)

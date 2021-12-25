@@ -10,7 +10,7 @@ public class PlayableCharacterComponent : NPCComponent
     {
         base.Initialize(spawnData);
 
-        if (NPCManager.Instance.Register(this) == false)
+        if (PlayableCharacterManager.Instance.Register(this) == false)
         {
             Destroy(this.gameObject);
         }

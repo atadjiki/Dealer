@@ -2,14 +2,14 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(NPCManager))]
-public class NPCManagerEditor : Editor
+[CustomEditor(typeof(PlayableCharacterManager))]
+public class PlayableCharacterManagerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        NPCManager levelManager = (NPCManager)target;
+        PlayableCharacterManager manager = (PlayableCharacterManager)target;
         if (GUILayout.Button("Select Previous Character"))
         {
             

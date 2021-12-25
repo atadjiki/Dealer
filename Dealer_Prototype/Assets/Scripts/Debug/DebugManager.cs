@@ -16,6 +16,7 @@ public class DebugManager : MonoBehaviour
     public bool LogNavigator = false;
     public bool LogNPCManager = false;
     public bool LogPlayableManager = false;
+    public bool LogInteractableManager = false;
     public bool LogDatabase = false;
     public bool LogSpawner = false;
     public bool LogCameraManager = false;

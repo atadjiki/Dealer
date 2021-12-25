@@ -38,7 +38,7 @@ public class Interactable : MonoBehaviour, IInteraction
 
         SetState(InteractableConstants.InteractionState.Available);
 
-        if (NPCManager.Instance.RegisterInteractable(this) == false)
+        if (InteractableManager.Instance.Register(this) == false)
         {
             Destroy(this.gameObject);
         }
@@ -49,7 +49,7 @@ public class Interactable : MonoBehaviour, IInteraction
 
     private void OnDestroy()
     {
-        NPCManager.Instance.UnRegisterInteractable(this);
+        InteractableManager.Instance.UnRegister(this);
     }
 
     public bool HasBeenInteractedWith(CharacterComponent character)

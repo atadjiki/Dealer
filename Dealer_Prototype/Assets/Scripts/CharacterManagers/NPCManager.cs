@@ -9,8 +9,6 @@ public class NPCManager : CharacterManager
 
     public static NPCManager Instance { get { return _instance; } }
 
-    private List<Interactable> Interactables;
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -23,13 +21,6 @@ public class NPCManager : CharacterManager
         }
 
         Build();
-    }
-
-    protected override void Build()
-    {
-        base.Build();
-
-        Interactables = new List<Interactable>();
     }
 
     public override bool Register(CharacterComponent Character)
@@ -70,20 +61,6 @@ public class NPCManager : CharacterManager
             Characters.Remove(npc);
 
         }  
-    }
-
-    public bool RegisterInteractable(Interactable interactable)
-    {
-        Interactables.Add(interactable);
-
-        if (DebugManager.Instance.LogNPCManager && interactable != null) Debug.Log("Registered Interactable " + interactable.GetID());
-        return true;
-    }
-
-    public void UnRegisterInteractable(Interactable interactable)
-    {
-        if (DebugManager.Instance.LogNPCManager && interactable != null) Debug.Log("Unregistered Interactable " + interactable.GetID());
-        Interactables.Remove(interactable);
     }
 
     private void Update()
@@ -145,7 +122,7 @@ public class NPCManager : CharacterManager
         {
 
             Interactable jukeBox;
-            if (FindInteractableByID(InteractableConstants.InteractableID.Jukebox, out jukeBox))
+            if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Jukebox, out jukeBox))
             {
                 if (jukeBox != null && jukeBox.HasBeenInteractedWith(npc) == false)
                 {
@@ -160,20 +137,5 @@ public class NPCManager : CharacterManager
 
         }
 
-    }
-
-    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out Interactable result)
-    {
-        foreach (Interactable interactable in Interactables)
-        {
-            if (interactable.GetID() == ID.ToString())
-            {
-                result = interactable;
-                return true;
-            }
-        }
-
-        result = null;
-        return false;
     }
 }
