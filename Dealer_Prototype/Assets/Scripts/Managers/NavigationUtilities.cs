@@ -56,7 +56,7 @@ public class NavigationUtilities : MonoBehaviour
         }
         else
         {
-            if(DebugManager.Instance.LogNavigator) Debug.Log("Invalid destination");
+            DebugManager.Instance.Print(DebugManager.Log.LogNavigator, "Invalid destination");
             valid = false;
             return location;
         }

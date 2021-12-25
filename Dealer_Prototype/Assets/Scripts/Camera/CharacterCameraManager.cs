@@ -78,7 +78,7 @@ public class CharacterCameraManager : MonoBehaviour
 
         DisableCameras();
 
-        if (DebugManager.Instance.LogCameraManager) Debug.Log("Switching to camera " + camera);
+        DebugManager.Instance.Print(DebugManager.Log.LogCameraManager, "Switching to camera " + camera);
 
         camera.Priority = _enabledPriority;  
     }
@@ -87,6 +87,6 @@ public class CharacterCameraManager : MonoBehaviour
     {
         DisableCameras();
 
-        if (DebugManager.Instance.LogCameraManager) Debug.Log("Switching to default camera");
+        DebugManager.Instance.Print(DebugManager.Log.LogCameraManager, "Switching to default camera");
     }
 }

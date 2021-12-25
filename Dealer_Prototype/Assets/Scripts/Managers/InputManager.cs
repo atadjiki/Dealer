@@ -94,7 +94,7 @@ public class InputManager : MonoBehaviour
 
     private void OnMouseActionPerformed(InputAction.CallbackContext context)
     {
-        if (DebugManager.Instance.LogInput) Debug.Log("Pointer click at " + _screenMousePos);
+        DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);
 
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
 
@@ -102,7 +102,7 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (DebugManager.Instance.LogInput) Debug.Log("Ray hit ground at " + hit.point);
+            DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit ground at " + hit.point);
 
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
             if (interactionInterface != null)

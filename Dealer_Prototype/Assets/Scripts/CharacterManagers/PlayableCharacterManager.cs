@@ -32,13 +32,13 @@ public class PlayableCharacterManager : CharacterManager
         {
             if (Characters.Count == _popCap)
             {
-                if (DebugManager.Instance.LogPlayableManager) Debug.Log("Could not register Playable Character, reached pop cap");
+                DebugManager.Instance.Print(DebugManager.Log.LogPlayableManager, "Could not register Playable Character, reached pop cap");
                 return false;
             }
 
             Characters.Add(playableCharacter);
 
-            if (DebugManager.Instance.LogPlayableManager && playableCharacter != null) Debug.Log("Registered Playable Character " + playableCharacter.GetID());
+            if (playableCharacter != null) DebugManager.Instance.Print(DebugManager.Log.LogPlayableManager, "Registered Playable Character " + playableCharacter.GetID());
             return true;
         }
 
@@ -51,7 +51,7 @@ public class PlayableCharacterManager : CharacterManager
 
         if (playableCharacter != null)
         {
-            if (DebugManager.Instance.LogPlayableManager && playableCharacter != null) Debug.Log("Unregistered Playable Character " + playableCharacter.GetID());
+            if (playableCharacter != null) DebugManager.Instance.Print(DebugManager.Log.LogPlayableManager,"Unregistered Playable Character " + playableCharacter.GetID());
             Characters.Remove(Character);
         }
             
@@ -77,7 +77,7 @@ public class PlayableCharacterManager : CharacterManager
 
     private void PossessCharacter(PlayableCharacterComponent Character)
     {
-        if (DebugManager.Instance.LogPlayableManager) Debug.Log("Selected " + Character.GetID());
+        DebugManager.Instance.Print(DebugManager.Log.LogPlayableManager, "Selected " + Character.GetID());
         selectedCharacter = Character;
         selectedCharacter.PerformSelect();
 
@@ -87,7 +87,7 @@ public class PlayableCharacterManager : CharacterManager
 
     private void UnpossessCharacter()
     {
-        if (DebugManager.Instance.LogPlayableManager) Debug.Log("Unselected " + selectedCharacter.GetID());
+        DebugManager.Instance.Print(DebugManager.Log.LogPlayableManager, "Unselected " + selectedCharacter.GetID());
         selectedCharacter.PerformUnselect();
         selectedCharacter = null;
 

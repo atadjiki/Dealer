@@ -38,13 +38,13 @@ public class NPCManager : CharacterManager
 
             if (Characters.Count == _popCap)
             {
-                if (DebugManager.Instance.LogNPCManager) Debug.Log("Could not register NPC, reached pop cap");
+                DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Could not register NPC, reached pop cap");
                 return false;
             }
 
             Characters.Add(npc);
 
-            if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Registered NPC " + npc.GetID());
+            DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + npc.GetID());
             return true;
         }
 
@@ -57,7 +57,7 @@ public class NPCManager : CharacterManager
 
         if (npc != null)
         {
-            if (DebugManager.Instance.LogNPCManager && npc != null) Debug.Log("Unregistered NPC " + npc.GetID());
+            DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Unregistered NPC " + npc.GetID());
             Characters.Remove(npc);
 
         }  
@@ -89,14 +89,14 @@ public class NPCManager : CharacterManager
                 }
                 else if (npc.CharacterMode == CharacterConstants.Mode.Stationary)
                 {
-                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Stationary");
+                    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, this.gameObject.name + " - Mode - Stationary");
 
                     bool success;
                     BehaviorHelper.IdleBehavior(npc, out success);
                 }
                 else if (npc.CharacterMode == CharacterConstants.Mode.Selected)
                 {
-                    if (DebugManager.Instance.LogCharacter) Debug.Log(this.gameObject.name + " - Mode - Selected");
+                    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, this.gameObject.name + " - Mode - Selected");
                 }
             }
             else if (npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)

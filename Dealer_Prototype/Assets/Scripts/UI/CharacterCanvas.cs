@@ -17,7 +17,7 @@ public class CharacterCanvas : BillboardCanvas
         Text_ID.text = "";
         Text_Behavior.text = "";
 
-        if (!DebugManager.Instance.LogCharacter)
+        if (DebugManager.Instance.State_Character == DebugManager.State.None)
         {
             Panel.color = Color.clear;
         }
@@ -25,13 +25,13 @@ public class CharacterCanvas : BillboardCanvas
 
     public void Set_Text_ID(string text)
     {
-        if(Text_ID != null && DebugManager.Instance.LogCharacter)
+        if(Text_ID != null && DebugManager.Instance.State_Character != DebugManager.State.None)
             Text_ID.text = text;
     }
 
     public void Set_Text_Mode(string text)
     {
-        if (Text_Behavior != null && DebugManager.Instance.LogCharacter)
+        if (Text_Behavior != null && DebugManager.Instance.State_Character != DebugManager.State.None)
             Text_Behavior.text = text;
     }
 }

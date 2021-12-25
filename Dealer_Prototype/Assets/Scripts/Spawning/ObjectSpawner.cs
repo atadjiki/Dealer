@@ -53,7 +53,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         State = ObjectSpawnerState.Spawning;
 
-        if(DebugManager.Instance.LogSpawner) Debug.Log("Spawning character - " + data.ID.ToString());
+        DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning character - " + data.ID.ToString());
 
         Transform SpawnTransform = this.transform;
 

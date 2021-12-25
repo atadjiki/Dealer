@@ -34,13 +34,13 @@ public class InteractableManager : MonoBehaviour
     {
         Interactables.Add(interactable);
 
-        if (DebugManager.Instance.LogInteractableManager && interactable != null) Debug.Log("Registered Interactable " + interactable.GetID());
+        DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Registered Interactable " + interactable.GetID());
         return true;
     }
 
     public void UnRegister(Interactable interactable)
     {
-        if (DebugManager.Instance.LogInteractableManager && interactable != null) Debug.Log("Unregistered Interactable " + interactable.GetID());
+        DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Unregistered Interactable " + interactable.GetID());
         Interactables.Remove(interactable);
     }
 

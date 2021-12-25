@@ -41,8 +41,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     internal virtual void BeginBehavior()
     {
-        if (DebugManager.Instance.LogBehavior) Debug.Log("Begin Behavior - " + this.name);
-
+        DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Begin Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Busy);
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
@@ -58,7 +57,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     protected virtual void EndBehavior()
     {
-        if (DebugManager.Instance.LogBehavior) Debug.Log("End Behavior - " + this.name);
+        DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "End Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Completed);
         _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
         _data.Character.SetCurrentBehavior(Constants.CharacterConstants.BehaviorType.None);
@@ -71,7 +70,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     internal virtual void AbortBehavior()
     {
-        if(DebugManager.Instance.LogBehavior) Debug.Log("Aborting script " + gameObject.name);
+        DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Aborting script " + gameObject.name);
         if (_coroutine != null) StopCoroutine(_coroutine);
     }
 }

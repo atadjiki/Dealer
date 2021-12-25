@@ -37,7 +37,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (DebugManager.Instance.LogNavigator && PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
+        if (DebugManager.Instance.State_Navigator != DebugManager.State.None && PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
         {
             if (State == MovementState.Moving)
             {
@@ -88,14 +88,14 @@ public class NavigatorComponent : MonoBehaviour
         //check distances
         if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 1)
         {
-            if (DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around origin");
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around origin");
 
             success = false;
             return null;
         }
         else if (Vector3.Distance(NearestNode_destination.position, location) > 1)
         {
-            if (DebugManager.Instance.LogCharacter) Debug.Log("No nodes available around destination");
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around destination");
 
             success = false;
             return null;
@@ -126,7 +126,7 @@ public class NavigatorComponent : MonoBehaviour
         }
         else
         {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible to " + transform.position);
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, name + ": " + "Path not possible to " + transform.position);
             return false;
         }
     }
@@ -143,7 +143,7 @@ public class NavigatorComponent : MonoBehaviour
         }
         else
         {
-            if (DebugManager.Instance.LogCharacter) Debug.Log(name + ": " + "Path not possible to " + location);
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, name + ": " + "Path not possible to " + location);
             return false;
         }
     }
@@ -166,13 +166,13 @@ public class NavigatorComponent : MonoBehaviour
 
         parentCharacter.FadeToAnimation(AnimationConstants.Animations.Walking, 0.15f, true);
 
-        if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
+        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
         parentCharacter.OnNewDestination(Destination);
 
         // Wait until the agent has reached the destination
         while (true)
         {
-            if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 0.25f, Time.fixedDeltaTime, false);
+            if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 0.25f, Time.fixedDeltaTime, false);
             yield return new WaitForEndOfFrame();
 
             if (Vector3.Distance(this.transform.position, Destination) < 0.1f)
@@ -182,7 +182,7 @@ public class NavigatorComponent : MonoBehaviour
         }
 
         // The agent has reached the destination now
-        if (DebugManager.Instance.LogNavigator) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
+        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
 
         parentCharacter.FadeToAnimation(AnimationConstants.Animations.Idle, 0.15f, false);
 
