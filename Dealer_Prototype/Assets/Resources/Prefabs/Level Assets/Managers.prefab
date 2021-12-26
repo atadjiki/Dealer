@@ -463,14 +463,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388102177}
-  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 17.67767, z: -17.67767}
+  m_LocalRotation: {x: 0.23911765, y: 0.36964378, z: -0.09904577, w: 0.8923991}
+  m_LocalPosition: {x: -5.23984, y: 7.165064, z: -5.239841}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1164522726}
   m_Father: {fileID: 7247307076616581597}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 45, z: 0}
 --- !u!114 &388102180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_Follow: {fileID: 9109154129059866001}
   m_Lens:
     FieldOfView: 40
-    OrthographicSize: 10
+    OrthographicSize: 5
     NearClipPlane: 0.001
     FarClipPlane: 100
     Dutch: 0
@@ -1011,8 +1011,8 @@ MonoBehaviour:
   m_ZDamping: 1
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.5
-  m_CameraDistance: 25
+  m_ScreenY: 0.75
+  m_CameraDistance: 10
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -1978,17 +1978,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b4d6dd1d40b46a48f331d9af446bef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LogCharacter: 0
-  LogInput: 0
-  LogAStar: 0
-  LogNavigator: 0
-  LogNPCManager: 0
-  LogPlayableManager: 0
-  LogInteractableManager: 0
-  LogDatabase: 0
-  LogSpawner: 0
-  LogCameraManager: 0
-  LogBehavior: 0
+  State_Character: 0
+  State_Input: 0
+  State_AStar: 0
+  State_Navigator: 0
+  State_NPCManager: 0
+  State_PlayableManager: 0
+  State_InteractableManager: 0
+  State_Database: 0
+  State_Spawner: 0
+  State_CameraManager: 0
+  State_Behavior: 0
   _astarPath: {fileID: 7247307076528436471}
 --- !u!1 &7247307076131792847
 GameObject:
@@ -2054,13 +2054,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7247307076224063485}
-  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 17.67767, z: -17.67767}
+  m_LocalRotation: {x: 0.23911765, y: 0.36964378, z: -0.09904577, w: 0.8923991}
+  m_LocalPosition: {x: -5.23984, y: 7.165064, z: -5.239841}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7247307076616581597}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!20 &7247307076224063483
 Camera:
   m_ObjectHideFlags: 0
@@ -2071,8 +2071,8 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 2
+  m_BackGroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_SensorSize: {x: 21, y: 15.2}
@@ -2084,11 +2084,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.001
   far clip plane: 100
   field of view: 40
-  orthographic: 0
-  orthographic size: 10
+  orthographic: 1
+  orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -2217,9 +2217,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACIn+te/0QQ3QEAAL0DAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1U01v2zAM/SuBzmsR56NFdpwbdIclGeweig47MBJtC5WlTJaSNEH++0Rbbtx9nGQ98j2Kj/SZ8QoscIc2AyF9wz6Pkk8jxo12xtsVHJfWGhvQCaGoVC5PGK7jW0o7gHqFrcKvKMvKxaweTJWst23qPKA1HHNldsRNxt19KUr8hrp0FTFbUOoMS2l0rDINGArpjH2SCiPY0l28P/8JvPSAb5BI1JGzHgNiUeEetHu0sKtybwvguDKCNNmDWRuX4S8vLTLKhSZ4EvRSo5QUaEmnANXgMLjCpvpQoQ88obUg9b8iFocMHuWzPv6ADqS6utS8hu/ziO1BeXrpTTK6ULtQrrrYj5907erlUO/efSLzrHHggp+dxpGmEdC3eJ7obOUKYzmKL8Zr0aSog9zfjOR2kfyXFGtGyqTnzCJh0jGayhzIs413Smq82kCBdRhFarRGTi8e+t3T4syuNI1gsXF5OHi10ert+WVAQ01ruIZ9Hbipd07q8sotvRQfrWXFdFaI6f32DmfFgs/vb/BuNk2K+RbEfDHGYszaLqSWToL6HvSV670Mqz0Yt4a6VcyQh8GO2o2jtRIWDo/yVJvBCkhdmJyHtdCbTuO97bAQoIKxYtn+Azm2LRCVnS/s8htQSwMEFAAACAgAAIif6yHG/oNvAAAAegAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tFKasUlairF5klmqSZplsqm5bqqZibFhmmlSYoqppUFqmoFSLFB9SWVBql9ibipET0BiSUZaZl5KZl66XlBqcmJxiTvIcKXYWgBQSwECLQAUAAAICAAAiJ/rXv9EEN0BAAC9AwAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAiJ/rIcb+g28AAAB6AAAACQAkAAAAAAAAAAAAAAAqAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAOQCAAAAAA==
+    dataString: UEsDBBQAAAgIAACIn+uVqHKu9QEAAOIDAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1U8Fy2jAU/BVG58LYuMTQYwlDDwU6OIdMOj08pGdbE1misgQEhn+vZMvgTFJfJO/Trvz2rS+ElqCBGtRbYNzW5NsgGk2+DAhV0iirV3BaaK20w8ceRSEyfsbmWOyAI4hX2An8gbwoTTjVgXPBq91NsYJTJtTec5OofV+wAn+iLEzpmQ3I5RYLrmS4JXEYMm6UfuICAxiPpw42AXj+gLzcEFuj5/m2jLboEI0CDyDNUsO+zKzOgeJKMS9LHtVamS3+tVwj8WehdsY4wbkSgjPUXicHUWO/uMK6fHdDV3hCrYHLzyoa+wwa5Ldd/RENcOG7aI2qX93+MiAHELbxfnD17UKxaku/yVIrKxn54+H22gyq/c0xb6NWBoxztpU6eRmHvoX1fJPNlabIvnu9eo7Syd0Zw6+j9GGapPFkuhhGaccfzWaT/2qETwgK8TiQxqMoDpzY7f0TN9y6VEfv6cYawSXebfKFtRvVXEmJ1LfSn0dHCzO90ySCxtpkbqHlRoq355ceDaVP6hoOlePOrTFcFnduYTl7bz3ZpdMIU0jih3ySsgSGaT6jMbKYTiBhaYSk6YJLbjiIX05fmM5kl/5eHCRUjeIWqRv8oEmkjx3TcFzyc6V6EeEyVxl1sZGbVuPWtgsMCGcxWzS/SYZNC55KLldy/QdQSwMEFAAACAgAAIif6xnG/MtvAAAAegAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tFKSuYVBqnmisaFZmql5inGirnmaZbJhaophsmmicYq5QapSLFB9SWVBql9ibipET0BiSUZaZl5KZl66XlBqcmJxiTvIcKXYWgBQSwECLQAUAAAICAAAiJ/rlahyrvUBAADiAwAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAiJ/rGcb8y28AAAB6AAAACQAkAAAAAAAAAAAAAABCAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAPwCAAAAAA==
     upgradeData: 
-    file_cachedStartup: {fileID: 0}
+    file_cachedStartup: {fileID: 4900000, guid: 14c28720cba674bb1ab06b25cd00d468, type: 3}
     data_cachedStartup: 
     cacheStartup: 0
   showNavGraphs: 1
@@ -2233,7 +2233,7 @@ MonoBehaviour:
   logPathResults: 4
   maxNearestNodeDistance: 100
   scanOnStartup: 1
-  fullGetNearestSearch: 0
+  fullGetNearestSearch: 1
   prioritizeGraphs: 0
   prioritizeGraphsLimit: 1
   colorSettings:
@@ -2282,7 +2282,7 @@ MonoBehaviour:
   heuristicScale: 1
   threadCount: -1
   maxFrameTime: 10
-  batchGraphUpdates: 0
+  batchGraphUpdates: 1
   graphUpdateBatchingInterval: 0.2
   euclideanEmbedding:
     mode: 0
@@ -2303,8 +2303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  desiredSimulationFPS: 20
-  workerThreads: 2
+  desiredSimulationFPS: 10
+  workerThreads: 0
   doubleBuffering: 0
   symmetryBreakingBias: 0.1
   movementPlane: 0
