@@ -1,4 +1,6 @@
 using UnityEngine.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -12,6 +14,9 @@ public class InputManager : MonoBehaviour
     private static InputManager _instance;
 
     public static InputManager Instance { get { return _instance; } }
+
+    private HashSet<IInteraction> Interactables;
+    private HashSet<IInterior> Interiors;
 
     private void Awake()
     {
@@ -34,6 +39,9 @@ public class InputManager : MonoBehaviour
         inputActions.Default.Select.performed += ctx => OnMouseActionPerformed(ctx);
 
         inputActions.Enable();
+
+        Interactables = new HashSet<IInteraction>();
+        Interiors = new HashSet<IInterior>();
     }
 
 
@@ -57,19 +65,18 @@ public class InputManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
             if (interactionInterface != null)
             {
+                Interactables.Add(interactionInterface);
                 interactionInterface.MouseEnter();
                 CursorManager.Instance.ToInteract();
                 mouseEvent = true;
             }
-            else if (hit.collider.tag == "Ground")
+            else if(interiorInterface != null)
             {
-                if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-                    GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Move);
-                else
-                    GameplayCanvas.Instance.ClearInteractionTipText();
-
+                Interiors.Add(interiorInterface);
+                interiorInterface.MouseEnter();
                 CursorManager.Instance.ToDefault();
                 mouseEvent = true;
             }
@@ -77,9 +84,28 @@ public class InputManager : MonoBehaviour
 
         if (!mouseEvent)
         {
+            ProcessMouseExitObjects();
+
             GameplayCanvas.Instance.ClearInteractionTipText();
             CursorManager.Instance.ToCancel();
         }
+    }
+
+    private void ProcessMouseExitObjects()
+    {
+        foreach (IInterior interior in Interiors)
+        {
+            interior.MouseExit();
+        }
+
+        Interiors.Clear();
+
+        foreach(IInteraction Interaction in Interactables)
+        {
+            Interaction.MouseExit();
+        }
+
+        Interactables.Clear();
     }
 
     private void HandleKeyboard()
@@ -105,16 +131,16 @@ public class InputManager : MonoBehaviour
             DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit ground at " + hit.point);
 
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
             if (interactionInterface != null)
             {
                 interactionInterface.MouseClick();
             }
-            //if the mouse just hit the ground, move to the specified location
-            else if (hit.collider.tag == "Ground")
+            else if(interiorInterface != null)
             {
-                PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(hit.point);
+                interiorInterface.MouseClick(hit.point);
             }
-
+            
             CameraFollowTarget.Instance.MoveTo(hit.point);
         }
     }

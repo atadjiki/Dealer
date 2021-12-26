@@ -90,4 +90,6 @@ public class Interactable : MonoBehaviour, IInteraction
         else
             return "";
     }
+
+    public void MouseExit() { }
 }

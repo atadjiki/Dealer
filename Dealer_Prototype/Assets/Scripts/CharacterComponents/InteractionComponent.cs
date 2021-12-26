@@ -23,4 +23,6 @@ public class InteractionComponent : MonoBehaviour, IInteraction
     {
         if (MouseClickedEvent != null) MouseClickedEvent();
     }
+
+    public void MouseExit() { }
 }
