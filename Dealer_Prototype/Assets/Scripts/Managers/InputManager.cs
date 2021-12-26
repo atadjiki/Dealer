@@ -85,7 +85,6 @@ public class InputManager : MonoBehaviour
         if (!mouseEvent)
         {
             ProcessMouseExitObjects();
-
             GameplayCanvas.Instance.ClearInteractionTipText();
             CursorManager.Instance.ToCancel();
         }
