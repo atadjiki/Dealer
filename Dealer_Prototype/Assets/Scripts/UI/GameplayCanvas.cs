@@ -43,6 +43,8 @@ public class GameplayCanvas : MonoBehaviour
     private void Build()
     {
         Toggle(true);
+
+        ToggleCharacterPanels(DebugManager.Instance.State_Character != DebugManager.State.None);
     }
 
     public void Toggle(bool flag)
@@ -52,20 +54,26 @@ public class GameplayCanvas : MonoBehaviour
 
     public void OnCharacterSelected(CharacterComponent character)
     {
-        ToggleCharacterPanels(true);
+        if (DebugManager.Instance.State_Character != DebugManager.State.None)
+        {
+            ToggleCharacterPanels(true);
 
-        Text_SelectedCharacter.text = character.GetID();
-        Text_CurrentBehavior.text = character.GetCurrentBehavior().ToString();
-        Text_CurrentAnimation.text = character.GetCurrentAnimation().ToString();
+            Text_SelectedCharacter.text = character.GetID();
+            Text_CurrentBehavior.text = character.GetCurrentBehavior().ToString();
+            Text_CurrentAnimation.text = character.GetCurrentAnimation().ToString();
+        }
     }
 
     public void OnCharacterDeselected()
     {
-        ToggleCharacterPanels(false);
+        if (DebugManager.Instance.State_Character != DebugManager.State.None)
+        {
+            ToggleCharacterPanels(false);
 
-        Text_SelectedCharacter.text = "";
-        Text_CurrentBehavior.text = "";
-        Text_CurrentAnimation.text = "";
+            Text_SelectedCharacter.text = "";
+            Text_CurrentBehavior.text = "";
+            Text_CurrentAnimation.text = "";
+        }
     }
 
     private void ToggleCharacterPanels(bool flag)
@@ -87,9 +95,10 @@ public class GameplayCanvas : MonoBehaviour
 
     public void SetInteractionTipTextContext(InteractionContext context)
     {
+
         string text = "";
 
-        switch(context)
+        switch (context)
         {
             case InteractionContext.Select:
                 text = "Select";
@@ -118,18 +127,20 @@ public class GameplayCanvas : MonoBehaviour
 
     public void UpdateBehaviorQueue(Queue<CharacterBehaviorScript> behaviorQueue)
     {
-        string text = "";
-
-        foreach(CharacterBehaviorScript behaviorScript in behaviorQueue)
+        if (DebugManager.Instance.State_Character != DebugManager.State.None)
         {
-            text += "* ";
-            text += behaviorScript.name;
-            text += "\n\n";
+            string text = "";
+
+            foreach (CharacterBehaviorScript behaviorScript in behaviorQueue)
+            {
+                text += "* ";
+                text += behaviorScript.name;
+                text += "\n\n";
+            }
+
+            Text_BehaviorQueue.text = text;
+
+            Panel_BehaviorQueue.SetActive(behaviorQueue.Count != 0);
         }
-
-        Text_BehaviorQueue.text = text;
-
-        Panel_BehaviorQueue.SetActive(behaviorQueue.Count != 0);
-
     }
 }

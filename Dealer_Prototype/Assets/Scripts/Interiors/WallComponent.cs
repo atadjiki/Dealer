@@ -9,14 +9,12 @@ public class WallComponent : MonoBehaviour, IInterior
     [SerializeField] private Mesh Mesh_High;
 
     private MeshFilter filter;
-    private MeshCollider meshCollider;
 
     private enum State { Low, High };
 
     private void Awake()
     {
         filter = GetComponentInChildren<MeshFilter>();
-        meshCollider = GetComponent<MeshCollider>();
 
         ToState(State.High);
     }
@@ -27,11 +25,9 @@ public class WallComponent : MonoBehaviour, IInterior
         {
             case State.High:
                 filter.mesh = Mesh_High;
-                meshCollider.sharedMesh = Mesh_High;
                 break;
             case State.Low:
                 filter.mesh = Mesh_Low;
-                meshCollider.sharedMesh = Mesh_Low;
                 break;
         }
     }
@@ -43,6 +39,8 @@ public class WallComponent : MonoBehaviour, IInterior
     public void MouseEnter()
     {
         ToState(State.Low);
+
+        CursorManager.Instance.ToCancel();
     }
 
     public void MouseExit()

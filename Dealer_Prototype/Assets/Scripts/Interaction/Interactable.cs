@@ -73,6 +73,8 @@ public class Interactable : MonoBehaviour, IInteraction
             }
             
         }
+
+        CursorManager.Instance.ToInteract();
     }
 
     public virtual void MouseClick()

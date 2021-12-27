@@ -15,8 +15,10 @@ public class InputManager : MonoBehaviour
 
     public static InputManager Instance { get { return _instance; } }
 
-    private HashSet<IInteraction> Interactables;
-    private HashSet<IInterior> Interiors;
+    private IInterior Tracked_MouseOver_Interior = null;
+
+    const int ground_layerMask = 1 << 6;
+
 
     private void Awake()
     {
@@ -39,9 +41,6 @@ public class InputManager : MonoBehaviour
         inputActions.Default.Select.performed += ctx => OnMouseActionPerformed(ctx);
 
         inputActions.Enable();
-
-        Interactables = new HashSet<IInteraction>();
-        Interiors = new HashSet<IInterior>();
     }
 
 
@@ -62,49 +61,59 @@ public class InputManager : MonoBehaviour
 
         bool mouseEvent = false;
 
-        if (Physics.Raycast(ray, out hit))
+        //for walls, interactables, doors, etc
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ground_layerMask))
         {
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
             IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
             if (interactionInterface != null)
             {
-                Interactables.Add(interactionInterface);
                 interactionInterface.MouseEnter();
-                CursorManager.Instance.ToInteract();
                 mouseEvent = true;
             }
-            else if(interiorInterface != null)
+            else if (interiorInterface != null)
             {
-                Interiors.Add(interiorInterface);
+                if (Tracked_MouseOver_Interior != null && interiorInterface == Tracked_MouseOver_Interior) { return; }
+
+                if (Tracked_MouseOver_Interior != null && Tracked_MouseOver_Interior != interiorInterface)
+                {
+                    Tracked_MouseOver_Interior.MouseExit();
+                }
+
+                Tracked_MouseOver_Interior = interiorInterface;
+                Tracked_MouseOver_Interior.MouseEnter();
+
+                mouseEvent = true;
+            }
+        }
+
+        //for floor/ground tiles
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
+        {
+            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
+            if (interiorInterface != null)
+            {
                 interiorInterface.MouseEnter();
-                CursorManager.Instance.ToDefault();
+
                 mouseEvent = true;
             }
         }
 
         if (!mouseEvent)
         {
-            ProcessMouseExitObjects();
+            ClearMouseExitTarget();
             GameplayCanvas.Instance.ClearInteractionTipText();
             CursorManager.Instance.ToCancel();
         }
     }
 
-    private void ProcessMouseExitObjects()
+    private void ClearMouseExitTarget()
     {
-        foreach (IInterior interior in Interiors)
+        if(Tracked_MouseOver_Interior != null)
         {
-            interior.MouseExit();
+            Tracked_MouseOver_Interior.MouseExit();
+            Tracked_MouseOver_Interior = null;
         }
-
-        Interiors.Clear();
-
-        foreach(IInteraction Interaction in Interactables)
-        {
-            Interaction.MouseExit();
-        }
-
-        Interactables.Clear();
     }
 
     private void HandleKeyboard()
@@ -125,9 +134,21 @@ public class InputManager : MonoBehaviour
 
         RaycastHit hit = new RaycastHit();
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
         {
             DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit ground at " + hit.point);
+
+            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
+            if(interiorInterface != null)
+            {
+                interiorInterface.MouseClick(hit.point);
+            }
+            
+            CameraFollowTarget.Instance.MoveTo(hit.point);
+        }
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ground_layerMask))
+        {
+            DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit at " + hit.point);
 
             IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
             IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
@@ -135,11 +156,11 @@ public class InputManager : MonoBehaviour
             {
                 interactionInterface.MouseClick();
             }
-            else if(interiorInterface != null)
+            else if (interiorInterface != null)
             {
                 interiorInterface.MouseClick(hit.point);
             }
-            
+
             CameraFollowTarget.Instance.MoveTo(hit.point);
         }
     }

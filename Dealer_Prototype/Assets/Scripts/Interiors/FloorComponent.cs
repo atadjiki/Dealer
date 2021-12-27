@@ -11,12 +11,12 @@ public class FloorComponent : MonoBehaviour, IInterior
 
     public void MouseEnter()
     {
-        Debug.Log("mouse enter floor");
-
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
             GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Move);
         else
             GameplayCanvas.Instance.ClearInteractionTipText();
+
+        CursorManager.Instance.ToDefault();
     }
 
     public void MouseExit()
