@@ -10,6 +10,8 @@ public class WallComponent : MonoBehaviour, IInterior
 
     private MeshFilter filter;
 
+    public bool Locked = false;
+
     private enum State { Low, High };
 
     private void Awake()
@@ -38,13 +40,13 @@ public class WallComponent : MonoBehaviour, IInterior
 
     public void MouseEnter()
     {
-        ToState(State.Low);
+        if(!Locked) ToState(State.Low);
 
         CursorManager.Instance.ToCancel();
     }
 
     public void MouseExit()
     {
-        ToState(State.High);
+        if (!Locked) ToState(State.High);
     }
 }

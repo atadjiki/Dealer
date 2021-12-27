@@ -70,6 +70,7 @@ public class InputManager : MonoBehaviour
             {
                 interactionInterface.MouseEnter();
                 mouseEvent = true;
+                return;
             }
             else if (interiorInterface != null)
             {
@@ -98,6 +99,7 @@ public class InputManager : MonoBehaviour
                 mouseEvent = true;
             }
         }
+
 
         if (!mouseEvent)
         {
@@ -134,18 +136,6 @@ public class InputManager : MonoBehaviour
 
         RaycastHit hit = new RaycastHit();
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
-        {
-            DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit ground at " + hit.point);
-
-            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
-            if(interiorInterface != null)
-            {
-                interiorInterface.MouseClick(hit.point);
-            }
-            
-            CameraFollowTarget.Instance.MoveTo(hit.point);
-        }
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ground_layerMask))
         {
             DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit at " + hit.point);
@@ -155,8 +145,21 @@ public class InputManager : MonoBehaviour
             if (interactionInterface != null)
             {
                 interactionInterface.MouseClick();
+                return;
             }
             else if (interiorInterface != null)
+            {
+                interiorInterface.MouseClick(hit.point);
+            }
+
+            CameraFollowTarget.Instance.MoveTo(hit.point);
+        }
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
+        {
+            DebugManager.Instance.Print(DebugManager.Log.LogInput, "Ray hit ground at " + hit.point);
+
+            IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
+            if (interiorInterface != null)
             {
                 interiorInterface.MouseClick(hit.point);
             }
