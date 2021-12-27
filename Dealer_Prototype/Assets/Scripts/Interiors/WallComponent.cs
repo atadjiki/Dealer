@@ -11,14 +11,16 @@ public class WallComponent : MonoBehaviour, IInterior
     private MeshFilter filter;
 
     public bool Locked = false;
+    
+    public enum State { Low, High };
 
-    private enum State { Low, High };
+    public State defaultState = State.High;
 
     private void Awake()
     {
         filter = GetComponentInChildren<MeshFilter>();
 
-        ToState(State.High);
+        ToState(defaultState);
     }
 
     private void ToState(State inState)

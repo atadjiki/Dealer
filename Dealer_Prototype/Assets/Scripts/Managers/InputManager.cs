@@ -69,13 +69,10 @@ public class InputManager : MonoBehaviour
             if (interactionInterface != null)
             {
                 interactionInterface.MouseEnter();
-                mouseEvent = true;
                 return;
             }
             else if (interiorInterface != null)
             {
-                if (Tracked_MouseOver_Interior != null && interiorInterface == Tracked_MouseOver_Interior) { return; }
-
                 if (Tracked_MouseOver_Interior != null && Tracked_MouseOver_Interior != interiorInterface)
                 {
                     Tracked_MouseOver_Interior.MouseExit();
@@ -87,7 +84,11 @@ public class InputManager : MonoBehaviour
                 mouseEvent = true;
             }
         }
-
+        else if(Tracked_MouseOver_Interior != null)
+        {
+            Tracked_MouseOver_Interior.MouseExit();
+        }
+        
         //for floor/ground tiles
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
         {
@@ -99,7 +100,6 @@ public class InputManager : MonoBehaviour
                 mouseEvent = true;
             }
         }
-
 
         if (!mouseEvent)
         {
