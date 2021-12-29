@@ -33,6 +33,9 @@ public class NavigatorComponent : MonoBehaviour
         pathRenderer = GetComponent<LineRenderer>();
         pathRenderer.positionCount = 2;
 
+        _AI.autoRepath.mode = AutoRepathPolicy.Mode.EveryNSeconds;
+        _AI.autoRepath.interval = 0.2f;
+
     }
 
     private void FixedUpdate()
@@ -86,14 +89,14 @@ public class NavigatorComponent : MonoBehaviour
         NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
 
         //check distances
-        if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 1)
+        if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 0.1f)
         {
             DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around origin");
 
             success = false;
             return null;
         }
-        else if (Vector3.Distance(NearestNode_destination.position, location) > 1)
+        else if (Vector3.Distance(NearestNode_destination.position, location) > 0.1f)
         {
             DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around destination");
 
@@ -153,6 +156,8 @@ public class NavigatorComponent : MonoBehaviour
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
 
+        yield return new WaitForEndOfFrame();
+
         State = MovementState.Moving;
 
         //get rid of any existing prefabs that are out there first
@@ -173,7 +178,13 @@ public class NavigatorComponent : MonoBehaviour
         while (true)
         {
             if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 0.25f, Time.fixedDeltaTime, false);
+
             yield return new WaitForEndOfFrame();
+
+            if (_AI.velocity == Vector3.zero)
+            {
+                break;
+            }
 
             if (Vector3.Distance(this.transform.position, Destination) < 0.1f)
             {

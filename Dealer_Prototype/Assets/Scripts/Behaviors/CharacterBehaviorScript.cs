@@ -72,5 +72,11 @@ public class CharacterBehaviorScript : MonoBehaviour
     {
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Aborting script " + gameObject.name);
         if (_coroutine != null) StopCoroutine(_coroutine);
+
+        SetBehaviorState(BehaviorState.Completed);
+
+        Destroy(behaviorDecal.gameObject);
+        Destroy(this.gameObject);
+
     }
 }

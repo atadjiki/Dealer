@@ -194,6 +194,21 @@ public class CharacterComponent : MonoBehaviour
         return _navigator;
     }
 
+    public void AbortBehaviors()
+    {
+        foreach(CharacterBehaviorScript behavior in _behaviorQueue)
+        {
+            behavior.AbortBehavior();
+        }
+
+        _behaviorQueue.Clear();
+
+        bool success;
+        CharacterBehaviorScript behaviorScript = BehaviorHelper.IdleBehavior(this, out success);
+
+        AddNewBehavior(behaviorScript);
+    }
+
     public void AddNewBehavior(CharacterBehaviorScript behaviorScript)
     {
         if(_behaviorQueue.Count < _maxQueueSize)

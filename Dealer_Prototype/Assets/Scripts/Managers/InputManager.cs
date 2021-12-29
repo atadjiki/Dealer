@@ -38,7 +38,8 @@ public class InputManager : MonoBehaviour
     {
         inputActions = new PlayerInputActions();
 
-        inputActions.Default.Select.performed += ctx => OnMouseActionPerformed(ctx);
+        inputActions.Default.Select.performed += ctx => OnSelect(ctx);
+        inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
 
         inputActions.Enable();
     }
@@ -128,7 +129,7 @@ public class InputManager : MonoBehaviour
         CameraFollowTarget.Instance.MoveInDirection(InputVector);
     }
 
-    private void OnMouseActionPerformed(InputAction.CallbackContext context)
+    private void OnSelect(InputAction.CallbackContext context)
     {
         DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);
 
@@ -166,6 +167,11 @@ public class InputManager : MonoBehaviour
 
             CameraFollowTarget.Instance.MoveTo(hit.point);
         }
+    }
+
+    private void OnCancel(InputAction.CallbackContext context)
+    {
+        PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
     }
 
     public void LockControls()

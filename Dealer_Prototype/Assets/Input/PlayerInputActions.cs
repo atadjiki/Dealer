@@ -65,6 +65,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed3302d4-193b-439f-9e3f-c8e7f7e28586"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -177,6 +185,17 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""930f42a0-a7c5-4d72-b70e-2ec3ec08c303"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""ControlScheme"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +227,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_Default_Down = m_Default.FindAction("Down", throwIfNotFound: true);
         m_Default_Left = m_Default.FindAction("Left", throwIfNotFound: true);
         m_Default_Right = m_Default.FindAction("Right", throwIfNotFound: true);
+        m_Default_Cancel = m_Default.FindAction("Cancel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -263,6 +283,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Default_Down;
     private readonly InputAction m_Default_Left;
     private readonly InputAction m_Default_Right;
+    private readonly InputAction m_Default_Cancel;
     public struct DefaultActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -273,6 +294,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Down => m_Wrapper.m_Default_Down;
         public InputAction @Left => m_Wrapper.m_Default_Left;
         public InputAction @Right => m_Wrapper.m_Default_Right;
+        public InputAction @Cancel => m_Wrapper.m_Default_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -300,6 +322,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
+                @Cancel.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -322,6 +347,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started += instance.OnRight;
                 @Right.performed += instance.OnRight;
                 @Right.canceled += instance.OnRight;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -343,5 +371,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnDown(InputAction.CallbackContext context);
         void OnLeft(InputAction.CallbackContext context);
         void OnRight(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
 }

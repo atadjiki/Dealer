@@ -133,8 +133,14 @@ public class PlayableCharacterManager : CharacterManager
             }
 
             selectedCharacter.AddNewBehavior(behaviorScript);
+        }
+    }
 
-
+    public void AttemptBehaviorAbortWithPossesedCharacter()
+    {
+        if(selectedCharacter != null)
+        {
+            selectedCharacter.AbortBehaviors();
         }
     }
 }
