@@ -76,12 +76,9 @@ public class LevelManager : MonoBehaviour
         LoadScreen.SetActive(true);
         LoadScreen_LevelName.text = "";
         LoadScreen_Text.text = "loading.";
+        //
         yield return new WaitForSeconds(loadInterval);
         //
-
-        if(buildIndex > 1)
-            PrefabFactory.Instance.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
-
         //load level
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(buildIndex);
         loadOperation.allowSceneActivation = false;
@@ -90,11 +87,25 @@ public class LevelManager : MonoBehaviour
         {
             yield return new WaitForSeconds(loadInterval);
         }
+
         //
         loadOperation.allowSceneActivation = true;
+        yield return new WaitForSeconds(loadInterval);
 
-        //load perlevel managers
         //
+        //load start menu
+        //
+        if (buildIndex == 2)
+        {
+            PrefabFactory.Instance.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
+            yield return new WaitForSeconds(2.0f);
+        }
+        if (buildIndex == 1)
+        {
+            PrefabFactory.Instance.CreatePrefab(Constants.RegistryID.StartMenu, null);
+        }
+        //
+        yield return new WaitForSeconds(loadInterval);
         //
         LoadScreen_Text.text = "loading...";
         yield return new WaitForSeconds(loadInterval);

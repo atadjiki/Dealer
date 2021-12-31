@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -14,6 +15,11 @@ public class PlayableCharacterSpawner : MonoBehaviour
 
     private void Awake()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
         if (State == PlayerSpawnerState.WaitingToSpawn && Mode == SpawnMode.AutoActivate)
         {
             StartCoroutine(SpawnPlayer());
@@ -22,6 +28,8 @@ public class PlayableCharacterSpawner : MonoBehaviour
 
     public IEnumerator SpawnPlayer()
     {
+        yield return new WaitForSeconds(2.0f);
+
         State = PlayerSpawnerState.Spawning;
 
         DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning playable character");
