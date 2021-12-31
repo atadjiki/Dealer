@@ -54,7 +54,6 @@ public class LevelManager : MonoBehaviour
 
     private void Build()
     {
-        DontDestroyOnLoad(this.gameObject);
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;
 
         LoadLevel(LevelName.StartMenu);
@@ -73,6 +72,7 @@ public class LevelManager : MonoBehaviour
         float loadInterval = 0.5f;
         //
         _state = State.Busy;
+        GameState.Instance.ToState(GameState.State.Loading);
         LoadScreen.SetActive(true);
         LoadScreen_LevelName.text = "";
         LoadScreen_Text.text = "loading.";

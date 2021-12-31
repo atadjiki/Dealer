@@ -96,8 +96,8 @@ public class DebugManager : MonoBehaviour
     }
 
     private void Build()
-    {
-        if(_astarPath != null && State_AStar != State.None)
+    { 
+        if (_astarPath != null && State_AStar != State.None)
         {
             _astarPath.logPathResults = PathLog.Normal;
         }

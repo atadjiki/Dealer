@@ -24,12 +24,6 @@ public class CursorManager : MonoBehaviour
         {
             _instance = this;
         }
-
-        Build();
-    }
-
-    private void Build()
-    {
     }
 
     public void ToDefault()

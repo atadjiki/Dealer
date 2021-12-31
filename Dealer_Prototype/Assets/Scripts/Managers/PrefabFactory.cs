@@ -17,13 +17,6 @@ public class PrefabFactory : MonoBehaviour
         {
             _instance = this;
         }
-
-        Build();
-    }
-
-    private void Build()
-    {
-
     }
 
     private GameObject GetPrefabFromRegistryID(RegistryID ID)

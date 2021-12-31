@@ -47,8 +47,12 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleKeyboard();
-        HandleMouse();
+        if(GameState.Instance.GetState() == GameState.State.GamePlay)
+        {
+            HandleKeyboard();
+            HandleMouse();
+        }
+        
     }
 
 
@@ -131,6 +135,8 @@ public class InputManager : MonoBehaviour
 
     private void OnSelect(InputAction.CallbackContext context)
     {
+        if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
+
         DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);
 
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
@@ -171,6 +177,8 @@ public class InputManager : MonoBehaviour
 
     private void OnCancel(InputAction.CallbackContext context)
     {
+        if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
+
         PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
     }
 
