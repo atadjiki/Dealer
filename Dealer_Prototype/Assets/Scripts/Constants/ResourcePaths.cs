@@ -14,7 +14,10 @@ namespace Constants
         CM_Character,
         CharacterCameraRig,
         SelectionComponent,
-        BehaviorDecal
+        BehaviorDecal,
+        PerLevel_Managers,
+        Static_Managers,
+        StartMenu
     }
 
     public class Registry
@@ -61,6 +64,15 @@ namespace Constants
                     return true;
                 case RegistryID.SelectionComponent:
                     PathString = "Prefabs/Components/SelectionComponent";
+                    return true;
+                case RegistryID.PerLevel_Managers:
+                    PathString = "Prefabs/LevelAssets/PerLevel_Managers";
+                    return true;
+                case RegistryID.Static_Managers:
+                    PathString = "Prefabs/LevelAssets/Static_Managers";
+                    return true;
+                case RegistryID.StartMenu:
+                    PathString = "Prefabs/LevelAssets/StartMenu";
                     return true;
                 default:
                     PathString = "NOT FOUND";
