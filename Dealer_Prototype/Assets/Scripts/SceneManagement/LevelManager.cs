@@ -20,10 +20,12 @@ public class LevelManager : MonoBehaviour
     {
         switch(Name)
         {
-            case LevelName.StartMenu:
+            case LevelName.RootLevel:
                 return 0;
-            case LevelName.Apartment:
+            case LevelName.StartMenu:
                 return 1;
+            case LevelName.Apartment:
+                return 2;
         }
 
         return 0;
@@ -54,6 +56,8 @@ public class LevelManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;
+
+        LoadLevel(LevelName.StartMenu);
     }
 
     public void LoadLevel(LevelName LevelName)
@@ -66,12 +70,13 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator DoLoadLevel(int buildIndex)
     {
+        float loadInterval = 0.5f;
         //
         _state = State.Busy;
         LoadScreen.SetActive(true);
         LoadScreen_LevelName.text = "";
         LoadScreen_Text.text = "loading.";
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(loadInterval);
         //
 
         //load level
@@ -80,13 +85,13 @@ public class LevelManager : MonoBehaviour
         LoadScreen_Text.text = "loading..";
         while (loadOperation.progress < 0.9f)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(loadInterval);
         }
         loadOperation.allowSceneActivation = true;
         //
         //
         LoadScreen_Text.text = "loading...";
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(loadInterval);
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;
         LoadScreen.SetActive(false);
         _state = State.None;
