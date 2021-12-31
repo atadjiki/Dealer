@@ -27,6 +27,22 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""DoubleSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""f238ba43-ce0b-4eb3-86bb-8db9bc67ae24"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed3302d4-193b-439f-9e3f-c8e7f7e28586"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Aim"",
                     ""type"": ""Value"",
                     ""id"": ""ac7c791c-86c2-4d1d-8727-5ab3b8d7d359"",
@@ -62,14 +78,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""name"": ""Right"",
                     ""type"": ""Button"",
                     ""id"": ""d51d5f87-b00c-483a-9f12-3038e191a445"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Cancel"",
-                    ""type"": ""Button"",
-                    ""id"": ""ed3302d4-193b-439f-9e3f-c8e7f7e28586"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -196,6 +204,17 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""00151687-d551-4e30-8220-efdec795b32d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""MultiTap(tapTime=0.1,tapDelay=0.2)"",
+                    ""processors"": """",
+                    ""groups"": ""ControlScheme"",
+                    ""action"": ""DoubleSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -222,12 +241,13 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         // Default
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_Select = m_Default.FindAction("Select", throwIfNotFound: true);
+        m_Default_DoubleSelect = m_Default.FindAction("DoubleSelect", throwIfNotFound: true);
+        m_Default_Cancel = m_Default.FindAction("Cancel", throwIfNotFound: true);
         m_Default_Aim = m_Default.FindAction("Aim", throwIfNotFound: true);
         m_Default_Up = m_Default.FindAction("Up", throwIfNotFound: true);
         m_Default_Down = m_Default.FindAction("Down", throwIfNotFound: true);
         m_Default_Left = m_Default.FindAction("Left", throwIfNotFound: true);
         m_Default_Right = m_Default.FindAction("Right", throwIfNotFound: true);
-        m_Default_Cancel = m_Default.FindAction("Cancel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -278,23 +298,25 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Default;
     private IDefaultActions m_DefaultActionsCallbackInterface;
     private readonly InputAction m_Default_Select;
+    private readonly InputAction m_Default_DoubleSelect;
+    private readonly InputAction m_Default_Cancel;
     private readonly InputAction m_Default_Aim;
     private readonly InputAction m_Default_Up;
     private readonly InputAction m_Default_Down;
     private readonly InputAction m_Default_Left;
     private readonly InputAction m_Default_Right;
-    private readonly InputAction m_Default_Cancel;
     public struct DefaultActions
     {
         private @PlayerInputActions m_Wrapper;
         public DefaultActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Select => m_Wrapper.m_Default_Select;
+        public InputAction @DoubleSelect => m_Wrapper.m_Default_DoubleSelect;
+        public InputAction @Cancel => m_Wrapper.m_Default_Cancel;
         public InputAction @Aim => m_Wrapper.m_Default_Aim;
         public InputAction @Up => m_Wrapper.m_Default_Up;
         public InputAction @Down => m_Wrapper.m_Default_Down;
         public InputAction @Left => m_Wrapper.m_Default_Left;
         public InputAction @Right => m_Wrapper.m_Default_Right;
-        public InputAction @Cancel => m_Wrapper.m_Default_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -307,6 +329,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Select.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelect;
                 @Select.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelect;
                 @Select.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelect;
+                @DoubleSelect.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
+                @DoubleSelect.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
+                @DoubleSelect.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
+                @Cancel.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
                 @Aim.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAim;
@@ -322,9 +350,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
-                @Cancel.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
-                @Cancel.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
-                @Cancel.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -332,6 +357,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Select.started += instance.OnSelect;
                 @Select.performed += instance.OnSelect;
                 @Select.canceled += instance.OnSelect;
+                @DoubleSelect.started += instance.OnDoubleSelect;
+                @DoubleSelect.performed += instance.OnDoubleSelect;
+                @DoubleSelect.canceled += instance.OnDoubleSelect;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
@@ -347,9 +378,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started += instance.OnRight;
                 @Right.performed += instance.OnRight;
                 @Right.canceled += instance.OnRight;
-                @Cancel.started += instance.OnCancel;
-                @Cancel.performed += instance.OnCancel;
-                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -366,11 +394,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     public interface IDefaultActions
     {
         void OnSelect(InputAction.CallbackContext context);
+        void OnDoubleSelect(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnUp(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
         void OnLeft(InputAction.CallbackContext context);
         void OnRight(InputAction.CallbackContext context);
-        void OnCancel(InputAction.CallbackContext context);
     }
 }

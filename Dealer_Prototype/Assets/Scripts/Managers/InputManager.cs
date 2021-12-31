@@ -39,6 +39,7 @@ public class InputManager : MonoBehaviour
         inputActions = new PlayerInputActions();
 
         inputActions.Default.Select.performed += ctx => OnSelect(ctx);
+        inputActions.Default.DoubleSelect.performed += ctx => OnDoubleSelect(ctx);
         inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
 
         inputActions.Enable();
@@ -131,6 +132,15 @@ public class InputManager : MonoBehaviour
         InputVector.y = (-1*inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
 
         CameraFollowTarget.Instance.MoveInDirection(InputVector);
+    }
+
+    private void OnDoubleSelect(InputAction.CallbackContext context)
+    {
+        if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
+
+        PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
+
+        OnSelect(context);
     }
 
     private void OnSelect(InputAction.CallbackContext context)
