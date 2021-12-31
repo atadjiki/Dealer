@@ -44,7 +44,7 @@ public class CharacterCameraManager : MonoBehaviour
 
     public void RegisterCharacterCamera(CharacterComponent character)
     {
-        GameObject newCamera = PrefabFactory.Instance.CreatePrefab(RegistryID.CM_Character, this.transform);
+        GameObject newCamera = PrefabFactory.CreatePrefab(RegistryID.CM_Character, this.transform);
 
         newCamera.GetComponent<CinemachineVirtualCamera>().Follow = character.GetComponentInChildren<NavigatorComponent>().transform;
 

@@ -249,7 +249,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void SpawnNavPointPrefab(Vector3 prefabLocation)
     {
-        GameObject NavPointEffect = PrefabFactory.Instance.CreatePrefab(RegistryID.NavPoint, prefabLocation, Quaternion.identity, null);
+        GameObject NavPointEffect = PrefabFactory.CreatePrefab(RegistryID.NavPoint, prefabLocation, Quaternion.identity, null);
         NavPointPrefabs.Add(NavPointEffect);
     }
 }

@@ -34,7 +34,7 @@ public class PlayableCharacterSpawner : MonoBehaviour
 
         DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning playable character");
 
-        GameObject Character = PrefabFactory.Instance.CreatePrefab(RegistryID.Player, this.transform);
+        GameObject Character = PrefabFactory.CreatePrefab(RegistryID.Player, this.transform);
         PlayableCharacterComponent playerComp = Character.GetComponent<PlayableCharacterComponent>();
 
         yield return new WaitWhile(() => playerComp == null);

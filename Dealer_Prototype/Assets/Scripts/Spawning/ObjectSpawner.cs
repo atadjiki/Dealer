@@ -66,7 +66,7 @@ public class ObjectSpawner : MonoBehaviour
             location.IncrementUses();
         }
 
-        GameObject NPC = PrefabFactory.Instance.CreatePrefab(RegistryID.NPC, SpawnTransform);
+        GameObject NPC = PrefabFactory.CreatePrefab(RegistryID.NPC, SpawnTransform);
         NPCComponent npcComp = NPC.GetComponent<NPCComponent>();
 
         yield return new WaitWhile(() => npcComp == null);

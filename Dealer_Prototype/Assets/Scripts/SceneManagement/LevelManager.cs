@@ -97,12 +97,12 @@ public class LevelManager : MonoBehaviour
         //
         if (buildIndex == 2)
         {
-            PrefabFactory.Instance.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
+            PrefabFactory.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
             yield return new WaitForSeconds(2.0f);
         }
         if (buildIndex == 1)
         {
-            PrefabFactory.Instance.CreatePrefab(Constants.RegistryID.StartMenu, null);
+            PrefabFactory.CreatePrefab(Constants.RegistryID.StartMenu, null);
         }
         //
         yield return new WaitForSeconds(loadInterval);

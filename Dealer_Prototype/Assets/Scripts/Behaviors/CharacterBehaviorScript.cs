@@ -32,7 +32,7 @@ public class CharacterBehaviorScript : MonoBehaviour
         _data = data;
         SetBehaviorState(BehaviorState.Ready);
 
-        behaviorDecal = PrefabFactory.Instance.CreatePrefab(RegistryID.BehaviorDecal, _data.Destination, Quaternion.identity, null);
+        behaviorDecal = PrefabFactory.CreatePrefab(RegistryID.BehaviorDecal, _data.Destination, Quaternion.identity, null);
 
         behaviorDecal.transform.parent = this.gameObject.transform;
 

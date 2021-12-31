@@ -209,7 +209,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""00151687-d551-4e30-8220-efdec795b32d"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""MultiTap(tapTime=0.1,tapDelay=0.2)"",
+                    ""interactions"": ""MultiTap"",
                     ""processors"": """",
                     ""groups"": ""ControlScheme"",
                     ""action"": ""DoubleSelect"",
