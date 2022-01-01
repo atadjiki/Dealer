@@ -57,7 +57,7 @@ public class StartMenuCanvas : MonoBehaviour
 
             if(hitMesh != null && hitMesh == Collider_Start)
             {
-                LevelManager.Instance.LoadLevel(LevelManager.LevelName.Apartment);
+                LevelManager.Instance.LoadLevel(Constants.LevelData.GetLevelData(Constants.LevelDataConstants.LevelName.Apartment));
             }
 
         }

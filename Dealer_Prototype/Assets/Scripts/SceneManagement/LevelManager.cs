@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Constants;
 using TMPro;
 using UnityEngine;
 
@@ -10,21 +11,19 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI LoadScreen_Text;
     [SerializeField] private TextMeshProUGUI LoadScreen_LevelName;
 
-    public enum LevelName { RootLevel, StartMenu, Apartment };
-
     private enum State { Busy, None };
 
     private State _state = State.None;
 
-    public static int BuildIndexFromLevelName(LevelName Name)
+    public static int BuildIndexFromLevelName(Constants.LevelDataConstants.LevelName Name)
     {
         switch(Name)
         {
-            case LevelName.RootLevel:
+            case LevelDataConstants.LevelName.RootLevel:
                 return 0;
-            case LevelName.StartMenu:
+            case LevelDataConstants.LevelName.StartMenu:
                 return 1;
-            case LevelName.Apartment:
+            case LevelDataConstants.LevelName.Apartment:
                 return 2;
         }
 
@@ -55,20 +54,26 @@ public class LevelManager : MonoBehaviour
     private void Build()
     {
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;
-
-        LoadLevel(LevelName.StartMenu);
     }
 
-    public void LoadLevel(LevelName LevelName)
+    public void LoadLevel(LevelData levelData)
     {
         if(_state == State.None)
         {
-            StartCoroutine(DoLoadLevel(LevelManager.BuildIndexFromLevelName(LevelName)));
+            Debug.Log("loading level " + levelData.Name);
+            StartCoroutine(DoLoadLevel(levelData));
         }
+        else
+        {
+            Debug.Log("Level manager is busy");
+        }
+
     }
 
-    private IEnumerator DoLoadLevel(int buildIndex)
+    private IEnumerator DoLoadLevel(LevelData levelData)
     {
+        int buildIndex = LevelManager.BuildIndexFromLevelName(levelData.Name);
+
         float loadInterval = 0.5f;
         //
         _state = State.Busy;
@@ -87,28 +92,34 @@ public class LevelManager : MonoBehaviour
         {
             yield return new WaitForSeconds(loadInterval);
         }
-
-        //
         loadOperation.allowSceneActivation = true;
+        //
         yield return new WaitForSeconds(loadInterval);
-
+        LoadScreen_Text.text = "loading...";
         //
         //load start menu
         //
-        if (buildIndex == 2)
+        if (levelData.Type == LevelDataConstants.LevelType.GameLevel)
         {
             PrefabFactory.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
             yield return new WaitForSeconds(2.0f);
         }
-        if (buildIndex == 1)
+
+        //
+        yield return new WaitForSeconds(loadInterval);
+        //
+        LoadScreen_Text.text = "loading....";
+        yield return new WaitForSeconds(loadInterval);
+
+        if (levelData.Type == LevelDataConstants.LevelType.Menu)
         {
-            PrefabFactory.CreatePrefab(Constants.RegistryID.StartMenu, null);
+            GameState.Instance.ToState(GameState.State.MainMenu);
         }
-        //
-        yield return new WaitForSeconds(loadInterval);
-        //
-        LoadScreen_Text.text = "loading...";
-        yield return new WaitForSeconds(loadInterval);
+        else if(levelData.Type == LevelDataConstants.LevelType.GameLevel)
+        {
+            GameState.Instance.ToState(GameState.State.GamePlay);
+        }
+
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;
         LoadScreen.SetActive(false);
         _state = State.None;
