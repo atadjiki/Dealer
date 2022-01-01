@@ -136,15 +136,17 @@ public class InputManager : MonoBehaviour
 
     private void OnDoubleSelect(InputAction.CallbackContext context)
     {
+        Debug.Log("double click");
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
         PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
 
-        OnSelect(context);
+       // OnSelect(context);
     }
 
     private void OnSelect(InputAction.CallbackContext context)
     {
+        Debug.Log("single click");
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
         DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);
