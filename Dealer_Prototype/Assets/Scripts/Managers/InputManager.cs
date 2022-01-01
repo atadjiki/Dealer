@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
         inputActions = new PlayerInputActions();
 
         inputActions.Default.Select.performed += ctx => OnSelect(ctx);
-        inputActions.Default.DoubleSelect.performed += ctx => OnDoubleSelect(ctx);
+        //inputActions.Default.DoubleSelect.performed += ctx => OnDoubleSelect(ctx);
         inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
 
         inputActions.Enable();
@@ -136,7 +136,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDoubleSelect(InputAction.CallbackContext context)
     {
-        Debug.Log("double click");
+      //  Debug.Log("double click");
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
         PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
@@ -146,7 +146,7 @@ public class InputManager : MonoBehaviour
 
     private void OnSelect(InputAction.CallbackContext context)
     {
-        Debug.Log("single click");
+    //    Debug.Log("single click");
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
         DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);

@@ -73,14 +73,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""DoubleSelect"",
-                    ""type"": ""Button"",
-                    ""id"": ""39d4388d-38b8-410e-8aa3-f5e685541ecd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -204,17 +196,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0185b984-f2cc-496d-b77e-2537ca0abe14"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""MultiTap"",
-                    ""processors"": """",
-                    ""groups"": ""ControlScheme"",
-                    ""action"": ""DoubleSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -247,7 +228,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_Default_Down = m_Default.FindAction("Down", throwIfNotFound: true);
         m_Default_Left = m_Default.FindAction("Left", throwIfNotFound: true);
         m_Default_Right = m_Default.FindAction("Right", throwIfNotFound: true);
-        m_Default_DoubleSelect = m_Default.FindAction("DoubleSelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -304,7 +284,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Default_Down;
     private readonly InputAction m_Default_Left;
     private readonly InputAction m_Default_Right;
-    private readonly InputAction m_Default_DoubleSelect;
     public struct DefaultActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -316,7 +295,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Down => m_Wrapper.m_Default_Down;
         public InputAction @Left => m_Wrapper.m_Default_Left;
         public InputAction @Right => m_Wrapper.m_Default_Right;
-        public InputAction @DoubleSelect => m_Wrapper.m_Default_DoubleSelect;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -347,9 +325,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
                 @Right.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRight;
-                @DoubleSelect.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
-                @DoubleSelect.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
-                @DoubleSelect.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDoubleSelect;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -375,9 +350,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Right.started += instance.OnRight;
                 @Right.performed += instance.OnRight;
                 @Right.canceled += instance.OnRight;
-                @DoubleSelect.started += instance.OnDoubleSelect;
-                @DoubleSelect.performed += instance.OnDoubleSelect;
-                @DoubleSelect.canceled += instance.OnDoubleSelect;
             }
         }
     }
@@ -400,6 +372,5 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnDown(InputAction.CallbackContext context);
         void OnLeft(InputAction.CallbackContext context);
         void OnRight(InputAction.CallbackContext context);
-        void OnDoubleSelect(InputAction.CallbackContext context);
     }
 }
