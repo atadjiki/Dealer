@@ -141,6 +141,7 @@ public class NavigatorComponent : MonoBehaviour
 
         if (success)
         {
+            State = MovementState.Moving;
             StartCoroutine(DoMoveToLocation(VectorPair.Item2.position));
             return true;
         }
@@ -157,8 +158,6 @@ public class NavigatorComponent : MonoBehaviour
         _AI.SearchPath(); // Start to search for a path to the destination immediately
 
         yield return new WaitForEndOfFrame();
-
-        State = MovementState.Moving;
 
         //get rid of any existing prefabs that are out there first
         foreach (GameObject todestroy in NavPointPrefabs)

@@ -27,12 +27,54 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     private GameObject behaviorDecal;
 
+    private GameObject objectNote_obj;
+    private ObjectNote objectNote;
+
+    private void Awake()
+    {
+        objectNote_obj = new GameObject();
+        objectNote_obj.transform.parent = this.transform;
+        objectNote = objectNote_obj.AddComponent<ObjectNote>();
+        objectNote.ShowInGameEditor = true;
+        objectNote.NoteText = "";
+    }
+
+    private void FixedUpdate()
+    {
+        if(DebugManager.Instance.State_Behavior == DebugManager.State.LogAndVisual || DebugManager.Instance.State_Behavior == DebugManager.State.VisualLogOnly)
+        {
+            objectNote.NoteText =
+                this.gameObject.name + "\n" +
+                "State: " + this.GetBehaviorState().ToString() + "\n";
+
+            if(GetBehaviorState() == BehaviorState.Ready)
+            {
+                objectNote.Color = Color.grey;
+            }
+            else if(GetBehaviorState() == BehaviorState.Busy)
+            {
+                objectNote.Color = Color.green;
+            }
+            else if(GetBehaviorState() == BehaviorState.Completed)
+            {
+                objectNote.Color = Color.red;
+            }
+
+            objectNote.Color.a = 0.05f;
+        }
+        else
+        {
+            objectNote.NoteText = "";
+        }
+    }
+
     internal virtual void Setup(BehaviorData data)
     {
         _data = data;
         SetBehaviorState(BehaviorState.Ready);
 
         behaviorDecal = PrefabFactory.CreatePrefab(RegistryID.BehaviorDecal, _data.Destination, Quaternion.identity, null);
+        objectNote_obj.transform.position = _data.Destination;
 
         behaviorDecal.transform.parent = this.gameObject.transform;
 
@@ -51,6 +93,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
     protected virtual IEnumerator Behavior()
     {
+        DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Running Behavior - " + this.name);
         EndBehavior();
         yield return null;
     }
@@ -64,8 +107,7 @@ public class CharacterBehaviorScript : MonoBehaviour
 
         _data.Character.OnBehaviorFinished(this);
 
-        Destroy(behaviorDecal.gameObject);
-        Destroy(this.gameObject);
+        StartCoroutine(DoDestroy());
     }
 
     internal virtual void AbortBehavior()
@@ -76,7 +118,14 @@ public class CharacterBehaviorScript : MonoBehaviour
         SetBehaviorState(BehaviorState.Completed);
 
         Destroy(behaviorDecal.gameObject);
-        Destroy(this.gameObject);
+      //  Destroy(this.gameObject);
 
+    }
+
+    private IEnumerator DoDestroy()
+    {
+        Destroy(behaviorDecal);
+        yield return new WaitForSeconds(1.0f);
+        Destroy(this.gameObject);
     }
 }
