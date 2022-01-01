@@ -156,7 +156,7 @@ public class NavigatorComponent : MonoBehaviour
     {
         _AI.destination = Destination;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
-
+        float timeStamp = Time.time;
         yield return new WaitForEndOfFrame();
 
         //get rid of any existing prefabs that are out there first
@@ -180,7 +180,9 @@ public class NavigatorComponent : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
 
-            if (_AI.velocity == Vector3.zero)
+            float timeElapsed = Mathf.Abs(Time.time - timeStamp);
+
+            if (timeElapsed > 0.15f && _AI.velocity == Vector3.zero)
             {
                 break;
             }
