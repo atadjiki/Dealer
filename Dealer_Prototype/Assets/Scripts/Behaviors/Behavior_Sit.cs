@@ -29,7 +29,7 @@ public class Behavior_Sit : CharacterBehaviorScript
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
-            _data.Character.FadeToAnimation(AnimationConstants.Animations.Sitting_Idle, 0.0f, false);
+            _data.Character.FadeToAnimation(AnimationConstants.Animations.Sitting_Idle, 0.05f, false);
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " sitting on " + _data.Interactable.GetID());
             //     yield return new WaitForSeconds(10.0f);
