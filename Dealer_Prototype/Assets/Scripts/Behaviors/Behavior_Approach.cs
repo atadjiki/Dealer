@@ -15,21 +15,9 @@ public class Behavior_Approach : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
-        float time_before = Time.time;
+        yield return BehaviorHelper.PerformApproachInteractable(_data);
 
-        if (_data.Character.GetNavigatorComponent().MoveToLocation(_data.Interactable.GetInteractionTransform().position))
-        {
-            yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
-
-            DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Task took " + Mathf.Abs(Time.time - time_before) + " seconds");
-
-            if (Vector3.Distance(_data.Character.GetNavigatorComponent().transform.position, _data.Interactable.GetInteractionTransform().position) < 0.1f)
-            {
-                _data.Character.GetNavigatorComponent().TeleportToLocation(_data.Interactable.GetInteractionTransform());
-                DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
-            }
-
-        }
+        yield return BehaviorHelper.ResolvePerformInteraction(_data);
 
         yield return base.Behavior();
     }

@@ -15,7 +15,7 @@ public class Behavior_Idle : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
-        _data.Character.FadeToAnimation(AnimationConstants.Animations.Idle, 0.1f, false);
+        yield return BehaviorHelper.PerformIdle(_data);
 
         yield return base.Behavior();
     }

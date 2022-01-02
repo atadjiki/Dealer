@@ -14,9 +14,7 @@ public class Behavior_MoveToRandomLocation : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
-        _data.Character.GetNavigatorComponent().MoveToRandomLocation();
-        
-        yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
+        yield return BehaviorHelper.PerformMoveToRandomLocation(_data);
 
         yield return base.Behavior();
     }

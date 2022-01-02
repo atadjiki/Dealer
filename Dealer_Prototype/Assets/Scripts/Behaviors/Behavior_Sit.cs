@@ -20,7 +20,6 @@ public class Behavior_Sit : CharacterBehaviorScript
 
         if(chair != null)
         {
-
             Transform sittingTransform = chair.GetSittingPoseTransform();
 
             //move NPC to interaction location
@@ -32,11 +31,7 @@ public class Behavior_Sit : CharacterBehaviorScript
             _data.Character.FadeToAnimation(AnimationConstants.Animations.Sitting_Idle, 0.05f, false);
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " sitting on " + _data.Interactable.GetID());
-            //     yield return new WaitForSeconds(10.0f);
 
-            //  _data.Character.FadeToAnimation(AnimationConstants.Animations.Idle, 0.25f, false);
-
-            // DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " finished sitting on " + _data.Interactable.GetID());
             _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);
         }
 

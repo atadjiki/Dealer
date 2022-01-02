@@ -14,14 +14,7 @@ public class Behavior_MoveToLocation : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
-        float time_before = Time.time;
-
-        if(_data.Character.GetNavigatorComponent().MoveToLocation(_data.Destination))
-        {
-            yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
-
-            DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Task took " + Mathf.Abs(Time.time - time_before) + " seconds");
-        }
+        yield return BehaviorHelper.PerformMoveToDestination(_data);
 
         yield return base.Behavior();
     }
