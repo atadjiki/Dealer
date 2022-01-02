@@ -7,4 +7,5 @@ public class Chair : Interactable
     [SerializeField] private Transform sittingPoseTransform;
 
     public Transform GetSittingPoseTransform() { return sittingPoseTransform; }
+
 }

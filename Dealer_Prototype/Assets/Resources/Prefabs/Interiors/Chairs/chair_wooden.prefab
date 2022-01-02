@@ -41,8 +41,8 @@ GameObject:
   - component: {fileID: 2060800378670997835}
   - component: {fileID: 6833066930883850707}
   - component: {fileID: 8870641621581577326}
-  - component: {fileID: 2517860423915095755}
   - component: {fileID: 2704624463044615282}
+  - component: {fileID: 3311083336121215790}
   m_Layer: 3
   m_Name: chair_wooden
   m_TagString: Chair
@@ -115,20 +115,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2517860423915095755
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716645144865586161}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: fa14f96e9cd284682818741fc455d44e, type: 2}
 --- !u!114 &2704624463044615282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +130,19 @@ MonoBehaviour:
   ID: 1
   InteractionTransform: {fileID: 7229874541324234738}
   sittingPoseTransform: {fileID: 1806653393}
+--- !u!65 &3311083336121215790
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716645144865586161}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8, y: 1.2, z: 0.8}
+  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!1 &4063881443657900357
 GameObject:
   m_ObjectHideFlags: 0

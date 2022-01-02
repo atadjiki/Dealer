@@ -24,8 +24,8 @@ public class Behavior_Sit : CharacterBehaviorScript
             Transform sittingTransform = chair.GetSittingPoseTransform();
 
             //move NPC to interaction location
-            _data.Character.GetNavigatorComponent().TeleportToLocation(sittingTransform);
-            _data.Character.GetNavigatorComponent().transform.rotation = Quaternion.identity;
+            _data.Character.GetNavigatorComponent().transform.position = sittingTransform.position;
+            _data.Character.GetNavigatorComponent().transform.rotation = sittingTransform.rotation;
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 

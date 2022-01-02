@@ -65,7 +65,7 @@ public class Interactable : MonoBehaviour, IInteraction
         {
             if(BehaviorHelper.IsInteractionAllowed(PlayableCharacterManager.Instance.GetSelectedCharacter(), this))
             {
-                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Interact);
+                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.GetContextByInteractableID(this));
             }
             else
             {
