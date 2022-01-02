@@ -125,7 +125,7 @@ public class PlayableCharacterManager : CharacterManager
 
             if (BehaviorHelper.IsInteractionAllowed(selectedCharacter, interactable))
             {
-                behaviorScript = BehaviorHelper.InteractWithBehavior(selectedCharacter, interactable, out success);
+                behaviorScript = BehaviorHelper.ResolveInteractableBehavior(selectedCharacter, interactable, out success);
             }
             else
             {

@@ -6,7 +6,8 @@ namespace Constants
 
         public enum InteractableID
         {
-            Jukebox,
+            Generic,
+            Chair,
             None,
         }
     }

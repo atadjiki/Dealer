@@ -121,17 +121,17 @@ public class NPCManager : CharacterManager
         else if (randomIndex == 1)
         {
 
-            Interactable jukeBox;
-            if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Jukebox, out jukeBox))
+            Interactable generic;
+            if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
             {
-                if (jukeBox != null && jukeBox.HasBeenInteractedWith(npc) == false)
+                if (generic != null && generic.HasBeenInteractedWith(npc) == false)
                 {
                     bool success;
-                    BehaviorHelper.InteractWithBehavior(npc, jukeBox, out success);
+                    BehaviorHelper.InteractWithBehavior(npc, generic, out success);
                 }
                 else
                 {
-                    Debug.Log(npc.GetID() + " has already interacted with " + jukeBox.GetID());
+                    Debug.Log(npc.GetID() + " has already interacted with " + generic.GetID());
                 }
             }
 

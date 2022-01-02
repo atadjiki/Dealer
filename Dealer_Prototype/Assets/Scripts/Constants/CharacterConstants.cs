@@ -11,6 +11,7 @@ namespace Constants
             Idle,
             Approach,
             Interact,
+            Sit,
             None
         };
 
