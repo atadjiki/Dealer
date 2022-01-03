@@ -81,56 +81,6 @@ public class BehaviorHelper : MonoBehaviour
         return behaviorScript;
     }
 
-    public static CharacterBehaviorScript InteractWithBehavior(CharacterComponent character, Interactable interactable, out bool success)
-    {
-        if (interactable != null && interactable.HasBeenInteractedWith(character) == false)
-        {
-            CharacterBehaviorScript behaviorScript
-                =  CreateBehaviorObject(character.GetID() + " - " + interactable.GetID() + " interaction behavior ", character).AddComponent<Behavior_InteractWith>();
-
-            CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
-            {
-                Character = character,
-                Interactable = interactable,
-                Behavior = behaviorScript,
-                Destination = interactable.GetInteractionTransform().position
-            };
-
-            behaviorScript.Setup(data);
-
-            success = true;
-            return behaviorScript;
-        }
-
-        success = false;
-        return null;
-    }
-
-    public static CharacterBehaviorScript SitBehavior(CharacterComponent character, Interactable interactable, out bool success)
-    {
-        if (interactable != null && interactable.HasBeenInteractedWith(character) == false)
-        {
-            CharacterBehaviorScript behaviorScript
-                = CreateBehaviorObject(character.GetID() + " - " + interactable.GetID() + " sit behavior ", character).AddComponent<Behavior_Sit>();
-
-            CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
-            {
-                Character = character,
-                Interactable = interactable,
-                Behavior = behaviorScript,
-                Destination = interactable.GetInteractionTransform().position
-            };
-
-            behaviorScript.Setup(data);
-
-            success = true;
-            return behaviorScript;
-        }
-
-        success = false;
-        return null;
-    }
-
     public static GameObject CreateBehaviorObject(string name, CharacterComponent character)
     {
         GameObject behaviorObject = new GameObject(name);
@@ -145,24 +95,6 @@ public class BehaviorHelper : MonoBehaviour
         Vector3 interactionPos = interactable.GetInteractionTransform().position;
 
         return (Vector3.Distance(characterPos, interactionPos) < 1f);
-    }
-
-    public static CharacterBehaviorScript ResolveInteractableBehavior(CharacterComponent character, Interactable interactable, out bool success)
-    {
-        if(interactable.GetID() == InteractableConstants.InteractableID.Generic.ToString())
-        {
-            return InteractWithBehavior(character, interactable, out success);
-        }
-        else if (interactable.GetID() == InteractableConstants.InteractableID.Chair.ToString())
-        {
-            return SitBehavior(character, interactable, out success);
-        }
-        else
-        {
-            success = false;
-            return null;
-        }
-
     }
 
     public static IEnumerator ResolvePerformInteraction(BehaviorData _data)

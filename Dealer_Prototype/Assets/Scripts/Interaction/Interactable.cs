@@ -63,15 +63,10 @@ public class Interactable : MonoBehaviour, IInteraction
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
         {
-            if(BehaviorHelper.IsInteractionAllowed(PlayableCharacterManager.Instance.GetSelectedCharacter(), this))
-            {
+           // if(BehaviorHelper.IsInteractionAllowed(PlayableCharacterManager.Instance.GetSelectedCharacter(), this))
+         //   {
                 GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.GetContextByInteractableID(this));
-            }
-            else
-            {
-                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Approach);
-            }
-            
+         //   } 
         }
 
         CursorManager.Instance.ToInteract();

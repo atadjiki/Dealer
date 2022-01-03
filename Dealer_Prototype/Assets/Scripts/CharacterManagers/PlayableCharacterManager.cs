@@ -123,15 +123,8 @@ public class PlayableCharacterManager : CharacterManager
             bool success;
             CharacterBehaviorScript behaviorScript;
 
-            if (BehaviorHelper.IsInteractionAllowed(selectedCharacter, interactable))
-            {
-                behaviorScript = BehaviorHelper.ResolveInteractableBehavior(selectedCharacter, interactable, out success);
-            }
-            else
-            {
-                behaviorScript = BehaviorHelper.ApproachBehavior(selectedCharacter, interactable, out success);
-            }
-
+            behaviorScript = BehaviorHelper.ApproachBehavior(selectedCharacter, interactable, out success);
+           
             selectedCharacter.AddNewBehavior(behaviorScript);
         }
     }

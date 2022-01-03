@@ -127,7 +127,7 @@ public class NPCManager : CharacterManager
                 if (generic != null && generic.HasBeenInteractedWith(npc) == false)
                 {
                     bool success;
-                    BehaviorHelper.InteractWithBehavior(npc, generic, out success);
+                    BehaviorHelper.ApproachBehavior(npc, generic, out success);
                 }
                 else
                 {
