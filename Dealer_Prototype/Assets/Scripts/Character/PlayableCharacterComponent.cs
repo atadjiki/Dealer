@@ -37,6 +37,9 @@ public class PlayableCharacterComponent : NPCComponent
 
     public override void OnMouseClicked()
     {
-        PlayableCharacterManager.Instance.HandleCharacterSelection(this);
+        if (PlayableCharacterManager.Instance.IsPlayerLocked() == false)
+        {
+            PlayableCharacterManager.Instance.HandleCharacterSelection(this);
+        } 
     }
 }

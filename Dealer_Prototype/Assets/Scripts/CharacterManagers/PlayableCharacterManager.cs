@@ -10,6 +10,10 @@ public class PlayableCharacterManager : CharacterManager
 
     private PlayableCharacterComponent selectedCharacter;
 
+    private bool playerLock = false;
+
+    public bool IsPlayerLocked() { return playerLock; }
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -135,5 +139,18 @@ public class PlayableCharacterManager : CharacterManager
         {
             selectedCharacter.AbortBehaviors();
         }
+    }
+
+    public void LockToCharacter(PlayableCharacterComponent character)
+    {
+        HandleCharacterSelection(character);
+
+        playerLock = true;
+
+    }
+
+    public void UnlockFromCharacter()
+    {
+        playerLock = false;
     }
 }

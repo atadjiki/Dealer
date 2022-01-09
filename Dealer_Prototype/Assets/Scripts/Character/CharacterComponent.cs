@@ -112,11 +112,14 @@ public class CharacterComponent : MonoBehaviour
     {
         _charCanvas.Toggle(true);
 
-        if (CharacterMode == CharacterConstants.Mode.Selected)
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
+        if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
+        {
+            if (CharacterMode == CharacterConstants.Mode.Selected)
+                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
 
-        else
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
+            else
+                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
+        }
     }
 
     public virtual void OnMouseExit()

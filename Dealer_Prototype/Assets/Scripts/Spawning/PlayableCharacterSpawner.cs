@@ -13,6 +13,10 @@ public class PlayableCharacterSpawner : MonoBehaviour
     public enum PlayerSpawnerState { WaitingToSpawn, Spawning, Spawned };
     private PlayerSpawnerState State = PlayerSpawnerState.WaitingToSpawn;
 
+    [SerializeField] private CharacterConstants.CharacterID CharacterID;
+
+    [SerializeField] private bool PlayerLock = true;
+
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -39,9 +43,23 @@ public class PlayableCharacterSpawner : MonoBehaviour
 
         yield return new WaitWhile(() => playerComp == null);
 
-        playerComp.Initialize(new SpawnData());
+        SpawnData playerSpawnData = new SpawnData()
+        {
+            ID = CharacterID,
+            Team = CharacterConstants.Team.Ally
+        };
+
+
+        playerComp.Initialize(playerSpawnData);
 
         State = PlayerSpawnerState.Spawned;
+
+        yield return new WaitForSeconds(0.25f);
+
+        if (PlayerLock)
+        {
+            PlayableCharacterManager.Instance.LockToCharacter(playerComp);
+        }
 
         yield return null;
     }
