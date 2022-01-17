@@ -27,8 +27,8 @@ public class BehaviorHelper : MonoBehaviour
 
     public static CharacterBehaviorScript MoveToBehavior(CharacterComponent character, Vector3 destination, out bool success)
     {
-       CharacterBehaviorScript behaviorScript
-            = CreateBehaviorObject(character.GetID() + " move to location " + destination.ToString(), character).AddComponent<Behavior_MoveToLocation>();
+        CharacterBehaviorScript behaviorScript
+             = CreateBehaviorObject(character.GetID() + " move to location " + destination.ToString(), character).AddComponent<Behavior_MoveToLocation>();
 
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
@@ -132,6 +132,36 @@ public class BehaviorHelper : MonoBehaviour
         yield return null;
     }
 
+    public static IEnumerator LerpToTransform(Transform A, Transform B, float speed)
+    {
+        //lerp NPC to interaction location
+        Vector3 initialPosition = A.transform.position;
+        Vector3 targetPosition = B.position;
+
+        Quaternion initialRotation = A.rotation;
+        Quaternion targetRotation = B.rotation;
+
+        float lerp = 0;
+
+        while (lerp < 1)
+        {
+            Vector3 lerpPosition = Vector3.Lerp(initialPosition, targetPosition, lerp);
+            Quaternion lerpRotation = Quaternion.Lerp(initialRotation, targetRotation, lerp);
+
+            lerp += Time.fixedDeltaTime * speed;
+
+            A.position = lerpPosition;
+            A.rotation = lerpRotation;
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        A.position = B.position;
+        A.rotation = B.rotation;
+
+        yield return null;
+    }
+
     public static IEnumerator PerformSit(BehaviorData _data)
     {
         _data.Character.SetUpdateState(CharacterConstants.UpdateState.Busy);
@@ -142,10 +172,8 @@ public class BehaviorHelper : MonoBehaviour
         {
             Transform sittingTransform = chair.GetSittingPoseTransform();
 
-            //move NPC to interaction location
-            _data.Character.GetNavigatorComponent().transform.position = sittingTransform.position;
-            _data.Character.GetNavigatorComponent().transform.rotation = sittingTransform.rotation;
-
+            yield return LerpToTransform(_data.Character.GetNavigatorComponent().transform, sittingTransform, 1.5f);
+            
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
             _data.Character.FadeToAnimation(AnimationConstants.Animations.Sitting_Idle, 0.05f, false);
@@ -171,6 +199,8 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.SetUpdateState(CharacterConstants.UpdateState.Busy);
 
         //move NPC to interaction location
+        yield return LerpToTransform(_data.Character.GetNavigatorComponent().transform, _data.Interactable.GetInteractionTransform(), 2f);
+
         _data.Character.GetNavigatorComponent().TeleportToLocation(_data.Interactable.GetInteractionTransform());
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 

@@ -124,7 +124,7 @@ public class NavigatorComponent : MonoBehaviour
         if (success)
         {
             this.transform.position = VectorPair.Item2.position;
-            this.transform.rotation = transform.rotation;
+         //   this.transform.rotation = transform.rotation;
             return true;
         }
         else
