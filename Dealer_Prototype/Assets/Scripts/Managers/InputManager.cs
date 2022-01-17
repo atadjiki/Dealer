@@ -207,4 +207,6 @@ public class InputManager : MonoBehaviour
         Cursor.visible = true;
         inputActions.Enable();
     }
+
+    public Vector2 GetScreenMousePosition() { return _screenMousePos;}
 }

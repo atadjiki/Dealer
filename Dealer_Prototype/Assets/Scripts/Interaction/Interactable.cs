@@ -22,6 +22,8 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public Transform GetInteractionTransform() { return InteractionTransform; }
 
+    private bool bMouseIsOver = false;
+
     private void Awake()
     {
         StartCoroutine(DoInitialize());
@@ -58,6 +60,38 @@ public class Interactable : MonoBehaviour, IInteraction
         return _interactedWith.Contains(character);
     }
 
+    private void FixedUpdate()
+    {
+        Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
+
+        var ray = Camera.main.ScreenPointToRay(_screenMousePos);
+
+        RaycastHit hit = new RaycastHit();
+
+        //for walls, interactables, doors, etc
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null)
+            {
+                if(hit.collider.gameObject == this.gameObject && bMouseIsOver == false)
+                {
+                    MouseEnter();
+                    bMouseIsOver = true;
+                }
+            }
+            else if (bMouseIsOver)
+            {
+                bMouseIsOver = false;
+                MouseExit();
+            }
+        }
+        else if(bMouseIsOver)
+        {
+            bMouseIsOver = false;
+            MouseExit();
+        }
+    }
 
     public virtual void MouseEnter()
     {
