@@ -19,6 +19,7 @@ public class Interactable : MonoBehaviour, IInteraction
     internal HashSet<CharacterComponent> _interactedWith;
 
     [SerializeField] internal Transform InteractionTransform;
+    [SerializeField] internal MeshRenderer[] Meshes;
 
     public Transform GetInteractionTransform() { return InteractionTransform; }
 
@@ -102,7 +103,10 @@ public class Interactable : MonoBehaviour, IInteraction
 
         CursorManager.Instance.ToInteract();
 
-        ColorManager.Instance.ApplyOutlineMaterialToMesh(this.gameObject);
+        foreach(MeshRenderer renderer in Meshes)
+        {
+            ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+        }
     }
 
     public virtual void MouseClick()
@@ -123,7 +127,9 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public void MouseExit()
     {
-        ColorManager.Instance.RemoveOutlineMaterialFromMesh(this.gameObject);
-
+        foreach(MeshRenderer renderer in Meshes)
+        {
+            ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+        }
     }
 }

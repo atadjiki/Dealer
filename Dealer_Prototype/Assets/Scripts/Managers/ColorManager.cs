@@ -41,10 +41,8 @@ public class ColorManager : MonoBehaviour
 
     public Material GetOutlineMaterial() { return OutlineMaterial; }
 
-    public void ApplyOutlineMaterialToMesh(GameObject InObject)
+    public void ApplyOutlineMaterialToMesh(MeshRenderer renderer)
     {
-        MeshRenderer renderer = InObject.GetComponent<MeshRenderer>();
-
         if(renderer != null)
         {
             List<Material> materials = new List<Material>(renderer.materials);
@@ -59,10 +57,8 @@ public class ColorManager : MonoBehaviour
 
     }
 
-    public void RemoveOutlineMaterialFromMesh(GameObject InObject)
+    public void RemoveOutlineMaterialFromMesh(MeshRenderer renderer)
     {
-        MeshRenderer renderer = InObject.GetComponent<MeshRenderer>();
-
         if(renderer != null)
         {
             List<Material> materials = new List<Material>(renderer.materials);

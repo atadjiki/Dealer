@@ -2148,7 +2148,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: NaN, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 1, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -2953,7 +2953,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0.046875, y: 0, z: 0, w: 4.096829e-11}
+  m_BoundingSphereOverride: {x: 915152, y: 4.4633502e+30, z: 1.12586806e+24, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3282,7 +3282,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.8604718e+30, y: 0, z: 0, w: 4.0740925e-11}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 1.7e-44, w: 4.018e-42}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3792,6 +3792,22 @@ PrefabInstance:
     - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_BounceIntensity
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 5.253e-42
+      objectReference: {fileID: 0}
+    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 1e-44
       objectReference: {fileID: 0}
     - target: {fileID: 1032325138056264696, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_RootOrder
