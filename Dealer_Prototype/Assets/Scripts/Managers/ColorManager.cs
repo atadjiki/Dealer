@@ -19,6 +19,9 @@ public class ColorManager : MonoBehaviour
     [SerializeField] private Color Behavior_Active;
     [SerializeField] private Color InteractionTransform;
 
+    [Header("Materials")]
+    [SerializeField] private Material OutlineMaterial;
+
 
     private static ColorManager _instance;
 
@@ -33,6 +36,44 @@ public class ColorManager : MonoBehaviour
         else
         {
             _instance = this;
+        }
+    }
+
+    public Material GetOutlineMaterial() { return OutlineMaterial; }
+
+    public void ApplyOutlineMaterialToMesh(GameObject InObject)
+    {
+        MeshRenderer renderer = InObject.GetComponent<MeshRenderer>();
+
+        if(renderer != null)
+        {
+            List<Material> materials = new List<Material>(renderer.materials);
+
+            if(materials.Count == 1)
+            {
+                materials.Add(OutlineMaterial);
+
+                renderer.materials = materials.ToArray();
+            }
+        }
+
+    }
+
+    public void RemoveOutlineMaterialFromMesh(GameObject InObject)
+    {
+        MeshRenderer renderer = InObject.GetComponent<MeshRenderer>();
+
+        if(renderer != null)
+        {
+            List<Material> materials = new List<Material>(renderer.materials);
+
+            if(materials.Count == 2)
+            {
+                materials.RemoveAt(1);
+
+                renderer.materials = materials.ToArray();
+            }
+
         }
     }
 

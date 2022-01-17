@@ -256,6 +256,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8734438805303980861, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
+      propertyPath: OutlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c3efcd90b27a340e09ed692fa7bdc69a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
 --- !u!1001 &100726444
@@ -723,7 +727,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2646362382430319442, guid: c1b778d6cc4404389aecb2759e91106c, type: 3}
       propertyPath: m_Lens.OrthographicSize
-      value: 5
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 2646362382430319444, guid: c1b778d6cc4404389aecb2759e91106c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -795,7 +799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4623613467148180621, guid: c1b778d6cc4404389aecb2759e91106c, type: 3}
       propertyPath: orthographic size
-      value: 5
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4623613467148180621, guid: c1b778d6cc4404389aecb2759e91106c, type: 3}
       propertyPath: m_BackGroundColor.a
@@ -1261,6 +1265,14 @@ PrefabInstance:
     - target: {fileID: 58050258773780788, guid: 7ba73e2e9e6784592b917f65dbe3ff69, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4113817340465738627, guid: 7ba73e2e9e6784592b917f65dbe3ff69, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4113817340465738627, guid: 7ba73e2e9e6784592b917f65dbe3ff69, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4166849885047480095, guid: 7ba73e2e9e6784592b917f65dbe3ff69, type: 3}
       propertyPath: m_Name

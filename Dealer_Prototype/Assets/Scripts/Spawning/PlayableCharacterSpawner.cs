@@ -54,7 +54,7 @@ public class PlayableCharacterSpawner : MonoBehaviour
 
         State = PlayerSpawnerState.Spawned;
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitWhile(() => !playerComp.HasInitialized());
 
         if (PlayerLock)
         {

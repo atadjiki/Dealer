@@ -35,6 +35,8 @@ public class CharacterComponent : MonoBehaviour
 
     internal float moveRadius = 30;
 
+    private bool bHasInitialized = false;
+
     protected SpawnData spawnData;
 
     //behavior queue
@@ -100,7 +102,11 @@ public class CharacterComponent : MonoBehaviour
         _behaviorQueue = new Queue<CharacterBehaviorScript>();
 
         SetCurrentBehavior(CharacterConstants.BehaviorType.None);
+
+        bHasInitialized = true;
     }
+
+    public bool HasInitialized() { return bHasInitialized; }
 
     public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
     {

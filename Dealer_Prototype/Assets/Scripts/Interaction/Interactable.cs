@@ -63,13 +63,12 @@ public class Interactable : MonoBehaviour, IInteraction
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
         {
-           // if(BehaviorHelper.IsInteractionAllowed(PlayableCharacterManager.Instance.GetSelectedCharacter(), this))
-         //   {
-                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.GetContextByInteractableID(this));
-         //   } 
+            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.GetContextByInteractableID(this));
         }
 
         CursorManager.Instance.ToInteract();
+
+        ColorManager.Instance.ApplyOutlineMaterialToMesh(this.gameObject);
     }
 
     public virtual void MouseClick()
@@ -88,5 +87,9 @@ public class Interactable : MonoBehaviour, IInteraction
             return "";
     }
 
-    public void MouseExit() { }
+    public void MouseExit()
+    {
+        ColorManager.Instance.RemoveOutlineMaterialFromMesh(this.gameObject);
+
+    }
 }
