@@ -9,6 +9,7 @@ public class CharacterComponent : MonoBehaviour
     protected Animator _animator;
     protected NavigatorComponent _navigator;
     protected CharacterCanvas _charCanvas;
+    protected Light _light;
     protected InteractionComponent _interaction;
     protected CharacterStateComponent _characterState;
     protected CharacterCameraRig _cameraRig;
@@ -75,6 +76,11 @@ public class CharacterComponent : MonoBehaviour
         ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 
         yield return new WaitWhile(() => _animator == null);
+
+        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, ModelPrefab.transform);
+        _light = CharacterLightPrefab.GetComponent<Light>();
+
+        yield return new WaitWhile(() => _light == null);
 
         //attach a UI canvas to the model 
         GameObject CanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);

@@ -13,6 +13,7 @@ namespace Constants
         CharacterCanvas,
         CM_Character,
         CharacterCameraRig,
+        CharacterLight,
         SelectionComponent,
         BehaviorDecal,
         PerLevel_Managers,
@@ -28,6 +29,9 @@ namespace Constants
             {
                 case RegistryID.CharacterCameraRig:
                     PathString = "Prefabs/Components/CharacterCameraRig";
+                    return true;
+                case RegistryID.CharacterLight:
+                    PathString = "Prefabs/Components/CharacterLight";
                     return true;
                 case RegistryID.CharacterCanvas:
                     PathString = "Prefabs/Components/CharacterCanvas";
