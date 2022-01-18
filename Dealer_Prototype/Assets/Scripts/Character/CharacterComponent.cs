@@ -7,6 +7,7 @@ using UnityEngine;
 public class CharacterComponent : MonoBehaviour
 {
     protected Animator _animator;
+    protected CharacterAnimationComponent _characterAnimation;
     protected NavigatorComponent _navigator;
     protected CharacterCanvas _charCanvas;
     protected Light _light;
@@ -72,6 +73,8 @@ public class CharacterComponent : MonoBehaviour
         GameObject ModelPrefab = PrefabFactory.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
         // ModelPrefab.transform.parent = NavigtorPrefab.transform;
         _animator = ModelPrefab.GetComponent<Animator>();
+
+        _characterAnimation = ModelPrefab.GetComponent<CharacterAnimationComponent>();
 
         ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 
