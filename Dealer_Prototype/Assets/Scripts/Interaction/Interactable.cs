@@ -94,6 +94,24 @@ public class Interactable : MonoBehaviour, IInteraction
         }
     }
 
+    public void ToggleOutlineShader(bool flag)
+    {
+        if(flag)
+        {
+            foreach (MeshRenderer renderer in Meshes)
+            {
+                ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+            }
+        }
+        else
+        {
+            foreach (MeshRenderer renderer in Meshes)
+            {
+                ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+            }
+        }
+    }
+
     public virtual void MouseEnter()
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
@@ -103,10 +121,7 @@ public class Interactable : MonoBehaviour, IInteraction
 
         CursorManager.Instance.ToInteract();
 
-        foreach(MeshRenderer renderer in Meshes)
-        {
-            ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
-        }
+        ToggleOutlineShader(true);
     }
 
     public virtual void MouseClick()
@@ -127,9 +142,6 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public void MouseExit()
     {
-        foreach(MeshRenderer renderer in Meshes)
-        {
-            ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
-        }
+        ToggleOutlineShader(false);
     }
 }

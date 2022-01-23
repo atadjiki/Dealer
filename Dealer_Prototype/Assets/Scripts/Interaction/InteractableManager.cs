@@ -58,4 +58,12 @@ public class InteractableManager : MonoBehaviour
         result = null;
         return false;
     }
+
+    public void ToggleHighlightAll(bool flag)
+    {
+        foreach(Interactable interactable in Interactables)
+        {
+            interactable.ToggleOutlineShader(flag);
+        }
+    }
 }

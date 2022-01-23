@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
 
     const int ground_layerMask = 1 << 6;
 
+    bool bRevealStarted = false;
+
 
     private void Awake()
     {
@@ -42,7 +44,20 @@ public class InputManager : MonoBehaviour
         //inputActions.Default.DoubleSelect.performed += ctx => OnDoubleSelect(ctx);
         inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
 
+        inputActions.Default.Reveal.started += ctx => Reveal_Start(ctx);
+
         inputActions.Enable();
+    }
+
+    private void Reveal_Start(InputAction.CallbackContext context)
+    {
+        InteractableManager.Instance.ToggleHighlightAll(true);
+        bRevealStarted = true;
+    }
+
+    private void Reveal_Complete()
+    {
+        InteractableManager.Instance.ToggleHighlightAll(false);
     }
 
 
@@ -132,6 +147,11 @@ public class InputManager : MonoBehaviour
         InputVector.y = (-1*inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
 
         CameraFollowTarget.Instance.MoveInDirection(InputVector);
+
+        if(bRevealStarted && inputActions.Default.Reveal.ReadValue<float>() == 0)
+        {
+            Reveal_Complete();
+        }
     }
 
     private void OnDoubleSelect(InputAction.CallbackContext context)
