@@ -2191,7 +2191,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 1, w: 0}
+  m_BoundingSphereOverride: {x: 1, y: 1, z: 1, w: 1}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3101,7 +3101,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 915152, y: 4.4633502e+30, z: 1.12586806e+24, w: 0}
+  m_BoundingSphereOverride: {x: 1e-45, y: 1.7178296e-37, z: 1e-45, w: 9.403955e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3430,7 +3430,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 1.7e-44, w: 4.018e-42}
+  m_BoundingSphereOverride: {x: 1.10961246e+27, y: 10.96495, z: 1.5581963e+28, w: 6.350179e+28}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3524,107 +3524,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 58050258773780788, guid: 7ba73e2e9e6784592b917f65dbe3ff69, type: 3}
   m_PrefabInstance: {fileID: 297768564}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2112505517 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1237731376329014149, guid: 20b878836569040179e64021c4535ee8, type: 3}
-  m_PrefabInstance: {fileID: 6785044668926626649}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &2112505520
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2112505517}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 6757712868263561006, guid: 47d930b7bcef33341836d13a60e66841, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 4823c555170ee0b4ba0b212b563f17df, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 3
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1001 &2126349939
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4031,32 +3930,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 1745920270}
     m_Modifications:
     - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_Range
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_Intensity
       value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_BounceIntensity
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_BoundingSphereOverride.w
-      value: 5.253e-42
-      objectReference: {fileID: 0}
-    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_BoundingSphereOverride.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_BoundingSphereOverride.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 12645209172155993, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: m_BoundingSphereOverride.z
-      value: 1e-44
+      propertyPath: m_Lightmapping
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1032325138056264696, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_RootOrder
@@ -4105,6 +3984,22 @@ PrefabInstance:
     - target: {fileID: 1237731376329014149, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_Name
       value: milk crate_and_TV
+      objectReference: {fileID: 0}
+    - target: {fileID: 2112047297460184995, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900937789788865018, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785044668786935281, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841898098353656320, guid: 20b878836569040179e64021c4535ee8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20b878836569040179e64021c4535ee8, type: 3}

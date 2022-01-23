@@ -130,10 +130,10 @@ public class CharacterComponent : MonoBehaviour
         if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
         {
             if (CharacterMode == CharacterConstants.Mode.Selected)
-                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Deselect);
+                GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Deselect);
 
             else
-                GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Select);
+                GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Select);
         }
     }
 

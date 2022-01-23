@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1032325138056264696}
   - component: {fileID: 1237731376329014151}
-  - component: {fileID: 1237731376329014148}
+  - component: {fileID: 5293055197028151389}
+  - component: {fileID: 8522052572059151863}
   m_Layer: 12
   m_Name: milk crate_and_TV
   m_TagString: Furniture
@@ -47,7 +48,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.83, z: 0}
---- !u!114 &1237731376329014148
+--- !u!114 &5293055197028151389
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,14 +57,117 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237731376329014149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0b9dc1c54e9040fd98c512637cfb551, type: 3}
+  m_Script: {fileID: 11500000, guid: fea0e4e0e30ea4380a07bf87e9af4693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 0
+  ID: 2
   InteractionTransform: {fileID: 6785044667940415648}
   Meshes:
   - {fileID: 2578029352622798402}
   - {fileID: 6785044668786935281}
+  DefaultState: 0
+  MeshRenderer: {fileID: 2900937789788865018}
+  Mat_Off: {fileID: 2100000, guid: a79dce1608a1441aab5ac8e2b19fe381, type: 2}
+  Mat_On: {fileID: 2100000, guid: 46311da8cefa2472aab7f8c1d0af6121, type: 2}
+  AudioSource_TV: {fileID: 8522052572059151863}
+  AudioClip_On: {fileID: 8300000, guid: 4823c555170ee0b4ba0b212b563f17df, type: 3}
+  Light_TV: {fileID: 12645209172155993}
+--- !u!82 &8522052572059151863
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237731376329014149}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 5
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2112047297460184995
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,8 +211,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.504717, g: 0.8413066, b: 1, a: 1}
-  m_Intensity: 1
-  m_Range: 10
+  m_Intensity: 1.5
+  m_Range: 1.5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -149,10 +253,10 @@ Light:
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 50
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1e-45, y: 1.61e-43, z: 0, w: 5.449243e+13}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 1e-44, w: 5.253e-42}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

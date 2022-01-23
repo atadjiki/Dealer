@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class FloorComponent : MonoBehaviour, IInterior
@@ -12,7 +13,7 @@ public class FloorComponent : MonoBehaviour, IInterior
     public void MouseEnter()
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.InteractionContext.Move);
+            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Move);
         else
             GameplayCanvas.Instance.ClearInteractionTipText();
 

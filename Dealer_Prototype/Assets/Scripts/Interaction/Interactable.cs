@@ -30,7 +30,7 @@ public class Interactable : MonoBehaviour, IInteraction
         StartCoroutine(DoInitialize());
     }
 
-    private IEnumerator DoInitialize()
+    protected virtual IEnumerator DoInitialize()
     {
         _interactedWith = new HashSet<CharacterComponent>();
 
@@ -116,7 +116,7 @@ public class Interactable : MonoBehaviour, IInteraction
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
         {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(GameplayCanvas.GetContextByInteractableID(this));
+            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.GetContextByInteractableID(this));
         }
 
         CursorManager.Instance.ToInteract();
@@ -143,5 +143,10 @@ public class Interactable : MonoBehaviour, IInteraction
     public void MouseExit()
     {
         ToggleOutlineShader(false);
+    }
+
+    public virtual void OnInteraction()
+    {
+
     }
 }

@@ -107,6 +107,10 @@ public class BehaviorHelper : MonoBehaviour
         {
             return PerformSit(_data);
         }
+        else if(_data.Interactable.GetID() == InteractableConstants.InteractableID.Television.ToString())
+        {
+            return PerformInteractWith(_data);
+        }
 
         return null;
     }
@@ -204,7 +208,11 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.GetNavigatorComponent().TeleportToLocation(_data.Interactable.GetInteractionTransform());
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
+        //later we will fetch the appropriate anim
         _data.Character.FadeToAnimation(AnimationConstants.Animations.ButtonPush, 0.5f, false);
+
+        yield return new WaitForSeconds(0.5f);
+        _data.Interactable.OnInteraction();
 
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " interacting with " + _data.Interactable.GetID());
         yield return new WaitForSeconds(3.0f);

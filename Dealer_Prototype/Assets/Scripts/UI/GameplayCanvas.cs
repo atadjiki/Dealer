@@ -24,8 +24,6 @@ public class GameplayCanvas : MonoBehaviour
     [SerializeField] private TextMeshProUGUI Text_BehaviorQueue;
     [SerializeField] private GameObject Image_BehaviorQueue_CurrentBehavior;
 
-    public enum InteractionContext { Select, Deselect, Move, Approach, Interact, Sit, None };
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -93,34 +91,9 @@ public class GameplayCanvas : MonoBehaviour
         Text_CurrentAnimation.text = anim.ToString();
     }
 
-    public void SetInteractionTipTextContext(InteractionContext context)
+    public void SetInteractionTipTextContext(InteractableConstants.InteractionContext context)
     {
-
-        string text = "";
-
-        switch (context)
-        {
-            case InteractionContext.Select:
-                text = "Select";
-                break;
-            case InteractionContext.Deselect:
-                text = "Deselect";
-                break;
-            case InteractionContext.Move:
-                text = "Move";
-                break;
-            case InteractionContext.Interact:
-                text = "Interact";
-                break;
-            case InteractionContext.Approach:
-                text = "Approach";
-                break;
-            case InteractionContext.Sit:
-                text = "Sit";
-                break;
-        }
-
-        Text_Interaction_Tip.text = text;
+        Text_Interaction_Tip.text = InteractableConstants.GetInteractionTipTextContext(context);
     }
 
     public void ClearInteractionTipText()
@@ -144,22 +117,6 @@ public class GameplayCanvas : MonoBehaviour
             Text_BehaviorQueue.text = text;
 
             Panel_BehaviorQueue.SetActive(behaviorQueue.Count != 0);
-        }
-    }
-
-    public static InteractionContext GetContextByInteractableID(Interactable interactable)
-    {
-        if(interactable.GetID() == Constants.InteractableConstants.InteractableID.Generic.ToString())
-        {
-            return InteractionContext.Interact;
-        }
-        else if (interactable.GetID() == Constants.InteractableConstants.InteractableID.Chair.ToString())
-        {
-            return InteractionContext.Sit;
-        }
-        else
-        {
-            return InteractionContext.None;
         }
     }
 }
