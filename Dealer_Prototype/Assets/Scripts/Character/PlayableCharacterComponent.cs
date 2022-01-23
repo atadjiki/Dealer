@@ -20,7 +20,7 @@ public class PlayableCharacterComponent : NPCComponent
     {
         yield return base.DoInitialize();
 
-        ColorManager.Instance.SetObjectToColor(_animator.gameObject, ColorManager.Instance.GetPlayerColor());
+    //    ColorManager.Instance.SetObjectToColor(_animator.gameObject, ColorManager.Instance.GetPlayerColor());
     }
 
     public override void PerformSelect()

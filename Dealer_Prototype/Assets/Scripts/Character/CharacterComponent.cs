@@ -76,7 +76,7 @@ public class CharacterComponent : MonoBehaviour
 
         _characterAnimation = ModelPrefab.GetComponent<CharacterAnimationComponent>();
 
-        ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
+       // ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 
         yield return new WaitWhile(() => _animator == null);
 
