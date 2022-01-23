@@ -7,12 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Outline_Voxel
+  m_Name: Mat_Outline_interactable
   m_Shader: {fileID: -6465566751694194690, guid: 68116efc5f5354cfeaad92096b2c7926, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 1
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -32,10 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - AlphaClip: 0.5
-    - MinOutlineThickness: 0.065
-    - OutlineThickness: 0.075
-    - Speed: 10
+    - ScaleFactor: 0.05
     m_Colors:
-    - OutlineColor: {r: 0.13915095, g: 0.5, b: 0.13915095, a: 1}
+    - OutlineColor: {r: 0, g: 1, b: 0, a: 1}
   m_BuildTextureStacks: []
