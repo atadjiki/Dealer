@@ -24,7 +24,7 @@ public class CharacterComponent : MonoBehaviour
 
     public CharacterConstants.Mode CharacterMode = CharacterConstants.Mode.None;
 
-    private string CurrentAnimation = AnimationConstants.Idle_Male;
+    private AnimationConstants.Anim CurrentAnimation = AnimationConstants.Anim.Idle;
 
     [Header("Debug")]
 
@@ -56,6 +56,7 @@ public class CharacterComponent : MonoBehaviour
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
         _characterState.SetCharacterID(spawnData.ID);
         _characterState.SetTeam(spawnData.Team);
+        _characterState.SetGender(CharacterConstants.GetGenderBYID(spawnData.ID));
 
         //setup navigator
         GameObject NavigtorPrefab = PrefabFactory.CreatePrefab(RegistryID.Navigator, this.transform);
@@ -112,6 +113,8 @@ public class CharacterComponent : MonoBehaviour
 
         SetCurrentBehavior(CharacterConstants.BehaviorType.None);
 
+        FadeToAnimation(CurrentAnimation, 1.5f, false);
+
         bHasInitialized = true;
     }
 
@@ -154,11 +157,15 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public void FadeToAnimation(string anim, float time, bool canMove)
+    public void FadeToAnimation(AnimationConstants.Anim anim, float time, bool canMove)
     {
-        if (_animator != null) _animator.CrossFade(anim, time);
+        string animString = AnimationConstants.FetchAnimString(_characterState, anim);
+
+        if (_animator != null) _animator.CrossFade(animString, time);
         if(_navigator != null) _navigator.SetCanMove(canMove);
         SetCurrentAnimation(anim);
+
+        Debug.Log("Fading to anim " + animString);
     }
 
     public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }
@@ -171,12 +178,12 @@ public class CharacterComponent : MonoBehaviour
         GameplayCanvas.Instance.SetBehaviorText(CurrentBehavior);
     }
 
-    public string GetCurrentAnimation() { return CurrentAnimation; }
+    public AnimationConstants.Anim GetCurrentAnimation() { return CurrentAnimation; }
 
-    public void SetCurrentAnimation(string anim)
+    public void SetCurrentAnimation(AnimationConstants.Anim anim)
     {
         CurrentAnimation = anim;
-        GameplayCanvas.Instance.SetAnimationText(anim);
+        GameplayCanvas.Instance.SetAnimationText(anim.ToString());
     }
 
     internal void SetUpdateState(CharacterConstants.UpdateState newState)
