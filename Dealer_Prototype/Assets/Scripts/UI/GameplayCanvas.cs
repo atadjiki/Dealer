@@ -86,9 +86,9 @@ public class GameplayCanvas : MonoBehaviour
         Text_CurrentBehavior.text = behaviorType.ToString();
     }
 
-    public void SetAnimationText(AnimationConstants.Animations anim)
+    public void SetAnimationText(string anim)
     {
-        Text_CurrentAnimation.text = anim.ToString();
+        Text_CurrentAnimation.text = anim;
     }
 
     public void SetInteractionTipTextContext(InteractableConstants.InteractionContext context)

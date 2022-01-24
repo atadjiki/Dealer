@@ -180,7 +180,7 @@ public class BehaviorHelper : MonoBehaviour
             
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
-            _data.Character.FadeToAnimation(AnimationConstants.Animations.Sitting_Idle, 0.05f, false);
+            _data.Character.FadeToAnimation(AnimationConstants.Sitting_Default, 0.05f, false);
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " sitting on " + _data.Interactable.GetID());
 
@@ -193,7 +193,7 @@ public class BehaviorHelper : MonoBehaviour
     //basic tasks
     public static IEnumerator PerformIdle(BehaviorData _data)
     {
-        _data.Character.FadeToAnimation(AnimationConstants.Animations.Idle, 0.1f, false);
+        _data.Character.FadeToAnimation(AnimationConstants.Idle_Male, 0.1f, false);
 
         yield return null;
     }
@@ -209,7 +209,7 @@ public class BehaviorHelper : MonoBehaviour
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
         //later we will fetch the appropriate anim
-        _data.Character.FadeToAnimation(AnimationConstants.Animations.ButtonPush, 0.5f, false);
+        _data.Character.FadeToAnimation(AnimationConstants.ButtonPush, 0.5f, false);
 
         yield return new WaitForSeconds(0.5f);
         _data.Interactable.OnInteraction();
@@ -217,7 +217,7 @@ public class BehaviorHelper : MonoBehaviour
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " interacting with " + _data.Interactable.GetID());
         yield return new WaitForSeconds(3.0f);
 
-        _data.Character.FadeToAnimation(AnimationConstants.Animations.Idle, 0.25f, false);
+        _data.Character.FadeToAnimation(AnimationConstants.Idle_Male, 0.25f, false);
 
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " finished interacting with " + _data.Interactable.GetID());
         _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);

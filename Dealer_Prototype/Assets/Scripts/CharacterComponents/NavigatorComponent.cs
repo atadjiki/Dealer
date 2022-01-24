@@ -168,7 +168,7 @@ public class NavigatorComponent : MonoBehaviour
         if (PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter)
             SpawnNavPointPrefab(Destination);
 
-        parentCharacter.FadeToAnimation(AnimationConstants.Animations.Walking, 0.15f, true);
+        parentCharacter.FadeToAnimation(AnimationConstants.Walking_Male, 0.15f, true);
 
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
         parentCharacter.OnNewDestination(Destination);
@@ -196,7 +196,7 @@ public class NavigatorComponent : MonoBehaviour
         // The agent has reached the destination now
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
 
-        parentCharacter.FadeToAnimation(AnimationConstants.Animations.Idle, 0.15f, false);
+        parentCharacter.FadeToAnimation(AnimationConstants.Idle_Male, 0.15f, false);
 
         yield return new WaitForSeconds(0.1f);
 

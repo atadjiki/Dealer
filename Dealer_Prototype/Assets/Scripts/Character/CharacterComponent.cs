@@ -24,7 +24,7 @@ public class CharacterComponent : MonoBehaviour
 
     public CharacterConstants.Mode CharacterMode = CharacterConstants.Mode.None;
 
-    private AnimationConstants.Animations CurrentAnimation = AnimationConstants.Animations.Idle;
+    private string CurrentAnimation = AnimationConstants.Idle_Male;
 
     [Header("Debug")]
 
@@ -154,11 +154,11 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public void FadeToAnimation(AnimationConstants.Animations animation, float time, bool canMove)
+    public void FadeToAnimation(string anim, float time, bool canMove)
     {
-        if (_animator != null) _animator.CrossFade(animation.ToString(), time);
+        if (_animator != null) _animator.CrossFade(anim, time);
         if(_navigator != null) _navigator.SetCanMove(canMove);
-        SetCurrentAnimation(animation);
+        SetCurrentAnimation(anim);
     }
 
     public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }
@@ -171,9 +171,9 @@ public class CharacterComponent : MonoBehaviour
         GameplayCanvas.Instance.SetBehaviorText(CurrentBehavior);
     }
 
-    public AnimationConstants.Animations GetCurrentAnimation() { return CurrentAnimation; }
+    public string GetCurrentAnimation() { return CurrentAnimation; }
 
-    public void SetCurrentAnimation(AnimationConstants.Animations anim)
+    public void SetCurrentAnimation(string anim)
     {
         CurrentAnimation = anim;
         GameplayCanvas.Instance.SetAnimationText(anim);
