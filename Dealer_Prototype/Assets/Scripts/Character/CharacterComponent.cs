@@ -113,7 +113,7 @@ public class CharacterComponent : MonoBehaviour
 
         SetCurrentBehavior(CharacterConstants.BehaviorType.None);
 
-        FadeToAnimation(CurrentAnimation, 1.5f, false);
+        FadeToAnimation(CurrentAnimation, 0.0f, false);
 
         bHasInitialized = true;
     }

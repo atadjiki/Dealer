@@ -196,7 +196,7 @@ public class NavigatorComponent : MonoBehaviour
         // The agent has reached the destination now
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
 
-        parentCharacter.FadeToAnimation(AnimationConstants.Anim.Idle, 0.15f, false);
+        parentCharacter.FadeToAnimation(AnimationConstants.Anim.Idle, 0.0f, false);
 
         yield return new WaitForSeconds(0.1f);
 

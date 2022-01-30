@@ -217,7 +217,7 @@ public class BehaviorHelper : MonoBehaviour
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " interacting with " + _data.Interactable.GetID());
         yield return new WaitForSeconds(3.0f);
 
-        _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.25f, false);
+        _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.0f, false);
 
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " finished interacting with " + _data.Interactable.GetID());
         _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);
