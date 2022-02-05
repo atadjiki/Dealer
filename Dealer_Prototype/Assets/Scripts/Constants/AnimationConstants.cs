@@ -71,7 +71,7 @@ namespace Constants
         private const string Emote_WeightShift = "Emote_WeightShift";
 
         //interaction
-        private const string Interaction_ButtonPush = "ButtonPush";
+        private const string Interaction_ButtonPush = "Interaction_ButtonPush";
 
         public static string FetchAnimString(CharacterStateComponent charState, Anim anim)
         {

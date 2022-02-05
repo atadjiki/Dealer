@@ -63,6 +63,8 @@ public class Interactable : MonoBehaviour, IInteraction
 
     private void FixedUpdate()
     {
+        if (Camera.main == null) return;
+
         Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
 
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);

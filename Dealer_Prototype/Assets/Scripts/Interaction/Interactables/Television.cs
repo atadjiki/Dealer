@@ -32,8 +32,6 @@ public class Television : Interactable
 
         SwitchToState(_currentState);
 
-        Debug.Log("TV initialize");
-
         yield return base.DoInitialize();
     }
 
@@ -55,8 +53,6 @@ public class Television : Interactable
                 Light_TV.enabled = false;
                 break;
         }
-
-        Debug.Log("TV switch to " + _currentState.ToString());
     }
 
     private void Switch()

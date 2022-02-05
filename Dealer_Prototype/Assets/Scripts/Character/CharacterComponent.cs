@@ -165,7 +165,7 @@ public class CharacterComponent : MonoBehaviour
         if(_navigator != null) _navigator.SetCanMove(canMove);
         SetCurrentAnimation(anim);
 
-        Debug.Log("Fading to anim " + animString);
+        DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "Fading to anim " + animString);
     }
 
     public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }

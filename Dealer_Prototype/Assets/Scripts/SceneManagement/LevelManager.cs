@@ -60,12 +60,12 @@ public class LevelManager : MonoBehaviour
     {
         if(_state == State.None)
         {
-            Debug.Log("loading level " + levelData.Name);
+            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelData.Name);
             StartCoroutine(DoLoadLevel(levelData));
         }
         else
         {
-            Debug.Log("Level manager is busy");
+            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "Level manager is busy");
         }
 
     }
@@ -99,11 +99,11 @@ public class LevelManager : MonoBehaviour
         //
         //load start menu
         //
-        if (levelData.Type == LevelDataConstants.LevelType.GameLevel)
-        {
-            PrefabFactory.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
-            yield return new WaitForSeconds(2.0f);
-        }
+        //if (levelData.Type == LevelDataConstants.LevelType.GameLevel)
+        //{
+        //    PrefabFactory.CreatePrefab(Constants.RegistryID.PerLevel_Managers, null);
+        //    yield return new WaitForSeconds(2.0f);
+        //}
 
         //
         yield return new WaitForSeconds(loadInterval);

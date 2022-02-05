@@ -20,7 +20,9 @@ public class DebugManager : MonoBehaviour
         LogDatabase,
         LogSpawner,
         LogCameraManager,
-        LogBehavior
+        LogBehavior,
+        LogLevelmanager
+            
     }
 
     public State State_Character = State.None;
