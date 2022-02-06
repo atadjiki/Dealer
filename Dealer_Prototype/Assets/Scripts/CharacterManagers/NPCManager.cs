@@ -113,40 +113,34 @@ public class NPCManager : CharacterManager
     private void WanderModeUpdate(NPCComponent npc)
     {
         bool success;
-        CharacterBehaviorScript behaviorScript = BehaviorHelper.MoveToRandomLocation(npc, out success);
+        CharacterBehaviorScript behaviorScript = null;
+
+        int randomIndex = Random.Range(0, 2);
+
+        //if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
+
+        if (randomIndex == 0)
+        {
+            behaviorScript = BehaviorHelper.MoveToRandomLocation(npc, out success);
+        }
+        else if (randomIndex == 1)
+        {
+            Interactable generic;
+            if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
+            {
+                if (generic != null && generic.HasBeenInteractedWith(npc) == false)
+                {
+                    behaviorScript = BehaviorHelper.ApproachBehavior(npc, generic,out success);
+                }
+                else
+                {
+                    Debug.Log(npc.GetID() + " has already interacted with " + generic.GetID());
+                }
+            }
+
+        }
 
         npc.AddNewBehavior(behaviorScript);
-
-        //
-        //    int randomIndex = Random.Range(0, 2);
-
-        //    //if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
-
-        //    if (randomIndex == 0)
-        //    {
-
-        //        BehaviorHelper.MoveToRandomLocation(npc, out success);
-        //    }
-        //    else if (randomIndex == 1)
-        //    {
-
-        //        Interactable generic;
-        //        if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
-        //        {
-        //            if (generic != null && generic.HasBeenInteractedWith(npc) == false)
-        //            {
-        //                bool success;
-        //                BehaviorHelper.ApproachBehavior(npc, generic, out success);
-        //            }
-        //            else
-        //            {
-        //                Debug.Log(npc.GetID() + " has already interacted with " + generic.GetID());
-        //            }
-        //        }
-
-        //    }
-
-        //}
-
     }
+
 }
