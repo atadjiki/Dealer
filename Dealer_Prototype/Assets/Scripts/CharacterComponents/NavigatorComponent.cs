@@ -8,13 +8,11 @@ using UnityEngine;
 //a class that deals with all things pathfinding related so that it's in one place
 [RequireComponent(typeof(AIBase))]
 [RequireComponent(typeof(Seeker))]
-[RequireComponent(typeof(LineRenderer))]
 public class NavigatorComponent : MonoBehaviour
 {
     internal AIBase _AI;
     internal Seeker _Seeker;
     private CharacterComponent parentCharacter;
-    private LineRenderer pathRenderer;
 
     private HashSet<GameObject> NavPointPrefabs;
 
@@ -30,45 +28,9 @@ public class NavigatorComponent : MonoBehaviour
 
         NavPointPrefabs = new HashSet<GameObject>();
 
-        pathRenderer = GetComponent<LineRenderer>();
-        pathRenderer.positionCount = 2;
-
         _AI.autoRepath.mode = AutoRepathPolicy.Mode.EveryNSeconds;
         _AI.autoRepath.interval = 0.2f;
 
-    }
-
-    private void FixedUpdate()
-    {
-        if (DebugManager.Instance.State_Navigator != DebugManager.State.None && PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter && pathRenderer != null && _Seeker != null && parentCharacter != null)
-        {
-            if (State == MovementState.Moving)
-            {
-                Path path = _Seeker.GetCurrentPath();
-
-                if (path != null)
-                {
-                    List<Vector3> vectorPath = path.vectorPath;
-
-                    if (vectorPath.Count > 2)
-                    {
-                        Vector3[] simplifiedPath = new Vector3[3];
-
-                        //initial position
-                        simplifiedPath[0] = _AI.position;
-                        simplifiedPath[1] = vectorPath[vectorPath.Count / 2];
-                        simplifiedPath[2] = _AI.destination;
-
-                        pathRenderer.positionCount = simplifiedPath.Length;
-                        pathRenderer.SetPositions(simplifiedPath);
-                    }
-                }
-            }
-            else
-            {
-                pathRenderer.positionCount = 0;
-            }
-        }
     }
 
     public bool MoveToRandomLocation()
@@ -208,8 +170,6 @@ public class NavigatorComponent : MonoBehaviour
         {
             Destroy(todestroy);
         }
-
-        pathRenderer.positionCount = 0;
 
     }
 
