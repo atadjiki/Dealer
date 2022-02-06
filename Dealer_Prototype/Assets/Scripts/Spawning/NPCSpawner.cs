@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NPCSpawner : CharacterSpawner
 {
+    [SerializeField] private AnimationConstants.Anim InitialAnimation;
+
     public override IEnumerator PerformSpawn()
     {
         yield return new WaitForSeconds(2.0f);
@@ -29,6 +31,8 @@ public class NPCSpawner : CharacterSpawner
         State = CharacterSpawnerState.Spawned;
 
         yield return new WaitWhile(() => !npcComp.HasInitialized());
+
+        npcComp.FadeToAnimation(InitialAnimation, 0.0f, true);
 
         yield return null;
     }
