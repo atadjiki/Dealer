@@ -55,7 +55,7 @@ public class CharacterComponent : MonoBehaviour
     {
         _characterState = this.gameObject.AddComponent<CharacterStateComponent>();
         _characterState.SetCharacterID(spawnData.ID);
-        _characterState.SetTeam(spawnData.Team);
+        _characterState.SetTeam(spawnData.GetTeam());
         _characterState.SetGender(CharacterConstants.GetGenderBYID(spawnData.ID));
 
         //setup navigator
@@ -113,7 +113,7 @@ public class CharacterComponent : MonoBehaviour
 
         SetCurrentBehavior(CharacterConstants.BehaviorType.None);
 
-        FadeToAnimation(CurrentAnimation, 0.0f, false);
+        FadeToAnimation(spawnData.InitialAnim, 0.0f, false);
 
         bHasInitialized = true;
     }

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class NPCSpawner : CharacterSpawner
 {
-    [SerializeField] private AnimationConstants.Anim InitialAnimation;
-
     public override IEnumerator PerformSpawn()
     {
         yield return new WaitForSeconds(2.0f);
@@ -15,24 +13,18 @@ public class NPCSpawner : CharacterSpawner
 
         DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
-        GameObject Character = PrefabFactory.CreatePrefab(Constants.RegistryID.NPC, this.transform);
+        GameObject Character = PrefabFactory.CreatePrefab(RegistryID.NPC, this.transform);
         NPCComponent npcComp = Character.GetComponent<NPCComponent>();
 
         yield return new WaitWhile(() => npcComp == null);
 
-        SpawnData npcSpawnData = new SpawnData()
-        {
-            ID = CharacterID,
-            Team = CharacterConstants.Team.NPC
-        };
+        spawnData.SetTeam(CharacterConstants.Team.NPC);
 
-        npcComp.Initialize(npcSpawnData);
+        npcComp.Initialize(spawnData);
 
         State = CharacterSpawnerState.Spawned;
 
         yield return new WaitWhile(() => !npcComp.HasInitialized());
-
-        npcComp.FadeToAnimation(InitialAnimation, 0.0f, true);
 
         yield return null;
     }

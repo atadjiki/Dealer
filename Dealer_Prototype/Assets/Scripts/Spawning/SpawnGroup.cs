@@ -7,7 +7,16 @@ using UnityEngine;
 public struct SpawnData
 {
     public CharacterConstants.CharacterID ID;
-    public CharacterConstants.Team Team;
+    public AnimationConstants.Anim InitialAnim;
+
+    private CharacterConstants.Team Team;
+    private CharacterConstants.Mode Mode;
+
+    public void SetTeam(CharacterConstants.Team InTeam) { Team = InTeam; }
+    public CharacterConstants.Team GetTeam() { return Team; }
+
+    private void SetMode(CharacterConstants.Mode InMode) { Mode = InMode; }
+    private CharacterConstants.Mode GetMode() { return Mode; }
 }
 
 [System.Serializable]

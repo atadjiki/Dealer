@@ -20,14 +20,9 @@ public class PlayableCharacterSpawner : CharacterSpawner
 
         yield return new WaitWhile(() => playerComp == null);
 
-        SpawnData playerSpawnData = new SpawnData()
-        {
-            ID = CharacterID,
-            Team = CharacterConstants.Team.Ally
-        };
+        spawnData.SetTeam(CharacterConstants.Team.Ally);
 
-
-        playerComp.Initialize(playerSpawnData);
+        playerComp.Initialize(spawnData);
 
         State = CharacterSpawnerState.Spawned;
 
