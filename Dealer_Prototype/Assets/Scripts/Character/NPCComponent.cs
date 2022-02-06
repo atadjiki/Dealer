@@ -26,6 +26,8 @@ public class NPCComponent : CharacterComponent
         //ready to begin behaviors
         updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
+        CharacterMode = spawnData.GetMode();
+
         yield return null;
     }
 

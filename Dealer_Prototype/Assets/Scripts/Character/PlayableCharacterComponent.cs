@@ -42,4 +42,9 @@ public class PlayableCharacterComponent : NPCComponent
             PlayableCharacterManager.Instance.HandleCharacterSelection(this);
         } 
     }
+
+    private void OnDestroy()
+    {
+        PlayableCharacterManager.Instance.UnRegister(this);
+    }
 }

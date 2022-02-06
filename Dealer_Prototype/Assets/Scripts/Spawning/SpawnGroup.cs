@@ -15,8 +15,8 @@ public struct SpawnData
     public void SetTeam(CharacterConstants.Team InTeam) { Team = InTeam; }
     public CharacterConstants.Team GetTeam() { return Team; }
 
-    private void SetMode(CharacterConstants.Mode InMode) { Mode = InMode; }
-    private CharacterConstants.Mode GetMode() { return Mode; }
+    public void SetMode(CharacterConstants.Mode InMode) { Mode = InMode; }
+    public CharacterConstants.Mode GetMode() { return Mode; }
 }
 
 [System.Serializable]

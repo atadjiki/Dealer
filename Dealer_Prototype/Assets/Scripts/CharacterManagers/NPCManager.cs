@@ -44,6 +44,8 @@ public class NPCManager : CharacterManager
 
             Characters.Add(npc);
 
+            npc.SetUpdateState(CharacterConstants.UpdateState.Ready);
+
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + npc.GetID());
             return true;
         }
@@ -78,30 +80,31 @@ public class NPCManager : CharacterManager
 
     private void BehaviorUpdate()
     {
+
         foreach (NPCComponent npc in Characters)
         {
-
             if (npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
             {
                 if (npc.CharacterMode == CharacterConstants.Mode.Wander)
                 {
+                    DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Wander");
                     WanderModeUpdate(npc);
                 }
                 else if (npc.CharacterMode == CharacterConstants.Mode.Stationary)
                 {
-                    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, this.gameObject.name + " - Mode - Stationary");
+                    DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Stationary");
 
                     bool success;
                     BehaviorHelper.IdleBehavior(npc, out success);
                 }
                 else if (npc.CharacterMode == CharacterConstants.Mode.Selected)
                 {
-                    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, this.gameObject.name + " - Mode - Selected");
+                    DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Selected");
                 }
             }
             else if (npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)
             {
-                //    if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + "- cannot update, NPC is busy");
+//                DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, npc.GetID() + "- cannot update, NPC is busy");
             }
         }
 
@@ -109,33 +112,41 @@ public class NPCManager : CharacterManager
 
     private void WanderModeUpdate(NPCComponent npc)
     {
-        int randomIndex = Random.Range(0, 2);
+        bool success;
+        CharacterBehaviorScript behaviorScript = BehaviorHelper.MoveToRandomLocation(npc, out success);
 
-        //if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
+        npc.AddNewBehavior(behaviorScript);
 
-        if (randomIndex == 0)
-        {
-            bool success;
-            BehaviorHelper.MoveToRandomLocation(npc, out success);
-        }
-        else if (randomIndex == 1)
-        {
+        //
+        //    int randomIndex = Random.Range(0, 2);
 
-            Interactable generic;
-            if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
-            {
-                if (generic != null && generic.HasBeenInteractedWith(npc) == false)
-                {
-                    bool success;
-                    BehaviorHelper.ApproachBehavior(npc, generic, out success);
-                }
-                else
-                {
-                    Debug.Log(npc.GetID() + " has already interacted with " + generic.GetID());
-                }
-            }
+        //    //if(DebugManager.Instance.LogNPCManager) Debug.Log(npc.GetID() + " - Selected behavior " + SelectedBehavior.ToString());
 
-        }
+        //    if (randomIndex == 0)
+        //    {
+
+        //        BehaviorHelper.MoveToRandomLocation(npc, out success);
+        //    }
+        //    else if (randomIndex == 1)
+        //    {
+
+        //        Interactable generic;
+        //        if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
+        //        {
+        //            if (generic != null && generic.HasBeenInteractedWith(npc) == false)
+        //            {
+        //                bool success;
+        //                BehaviorHelper.ApproachBehavior(npc, generic, out success);
+        //            }
+        //            else
+        //            {
+        //                Debug.Log(npc.GetID() + " has already interacted with " + generic.GetID());
+        //            }
+        //        }
+
+        //    }
+
+        //}
 
     }
 }

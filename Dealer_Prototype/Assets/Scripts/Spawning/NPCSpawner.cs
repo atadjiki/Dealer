@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NPCSpawner : CharacterSpawner
 {
+    [SerializeField] private CharacterConstants.Mode NPC_Mode;
+
     public override IEnumerator PerformSpawn()
     {
         yield return new WaitForSeconds(2.0f);
@@ -19,6 +21,8 @@ public class NPCSpawner : CharacterSpawner
         yield return new WaitWhile(() => npcComp == null);
 
         spawnData.SetTeam(CharacterConstants.Team.NPC);
+
+        spawnData.SetMode(NPC_Mode);
 
         npcComp.Initialize(spawnData);
 

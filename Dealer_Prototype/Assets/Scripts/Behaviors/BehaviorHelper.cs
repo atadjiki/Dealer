@@ -68,7 +68,7 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript behaviorScript
                 = CreateBehaviorObject(character.GetID() + " move to random location behavior ", character).AddComponent<Behavior_MoveToRandomLocation>();
 
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
             Character = character,
             Behavior = behaviorScript,
