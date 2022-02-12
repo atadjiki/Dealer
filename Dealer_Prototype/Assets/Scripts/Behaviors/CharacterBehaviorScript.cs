@@ -85,7 +85,7 @@ public class CharacterBehaviorScript : MonoBehaviour
     {
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Begin Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Busy);
-        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Busy);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
         _coroutine = StartCoroutine(Behavior());
 
         ColorManager.Instance.SetObjectToColor(behaviorDecal, ColorManager.Instance.GetBehaviorDecalColor(true));
@@ -102,8 +102,8 @@ public class CharacterBehaviorScript : MonoBehaviour
     {
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "End Behavior - " + this.name);
         SetBehaviorState(BehaviorState.Completed);
-        _data.Character.SetUpdateState(Constants.CharacterConstants.UpdateState.Ready);
-        _data.Character.SetCurrentBehavior(Constants.CharacterConstants.BehaviorType.None);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
+        _data.Character.SetCurrentBehavior(AIConstants.BehaviorType.None);
 
         _data.Character.OnBehaviorFinished(this);
 

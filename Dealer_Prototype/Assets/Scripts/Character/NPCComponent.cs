@@ -24,7 +24,7 @@ public class NPCComponent : CharacterComponent
         CharacterCameraManager.Instance.RegisterCharacterCamera(this);
 
         //ready to begin behaviors
-        updateState = CharacterConstants.UpdateState.Ready; //let the manager know we're ready to be handled
+        updateState = AIConstants.UpdateState.Ready; //let the manager know we're ready to be handled
 
         CharacterMode = spawnData.GetMode();
 

@@ -828,6 +828,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c19d79c137819494ab52fb91377368e3, type: 3}
+--- !u!114 &579318530 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4623613467451998081, guid: c1b778d6cc4404389aecb2759e91106c, type: 3}
+  m_PrefabInstance: {fileID: 211127365}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &666163366 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8985233879993943055, guid: 00736eb70e01841c39bd3243cbd6073c, type: 3}
@@ -2584,12 +2595,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2898733156789840773, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
+      propertyPath: _astarPath
+      value: 
+      objectReference: {fileID: 579318530}
+    - target: {fileID: 2898733156789840773, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: State_Character
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2898733156789840773, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: State_NPCManager
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2898733158074225908, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: m_RootOrder
@@ -3018,6 +3033,94 @@ PrefabInstance:
     - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
       propertyPath: spawnData.InitialAnim
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].ID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].ID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[2].ID
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: BehaviorSchedule.EligibleTasks.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: BehaviorSchedule.ScheduleTasks.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: BehaviorSchedule.ScheduleTasks.Array.data[1]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: BehaviorSchedule.ScheduleTasks.Array.data[2]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].MaximumTaskTime
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].MinimumTaskTime
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].MaximumTaskTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].MinimumTaskTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[2].MaximumTaskTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[2].MinimumTaskTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].Requirements.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].Requirements.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[2].Requirements.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].Requirements.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[0].Requirements.Array.data[1]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].Requirements.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[1].Requirements.Array.data[1]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988172337293321685, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
+      propertyPath: ScheduledTasks.Array.data[2].Requirements.Array.data[0]
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3395902664833760518, guid: b7afa9fc0ff354343b5e10d540e269cb, type: 3}
       propertyPath: m_RootOrder

@@ -81,7 +81,7 @@ public class GameplayCanvas : MonoBehaviour
         Panel_BehaviorQueue.SetActive(flag);
     }
 
-    public void SetBehaviorText(CharacterConstants.BehaviorType behaviorType)
+    public void SetBehaviorText(AIConstants.BehaviorType behaviorType)
     {
         Text_CurrentBehavior.text = behaviorType.ToString();
     }

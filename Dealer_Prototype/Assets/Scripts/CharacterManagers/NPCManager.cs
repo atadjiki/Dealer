@@ -44,7 +44,7 @@ public class NPCManager : CharacterManager
 
             Characters.Add(npc);
 
-            npc.SetUpdateState(CharacterConstants.UpdateState.Ready);
+            npc.SetUpdateState(AIConstants.UpdateState.Ready);
 
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + npc.GetID());
             return true;
@@ -83,26 +83,26 @@ public class NPCManager : CharacterManager
 
         foreach (NPCComponent npc in Characters)
         {
-            if (npc.GetUpdateState() == CharacterConstants.UpdateState.Ready)
+            if (npc.GetUpdateState() == AIConstants.UpdateState.Ready)
             {
-                if (npc.CharacterMode == CharacterConstants.Mode.Wander)
+                if (npc.CharacterMode == AIConstants.Mode.Wander)
                 {
                     DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Wander");
                     WanderModeUpdate(npc);
                 }
-                else if (npc.CharacterMode == CharacterConstants.Mode.Stationary)
+                else if (npc.CharacterMode == AIConstants.Mode.Stationary)
                 {
                     DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Stationary");
 
                     bool success;
                     BehaviorHelper.IdleBehavior(npc, out success);
                 }
-                else if (npc.CharacterMode == CharacterConstants.Mode.Selected)
+                else if (npc.CharacterMode == AIConstants.Mode.Selected)
                 {
                     DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Selected");
                 }
             }
-            else if (npc.GetUpdateState() == CharacterConstants.UpdateState.Busy)
+            else if (npc.GetUpdateState() == AIConstants.UpdateState.Busy)
             {
 //                DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, npc.GetID() + "- cannot update, NPC is busy");
             }

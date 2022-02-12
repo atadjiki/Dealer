@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class NPCSpawner : CharacterSpawner
 {
-    [SerializeField] private CharacterConstants.Mode NPC_Mode;
+    [SerializeField] private AIConstants.Mode NPC_Mode;
+
+    [SerializeField] private CharacterScheduledTask[] ScheduledTasks;
 
     public override IEnumerator PerformSpawn()
     {

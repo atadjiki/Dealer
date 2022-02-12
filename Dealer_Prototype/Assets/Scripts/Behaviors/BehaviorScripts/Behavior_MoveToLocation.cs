@@ -9,7 +9,7 @@ public class Behavior_MoveToLocation : CharacterBehaviorScript
     {
         base.BeginBehavior();
 
-        _data.Character.SetCurrentBehavior(CharacterConstants.BehaviorType.MoveToLocation);
+        _data.Character.SetCurrentBehavior(AIConstants.BehaviorType.MoveToLocation);
     }
 
     protected override IEnumerator Behavior()

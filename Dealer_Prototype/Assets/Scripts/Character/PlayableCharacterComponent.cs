@@ -25,13 +25,13 @@ public class PlayableCharacterComponent : NPCComponent
 
     public override void PerformSelect()
     {
-        CharacterMode = CharacterConstants.Mode.Selected;
+        CharacterMode = AIConstants.Mode.Selected;
         _selection.SetPossesed();
     }
 
     public override void PerformUnselect()
     {
-        CharacterMode = CharacterConstants.Mode.Stationary;
+        CharacterMode = AIConstants.Mode.Stationary;
         _selection.SetUnposessed();
     }
 

@@ -168,7 +168,7 @@ public class BehaviorHelper : MonoBehaviour
 
     public static IEnumerator PerformSit(BehaviorData _data)
     {
-        _data.Character.SetUpdateState(CharacterConstants.UpdateState.Busy);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
 
         Chair chair = (Chair)_data.Interactable;
 
@@ -184,7 +184,7 @@ public class BehaviorHelper : MonoBehaviour
 
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " sitting on " + _data.Interactable.GetID());
 
-            _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);
+            _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
         }
 
         yield return null;
@@ -200,7 +200,7 @@ public class BehaviorHelper : MonoBehaviour
 
     public static IEnumerator PerformInteractWith(BehaviorData _data)
     {
-        _data.Character.SetUpdateState(CharacterConstants.UpdateState.Busy);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
 
         //move NPC to interaction location
         yield return LerpToTransform(_data.Character.GetNavigatorComponent().transform, _data.Interactable.GetInteractionTransform(), 2f);
@@ -220,7 +220,7 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.0f, false);
 
         DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " finished interacting with " + _data.Interactable.GetID());
-        _data.Character.SetUpdateState(CharacterConstants.UpdateState.Ready);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
     }
 
     public static IEnumerator PerformMoveToDestination(BehaviorData _data)

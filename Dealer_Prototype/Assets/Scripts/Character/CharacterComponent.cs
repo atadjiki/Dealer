@@ -19,18 +19,18 @@ public class CharacterComponent : MonoBehaviour
 
     [Header("Character Setup")]
 
-    private CharacterConstants.BehaviorType PreviousBehavior = CharacterConstants.BehaviorType.None;
-    private CharacterConstants.BehaviorType CurrentBehavior = CharacterConstants.BehaviorType.None;
+    private AIConstants.BehaviorType PreviousBehavior = AIConstants.BehaviorType.None;
+    private AIConstants.BehaviorType CurrentBehavior = AIConstants.BehaviorType.None;
 
-    public CharacterConstants.Mode CharacterMode = CharacterConstants.Mode.None;
+    public AIConstants.Mode CharacterMode = AIConstants.Mode.None;
 
     private AnimationConstants.Anim CurrentAnimation = AnimationConstants.Anim.Idle;
 
     [Header("Debug")]
 
-    [SerializeField] protected CharacterConstants.UpdateState updateState = CharacterConstants.UpdateState.None;
+    [SerializeField] protected AIConstants.UpdateState updateState = AIConstants.UpdateState.None;
 
-    public CharacterConstants.UpdateState GetUpdateState() { return updateState; }
+    public AIConstants.UpdateState GetUpdateState() { return updateState; }
 
     [Range(0.0f, 10.0f)]
     public float IdleSeconds_Max = 5.0f;
@@ -111,7 +111,7 @@ public class CharacterComponent : MonoBehaviour
 
         _behaviorQueue = new Queue<CharacterBehaviorScript>();
 
-        SetCurrentBehavior(CharacterConstants.BehaviorType.None);
+        SetCurrentBehavior(AIConstants.BehaviorType.None);
 
         FadeToAnimation(spawnData.InitialAnim, 0.0f, false);
 
@@ -132,7 +132,7 @@ public class CharacterComponent : MonoBehaviour
 
         if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
         {
-            if (CharacterMode == CharacterConstants.Mode.Selected)
+            if (CharacterMode == AIConstants.Mode.Selected)
                 GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Deselect);
 
             else
@@ -168,9 +168,9 @@ public class CharacterComponent : MonoBehaviour
         DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "Fading to anim " + animString);
     }
 
-    public CharacterConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }
+    public AIConstants.BehaviorType GetCurrentBehavior() { return CurrentBehavior; }
 
-    public void SetCurrentBehavior(CharacterConstants.BehaviorType NewBehavior)
+    public void SetCurrentBehavior(AIConstants.BehaviorType NewBehavior)
     {
         PreviousBehavior = CurrentBehavior;
         CurrentBehavior = NewBehavior;
@@ -186,7 +186,7 @@ public class CharacterComponent : MonoBehaviour
         GameplayCanvas.Instance.SetAnimationText(anim.ToString());
     }
 
-    internal void SetUpdateState(CharacterConstants.UpdateState newState)
+    internal void SetUpdateState(AIConstants.UpdateState newState)
     {
         updateState = newState;
     }
@@ -270,7 +270,7 @@ public class CharacterComponent : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (updateState == CharacterConstants.UpdateState.None)
+        if (updateState == AIConstants.UpdateState.None)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(this.transform.position, 0.5f);

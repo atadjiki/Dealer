@@ -10,13 +10,13 @@ public struct SpawnData
     public AnimationConstants.Anim InitialAnim;
 
     private CharacterConstants.Team Team;
-    private CharacterConstants.Mode Mode;
+    private AIConstants.Mode Mode;
 
     public void SetTeam(CharacterConstants.Team InTeam) { Team = InTeam; }
     public CharacterConstants.Team GetTeam() { return Team; }
 
-    public void SetMode(CharacterConstants.Mode InMode) { Mode = InMode; }
-    public CharacterConstants.Mode GetMode() { return Mode; }
+    public void SetMode(AIConstants.Mode InMode) { Mode = InMode; }
+    public AIConstants.Mode GetMode() { return Mode; }
 }
 
 [System.Serializable]
