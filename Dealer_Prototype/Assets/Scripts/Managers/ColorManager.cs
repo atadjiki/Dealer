@@ -110,8 +110,14 @@ public class ColorManager : MonoBehaviour
 
         foreach (Renderer renderer in renderers)
         {
-            renderer.material.color = color;
-            renderer.material.SetColor("Color_42c7f5bfb6334aa5bbf8cc1a11a49afe", color);
+            foreach(Material material in renderer.materials)
+            {
+                material.color = color;
+                material.SetColor("Color_42c7f5bfb6334aa5bbf8cc1a11a49afe", color);
+                material.SetColor("InTint", color);
+                material.SetFloat("InAlpha", color.a/3);
+                material.SetFloat("InBlendAmount", color.a/2);
+            }
         }
     }
 

@@ -7,8 +7,6 @@ public class NPCSpawner : CharacterSpawner
 {
     [SerializeField] private AIConstants.Mode NPC_Mode;
 
-    [SerializeField] private CharacterScheduledTask[] ScheduledTasks;
-
     public override IEnumerator PerformSpawn()
     {
         yield return new WaitForSeconds(2.0f);
@@ -25,6 +23,7 @@ public class NPCSpawner : CharacterSpawner
         spawnData.SetTeam(CharacterConstants.Team.NPC);
 
         spawnData.SetMode(NPC_Mode);
+        spawnData.SetScheduledTasks(ScheduledTasks);
 
         npcComp.Initialize(spawnData);
 

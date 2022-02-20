@@ -119,6 +119,8 @@ public class BehaviorHelper : MonoBehaviour
     {
         float time_before = Time.time;
 
+        _data.Character.SetAIState(AIConstants.AIState.Moving);
+
         if (_data.Character.GetNavigatorComponent().MoveToLocation(_data.Interactable.GetInteractionTransform().position))
         {
             yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
@@ -185,6 +187,8 @@ public class BehaviorHelper : MonoBehaviour
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " sitting on " + _data.Interactable.GetID());
 
             _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
+
+            _data.Character.SetAIState(AIConstants.AIState.Sitting);
         }
 
         yield return null;
@@ -193,6 +197,8 @@ public class BehaviorHelper : MonoBehaviour
     //basic tasks
     public static IEnumerator PerformIdle(BehaviorData _data)
     {
+        _data.Character.SetAIState(AIConstants.AIState.Idle);
+
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.1f, false);
 
         yield return null;
@@ -200,6 +206,8 @@ public class BehaviorHelper : MonoBehaviour
 
     public static IEnumerator PerformInteractWith(BehaviorData _data)
     {
+        _data.Character.SetAIState(AIConstants.AIState.Interacting);
+
         _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
 
         //move NPC to interaction location
@@ -227,6 +235,7 @@ public class BehaviorHelper : MonoBehaviour
     {
         float time_before = Time.time;
 
+        _data.Character.SetAIState(AIConstants.AIState.Moving);
         if (_data.Character.GetNavigatorComponent().MoveToLocation(_data.Destination))
         {
             yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
@@ -237,6 +246,7 @@ public class BehaviorHelper : MonoBehaviour
 
     public static IEnumerator PerformMoveToRandomLocation(BehaviorData _data)
     {
+        _data.Character.SetAIState(AIConstants.AIState.Moving);
         _data.Character.GetNavigatorComponent().MoveToRandomLocation();
 
         yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);

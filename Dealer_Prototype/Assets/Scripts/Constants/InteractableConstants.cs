@@ -6,6 +6,7 @@ namespace Constants
 
         public enum InteractableID
         {
+            Door,
             Generic,
             Chair,
             Television,

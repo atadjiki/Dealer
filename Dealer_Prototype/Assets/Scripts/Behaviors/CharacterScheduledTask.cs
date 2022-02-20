@@ -7,11 +7,4 @@ using UnityEngine;
 public struct CharacterScheduledTask
 {
     public AIConstants.ScheduleTaskID ID;
-
-    public List<AIConstants.ScheduleTaskID> Requirements;
-
-    public float MinimumTaskTime;
-
-    public float MaximumTaskTime;
-
 }

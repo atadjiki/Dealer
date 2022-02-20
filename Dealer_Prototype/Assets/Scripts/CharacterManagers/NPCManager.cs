@@ -90,6 +90,11 @@ public class NPCManager : CharacterManager
                     DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Wander");
                     WanderModeUpdate(npc);
                 }
+                else if(npc.CharacterMode == AIConstants.Mode.Schedule)
+                {
+                    DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Schedule");
+                    ScheduleModeUpdate(npc);
+                }
                 else if (npc.CharacterMode == AIConstants.Mode.Stationary)
                 {
                     DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, this.gameObject.name + " - Mode - Stationary");
@@ -141,6 +146,15 @@ public class NPCManager : CharacterManager
         }
 
         npc.AddNewBehavior(behaviorScript);
+    }
+
+    private void ScheduleModeUpdate(NPCComponent npc)
+    {
+        //see what tasks the NPC is eligible for
+        foreach(CharacterScheduledTask task in npc.GetSpawnData().GetScheduledTasks())
+        {
+            
+        }
     }
 
 }

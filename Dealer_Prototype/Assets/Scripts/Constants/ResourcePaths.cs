@@ -11,6 +11,7 @@ namespace Constants
         Model_Female_1,
         Managers,
         CharacterCanvas,
+        CharacterStateCanvas,
         CM_Character,
         CharacterCameraRig,
         CharacterLight,
@@ -35,6 +36,9 @@ namespace Constants
                     return true;
                 case RegistryID.CharacterCanvas:
                     PathString = "Prefabs/Components/CharacterCanvas";
+                    return true;
+                case RegistryID.CharacterStateCanvas:
+                    PathString = "Prefabs/Components/CharacterStateCanvas";
                     return true;
                 case RegistryID.CM_Character:
                     PathString = "Prefabs/Camera/CM_Character";

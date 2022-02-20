@@ -1,12 +1,20 @@
 ﻿<Properties StartupConfiguration="{2AA29506-95F3-D309-9058-ABBE89690FC2}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Constants/AIConstants.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Behaviors/CharacterBehaviorScript.cs">
     <Files>
-      <File FileName="Assets/Scripts/Behaviors/CharacterBehaviorSchedule.cs" Line="9" Column="57" />
-      <File FileName="Assets/Scripts/Behaviors/CharacterBehaviorScript.cs" Line="30" Column="39" />
-      <File FileName="Assets/Scripts/Spawning/NPCSpawner.cs" Line="6" Column="36" />
-      <File FileName="Assets/Scripts/Spawning/CharacterSpawner.cs" Line="15" Column="39" />
-      <File FileName="Assets/Scripts/Spawning/SpawnGroup.cs" Line="6" Column="1" />
-      <File FileName="Assets/Scripts/Constants/AIConstants.cs" Line="23" Column="19" />
+      <File FileName="Assets/Scripts/Character/NPCComponent.cs" Line="9" Column="1" />
+      <File FileName="Assets/Scripts/Managers/ColorManager.cs" Line="118" Column="55" />
+      <File FileName="Assets/Scripts/UI/CharacterStateCanvas.cs" Line="14" Column="53" />
+      <File FileName="Assets/Scripts/Character/CharacterComponent.cs" Line="206" Column="6" />
+      <File FileName="Assets/Scripts/Constants/ResourcePaths.cs" Line="14" Column="30" />
+      <File FileName="Assets/Scripts/Constants/AIConstants.cs" Line="24" Column="17" />
+      <File FileName="Assets/Scripts/Constants/AnimationConstants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Constants/CharacterConstants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Behaviors/BehaviorScripts/Behavior_Approach.cs" Line="6" Column="46" />
+      <File FileName="Assets/Scripts/Behaviors/BehaviorScripts/Behavior_Idle.cs" Line="18" Column="37" />
+      <File FileName="Assets/Scripts/Behaviors/BehaviorScripts/Behavior_MoveToLocation.cs" Line="18" Column="1" />
+      <File FileName="Assets/Scripts/Behaviors/BehaviorScripts/Behavior_MoveToRandomLocation.cs" Line="16" Column="6" />
+      <File FileName="Assets/Scripts/Behaviors/BehaviorHelper.cs" Line="198" Column="31" />
+      <File FileName="Assets/Scripts/Behaviors/CharacterBehaviorScript.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -16,12 +24,17 @@
               <Node name="Scripts" expanded="True">
                 <Node name="Behaviors" expanded="True">
                   <Node name="BehaviorScripts" expanded="True" />
+                  <Node name="CharacterBehaviorScript.cs" selected="True" />
                 </Node>
                 <Node name="Character" expanded="True" />
+                <Node name="CharacterComponents" expanded="True" />
                 <Node name="CharacterManagers" expanded="True" />
-                <Node name="Constants" expanded="True">
-                  <Node name="AIConstants.cs" selected="True" />
-                </Node>
+                <Node name="Constants" expanded="True" />
+                <Node name="Debug" expanded="True" />
+                <Node name="Gameplay" expanded="True" />
+                <Node name="Interaction" expanded="True" />
+                <Node name="LevelData" expanded="True" />
+                <Node name="Managers" expanded="True" />
                 <Node name="Spawning" expanded="True" />
                 <Node name="UI" expanded="True" />
               </Node>
@@ -34,7 +47,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.AstarPathfindingProjectEditor PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="46005652-1567-4fbe-8f0d-d466a0ab5f91" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="b35eb85a-e117-43da-ba48-ab565be83ac0" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

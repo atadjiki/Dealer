@@ -10,11 +10,13 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterAnimationComponent _characterAnimation;
     protected NavigatorComponent _navigator;
     protected CharacterCanvas _charCanvas;
+    protected CharacterStateCanvas _charStateCanvas;
     protected Light _light;
     protected InteractionComponent _interaction;
     protected CharacterStateComponent _characterState;
     protected CharacterCameraRig _cameraRig;
     protected SelectionComponent _selection;
+    protected ScheduleComponent _schedule;
 
 
     [Header("Character Setup")]
@@ -23,6 +25,8 @@ public class CharacterComponent : MonoBehaviour
     private AIConstants.BehaviorType CurrentBehavior = AIConstants.BehaviorType.None;
 
     public AIConstants.Mode CharacterMode = AIConstants.Mode.None;
+
+    public AIConstants.AIState AIState = AIConstants.AIState.None;
 
     private AnimationConstants.Anim CurrentAnimation = AnimationConstants.Anim.Idle;
 
@@ -40,6 +44,8 @@ public class CharacterComponent : MonoBehaviour
     private bool bHasInitialized = false;
 
     protected SpawnData spawnData;
+
+    public SpawnData GetSpawnData() { return spawnData; }
 
     //behavior queue
     private Queue<CharacterBehaviorScript> _behaviorQueue;
@@ -87,12 +93,19 @@ public class CharacterComponent : MonoBehaviour
         yield return new WaitWhile(() => _light == null);
 
         //attach a UI canvas to the model 
-        GameObject CanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);
-        _charCanvas = CanvasPrefab.GetComponent<CharacterCanvas>();
+        GameObject CharCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);
+        _charCanvas = CharCanvasPrefab.GetComponent<CharacterCanvas>();
 
         yield return new WaitWhile(() => _charCanvas == null);
 
         _charCanvas.Set_Text_ID(_characterState.GetID());
+
+        //attach a UI canvas to the model 
+        GameObject CharStateCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterStateCanvas, ModelPrefab.transform);
+        CharStateCanvasPrefab.transform.parent = ModelPrefab.transform;
+        _charStateCanvas = CharStateCanvasPrefab.GetComponent<CharacterStateCanvas>();
+
+        yield return new WaitWhile(() => _charStateCanvas == null);
 
         GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigtorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
@@ -184,6 +197,12 @@ public class CharacterComponent : MonoBehaviour
     {
         CurrentAnimation = anim;
         GameplayCanvas.Instance.SetAnimationText(anim.ToString());
+    }
+
+    public void SetAIState(AIConstants.AIState state)
+    {
+        AIState = state;
+        _charStateCanvas.SetText_State(AIState.ToString().ToLower().Trim());
     }
 
     internal void SetUpdateState(AIConstants.UpdateState newState)

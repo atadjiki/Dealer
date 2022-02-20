@@ -15,7 +15,6 @@ public class Behavior_MoveToRandomLocation : CharacterBehaviorScript
     protected override IEnumerator Behavior()
     {
         yield return BehaviorHelper.PerformMoveToRandomLocation(_data);
-
         yield return base.Behavior();
     }
 }

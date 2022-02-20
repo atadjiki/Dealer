@@ -16,9 +16,7 @@ public class Behavior_Approach : CharacterBehaviorScript
     protected override IEnumerator Behavior()
     {
         yield return BehaviorHelper.PerformApproachInteractable(_data);
-
         yield return BehaviorHelper.ResolvePerformInteraction(_data);
-
         yield return base.Behavior();
     }
 }

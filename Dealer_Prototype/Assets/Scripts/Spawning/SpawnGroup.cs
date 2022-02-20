@@ -11,12 +11,17 @@ public struct SpawnData
 
     private CharacterConstants.Team Team;
     private AIConstants.Mode Mode;
+    private CharacterScheduledTask[] ScheduledTasks;
 
     public void SetTeam(CharacterConstants.Team InTeam) { Team = InTeam; }
     public CharacterConstants.Team GetTeam() { return Team; }
 
     public void SetMode(AIConstants.Mode InMode) { Mode = InMode; }
     public AIConstants.Mode GetMode() { return Mode; }
+
+    public void SetScheduledTasks(CharacterScheduledTask[] InTasks) { ScheduledTasks = InTasks; }
+    public CharacterScheduledTask[] GetScheduledTasks() { return ScheduledTasks; }
+
 }
 
 [System.Serializable]

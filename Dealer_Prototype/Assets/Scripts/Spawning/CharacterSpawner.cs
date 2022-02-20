@@ -13,6 +13,7 @@ public class CharacterSpawner : MonoBehaviour
     protected CharacterSpawnerState State = CharacterSpawnerState.WaitingToSpawn;
 
     [SerializeField] protected SpawnData spawnData;
+    [SerializeField] protected CharacterScheduledTask[] ScheduledTasks;
 
     private void Awake()
     {
