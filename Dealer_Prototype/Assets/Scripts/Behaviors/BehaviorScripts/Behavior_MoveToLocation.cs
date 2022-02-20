@@ -14,6 +14,7 @@ public class Behavior_MoveToLocation : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
+        yield return BehaviorHelper.AttemptStand(_data);
         yield return BehaviorHelper.PerformMoveToDestination(_data);
 
         yield return base.Behavior();

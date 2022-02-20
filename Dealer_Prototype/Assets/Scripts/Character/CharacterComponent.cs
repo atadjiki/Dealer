@@ -102,7 +102,7 @@ public class CharacterComponent : MonoBehaviour
 
         //attach a UI canvas to the model 
         GameObject CharStateCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterStateCanvas, ModelPrefab.transform);
-        CharStateCanvasPrefab.transform.parent = ModelPrefab.transform;
+        CharStateCanvasPrefab.transform.SetParent(ModelPrefab.transform);
         _charStateCanvas = CharStateCanvasPrefab.GetComponent<CharacterStateCanvas>();
 
         yield return new WaitWhile(() => _charStateCanvas == null);

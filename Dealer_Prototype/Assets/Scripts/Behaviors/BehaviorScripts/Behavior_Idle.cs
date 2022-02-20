@@ -15,6 +15,7 @@ public class Behavior_Idle : CharacterBehaviorScript
 
     protected override IEnumerator Behavior()
     {
+        yield return BehaviorHelper.AttemptStand(_data);
         yield return BehaviorHelper.PerformIdle(_data);
 
         yield return base.Behavior();

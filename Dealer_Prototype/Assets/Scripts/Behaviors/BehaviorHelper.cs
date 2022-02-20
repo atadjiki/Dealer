@@ -107,7 +107,7 @@ public class BehaviorHelper : MonoBehaviour
         {
             return PerformSit(_data);
         }
-        else if(_data.Interactable.GetID() == InteractableConstants.InteractableID.Television.ToString())
+        else if (_data.Interactable.GetID() == InteractableConstants.InteractableID.Television.ToString())
         {
             return PerformInteractWith(_data);
         }
@@ -179,7 +179,7 @@ public class BehaviorHelper : MonoBehaviour
             Transform sittingTransform = chair.GetSittingPoseTransform();
 
             yield return LerpToTransform(_data.Character.GetNavigatorComponent().transform, sittingTransform, 1.5f);
-            
+
             DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactable.GetID());
 
             _data.Character.FadeToAnimation(AnimationConstants.Anim.Sitting_Default, 0.05f, false);
@@ -189,6 +189,26 @@ public class BehaviorHelper : MonoBehaviour
             _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
 
             _data.Character.SetAIState(AIConstants.AIState.Sitting);
+        }
+
+        yield return null;
+    }
+
+    public static IEnumerator AttemptStand(BehaviorData _data)
+    {
+        if(_data.Character.AIState == AIConstants.AIState.Sitting)
+        {
+            _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
+
+            DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " standing up");
+
+            _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.1f, true);
+
+            yield return new WaitForSeconds(1.0f);
+
+            _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
+
+            _data.Character.SetAIState(AIConstants.AIState.Idle);
         }
 
         yield return null;

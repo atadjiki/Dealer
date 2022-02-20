@@ -17,18 +17,11 @@ public class Television : Interactable
     [SerializeField] private Material Mat_On;
 
     //
-    [SerializeField] private AudioSource AudioSource_TV;
-    [SerializeField] private AudioClip AudioClip_On;
-
-    //
     [SerializeField] private Light Light_TV;
 
     protected override IEnumerator DoInitialize()
     {
         _currentState = DefaultState;
-
-        AudioSource_TV.clip = AudioClip_On;
-        AudioSource_TV.loop = true;
 
         SwitchToState(_currentState);
 
@@ -44,12 +37,10 @@ public class Television : Interactable
         {
             case State.On:
                 SetMaterial(Mat_On);
-                AudioSource_TV.Play();
                 Light_TV.enabled = true;
                 break;
             case State.Off:
                 SetMaterial(Mat_Off);
-                AudioSource_TV.Stop();
                 Light_TV.enabled = false;
                 break;
         }
