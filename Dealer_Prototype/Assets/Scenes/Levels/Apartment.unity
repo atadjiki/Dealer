@@ -717,6 +717,41 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &531236069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1237731376329014149, guid: 20b878836569040179e64021c4535ee8, type: 3}
+  m_PrefabInstance: {fileID: 6785044668926626649}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &531236070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531236069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!1001 &570316305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1119,6 +1154,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8625640717527572243, guid: 2ff5617f1e00f4cf8a96a61f142c7037, type: 3}
   m_PrefabInstance: {fileID: 1822443017}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1051482844 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7477048846401900364, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
+  m_PrefabInstance: {fileID: 2067601778}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1051482846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051482844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!4 &1054612671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7536381587151241076, guid: 381651e42f91643c0bd8ac80bb3d244a, type: 3}
@@ -2686,7 +2756,8 @@ PrefabInstance:
       propertyPath: InteractionTransform.a
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
 --- !u!1001 &2078968446
 PrefabInstance:
@@ -3758,15 +3829,12 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8522052572059151863, guid: 20b878836569040179e64021c4535ee8, type: 3}
-      propertyPath: Mute
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8841898098353656320, guid: 20b878836569040179e64021c4535ee8, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 20b878836569040179e64021c4535ee8, type: 3}
 --- !u!4 &7109751766472992631 stripped
 Transform:
