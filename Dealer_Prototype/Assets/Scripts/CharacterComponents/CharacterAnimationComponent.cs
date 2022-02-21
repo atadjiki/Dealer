@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class CharacterAnimationComponent : MonoBehaviour
 {
-    private void Awake()
-    {
-        
-    }
+    private GameObject socket = null;
+
+    public void SetSocket(GameObject inObject) { socket = inObject; }
 
     public void AnimEvent_Footstep()
     {
-        AudioManager.Instance.PlayAnimEventAudio(AudioManager.AnimEvent_Audio.Footstep_Indoor);
+        AudioManager.Instance.PlayAnimEventAudio(AudioManager.AnimEvent_Audio.Footstep_Indoor, socket);
     }
 }

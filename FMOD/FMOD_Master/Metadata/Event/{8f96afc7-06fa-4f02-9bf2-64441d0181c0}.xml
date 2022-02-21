@@ -31,6 +31,9 @@
 		<relationship name="timeline">
 			<destination>{8ba69982-01d6-4e80-b87b-5df7f0ed0de4}</destination>
 		</relationship>
+		<relationship name="banks">
+			<destination>{be95f522-e6b1-40f8-aab6-f79e82940b57}</destination>
+		</relationship>
 	</object>
 	<object class="EventMixer" id="{9915b1fc-86a5-43e2-aabe-250093e66e32}">
 		<relationship name="masterBus">
@@ -53,7 +56,11 @@
 			<destination>{db306d18-71b0-47cf-b271-70e2ea5c3ee2}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{fb08b8ef-b506-45c8-8a88-3ec0ecff9905}" />
+	<object class="EventAutomatableProperties" id="{fb08b8ef-b506-45c8-8a88-3ec0ecff9905}">
+		<property name="dopplerEnabled">
+			<value>true</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{92ad17aa-881a-4805-b622-cfe37907d772}" />
 	<object class="GroupTrack" id="{0bfa6964-9df3-4542-b339-db3b77298606}">
 		<relationship name="modules">
@@ -69,6 +76,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{c6350755-d12a-493c-87fe-33f29ac7370f}">
+		<property name="pitch">
+			<value>-2.4000001</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{427ccf98-8a7a-4263-8fa0-8e2f1b0d57ce}</destination>
 		</relationship>
@@ -113,6 +123,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{59aff8ae-b312-4695-8fe6-18d066bd94a3}">
+		<property name="volume">
+			<value>-12</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>

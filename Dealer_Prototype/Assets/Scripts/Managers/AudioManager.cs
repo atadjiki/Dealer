@@ -9,10 +9,6 @@ public class AudioManager : MonoBehaviour
         Footstep_Indoor, None
     }
 
-    [SerializeField] private AudioClip[] AnimEvent_Footstep_Indoor;
-
-    private AudioSource AudioSource_main;
-
     private static AudioManager _instance;
 
     public static AudioManager Instance { get { return _instance; } }
@@ -33,33 +29,30 @@ public class AudioManager : MonoBehaviour
 
     private void Build()
     {
-        AudioSource_main = GetComponentInChildren<AudioSource>();
     }
 
-    public void PlayAnimEventAudio(AnimEvent_Audio animEvent)
+    public void PlayAnimEventAudio(AnimEvent_Audio animEvent, GameObject socket)
     {
         switch (animEvent)
         {
             case AnimEvent_Audio.Footstep_Indoor:
-                PlayRandomClip(AnimEvent_Footstep_Indoor);
+                PlayOneShot("event:/Character/Footsteps/A/Footstep_Indoor_Male", socket);
                 break;
             case AnimEvent_Audio.None:
                 break;
         }
     }
 
-    private void PlayRandomClip(AudioClip[] audioClips)
+    private void PlayOneShot(string eventPath, GameObject socket)
     {
-        int random = Random.Range(0, audioClips.Length - 1);
-
-        PlayClip(audioClips[random]);
-    }
-
-    private void PlayClip(AudioClip clip)
-    {
-        if (AudioSource_main != null)
+        if(socket != null)
         {
-            AudioSource_main.PlayOneShot(clip);
+            FMODUnity.RuntimeManager.PlayOneShotAttached(eventPath, socket);
         }
+        else
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(eventPath);
+        }
+        
     }
 }

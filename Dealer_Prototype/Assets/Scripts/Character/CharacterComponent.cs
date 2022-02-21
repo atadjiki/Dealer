@@ -82,6 +82,7 @@ public class CharacterComponent : MonoBehaviour
         _animator = ModelPrefab.GetComponent<Animator>();
 
         _characterAnimation = ModelPrefab.GetComponent<CharacterAnimationComponent>();
+        _characterAnimation.SetSocket(_navigator.gameObject);
 
        // ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 

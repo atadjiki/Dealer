@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6324615055119942005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Objects.bank
+  m_EditorClassIdentifier: 
+  Path: ../FMOD/FMOD_Master/Build/Desktop/Objects.bank
+  Name: Objects
+  StudioPath: bank:/Objects
+  lastModified: 637809770200000000
+  FileSizes:
+  - Name: Desktop
+    Value: 7384416
+  Exists: 1
+--- !u!114 &-6271999159881107249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: ../FMOD/FMOD_Master/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 637809770200000000
+  FileSizes:
+  - Name: Desktop
+    Value: 1036
+  Exists: 1
+--- !u!114 &-4944664800174242641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Objects/Television/tv_specialreport_galante
+  m_EditorClassIdentifier: 
+  Path: event:/Objects/Television/tv_specialreport_galante
+  Guid:
+    Data1: -760331548
+    Data2: 1109835272
+    Data3: 201421751
+    Data4: 1689960358
+  Banks:
+  - {fileID: -6324615055119942005}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 648751
+--- !u!114 &-681968330334133470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character/Footsteps/A/Footstep_Indoor_Male
+  m_EditorClassIdentifier: 
+  Path: event:/Character/Footsteps/A/Footstep_Indoor_Male
+  Guid:
+    Data1: -1885950009
+    Data2: 1325532922
+    Data3: 1147466395
+    Data4: -1065287395
+  Banks:
+  - {fileID: 3747072668882069705}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1458
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: 8877225067016115888}
+  - {fileID: 3747072668882069705}
+  - {fileID: -6271999159881107249}
+  - {fileID: -6324615055119942005}
+  EditorEvents:
+  - {fileID: -681968330334133470}
+  - {fileID: -4944664800174242641}
+  EditorParameters: []
+  MasterBanks:
+  - {fileID: -6271999159881107249}
+  StringsBanks:
+  - {fileID: 8877225067016115888}
+  cacheTime: 637809770200000000
+  cacheVersion: 10
+--- !u!114 &3747072668882069705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Character.bank
+  m_EditorClassIdentifier: 
+  Path: ../FMOD/FMOD_Master/Build/Desktop/Character.bank
+  Name: Character
+  StudioPath: bank:/Character
+  lastModified: 637809770200000000
+  FileSizes:
+  - Name: Desktop
+    Value: 281984
+  Exists: 1
+--- !u!114 &8877225067016115888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: ../FMOD/FMOD_Master/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 637809770200000000
+  FileSizes:
+  - Name: Desktop
+    Value: 968
+  Exists: 1
