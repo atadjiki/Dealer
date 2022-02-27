@@ -33,8 +33,6 @@ public class Television : Interactable
         SwitchToState(_currentState);
 
         yield return base.DoInitialize();
-
-        Debug.Log("initialzing");
     }
 
     private void SwitchToState(State _state)
