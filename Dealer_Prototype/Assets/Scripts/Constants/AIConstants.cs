@@ -9,7 +9,8 @@ namespace Constants
             MoveToLocation,
             MoveToRandomLocation,
             Idle,
-            Approach,
+            Approach_Interactable,
+            Approach_Character,
             Interact,
             Sit,
             None

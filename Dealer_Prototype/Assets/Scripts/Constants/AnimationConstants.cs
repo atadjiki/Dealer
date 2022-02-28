@@ -12,7 +12,7 @@ namespace Constants
 
             Walking,
 
-            Talking,
+            Talking_Default,
 
             Emote_Headshake_Annoyed,
             Emote_Headshake_Thoughtful,
@@ -120,7 +120,7 @@ namespace Constants
                 case Anim.Sitting_Default:
                     return Sitting_Default;
 
-                case Anim.Talking:
+                case Anim.Talking_Default:
                     return Talking_Default;
 
                 case Anim.Walking:

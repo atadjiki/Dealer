@@ -21,6 +21,7 @@ namespace Constants
             Approach,
             Interact,
             Sit,
+            Talk,
             None
         };
 
@@ -68,6 +69,9 @@ namespace Constants
                     break;
                 case InteractableConstants.InteractionContext.Sit:
                     text = "Sit";
+                    break;
+                case InteractableConstants.InteractionContext.Talk:
+                    text = "Talk";
                     break;
             }
 

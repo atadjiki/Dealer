@@ -135,7 +135,7 @@ public class NPCManager : CharacterManager
             {
                 if (generic != null && generic.HasBeenInteractedWith(npc) == false)
                 {
-                    behaviorScript = BehaviorHelper.ApproachBehavior(npc, generic,out success);
+                    behaviorScript = BehaviorHelper.ApproachInteractableBehavior(npc, generic,out success);
                 }
                 else
                 {

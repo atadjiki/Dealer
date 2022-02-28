@@ -120,6 +120,19 @@ public class PlayableCharacterManager : CharacterManager
         }
     }
 
+    public void AttemptInteractWithPossesedCharacter(CharacterComponent character)
+    {
+        if (selectedCharacter != null)
+        {
+            bool success;
+            CharacterBehaviorScript behaviorScript;
+
+            behaviorScript = BehaviorHelper.ApproachCharacterBehavior(selectedCharacter, character, out success);
+
+            selectedCharacter.AddNewBehavior(behaviorScript);
+        }
+    }
+
     public void AttemptInteractWithPossesedCharacter(Interactable interactable)
     {
         if (selectedCharacter != null)
@@ -127,7 +140,7 @@ public class PlayableCharacterManager : CharacterManager
             bool success;
             CharacterBehaviorScript behaviorScript;
 
-            behaviorScript = BehaviorHelper.ApproachBehavior(selectedCharacter, interactable, out success);
+            behaviorScript = BehaviorHelper.ApproachInteractableBehavior(selectedCharacter, interactable, out success);
            
             selectedCharacter.AddNewBehavior(behaviorScript);
         }

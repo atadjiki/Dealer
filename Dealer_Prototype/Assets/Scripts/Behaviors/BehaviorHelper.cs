@@ -44,10 +44,29 @@ public class BehaviorHelper : MonoBehaviour
         return behaviorScript;
     }
 
-    public static CharacterBehaviorScript ApproachBehavior(CharacterComponent character, Interactable interactable, out bool success)
+    public static CharacterBehaviorScript ApproachCharacterBehavior(CharacterComponent characterA, CharacterComponent characterB, out bool success)
     {
         CharacterBehaviorScript behaviorScript
-             = CreateBehaviorObject(character.GetID() + " approach " + interactable.GetID(), character).AddComponent<Behavior_Approach>();
+             = CreateBehaviorObject(characterA.GetID() + " talk " + characterB.GetID(), characterA).AddComponent<Behavior_ApproachCharacter>();
+
+        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        {
+            Character = characterA,
+            Interactee = characterB,
+            Behavior = behaviorScript,
+            Destination = characterB.GetNavigatorComponent().transform.position
+        };
+
+        behaviorScript.Setup(data);
+
+        success = true;
+        return behaviorScript;
+    }
+
+    public static CharacterBehaviorScript ApproachInteractableBehavior(CharacterComponent character, Interactable interactable, out bool success)
+    {
+        CharacterBehaviorScript behaviorScript
+             = CreateBehaviorObject(character.GetID() + " approach " + interactable.GetID(), character).AddComponent<Behavior_ApproachInteractable>();
 
         CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
@@ -97,6 +116,11 @@ public class BehaviorHelper : MonoBehaviour
         return (Vector3.Distance(characterPos, interactionPos) < 1f);
     }
 
+    public static IEnumerator ResolvePerformNPCInteraction(BehaviorData _data)
+    {
+        return PerformConversation(_data);
+    }
+
     public static IEnumerator ResolvePerformInteraction(BehaviorData _data)
     {
         if (_data.Interactable.GetID() == InteractableConstants.InteractableID.Generic.ToString())
@@ -113,6 +137,33 @@ public class BehaviorHelper : MonoBehaviour
         }
 
         return null;
+    }
+
+    public static IEnumerator PerformApproachCharacter(BehaviorData _data)
+    {
+        float time_before = Time.time;
+
+        _data.Character.SetAIState(AIConstants.AIState.Moving);
+
+        Transform interacteeTransform = _data.Interactee.GetNavigatorComponent().transform;
+
+        Vector3 interacteeOffset = interacteeTransform.forward * 1.5f;
+
+        if (_data.Character.GetNavigatorComponent().MoveToLocation(interacteeTransform.position + interacteeOffset))
+        {
+            yield return new WaitWhile(() => _data.Character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving);
+
+            DebugManager.Instance.Print(DebugManager.Log.LogBehavior, "Task took " + Mathf.Abs(Time.time - time_before) + " seconds");
+
+            if (Vector3.Distance(_data.Character.GetNavigatorComponent().transform.position, _data.Interactee.GetNavigatorComponent().transform.position) < 0.1f)
+            {
+                _data.Character.GetNavigatorComponent().TeleportToLocation(_data.Interactee.GetNavigatorComponent().transform);
+                DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactee.GetID());
+            }
+
+        }
+
+        yield return null;
     }
 
     public static IEnumerator PerformApproachInteractable(BehaviorData _data)
@@ -222,6 +273,39 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0.1f, false);
 
         yield return null;
+    }
+
+    public static IEnumerator PerformConversation(BehaviorData _data)
+    {
+        //set initiator state
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
+        _data.Character.SetAIState(AIConstants.AIState.Interacting);
+       
+        //cache some data first
+        Transform interacteeTransform = _data.Interactee.GetNavigatorComponent().transform;
+        AIConstants.AIState interacteeAIState = _data.Interactee.AIState;
+        AnimationConstants.Anim interacteeAnim = _data.Interactee.GetCurrentAnimation();
+
+        //set interactee state
+        _data.Interactee.SetAIState(AIConstants.AIState.Interacting);
+        _data.Interactee.SetUpdateState(AIConstants.UpdateState.Busy);
+
+        //perform the actual convo here
+        //in the future we'll need anims per character instead of the default
+        _data.Character.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
+        _data.Interactee.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
+
+        yield return new WaitForSeconds(7.0f);
+
+        //reset character
+        _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0, false);
+        _data.Character.SetAIState(interacteeAIState);
+        _data.Character.SetUpdateState(AIConstants.UpdateState.Ready);
+
+        //reset interactee
+        _data.Interactee.FadeToAnimation(interacteeAnim, 0, false);
+        _data.Interactee.GetNavigatorComponent().transform.rotation = interacteeTransform.rotation;
+        _data.Interactee.SetUpdateState(AIConstants.UpdateState.Ready);
     }
 
     public static IEnumerator PerformInteractWith(BehaviorData _data)

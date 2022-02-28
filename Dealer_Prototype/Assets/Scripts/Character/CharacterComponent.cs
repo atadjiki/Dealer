@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
-using UnityEngine.UI;
 using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
@@ -17,7 +16,6 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterCameraRig _cameraRig;
     protected SelectionComponent _selection;
     protected ScheduleComponent _schedule;
-
 
     [Header("Character Setup")]
 
@@ -65,19 +63,19 @@ public class CharacterComponent : MonoBehaviour
         _characterState.SetGender(CharacterConstants.GetGenderBYID(spawnData.ID));
 
         //setup navigator
-        GameObject NavigtorPrefab = PrefabFactory.CreatePrefab(RegistryID.Navigator, this.transform);
-        _navigator = NavigtorPrefab.GetComponent<NavigatorComponent>();
+        GameObject NavigatorPrefab = PrefabFactory.CreatePrefab(RegistryID.Navigator, this.transform);
+        _navigator = NavigatorPrefab.GetComponent<NavigatorComponent>();
         _navigator.SetCanMove(true);
 
         yield return new WaitWhile(() => _navigator == null);
 
-        GameObject CameraRigPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCameraRig, NavigtorPrefab.transform);
+        GameObject CameraRigPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCameraRig, NavigatorPrefab.transform);
         _cameraRig = CameraRigPrefab.GetComponent<CharacterCameraRig>();
 
         yield return new WaitWhile(() => _cameraRig == null);
 
         //setup character model and attach to navigator
-        GameObject ModelPrefab = PrefabFactory.GetCharacterPrefab(_characterState.GetID(), NavigtorPrefab.transform);
+        GameObject ModelPrefab = PrefabFactory.GetCharacterPrefab(_characterState.GetID(), NavigatorPrefab.transform);
         // ModelPrefab.transform.parent = NavigtorPrefab.transform;
         _animator = ModelPrefab.GetComponent<Animator>();
 
@@ -102,13 +100,12 @@ public class CharacterComponent : MonoBehaviour
         _charCanvas.Set_Text_ID(_characterState.GetID());
 
         //attach a UI canvas to the model 
-        GameObject CharStateCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterStateCanvas, ModelPrefab.transform);
-        CharStateCanvasPrefab.transform.SetParent(ModelPrefab.transform);
-        _charStateCanvas = CharStateCanvasPrefab.GetComponent<CharacterStateCanvas>();
+        //GameObject CharStateCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterStateCanvas, ModelPrefab.transform);
+        //_charStateCanvas = CharStateCanvasPrefab.GetComponent<CharacterStateCanvas>();
 
-        yield return new WaitWhile(() => _charStateCanvas == null);
+        //yield return new WaitWhile(() => _charStateCanvas == null);
 
-        GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigtorPrefab.transform);
+        GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigatorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
 
         yield return new WaitWhile(() => _interaction == null);
@@ -117,7 +114,7 @@ public class CharacterComponent : MonoBehaviour
         _interaction.MouseExitEvent += OnMouseExit;
         _interaction.MouseClickedEvent += OnMouseClicked;
 
-        GameObject SelectionPrefab = PrefabFactory.CreatePrefab(RegistryID.SelectionComponent, NavigtorPrefab.transform);
+        GameObject SelectionPrefab = PrefabFactory.CreatePrefab(RegistryID.SelectionComponent, NavigatorPrefab.transform);
         _selection = SelectionPrefab.GetComponent<SelectionComponent>();
         _selection.SetUnposessed();
 
@@ -152,6 +149,10 @@ public class CharacterComponent : MonoBehaviour
             else
                 GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Select);
         }
+        else if(CharacterMode != AIConstants.Mode.Selected)
+        {
+            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Talk);
+        }
     }
 
     public virtual void OnMouseExit()
@@ -160,7 +161,13 @@ public class CharacterComponent : MonoBehaviour
         GameplayCanvas.Instance.ClearInteractionTipText();
     }
 
-    public virtual void OnMouseClicked() { }
+    public virtual void OnMouseClicked()
+    {
+        if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
+        {
+            PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
+        }
+    }
 
     private void OnDestroy()
     {
@@ -203,7 +210,11 @@ public class CharacterComponent : MonoBehaviour
     public void SetAIState(AIConstants.AIState state)
     {
         AIState = state;
-        _charStateCanvas.SetText_State(AIState.ToString().ToLower().Trim());
+
+        if(_charStateCanvas != null)
+        {
+            _charStateCanvas.SetText_State(AIState.ToString().ToLower().Trim());
+        }  
     }
 
     internal void SetUpdateState(AIConstants.UpdateState newState)
