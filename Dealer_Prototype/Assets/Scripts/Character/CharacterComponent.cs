@@ -17,6 +17,13 @@ public class CharacterComponent : MonoBehaviour
     protected SelectionComponent _selection;
     protected ScheduleComponent _schedule;
 
+    private GameObject _model;
+
+    public GameObject GetModel()
+    {
+        return _model;
+    }
+
     [Header("Character Setup")]
 
     private AIConstants.BehaviorType PreviousBehavior = AIConstants.BehaviorType.None;
@@ -75,24 +82,24 @@ public class CharacterComponent : MonoBehaviour
         yield return new WaitWhile(() => _cameraRig == null);
 
         //setup character model and attach to navigator
-        GameObject ModelPrefab = PrefabFactory.GetCharacterPrefab(_characterState.GetID(), NavigatorPrefab.transform);
+        _model = PrefabFactory.GetCharacterPrefab(_characterState.GetID(), NavigatorPrefab.transform);
         // ModelPrefab.transform.parent = NavigtorPrefab.transform;
-        _animator = ModelPrefab.GetComponent<Animator>();
+        _animator = _model.GetComponent<Animator>();
 
-        _characterAnimation = ModelPrefab.GetComponent<CharacterAnimationComponent>();
+        _characterAnimation = _model.GetComponent<CharacterAnimationComponent>();
         _characterAnimation.SetSocket(_navigator.gameObject);
 
        // ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
 
         yield return new WaitWhile(() => _animator == null);
 
-        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, ModelPrefab.transform);
+        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, _model.transform);
         _light = CharacterLightPrefab.GetComponent<Light>();
 
         yield return new WaitWhile(() => _light == null);
 
         //attach a UI canvas to the model 
-        GameObject CharCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCanvas, ModelPrefab.transform);
+        GameObject CharCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterCanvas, _model.transform);
         _charCanvas = CharCanvasPrefab.GetComponent<CharacterCanvas>();
 
         yield return new WaitWhile(() => _charCanvas == null);

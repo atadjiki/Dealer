@@ -161,6 +161,11 @@ public class BehaviorHelper : MonoBehaviour
                 DebugManager.Instance.Print(DebugManager.Log.LogBehavior, _data.Character.GetID() + " teleporting to  " + _data.Interactee.GetID());
             }
 
+            Vector3 relativePos = _data.Interactee.GetNavigatorComponent().transform.position - _data.Character.GetNavigatorComponent().transform.position;
+
+            _data.Character.GetNavigatorComponent().transform.rotation
+                = Quaternion.LookRotation(relativePos);
+
         }
 
         yield return null;
@@ -297,7 +302,13 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
         _data.Interactee.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
 
-        yield return new WaitForSeconds(7.0f);
+        ConversationManager.Instance.CharacterLine_Begin(_data.Character, "Hello there, fellow citizen", 5.0f);
+
+        yield return new WaitForSeconds(5.0f);
+
+        ConversationManager.Instance.CharacterLine_Begin(_data.Interactee, "Ah, hello, my esteemed colleague", 5.0f);
+
+        yield return new WaitForSeconds(5.0f);
 
         //reset character
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Idle, 0, false);
