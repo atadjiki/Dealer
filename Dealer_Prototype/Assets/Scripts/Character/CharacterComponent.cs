@@ -113,6 +113,7 @@ public class CharacterComponent : MonoBehaviour
         _interaction.MouseEnterEvent += OnMouseEnter;
         _interaction.MouseExitEvent += OnMouseExit;
         _interaction.MouseClickedEvent += OnMouseClicked;
+        _interaction.CharPtr = this;
 
         GameObject SelectionPrefab = PrefabFactory.CreatePrefab(RegistryID.SelectionComponent, NavigatorPrefab.transform);
         _selection = SelectionPrefab.GetComponent<SelectionComponent>();

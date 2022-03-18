@@ -277,6 +277,8 @@ public class BehaviorHelper : MonoBehaviour
 
     public static IEnumerator PerformConversation(BehaviorData _data)
     {
+        ConversationManager.Instance.StartConversation();
+
         //set initiator state
         _data.Character.SetUpdateState(AIConstants.UpdateState.Busy);
         _data.Character.SetAIState(AIConstants.AIState.Interacting);
@@ -306,6 +308,8 @@ public class BehaviorHelper : MonoBehaviour
         _data.Interactee.FadeToAnimation(interacteeAnim, 0, false);
         _data.Interactee.GetNavigatorComponent().transform.rotation = interacteeTransform.rotation;
         _data.Interactee.SetUpdateState(AIConstants.UpdateState.Ready);
+
+        ConversationManager.Instance.EndConversation();
     }
 
     public static IEnumerator PerformInteractWith(BehaviorData _data)

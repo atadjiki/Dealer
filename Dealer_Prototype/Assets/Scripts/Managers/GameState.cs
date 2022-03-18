@@ -8,7 +8,7 @@ public class GameState : MonoBehaviour
 
     public static GameState Instance { get { return _instance; } }
 
-    public enum State { MainMenu, GamePlay, GamePlayPaused, Loading };
+    public enum State { MainMenu, GamePlay, Conversation, GamePlayPaused, Loading };
 
     private State _currentState = State.MainMenu;
 

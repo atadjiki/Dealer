@@ -27,15 +27,15 @@ namespace Constants
 
         public static InteractableConstants.InteractionContext GetContextByInteractableID(Interactable interactable)
         {
-            if (interactable.GetID() == Constants.InteractableConstants.InteractableID.Generic.ToString())
+            if (interactable.GetID() == InteractableID.Generic.ToString())
             {
                 return InteractableConstants.InteractionContext.Interact;
             }
-            else if (interactable.GetID() == Constants.InteractableConstants.InteractableID.Chair.ToString())
+            else if (interactable.GetID() == InteractableID.Chair.ToString())
             {
                 return InteractableConstants.InteractionContext.Sit;
             }
-            else if (interactable.GetID() == Constants.InteractableConstants.InteractableID.Television.ToString())
+            else if (interactable.GetID() == InteractableID.Television.ToString())
             {
                 return InteractableConstants.InteractionContext.Interact;
             }

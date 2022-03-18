@@ -68,7 +68,10 @@ public class InputManager : MonoBehaviour
             HandleKeyboard();
             HandleMouse();
         }
-        
+        else if(GameState.Instance.GetState() == GameState.State.Conversation)
+        {
+
+        }
     }
 
 
@@ -89,7 +92,7 @@ public class InputManager : MonoBehaviour
             IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
             if (interactionInterface != null)
             {
-                interactionInterface.MouseEnter();
+               // interactionInterface.MouseEnter();
                 return;
             }
             else if (interiorInterface != null)

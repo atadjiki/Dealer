@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
-using UnityEngine.EventSystems;
-using Pathfinding;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
