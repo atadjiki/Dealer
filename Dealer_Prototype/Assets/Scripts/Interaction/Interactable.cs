@@ -30,19 +30,22 @@ public class Interactable : MonoBehaviour, IInteraction
 
     protected virtual IEnumerator DoInitialize()
     {
-        _interactedWith = new HashSet<CharacterComponent>();
-
-        _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
-
-        yield return new WaitUntil(() => _interactionState != null);
-
-        _interactionState.SetInteractableID(ID);
-
-        SetState(InteractableConstants.InteractionState.Available);
-
-        if (InteractableManager.Instance.Register(this) == false)
+        if(InteractableManager.Instance)
         {
-            Destroy(this.gameObject);
+            _interactedWith = new HashSet<CharacterComponent>();
+
+            _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
+
+            yield return new WaitUntil(() => _interactionState != null);
+
+            _interactionState.SetInteractableID(ID);
+
+            SetState(InteractableConstants.InteractionState.Available);
+
+            if (InteractableManager.Instance.Register(this) == false)
+            {
+                Destroy(this.gameObject);
+            }
         }
 
         yield return null;
@@ -51,7 +54,10 @@ public class Interactable : MonoBehaviour, IInteraction
 
     private void OnDestroy()
     {
-        InteractableManager.Instance.UnRegister(this);
+        if(InteractableManager.Instance)
+        {
+            InteractableManager.Instance.UnRegister(this);
+        }
     }
 
     public bool HasBeenInteractedWith(CharacterComponent character)
@@ -61,24 +67,32 @@ public class Interactable : MonoBehaviour, IInteraction
 
     private void FixedUpdate()
     {
-        if (Camera.main == null) return;
-
-        Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
-
-        var ray = Camera.main.ScreenPointToRay(_screenMousePos);
-
-        RaycastHit hit = new RaycastHit();
-
-        //for walls, interactables, doors, etc
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        if(InputManager.Instance != null)
         {
-            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
-            if (interactionInterface != null)
+            if (Camera.main == null) return;
+
+            Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
+
+            var ray = Camera.main.ScreenPointToRay(_screenMousePos);
+
+            RaycastHit hit = new RaycastHit();
+
+            //for walls, interactables, doors, etc
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                if(hit.collider.gameObject == this.gameObject && bMouseIsOver == false)
+                IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+                if (interactionInterface != null)
                 {
-                    MouseEnter();
-                    bMouseIsOver = true;
+                    if (hit.collider.gameObject == this.gameObject && bMouseIsOver == false)
+                    {
+                        MouseEnter();
+                        bMouseIsOver = true;
+                    }
+                }
+                else if (bMouseIsOver)
+                {
+                    bMouseIsOver = false;
+                    MouseExit();
                 }
             }
             else if (bMouseIsOver)
@@ -87,49 +101,54 @@ public class Interactable : MonoBehaviour, IInteraction
                 MouseExit();
             }
         }
-        else if(bMouseIsOver)
-        {
-            bMouseIsOver = false;
-            MouseExit();
-        }
     }
 
     public void ToggleOutlineShader(bool flag)
     {
-        if(flag)
+        if(ColorManager.Instance)
         {
-            foreach (MeshRenderer renderer in Meshes)
+            if (flag)
             {
-                ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+                foreach (MeshRenderer renderer in Meshes)
+                {
+                    ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+                }
             }
-        }
-        else
-        {
-            foreach (MeshRenderer renderer in Meshes)
+            else
             {
-                ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+                foreach (MeshRenderer renderer in Meshes)
+                {
+                    ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+                }
             }
         }
     }
 
     public virtual void MouseEnter()
     {
-        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
+        if(PlayableCharacterManager.Instance)
         {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.GetContextByInteractableID(this));
+            if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
+            {
+                UIManager.Instance.HandleEvent(InteractableConstants.GetContextByInteractableID(this));
+            }
+
+            CursorManager.Instance.ToInteract();
+
+            ToggleOutlineShader(true);
         }
-
-        CursorManager.Instance.ToInteract();
-
-        ToggleOutlineShader(true);
     }
 
     public virtual void MouseClick()
     {
-        if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
+        if(PlayableCharacterManager.Instance)
         {
-            PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
+            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
+            {
+                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
+            }
         }
+        
     }
 
     public string GetID()

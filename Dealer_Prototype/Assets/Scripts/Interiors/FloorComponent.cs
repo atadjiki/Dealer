@@ -13,9 +13,9 @@ public class FloorComponent : MonoBehaviour, IInterior
     public void MouseEnter()
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Move);
+            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Move);
         else
-            GameplayCanvas.Instance.ClearInteractionTipText();
+            UIManager.Instance.HandleEvent(UI.Events.Clear);
 
         CursorManager.Instance.ToDefault();
     }

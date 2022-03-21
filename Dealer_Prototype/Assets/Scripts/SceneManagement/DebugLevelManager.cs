@@ -6,6 +6,9 @@ public class DebugLevelManager : MonoBehaviour
 {
     private void Awake()
     {
-        GameState.Instance.ToState(GameState.State.GamePlay);
+        if (GameState.Instance)
+        {
+            GameState.Instance.ToState(GameState.State.GamePlay);
+        }
     }
 }

@@ -85,7 +85,7 @@ public class PlayableCharacterManager : CharacterManager
         selectedCharacter = Character;
         selectedCharacter.PerformSelect();
 
-        GameplayCanvas.Instance.OnCharacterSelected(Character);
+        if(UIManager.Instance) UIManager.Instance.HandleEvent(Constants.UI.Events.CharacterSelected, Character);
         CameraFollowTarget.Instance.AttachTo(Character);
     }
 
@@ -95,7 +95,7 @@ public class PlayableCharacterManager : CharacterManager
         selectedCharacter.PerformUnselect();
         selectedCharacter = null;
 
-        GameplayCanvas.Instance.OnCharacterDeselected();
+        UIManager.Instance.HandleEvent(Constants.UI.Events.CharacterDeselected);
         CameraFollowTarget.Instance.Release();
     }
 

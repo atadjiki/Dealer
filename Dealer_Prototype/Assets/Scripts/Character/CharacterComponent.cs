@@ -152,21 +152,21 @@ public class CharacterComponent : MonoBehaviour
         if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
         {
             if (CharacterMode == AIConstants.Mode.Selected)
-                GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Deselect);
+                UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Deselect);
 
             else
-                GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Select);
+                UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Select);
         }
         else if(CharacterMode != AIConstants.Mode.Selected)
         {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Talk);
+            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Talk);
         }
     }
 
     public virtual void OnMouseExit()
     {
         _charCanvas.Toggle(false);
-        GameplayCanvas.Instance.ClearInteractionTipText();
+        UIManager.Instance.HandleEvent(UI.Events.Clear);
     }
 
     public virtual void OnMouseClicked()
@@ -204,7 +204,9 @@ public class CharacterComponent : MonoBehaviour
         PreviousBehavior = CurrentBehavior;
         CurrentBehavior = NewBehavior;
         if (_charCanvas != null) _charCanvas.Set_Text_Mode(CurrentBehavior.ToString());
-        GameplayCanvas.Instance.SetBehaviorText(CurrentBehavior);
+
+
+        if(UIManager.Instance) UIManager.Instance.HandleEvent(UI.Events.SetBehaviorText, CurrentBehavior);
     }
 
     public AnimationConstants.Anim GetCurrentAnimation() { return CurrentAnimation; }
@@ -212,7 +214,7 @@ public class CharacterComponent : MonoBehaviour
     public void SetCurrentAnimation(AnimationConstants.Anim anim)
     {
         CurrentAnimation = anim;
-        GameplayCanvas.Instance.SetAnimationText(anim.ToString());
+        if(UIManager.Instance) UIManager.Instance.HandleEvent(UI.Events.SetAnimText, anim);
     }
 
     public void SetAIState(AIConstants.AIState state)
@@ -294,7 +296,7 @@ public class CharacterComponent : MonoBehaviour
             _behaviorQueue.Peek().BeginBehavior();
         }
 
-        GameplayCanvas.Instance.UpdateBehaviorQueue(_behaviorQueue);
+        UIManager.Instance.HandleEvent(UI.Events.UpdateBehaviorQueue, _behaviorQueue);
     }
 
     public void OnBehaviorFinished(CharacterBehaviorScript finishedBehavior)

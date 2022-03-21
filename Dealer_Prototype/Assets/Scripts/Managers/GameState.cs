@@ -12,6 +12,10 @@ public class GameState : MonoBehaviour
 
     private State _currentState = State.MainMenu;
 
+    public delegate void OnGameStateChanged(State state);
+
+    public OnGameStateChanged onStateChangedDelegate;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -27,6 +31,8 @@ public class GameState : MonoBehaviour
     public void ToState(State state)
     {
         _currentState = state;
+
+        onStateChangedDelegate(_currentState);
     }
 
     public State GetState() { return _currentState; }

@@ -20,7 +20,7 @@ public class InteractionComponent : MonoBehaviour, IInteraction
     {
         if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected() && PlayableCharacterManager.Instance.GetSelectedCharacter() != CharPtr)
         {
-            GameplayCanvas.Instance.SetInteractionTipTextContext(InteractableConstants.InteractionContext.Talk);
+            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Talk);
 
             CursorManager.Instance.ToInteract();
         }

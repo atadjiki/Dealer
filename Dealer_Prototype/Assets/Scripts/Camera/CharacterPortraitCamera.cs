@@ -49,8 +49,8 @@ public class CharacterPortraitCamera : MonoBehaviour
         portraitCamera.enabled = true;
 
         portraitCamera.transform.parent = character.GetNavigatorComponent().transform;
-        portraitCamera.transform.localPosition = new Vector3(0, 1.65f, 1f);
-        portraitCamera.transform.localEulerAngles = new Vector3(0, 180, 0);
+        portraitCamera.transform.localPosition = new Vector3(0, 1.65f, 1.3f);
+        portraitCamera.transform.localEulerAngles = new Vector3(8, 180, 0);
         portraitCamera.transform.localScale = new Vector3(1, 1, 1);
     }
 

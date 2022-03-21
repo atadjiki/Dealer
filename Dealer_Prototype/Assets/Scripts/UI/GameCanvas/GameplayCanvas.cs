@@ -5,11 +5,8 @@ using TMPro;
 using UnityEngine;
 using Constants;
 
-public class GameplayCanvas : MonoBehaviour
+public class GameplayCanvas : GameCanvas
 {
-    private static GameplayCanvas _instance;
-
-    public static GameplayCanvas Instance { get { return _instance; } }
 
     [SerializeField] private TextMeshProUGUI Text_Interaction_Tip;
 
@@ -24,33 +21,52 @@ public class GameplayCanvas : MonoBehaviour
     [SerializeField] private TextMeshProUGUI Text_BehaviorQueue;
     [SerializeField] private GameObject Image_BehaviorQueue_CurrentBehavior;
 
-    private void Awake()
+    public override void Clear()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
+        base.Clear();
 
-        Build();
+        ClearInteractionTipText();
     }
 
-    private void Build()
+    public override void Reset()
     {
         Toggle(true);
 
         ToggleCharacterPanels(DebugManager.Instance.State_Character != DebugManager.State.None);
     }
 
-    public void Toggle(bool flag)
+    public override void Toggle(bool flag)
     {
-        this.gameObject.SetActive(flag);
+        gameObject.SetActive(flag);
     }
 
-    public void OnCharacterSelected(CharacterComponent character)
+    public override void HandleEvent_InteractionContext(InteractableConstants.InteractionContext context)
+    {
+        base.HandleEvent_InteractionContext(context);
+
+        SetInteractionTipTextContext(context);
+    }
+
+    public override void HandleEvent_SetBehaviorText(AIConstants.BehaviorType behaviorType)
+    {
+        SetBehaviorText(behaviorType);
+    }
+
+    public override void HandleEvent_SetAnimText(AnimationConstants.Anim anim)
+    {
+        base.HandleEvent_SetAnimText(anim);
+
+        SetAnimationText(anim.ToString());
+    }
+
+    public override void HandleEvent_CharacterSelected(CharacterComponent character)
+    {
+        base.HandleEvent_CharacterSelected(character);
+
+        OnCharacterSelected(character);
+    }
+
+    private void OnCharacterSelected(CharacterComponent character)
     {
         if (DebugManager.Instance.State_Character != DebugManager.State.None)
         {
@@ -62,7 +78,14 @@ public class GameplayCanvas : MonoBehaviour
         }
     }
 
-    public void OnCharacterDeselected()
+    public override void HandleEvent_CharacterDeselected()
+    {
+        base.HandleEvent_CharacterDeselected();
+
+        OnCharacterDeselected();
+    }
+
+    private void OnCharacterDeselected()
     {
         if (DebugManager.Instance.State_Character != DebugManager.State.None)
         {
@@ -81,27 +104,34 @@ public class GameplayCanvas : MonoBehaviour
         Panel_BehaviorQueue.SetActive(flag);
     }
 
-    public void SetBehaviorText(AIConstants.BehaviorType behaviorType)
+    private void SetBehaviorText(AIConstants.BehaviorType behaviorType)
     {
         Text_CurrentBehavior.text = behaviorType.ToString();
     }
 
-    public void SetAnimationText(string anim)
+    private void SetAnimationText(string anim)
     {
         Text_CurrentAnimation.text = anim;
     }
 
-    public void SetInteractionTipTextContext(InteractableConstants.InteractionContext context)
+    private void SetInteractionTipTextContext(InteractableConstants.InteractionContext context)
     {
         Text_Interaction_Tip.text = InteractableConstants.GetInteractionTipTextContext(context);
     }
 
-    public void ClearInteractionTipText()
+    private void ClearInteractionTipText()
     {
         Text_Interaction_Tip.text = "";
     }
 
-    public void UpdateBehaviorQueue(Queue<CharacterBehaviorScript> behaviorQueue)
+    public override void HandleEvent_UpdateBehaviorQueue(Queue<CharacterBehaviorScript> queue)
+    {
+        base.HandleEvent_UpdateBehaviorQueue(queue);
+
+        UpdateBehaviorQueue(queue);
+    }
+
+    private void UpdateBehaviorQueue(Queue<CharacterBehaviorScript> behaviorQueue)
     {
         if (DebugManager.Instance.State_Character != DebugManager.State.None)
         {
