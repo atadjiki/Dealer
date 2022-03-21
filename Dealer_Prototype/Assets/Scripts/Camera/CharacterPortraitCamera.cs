@@ -46,12 +46,24 @@ public class CharacterPortraitCamera : MonoBehaviour
 
         SetLayerRecursively(inCharacter.GetModel(), LayerMask.NameToLayer("Speaker"));
 
-        portraitCamera.enabled = true;
+        CameraPortraitTarget target = character.GetModel().GetComponentInChildren<CameraPortraitTarget>();
 
-        portraitCamera.transform.parent = character.GetNavigatorComponent().transform;
-        portraitCamera.transform.localPosition = new Vector3(0, 1.65f, 1.3f);
-        portraitCamera.transform.localEulerAngles = new Vector3(8, 180, 0);
-        portraitCamera.transform.localScale = new Vector3(1, 1, 1);
+        if(target)
+        {
+            portraitCamera.transform.parent = target.transform;
+            portraitCamera.transform.localPosition = new Vector3(0, 0.1f, 1f);
+            portraitCamera.transform.localEulerAngles = new Vector3(0, 180, 0);
+            portraitCamera.transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            portraitCamera.transform.parent = character.GetNavigatorComponent().transform;
+            portraitCamera.transform.localPosition = new Vector3(0, 1.65f, 1.3f);
+            portraitCamera.transform.localEulerAngles = new Vector3(8, 180, 0);
+            portraitCamera.transform.localScale = new Vector3(1, 1, 1);
+        }
+        
+        portraitCamera.enabled = true;
     }
 
     public void Reset()

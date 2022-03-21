@@ -56,7 +56,6 @@ public class UIManager : MonoBehaviour
         else if(newState == GameState.State.Conversation)
         {
             SetState(UIState.Conversation);
-            Debug.Log("UI State - Conversation");
         }
         else
         {
