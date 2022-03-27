@@ -114,6 +114,7 @@ public class CharacterComponent : MonoBehaviour
 
         GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigatorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
+        InteractableManager.Instance.Register(_interaction);
 
         yield return new WaitWhile(() => _interaction == null);
 
@@ -180,6 +181,7 @@ public class CharacterComponent : MonoBehaviour
     private void OnDestroy()
     {
         CharacterCameraManager.Instance.UnRegisterCharacterCamera(this);
+        InteractableManager.Instance.UnRegister(_interaction);
     }
 
     public virtual void OnNewDestination(Vector3 destination) { }

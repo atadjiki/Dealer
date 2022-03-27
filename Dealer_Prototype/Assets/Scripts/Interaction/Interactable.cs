@@ -164,7 +164,12 @@ public class Interactable : MonoBehaviour, IInteraction
         ToggleOutlineShader(false);
     }
 
-    public virtual void OnInteraction()
+    public bool HasBeenInteractedWith(NPCComponent npc)
+    {
+        return false;   
+    }
+
+    public void OnInteraction()
     {
 
     }

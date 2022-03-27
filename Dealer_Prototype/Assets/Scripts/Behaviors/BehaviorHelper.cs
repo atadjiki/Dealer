@@ -49,7 +49,7 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript behaviorScript
              = CreateBehaviorObject(characterA.GetID() + " talk " + characterB.GetID(), characterA).AddComponent<Behavior_ApproachCharacter>();
 
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new BehaviorData
         {
             Character = characterA,
             Interactee = characterB,
@@ -63,12 +63,12 @@ public class BehaviorHelper : MonoBehaviour
         return behaviorScript;
     }
 
-    public static CharacterBehaviorScript ApproachInteractableBehavior(CharacterComponent character, Interactable interactable, out bool success)
+    public static CharacterBehaviorScript ApproachInteractableBehavior(CharacterComponent character, IInteraction interactable, out bool success)
     {
         CharacterBehaviorScript behaviorScript
              = CreateBehaviorObject(character.GetID() + " approach " + interactable.GetID(), character).AddComponent<Behavior_ApproachInteractable>();
 
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new BehaviorData
         {
             Character = character,
             Interactable = interactable,
@@ -87,7 +87,7 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript behaviorScript
                 = CreateBehaviorObject(character.GetID() + " move to random location behavior ", character).AddComponent<Behavior_MoveToRandomLocation>();
 
-        BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new BehaviorData
         {
             Character = character,
             Behavior = behaviorScript,

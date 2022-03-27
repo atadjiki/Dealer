@@ -11,7 +11,7 @@ public class CharacterBehaviorScript : MonoBehaviour
     {
         public CharacterComponent Character;//what NPC is this running on
         public CharacterComponent Interactee;
-        public Interactable Interactable;//if an interactable is involved
+        public IInteraction Interactable;//if an interactable is involved
         public CharacterBehaviorScript Behavior;
         public Vector3 Destination;
     }

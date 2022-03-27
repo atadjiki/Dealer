@@ -130,12 +130,12 @@ public class NPCManager : CharacterManager
         }
         else if (randomIndex == 1)
         {
-            Interactable generic;
+            IInteraction generic;
             if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
             {
                 if (generic != null && generic.HasBeenInteractedWith(npc) == false)
                 {
-                    behaviorScript = BehaviorHelper.ApproachInteractableBehavior(npc, generic,out success);
+                    behaviorScript = BehaviorHelper.ApproachInteractableBehavior(npc, generic, out success);
                 }
                 else
                 {

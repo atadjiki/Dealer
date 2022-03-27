@@ -9,7 +9,7 @@ public class InteractableManager : MonoBehaviour
 
     public static InteractableManager Instance { get { return _instance; } }
 
-    private List<Interactable> Interactables;
+    private List<IInteraction> Interactables;
 
     private void Awake()
     {
@@ -27,10 +27,10 @@ public class InteractableManager : MonoBehaviour
 
     private void Build()
     {
-        Interactables = new List<Interactable>();
+        Interactables = new List<IInteraction>();
     }
 
-    public bool Register(Interactable interactable)
+    public bool Register(IInteraction interactable)
     {
         Interactables.Add(interactable);
 
@@ -38,15 +38,15 @@ public class InteractableManager : MonoBehaviour
         return true;
     }
 
-    public void UnRegister(Interactable interactable)
+    public void UnRegister(IInteraction interactable)
     {
         DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Unregistered Interactable " + interactable.GetID());
         Interactables.Remove(interactable);
     }
 
-    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out Interactable result)
+    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out IInteraction result)
     {
-        foreach (Interactable interactable in Interactables)
+        foreach (IInteraction interactable in Interactables)
         {
             if (interactable.GetID() == ID.ToString())
             {
@@ -61,7 +61,7 @@ public class InteractableManager : MonoBehaviour
 
     public void ToggleHighlightAll(bool flag)
     {
-        foreach(Interactable interactable in Interactables)
+        foreach(IInteraction interactable in Interactables)
         {
             interactable.ToggleOutlineShader(flag);
         }

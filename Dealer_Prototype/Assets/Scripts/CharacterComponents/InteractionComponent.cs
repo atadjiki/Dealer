@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
@@ -33,7 +34,11 @@ public class InteractionComponent : MonoBehaviour, IInteraction
 
     private void FixedUpdate()
     {
-        if (Camera.main == null) return;
+        if (Camera.main == null)
+            return;
+
+        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected() && PlayableCharacterManager.Instance.GetSelectedCharacter() == CharPtr)
+            return;
 
         Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
 
@@ -64,7 +69,66 @@ public class InteractionComponent : MonoBehaviour, IInteraction
             bMouseIsOver = false;
             MouseExit();
         }
+        else
+        {
+            MouseExit();
+        }
     }
 
-    public void MouseExit() { }
+    public void MouseExit()
+    {
+        UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.None);
+
+        CursorManager.Instance.ToDefault();
+    }
+
+    public void ToggleOutlineShader(bool flag)
+    {
+        if (ColorManager.Instance)
+        {
+            List<MeshRenderer> Meshes = new List<MeshRenderer>(CharPtr.GetModel().GetComponentsInChildren<MeshRenderer>());
+
+            if (flag)
+            {
+                foreach (MeshRenderer renderer in Meshes)
+                {
+                    ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+                }
+            }
+            else
+            {
+                foreach (MeshRenderer renderer in Meshes)
+                {
+                    ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+                }
+            }
+        }
+    }
+
+    public string GetID()
+    {
+        if(CharPtr != null)
+        {
+            return CharPtr.GetID();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public bool HasBeenInteractedWith(NPCComponent npc)
+    {
+        return false;
+    }
+
+    public void OnInteraction()
+    {
+
+    }
+
+    public Transform GetInteractionTransform()
+    {
+        return CharPtr.GetNavigatorComponent().transform;
+    }
 }
