@@ -143,24 +143,23 @@ public class CharacterComponent : MonoBehaviour
     {
         _charCanvas.Toggle(true);
 
-        if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
-        {
-            if (CharacterMode == AIConstants.Mode.Selected)
-                UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Deselect);
+        //if(PlayableCharacterManager.Instance.IsPlayerLocked() == false)
+        //{
+        //    if (CharacterMode == AIConstants.Mode.Selected)
+        //        UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Deselect);
 
-            else
-                UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Select);
-        }
-        else if(CharacterMode != AIConstants.Mode.Selected)
-        {
-            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Talk);
-        }
+        //    else
+        //        UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Select);
+        //}
+        //else if(CharacterMode != AIConstants.Mode.Selected)
+        //{
+        //    UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Talk);
+        //}
     }
 
     public virtual void OnMouseExit()
     {
         _charCanvas.Toggle(false);
-        UIManager.Instance.HandleEvent(UI.Events.Clear);
     }
 
     public virtual void OnMouseClicked()

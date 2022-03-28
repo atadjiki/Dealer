@@ -9,7 +9,6 @@ public class InputManager : MonoBehaviour
     private Vector2 _screenMousePos;
 
     //singleton stuff 
-
     private static InputManager _instance;
 
     public static InputManager Instance { get { return _instance; } }
@@ -58,20 +57,29 @@ public class InputManager : MonoBehaviour
         InteractableManager.Instance.ToggleHighlightAll(false);
     }
 
-
     private void FixedUpdate()
     {
         if (GameState.Instance.GetState() == GameState.State.GamePlay)
         {
-
-            InteractableConstants.InteractionContext context = InteractableConstants.InteractionContext.None;
-
             HandleKeyboard();
 
-            context = HandleMouse();
-            context = HandleInteractables();
+            InteractableConstants.InteractionContext finalContext = InteractableConstants.InteractionContext.None;
 
-            UIManager.Instance.HandleEvent(context);
+           
+            InteractableConstants.InteractionContext mouseContext = HandleMouse();
+            InteractableConstants.InteractionContext interactableContext = HandleInteractables();
+
+            if(mouseContext != InteractableConstants.InteractionContext.None)
+            {
+                finalContext = mouseContext;
+            }
+
+            if(interactableContext != InteractableConstants.InteractionContext.None)
+            {
+                finalContext = interactableContext;
+            }
+
+            UIManager.Instance.HandleEvent(finalContext);
 
         }
         else if (GameState.Instance.GetState() == GameState.State.Conversation)
@@ -88,21 +96,15 @@ public class InputManager : MonoBehaviour
         {
             if (result.success)
             {
-                if (PlayableCharacterManager.Instance)
+                if (PlayableCharacterManager.Instance && PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
                 {
-                    if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
+                    if (result.context != InteractableConstants.InteractionContext.None)
                     {
-                        if (result.context != InteractableConstants.InteractionContext.None)
-                        {
-                            context = result.context;
-                        }
-
+                        context = result.context;
                     }
-
-                    CursorManager.Instance.ToInteract();
-
-                    result.interactable.ToggleOutlineShader(true);
                 }
+
+                result.interactable.ToggleOutlineShader(true);
             }
             else
             {
@@ -112,7 +114,6 @@ public class InputManager : MonoBehaviour
 
         return context;
     }
-
 
     private InteractableConstants.InteractionContext HandleMouse()
     {

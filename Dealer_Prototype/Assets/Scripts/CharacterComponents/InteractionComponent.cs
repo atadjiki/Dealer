@@ -94,7 +94,14 @@ public class InteractionComponent : MonoBehaviour, IInteraction
 
     public InteractableConstants.InteractionContext GetContext()
     {
-        return InteractableConstants.InteractionContext.Talk;
+        if(CharPtr == PlayableCharacterManager.Instance.GetSelectedCharacter())
+        {
+            return InteractableConstants.InteractionContext.None;
+        }
+        else
+        {
+            return InteractableConstants.InteractionContext.Talk;
+        }
     }
 
     public GameObject GetGameObject()
