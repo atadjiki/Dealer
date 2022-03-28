@@ -10,14 +10,20 @@ public class FloorComponent : MonoBehaviour, IInterior
         PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(location);
     }
 
-    public void MouseEnter()
+    public InteractableConstants.InteractionContext MouseEnter()
     {
-        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Move);
-        else
-            UIManager.Instance.HandleEvent(UI.Events.Clear);
-
         CursorManager.Instance.ToDefault();
+
+        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
+        {
+            UIManager.Instance.HandleEvent(InteractableConstants.InteractionContext.Move);
+            return InteractableConstants.InteractionContext.Move;
+        }
+        else
+        {
+            UIManager.Instance.HandleEvent(UI.Events.Clear);
+            return InteractableConstants.InteractionContext.None;
+        }
     }
 
     public void MouseExit()

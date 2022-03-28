@@ -1,7 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using Constants;
 using UnityEngine;
+
 using static CharacterBehaviorScript;
 
 public class BehaviorHelper : MonoBehaviour
@@ -11,7 +11,7 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript behaviorScript
             = CreateBehaviorObject(character.GetID() + " idle ", character).AddComponent<Behavior_Idle>();
 
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new CharacterBehaviorScript.BehaviorData
         {
             Character = character,
             Interactable = null,
@@ -30,7 +30,7 @@ public class BehaviorHelper : MonoBehaviour
         CharacterBehaviorScript behaviorScript
              = CreateBehaviorObject(character.GetID() + " move to location " + destination.ToString(), character).AddComponent<Behavior_MoveToLocation>();
 
-        CharacterBehaviorScript.BehaviorData data = new CharacterBehaviorScript.BehaviorData
+        BehaviorData data = new BehaviorData
         {
             Character = character,
             Interactable = null,

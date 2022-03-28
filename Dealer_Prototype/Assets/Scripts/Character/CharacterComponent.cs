@@ -89,8 +89,6 @@ public class CharacterComponent : MonoBehaviour
         _characterAnimation = _model.GetComponent<CharacterAnimationComponent>();
         _characterAnimation.SetSocket(_navigator.gameObject);
 
-       // ColorManager.Instance.SetObjectToColor(ModelPrefab, ColorManager.Instance.GetColorByTeam(_characterState.GetTeam()));
-
         yield return new WaitWhile(() => _animator == null);
 
         GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, _model.transform);
@@ -106,14 +104,9 @@ public class CharacterComponent : MonoBehaviour
 
         _charCanvas.Set_Text_ID(_characterState.GetID());
 
-        //attach a UI canvas to the model 
-        //GameObject CharStateCanvasPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterStateCanvas, ModelPrefab.transform);
-        //_charStateCanvas = CharStateCanvasPrefab.GetComponent<CharacterStateCanvas>();
-
-        //yield return new WaitWhile(() => _charStateCanvas == null);
-
         GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigatorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
+        _interaction.SetMeshes(_model.GetComponentsInChildren<SkinnedMeshRenderer>());
         InteractableManager.Instance.Register(_interaction);
 
         yield return new WaitWhile(() => _interaction == null);

@@ -73,6 +73,39 @@ public class ColorManager : MonoBehaviour
         }
     }
 
+
+    public void ApplyOutlineMaterialToMesh(SkinnedMeshRenderer renderer)
+    {
+        if (renderer != null)
+        {
+            List<Material> materials = new List<Material>(renderer.materials);
+
+            if (materials.Count == 3)
+            {
+                materials.Add(OutlineMaterial);
+
+                renderer.materials = materials.ToArray();
+            }
+        }
+
+    }
+
+    public void RemoveOutlineMaterialFromMesh(SkinnedMeshRenderer renderer)
+    {
+        if (renderer != null)
+        {
+            List<Material> materials = new List<Material>(renderer.materials);
+
+            if (materials.Count == 4)
+            {
+                materials.RemoveAt(3);
+
+                renderer.materials = materials.ToArray();
+            }
+
+        }
+    }
+
     public Color GetPlayerColor()
     {
         return Team_Player;

@@ -21,11 +21,17 @@ public class Interactable : MonoBehaviour, IInteraction
 
     public Transform GetInteractionTransform() { return InteractionTransform; }
 
-    private bool bMouseIsOver = false;
-
     private void Awake()
     {
         StartCoroutine(DoInitialize());
+    }
+
+    private void OnDestroy()
+    {
+        if (InteractableManager.Instance)
+        {
+            InteractableManager.Instance.UnRegister(this);
+        }
     }
 
     protected virtual IEnumerator DoInitialize()
@@ -52,55 +58,9 @@ public class Interactable : MonoBehaviour, IInteraction
 
     }
 
-    private void OnDestroy()
-    {
-        if(InteractableManager.Instance)
-        {
-            InteractableManager.Instance.UnRegister(this);
-        }
-    }
-
     public bool HasBeenInteractedWith(CharacterComponent character)
     {
         return _interactedWith.Contains(character);
-    }
-
-    private void FixedUpdate()
-    {
-        if(InputManager.Instance != null)
-        {
-            if (Camera.main == null) return;
-
-            Vector2 _screenMousePos = InputManager.Instance.GetScreenMousePosition();
-
-            var ray = Camera.main.ScreenPointToRay(_screenMousePos);
-
-            RaycastHit hit = new RaycastHit();
-
-            //for walls, interactables, doors, etc
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
-                if (interactionInterface != null)
-                {
-                    if (hit.collider.gameObject == this.gameObject && bMouseIsOver == false)
-                    {
-                        MouseEnter();
-                        bMouseIsOver = true;
-                    }
-                }
-                else if (bMouseIsOver)
-                {
-                    bMouseIsOver = false;
-                    MouseExit();
-                }
-            }
-            else if (bMouseIsOver)
-            {
-                bMouseIsOver = false;
-                MouseExit();
-            }
-        }
     }
 
     public void ToggleOutlineShader(bool flag)
@@ -124,33 +84,6 @@ public class Interactable : MonoBehaviour, IInteraction
         }
     }
 
-    public virtual void MouseEnter()
-    {
-        if(PlayableCharacterManager.Instance)
-        {
-            if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-            {
-                UIManager.Instance.HandleEvent(InteractableConstants.GetContextByInteractableID(this));
-            }
-
-            CursorManager.Instance.ToInteract();
-
-            ToggleOutlineShader(true);
-        }
-    }
-
-    public virtual void MouseClick()
-    {
-        if(PlayableCharacterManager.Instance)
-        {
-            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
-            {
-                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
-            }
-        }
-        
-    }
-
     public string GetID()
     {
         if (_interactionState != null)
@@ -159,9 +92,16 @@ public class Interactable : MonoBehaviour, IInteraction
             return "";
     }
 
-    public void MouseExit()
+    public virtual void MouseClick()
     {
-        ToggleOutlineShader(false);
+        if (PlayableCharacterManager.Instance)
+        {
+            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
+            {
+                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
+            }
+        }
+
     }
 
     public bool HasBeenInteractedWith(NPCComponent npc)
@@ -169,8 +109,31 @@ public class Interactable : MonoBehaviour, IInteraction
         return false;   
     }
 
-    public void OnInteraction()
+    public virtual void OnInteraction()
     {
 
+    }
+
+    public bool IsVisible()
+    {
+        foreach(MeshRenderer mesh in Meshes)
+        {
+            if (mesh.isVisible)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public InteractableConstants.InteractionContext GetContext()
+    {
+        return InteractableConstants.GetContextByInteractableID(this);
+    }
+
+    public GameObject GetGameObject()
+    {
+        return this.gameObject;
     }
 }

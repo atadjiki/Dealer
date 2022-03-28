@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class WallComponent : MonoBehaviour, IInterior
@@ -40,11 +41,13 @@ public class WallComponent : MonoBehaviour, IInterior
     {
     }
 
-    public void MouseEnter()
+    public InteractableConstants.InteractionContext MouseEnter()
     {
         if(!Locked) ToState(State.Low);
 
         CursorManager.Instance.ToCancel();
+
+        return InteractableConstants.InteractionContext.None;
     }
 
     public void MouseExit()

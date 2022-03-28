@@ -66,4 +66,19 @@ public class InteractableManager : MonoBehaviour
             interactable.ToggleOutlineShader(flag);
         }
     }
+
+    public InteractionUpdateResult[] PerformUpdates()
+    {
+        List<InteractionUpdateResult> results = new List<InteractionUpdateResult>();
+
+        foreach (IInteraction interactable in Interactables)
+        {
+            if(interactable.IsVisible())
+            {
+                results.Add(InputManager.Instance.PerformInteractableUpdate(interactable));
+            }
+        }
+
+        return results.ToArray();
+    }
 }

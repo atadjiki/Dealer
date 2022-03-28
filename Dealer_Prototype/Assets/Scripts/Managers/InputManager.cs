@@ -1,10 +1,9 @@
 using UnityEngine.InputSystem;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class InputManager : MonoBehaviour
-{ 
+{
     private PlayerInputActions inputActions;
 
     private Vector2 _screenMousePos;
@@ -41,7 +40,6 @@ public class InputManager : MonoBehaviour
         inputActions = new PlayerInputActions();
 
         inputActions.Default.Select.performed += ctx => OnSelect(ctx);
-        //inputActions.Default.DoubleSelect.performed += ctx => OnDoubleSelect(ctx);
         inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
 
         inputActions.Default.Reveal.started += ctx => Reveal_Start(ctx);
@@ -63,20 +61,63 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(GameState.Instance.GetState() == GameState.State.GamePlay)
+        if (GameState.Instance.GetState() == GameState.State.GamePlay)
         {
+
+            InteractableConstants.InteractionContext context = InteractableConstants.InteractionContext.None;
+
             HandleKeyboard();
-            HandleMouse();
+
+            context = HandleMouse();
+            context = HandleInteractables();
+
+            UIManager.Instance.HandleEvent(context);
+
         }
-        else if(GameState.Instance.GetState() == GameState.State.Conversation)
+        else if (GameState.Instance.GetState() == GameState.State.Conversation)
         {
 
         }
     }
 
-
-    private void HandleMouse()
+    private InteractableConstants.InteractionContext HandleInteractables()
     {
+        InteractableConstants.InteractionContext context = InteractableConstants.InteractionContext.None;
+
+        foreach (InteractionUpdateResult result in InteractableManager.Instance.PerformUpdates())
+        {
+            if (result.success)
+            {
+                if (PlayableCharacterManager.Instance)
+                {
+                    if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
+                    {
+                        if (result.context != InteractableConstants.InteractionContext.None)
+                        {
+                            context = result.context;
+                        }
+
+                    }
+
+                    CursorManager.Instance.ToInteract();
+
+                    result.interactable.ToggleOutlineShader(true);
+                }
+            }
+            else
+            {
+                result.interactable.ToggleOutlineShader(false);
+            }
+        }
+
+        return context;
+    }
+
+
+    private InteractableConstants.InteractionContext HandleMouse()
+    {
+        InteractableConstants.InteractionContext context = InteractableConstants.InteractionContext.None;
+
         _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
 
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
@@ -85,17 +126,11 @@ public class InputManager : MonoBehaviour
 
         bool mouseEvent = false;
 
-        //for walls, interactables, doors, etc
+        //for walls, doors, etc
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ground_layerMask))
         {
-            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
             IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
-            if (interactionInterface != null)
-            {
-               // interactionInterface.MouseEnter();
-                return;
-            }
-            else if (interiorInterface != null)
+            if (interiorInterface != null)
             {
                 if (Tracked_MouseOver_Interior != null && Tracked_MouseOver_Interior != interiorInterface)
                 {
@@ -103,23 +138,23 @@ public class InputManager : MonoBehaviour
                 }
 
                 Tracked_MouseOver_Interior = interiorInterface;
-                Tracked_MouseOver_Interior.MouseEnter();
+                context = Tracked_MouseOver_Interior.MouseEnter();
 
                 mouseEvent = true;
             }
         }
-        else if(Tracked_MouseOver_Interior != null)
+        else if (Tracked_MouseOver_Interior != null)
         {
             Tracked_MouseOver_Interior.MouseExit();
         }
-        
+
         //for floor/ground tiles
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground_layerMask))
         {
             IInterior interiorInterface = hit.collider.GetComponent<IInterior>();
             if (interiorInterface != null)
             {
-                interiorInterface.MouseEnter();
+                context = interiorInterface.MouseEnter();
 
                 mouseEvent = true;
             }
@@ -128,14 +163,16 @@ public class InputManager : MonoBehaviour
         if (!mouseEvent)
         {
             ClearMouseExitTarget();
-            UIManager.Instance.HandleEvent(Constants.UI.Events.Clear);
+            UIManager.Instance.HandleEvent(UI.Events.Clear);
             CursorManager.Instance.ToCancel();
         }
+
+        return context;
     }
 
     private void ClearMouseExitTarget()
     {
-        if(Tracked_MouseOver_Interior != null)
+        if (Tracked_MouseOver_Interior != null)
         {
             Tracked_MouseOver_Interior.MouseExit();
             Tracked_MouseOver_Interior = null;
@@ -146,30 +183,19 @@ public class InputManager : MonoBehaviour
     {
         //reading the input:
         Vector2 InputVector = Vector2.zero;
-        InputVector.x = (-1*inputActions.Default.Left.ReadValue<float>()) + inputActions.Default.Right.ReadValue<float>();
-        InputVector.y = (-1*inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
+        InputVector.x = (-1 * inputActions.Default.Left.ReadValue<float>()) + inputActions.Default.Right.ReadValue<float>();
+        InputVector.y = (-1 * inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
 
         CameraFollowTarget.Instance.MoveInDirection(InputVector);
 
-        if(bRevealStarted && inputActions.Default.Reveal.ReadValue<float>() == 0)
+        if (bRevealStarted && inputActions.Default.Reveal.ReadValue<float>() == 0)
         {
             Reveal_Complete();
         }
     }
 
-    private void OnDoubleSelect(InputAction.CallbackContext context)
-    {
-      //  Debug.Log("double click");
-        if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
-
-        PlayableCharacterManager.Instance.AttemptBehaviorAbortWithPossesedCharacter();
-
-       // OnSelect(context);
-    }
-
     private void OnSelect(InputAction.CallbackContext context)
     {
-    //    Debug.Log("single click");
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
         DebugManager.Instance.Print(DebugManager.Log.LogInput, "Pointer click at " + _screenMousePos);
@@ -231,5 +257,31 @@ public class InputManager : MonoBehaviour
         inputActions.Enable();
     }
 
-    public Vector2 GetScreenMousePosition() { return _screenMousePos;}
+    public Vector2 GetScreenMousePosition() { return _screenMousePos; }
+
+    public InteractionUpdateResult PerformInteractableUpdate(IInteraction interactable)
+    {
+        InteractionUpdateResult result = InteractionUpdateResult.Build();
+        result.context = interactable.GetContext();
+        result.interactable = interactable;
+
+        if (Camera.main == null) return result;
+
+        Vector2 _screenMousePos = GetScreenMousePosition();
+
+        var ray = Camera.main.ScreenPointToRay(_screenMousePos);
+        _ = new RaycastHit();
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            IInteraction interactionInterface = hit.collider.GetComponent<IInteraction>();
+            if (interactionInterface != null && hit.collider.gameObject == interactable.GetGameObject())
+            {
+                result.success = true;
+            }
+        }
+
+        return result;
+    }
 }
