@@ -68,7 +68,11 @@ public class CharacterPortraitCamera : MonoBehaviour
 
     public void Reset()
     {
-        SetLayerRecursively(character.GetModel(), LayerMask.NameToLayer("Character"));
+        if(character != null && character.GetModel() != null)
+        {
+            SetLayerRecursively(character.GetModel(), LayerMask.NameToLayer("Character"));
+        }
+        
         character = null;
 
         portraitCamera.transform.parent = ConversationManager.Instance.transform;
