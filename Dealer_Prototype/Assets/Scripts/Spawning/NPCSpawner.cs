@@ -7,6 +7,8 @@ public class NPCSpawner : CharacterSpawner
 {
     [SerializeField] private AIConstants.Mode NPC_Mode;
 
+    [SerializeField] private Conversation conversation;
+
     internal override IEnumerator WaitForManager()
     {
         yield return new WaitUntil(() => NPCManager.Instance != null);
