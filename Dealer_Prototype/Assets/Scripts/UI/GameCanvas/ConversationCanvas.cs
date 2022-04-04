@@ -1,10 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using Constants;
+using UnityEngine.UI;
 
 public class ConversationCanvas : GameCanvas
 {
-
+    [SerializeField] RawImage SpeakerImage;
     [SerializeField] GameObject Canvas_Dialogue;
 
     [SerializeField] TextMeshProUGUI Text_Speaker;
@@ -25,7 +27,7 @@ public class ConversationCanvas : GameCanvas
     {
         base.HandleEvent_CharacterLineBegin(dialogue);
 
-        CharacterLine_Begin(dialogue.Speaker, dialogue.Text, dialogue.Emote, dialogue.Duration);
+        CharacterLine_Begin(dialogue);
     }
 
     public override void HandleEvent_CharacterLineEnd()
@@ -35,23 +37,23 @@ public class ConversationCanvas : GameCanvas
         CharacterLine_End();
     }
 
-    private void CharacterLine_Begin(CharacterComponent character, string text, Constants.AnimationConstants.Anim emote, float duration)
+    private void CharacterLine_Begin(Dialogue dialogue)
     {
         ToggleDialogueUI(true);
 
-        CharacterPortraitCamera.Instance.SetCharacter(character);
+        Text_Speaker.text = dialogue.ID.ToString();
 
-        Text_Speaker.text = character.GetID();
+        Text_Dialogue.text = dialogue.Text;
 
-        Text_Dialogue.text = text;
+        SpeakerImage.texture = dialogue.Sprite;
 
-        StartCoroutine(CharacterLine_Wait(character, emote, duration));
+        StartCoroutine(CharacterLine_Wait(dialogue.ID, dialogue.Emote, 5.0f));
 
     }
 
-    private IEnumerator CharacterLine_Wait(CharacterComponent Character, Constants.AnimationConstants.Anim Emote, float duration)
+    private IEnumerator CharacterLine_Wait(CharacterConstants.CharacterID ID, Constants.AnimationConstants.Anim Emote, float duration)
     {
-        Character.FadeToAnimation(Emote, duration, false);
+        //Character.FadeToAnimation(Emote, duration, false);
 
         yield return new WaitForSecondsRealtime(duration);
 
@@ -61,7 +63,6 @@ public class ConversationCanvas : GameCanvas
 
     private void CharacterLine_End()
     {
-        CharacterPortraitCamera.Instance.Reset();
         ToggleDialogueUI(false);
     }
 

@@ -1,17 +1,11 @@
 using Constants;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class Dialogue 
+public class Dialogue : MonoBehaviour
 {
-    public CharacterComponent Speaker;
+    public CharacterConstants.CharacterID ID;
+    public Texture2D Sprite;
     public string Text;
     public AnimationConstants.Anim Emote;
-    public float Duration;
-
-    public Dialogue(CharacterComponent speaker, string text, AnimationConstants.Anim emote, float duration)
-    {
-        Speaker = speaker;
-        Text = text;
-        Emote = emote;
-        Duration = duration;
-    }
 }

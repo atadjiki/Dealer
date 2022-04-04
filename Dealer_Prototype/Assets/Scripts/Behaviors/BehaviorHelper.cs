@@ -302,17 +302,17 @@ public class BehaviorHelper : MonoBehaviour
         _data.Character.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
         _data.Interactee.FadeToAnimation(AnimationConstants.Anim.Talking_Default, 0.5f, false);
 
-        Dialogue dialogue
-            = new Dialogue(_data.Character, "Hello my dear friend", AnimationConstants.Anim.Talking_Default, 5.0f);
+        //Dialogue dialogue
+        //    = new Dialogue(_data.Character, "Hello my dear friend", AnimationConstants.Anim.Talking_Default, 5.0f);
 
-        UIManager.Instance.HandleEvent(UI.Events.CharacterLine_Begin, dialogue);
+        //UIManager.Instance.HandleEvent(UI.Events.CharacterLine_Begin, dialogue);
 
         yield return new WaitForSeconds(5.0f);
 
-        dialogue
-            = new Dialogue(_data.Interactee, "Good to see you colleague", AnimationConstants.Anim.Idle_Drunk, 5.0f);
+        //dialogue
+        //    = new Dialogue(_data.Interactee, "Good to see you colleague", AnimationConstants.Anim.Idle_Drunk, 5.0f);
 
-        UIManager.Instance.HandleEvent(UI.Events.CharacterLine_Begin, dialogue);
+        //UIManager.Instance.HandleEvent(UI.Events.CharacterLine_Begin, dialogue);
 
         yield return new WaitForSeconds(5.0f);
 
