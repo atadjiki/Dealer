@@ -10,9 +10,14 @@ public abstract class CharacterManager : MonoBehaviour
     protected int _updateEveryFrames = 60 * 3;
     protected int _currentFrames = 0;
 
+    private bool _IsInitialized = false;
+
+    public bool IsInitialized() { return _IsInitialized; }
+
     protected virtual void Build()
     {
         Characters = new List<CharacterComponent>();
+        _IsInitialized = true;
     }
 
     public bool HasNotExceededPopCap()

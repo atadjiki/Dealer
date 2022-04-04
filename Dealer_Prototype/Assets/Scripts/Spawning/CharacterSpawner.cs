@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using Constants;
 using UnityEngine;
 
 public class CharacterSpawner : MonoBehaviour
@@ -17,19 +14,18 @@ public class CharacterSpawner : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        StartCoroutine(WaitForManager());
     }
 
-    public virtual IEnumerator PerformSpawn()
+    public virtual void AttemptSpawn() { }
+
+    internal virtual IEnumerator WaitForManager()
     {
         yield return null;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    internal virtual IEnumerator PerformSpawn()
     {
-        if (State == CharacterSpawnerState.WaitingToSpawn && Mode == SpawnMode.AutoActivate)
-        {
-            StartCoroutine(PerformSpawn());
-        }
+        yield return null;
     }
 }
