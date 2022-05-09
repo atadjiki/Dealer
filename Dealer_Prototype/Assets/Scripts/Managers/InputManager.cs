@@ -1,11 +1,8 @@
-using UnityEngine.InputSystem;
 using UnityEngine;
 using Constants;
 
 public class InputManager : MonoBehaviour
 {
-    private PlayerInputActions inputActions;
-
     private Vector2 _screenMousePos;
 
     //singleton stuff 
@@ -36,17 +33,9 @@ public class InputManager : MonoBehaviour
 
     private void Build()
     {
-        inputActions = new PlayerInputActions();
-
-        inputActions.Default.Select.performed += ctx => OnSelect(ctx);
-        inputActions.Default.Cancel.performed += ctx => OnCancel(ctx);
-
-        inputActions.Default.Reveal.started += ctx => Reveal_Start(ctx);
-
-        inputActions.Enable();
     }
 
-    private void Reveal_Start(InputAction.CallbackContext context)
+    private void Reveal_Start()
     {
         InteractableManager.Instance.ToggleHighlightAll(true);
         bRevealStarted = true;
@@ -119,8 +108,8 @@ public class InputManager : MonoBehaviour
     {
         InteractableConstants.InteractionContext context = InteractableConstants.InteractionContext.None;
 
-        _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
-
+      //  _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
+//
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
 
         RaycastHit hit = new RaycastHit();
@@ -182,20 +171,9 @@ public class InputManager : MonoBehaviour
 
     private void HandleKeyboard()
     {
-        //reading the input:
-        Vector2 InputVector = Vector2.zero;
-        InputVector.x = (-1 * inputActions.Default.Left.ReadValue<float>()) + inputActions.Default.Right.ReadValue<float>();
-        InputVector.y = (-1 * inputActions.Default.Down.ReadValue<float>()) + inputActions.Default.Up.ReadValue<float>();
-
-        CameraFollowTarget.Instance.MoveInDirection(InputVector);
-
-        if (bRevealStarted && inputActions.Default.Reveal.ReadValue<float>() == 0)
-        {
-            Reveal_Complete();
-        }
     }
 
-    private void OnSelect(InputAction.CallbackContext context)
+    private void OnSelect()
     {
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
@@ -237,7 +215,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void OnCancel(InputAction.CallbackContext context)
+    private void OnCancel()
     {
         if (GameState.Instance.GetState() != GameState.State.GamePlay) { return; }
 
@@ -248,14 +226,12 @@ public class InputManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        inputActions.Disable();
     }
 
     public void UnlockControls()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        inputActions.Enable();
     }
 
     public Vector2 GetScreenMousePosition() { return _screenMousePos; }

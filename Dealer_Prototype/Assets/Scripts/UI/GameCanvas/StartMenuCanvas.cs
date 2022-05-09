@@ -1,11 +1,8 @@
-using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class StartMenuCanvas : MonoBehaviour
 {
     [SerializeField] private BoxCollider Collider_Start;
-
-    private PlayerInputActions inputActions;
 
     private Vector2 _screenMousePos;
 
@@ -32,20 +29,14 @@ public class StartMenuCanvas : MonoBehaviour
     private void Build()
     {
         LayerMask_UI = 1<<LayerMask.NameToLayer("UI");
-
-        inputActions = new PlayerInputActions();
-
-        inputActions.Default.Select.performed += ctx => OnSelect(ctx);
-
-        inputActions.Enable();
     }
 
     private void FixedUpdate()
     {
-        _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
+  //      _screenMousePos = inputActions.Default.Aim.ReadValue<Vector2>();
     }
 
-    private void OnSelect(InputAction.CallbackContext context)
+    private void OnSelect()
     {
         var ray = Camera.main.ScreenPointToRay(_screenMousePos);
 
