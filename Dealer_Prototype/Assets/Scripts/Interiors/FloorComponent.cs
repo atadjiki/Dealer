@@ -11,14 +11,14 @@ public class FloorComponent : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            Vector3 location = hit.collider.gameObject.transform.position;
+            Vector3 location = hit.point;
             PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(location);
         }
     }
 
     private void OnMouseEnter()
     {
-        CursorManager.Instance.ToDefault();
-        Debug.Log(this.gameObject.name);
+        CursorManager.Instance.ToMove();
+     //   Debug.Log(this.gameObject.name);
     }
 }

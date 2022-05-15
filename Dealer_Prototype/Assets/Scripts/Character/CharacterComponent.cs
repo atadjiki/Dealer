@@ -11,7 +11,7 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterCanvas _charCanvas;
     protected CharacterStateCanvas _charStateCanvas;
     protected Light _light;
-    protected InteractionComponent _interaction;
+    protected CharacterInteractionComponent _characterInteraction;
     protected CharacterStateComponent _characterState;
     protected CharacterCameraRig _cameraRig;
     protected SelectionComponent _selection;
@@ -105,11 +105,11 @@ public class CharacterComponent : MonoBehaviour
         _charCanvas.Set_Text_ID(_characterState.GetID());
 
         GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigatorPrefab.transform);
-        _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
-        _interaction.SetMeshes(_model.GetComponentsInChildren<SkinnedMeshRenderer>());
+        _characterInteraction = InteractionPrefab.GetComponent<CharacterInteractionComponent>();
+        _characterInteraction.SetMeshes(_model.GetComponentsInChildren<SkinnedMeshRenderer>());
 
-        yield return new WaitWhile(() => _interaction == null);
-        _interaction.CharPtr = this;
+        yield return new WaitWhile(() => _characterInteraction == null);
+        _characterInteraction.CharPtr = this;
 
         GameObject SelectionPrefab = PrefabFactory.CreatePrefab(RegistryID.SelectionComponent, NavigatorPrefab.transform);
         _selection = SelectionPrefab.GetComponent<SelectionComponent>();
@@ -222,7 +222,7 @@ public class CharacterComponent : MonoBehaviour
 
     public string GetID()
     {
-        if (_interaction != null)
+        if (_characterInteraction != null)
             return _characterState.GetID();
         else
             return "";

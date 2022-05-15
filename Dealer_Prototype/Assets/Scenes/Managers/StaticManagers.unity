@@ -314,6 +314,10 @@ PrefabInstance:
       value: -0.14644654
       objectReference: {fileID: 0}
     - target: {fileID: 775000573760008103, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
+      propertyPath: m_Depth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 775000573760008103, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
       propertyPath: orthographic
       value: 1
       objectReference: {fileID: 0}
@@ -329,13 +333,17 @@ PrefabInstance:
       propertyPath: orthographic size
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5398414185639566505, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 5398414185639566508, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5398414185639566508, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7949629087156469880, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
       propertyPath: m_Lens.FarClipPlane
@@ -446,11 +454,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9137414994027538845, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: State_Character
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9137414994027538845, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: State_Navigator
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}

@@ -3,7 +3,7 @@ using Constants;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class InteractionComponent : MonoBehaviour
+public class CharacterInteractionComponent : MonoBehaviour
 {
     public CharacterComponent CharPtr;
 
@@ -30,7 +30,13 @@ public class InteractionComponent : MonoBehaviour
 
     private void OnMouseDown()
     {
-        
+        if (PlayableCharacterManager.Instance)
+        {
+            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
+            {
+                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this.CharPtr);
+            }
+        }
     }
 
     public void ToggleOutlineShader(bool flag)

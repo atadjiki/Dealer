@@ -44,7 +44,7 @@ namespace Constants
                     PathString = "Prefabs/Camera/CM_Character";
                     return true;
                 case RegistryID.Interaction:
-                    PathString = "Prefabs/Components/InteractionComponent";
+                    PathString = "Prefabs/Components/CharacterInteractionComponent";
                     return true;
                 case RegistryID.Managers:
                     PathString = "Prefabs/LevelAssets/Managers";

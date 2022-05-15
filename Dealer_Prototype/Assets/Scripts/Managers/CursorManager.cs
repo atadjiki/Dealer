@@ -38,4 +38,9 @@ public class CursorManager : MonoBehaviour
     {
         Cursor.SetCursor(Cursor_interaction, new Vector2(Cursor_interaction.width / 2, Cursor_interaction.height / 2), CursorMode.Auto);
     }
+
+    public void ToMove()
+    {
+        Cursor.SetCursor(Cursor_interaction, new Vector2(Cursor_interaction.width / 2, Cursor_interaction.height / 2), CursorMode.Auto);
+    }
 }

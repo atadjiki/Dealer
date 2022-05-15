@@ -100,7 +100,7 @@ public class Interactable : MonoBehaviour
     private void OnMouseEnter()
     {
         ToggleOutlineShader(true);
-        Debug.Log(this.gameObject.name);
+       // Debug.Log(this.gameObject.name);
     }
 
     private void OnMouseExit()
@@ -119,7 +119,7 @@ public class Interactable : MonoBehaviour
             }
         }
 
-        Debug.Log(this.name + " clicked.");
+    //    Debug.Log(this.name + " clicked.");
     }
 
     public bool HasBeenInteractedWith(NPCComponent npc)
