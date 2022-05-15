@@ -9,7 +9,7 @@ public class InteractableManager : MonoBehaviour
 
     public static InteractableManager Instance { get { return _instance; } }
 
-    private List<IInteraction> Interactables;
+    private List<Interactable> Interactables;
 
     private void Awake()
     {
@@ -27,10 +27,10 @@ public class InteractableManager : MonoBehaviour
 
     private void Build()
     {
-        Interactables = new List<IInteraction>();
+        Interactables = new List<Interactable>();
     }
 
-    public bool Register(IInteraction interactable)
+    public bool Register(Interactable interactable)
     {
         Interactables.Add(interactable);
 
@@ -38,15 +38,15 @@ public class InteractableManager : MonoBehaviour
         return true;
     }
 
-    public void UnRegister(IInteraction interactable)
+    public void UnRegister(Interactable interactable)
     {
         DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Unregistered Interactable " + interactable.GetID());
         Interactables.Remove(interactable);
     }
 
-    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out IInteraction result)
+    public bool FindInteractableByID(InteractableConstants.InteractableID ID, out Interactable result)
     {
-        foreach (IInteraction interactable in Interactables)
+        foreach (Interactable interactable in Interactables)
         {
             if (interactable.GetID() == ID.ToString())
             {
@@ -57,28 +57,5 @@ public class InteractableManager : MonoBehaviour
 
         result = null;
         return false;
-    }
-
-    public void ToggleHighlightAll(bool flag)
-    {
-        foreach(IInteraction interactable in Interactables)
-        {
-            interactable.ToggleOutlineShader(flag);
-        }
-    }
-
-    public InteractionUpdateResult[] PerformUpdates()
-    {
-        List<InteractionUpdateResult> results = new List<InteractionUpdateResult>();
-
-        foreach (IInteraction interactable in Interactables)
-        {
-            if(interactable.IsVisible())
-            {
-                results.Add(InputManager.Instance.PerformInteractableUpdate(interactable));
-            }
-        }
-
-        return results.ToArray();
     }
 }

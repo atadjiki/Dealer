@@ -3,28 +3,22 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class FloorComponent : MonoBehaviour, IInterior
+public class FloorComponent : MonoBehaviour
 {
-    public void MouseClick(Vector3 location)
+    private void OnMouseDown()
     {
-        PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(location);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            Vector3 location = hit.collider.gameObject.transform.position;
+            PlayableCharacterManager.Instance.AttemptMoveOnPossesedCharacter(location);
+        }
     }
 
-    public InteractableConstants.InteractionContext MouseEnter()
+    private void OnMouseEnter()
     {
         CursorManager.Instance.ToDefault();
-
-        if (PlayableCharacterManager.Instance.IsCharacterCurrentlySelected())
-        {
-            return InteractableConstants.InteractionContext.Move;
-        }
-        else
-        {
-            return InteractableConstants.InteractionContext.None;
-        }
-    }
-
-    public void MouseExit()
-    {
+        Debug.Log(this.gameObject.name);
     }
 }

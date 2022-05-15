@@ -3,19 +3,9 @@ using Constants;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class InteractionComponent : MonoBehaviour, IInteraction
+public class InteractionComponent : MonoBehaviour
 {
     public CharacterComponent CharPtr;
-
-    public delegate void OnMouseEnterEvent();
-    public delegate void OnMouseExitEvent();
-    public delegate void OnMouseClickedEvent();
-
-    public OnMouseEnterEvent MouseEnterEvent;
-    public OnMouseExitEvent MouseExitEvent;
-    public OnMouseClickedEvent MouseClickedEvent;
-
-    //private bool bMouseIsOver = false;
 
     private List<SkinnedMeshRenderer> Meshes;
 
@@ -24,9 +14,23 @@ public class InteractionComponent : MonoBehaviour, IInteraction
         Meshes = new List<SkinnedMeshRenderer>(meshArray);
     }
 
-    public virtual void MouseClick()
+    private void OnMouseOver()
     {
-        if (MouseClickedEvent != null) MouseClickedEvent();
+    }
+
+    private void OnMouseEnter()
+    {
+        ToggleOutlineShader(true);
+    }
+
+    private void OnMouseExit()
+    {
+        ToggleOutlineShader(false);   
+    }
+
+    private void OnMouseDown()
+    {
+        
     }
 
     public void ToggleOutlineShader(bool flag)

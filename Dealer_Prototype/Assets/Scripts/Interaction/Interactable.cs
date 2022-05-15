@@ -4,7 +4,7 @@ using Constants;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Interactable : MonoBehaviour, IInteraction
+public class Interactable : MonoBehaviour
 {
     private InteractableStateComponent _interactionState;
     [SerializeField] private InteractableConstants.InteractableID ID;
@@ -92,7 +92,24 @@ public class Interactable : MonoBehaviour, IInteraction
             return "";
     }
 
-    public virtual void MouseClick()
+    private void OnMouseOver()
+    {
+        CursorManager.Instance.ToInteract();
+    }
+
+    private void OnMouseEnter()
+    {
+        ToggleOutlineShader(true);
+        Debug.Log(this.gameObject.name);
+    }
+
+    private void OnMouseExit()
+    {
+        ToggleOutlineShader(false);
+        CursorManager.Instance.ToDefault();
+    }
+
+    private void OnMouseDown()
     {
         if (PlayableCharacterManager.Instance)
         {
@@ -102,6 +119,7 @@ public class Interactable : MonoBehaviour, IInteraction
             }
         }
 
+        Debug.Log(this.name + " clicked.");
     }
 
     public bool HasBeenInteractedWith(NPCComponent npc)

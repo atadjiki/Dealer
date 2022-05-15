@@ -107,13 +107,8 @@ public class CharacterComponent : MonoBehaviour
         GameObject InteractionPrefab = PrefabFactory.CreatePrefab(RegistryID.Interaction, NavigatorPrefab.transform);
         _interaction = InteractionPrefab.GetComponent<InteractionComponent>();
         _interaction.SetMeshes(_model.GetComponentsInChildren<SkinnedMeshRenderer>());
-        InteractableManager.Instance.Register(_interaction);
 
         yield return new WaitWhile(() => _interaction == null);
-
-        _interaction.MouseEnterEvent += OnMouseEnter;
-        _interaction.MouseExitEvent += OnMouseExit;
-        _interaction.MouseClickedEvent += OnMouseClicked;
         _interaction.CharPtr = this;
 
         GameObject SelectionPrefab = PrefabFactory.CreatePrefab(RegistryID.SelectionComponent, NavigatorPrefab.transform);
@@ -173,7 +168,6 @@ public class CharacterComponent : MonoBehaviour
     private void OnDestroy()
     {
         CharacterCameraManager.Instance.UnRegisterCharacterCamera(this);
-        InteractableManager.Instance.UnRegister(_interaction);
     }
 
     public virtual void OnNewDestination(Vector3 destination) { }

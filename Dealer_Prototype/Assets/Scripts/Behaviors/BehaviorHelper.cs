@@ -63,7 +63,7 @@ public class BehaviorHelper : MonoBehaviour
         return behaviorScript;
     }
 
-    public static CharacterBehaviorScript ApproachInteractableBehavior(CharacterComponent character, IInteraction interactable, out bool success)
+    public static CharacterBehaviorScript ApproachInteractableBehavior(CharacterComponent character, Interactable interactable, out bool success)
     {
         CharacterBehaviorScript behaviorScript
              = CreateBehaviorObject(character.GetID() + " approach " + interactable.GetID(), character).AddComponent<Behavior_ApproachInteractable>();

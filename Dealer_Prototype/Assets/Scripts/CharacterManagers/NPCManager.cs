@@ -130,7 +130,7 @@ public class NPCManager : CharacterManager
         }
         else if (randomIndex == 1)
         {
-            IInteraction generic;
+            Interactable generic;
             if (InteractableManager.Instance.FindInteractableByID(InteractableConstants.InteractableID.Generic, out generic))
             {
                 if (generic != null && generic.HasBeenInteractedWith(npc) == false)
