@@ -95,18 +95,22 @@ public class Interactable : MonoBehaviour
     private void OnMouseOver()
     {
         CursorManager.Instance.ToInteract();
+        
     }
 
     private void OnMouseEnter()
     {
         ToggleOutlineShader(true);
-       // Debug.Log(this.gameObject.name);
+        InfoPanelManager.Instance.RegisterTarget(this.gameObject);
+        // Debug.Log(this.gameObject.name);
     }
 
     private void OnMouseExit()
     {
+        Debug.Log("on mouse exit");
         ToggleOutlineShader(false);
         CursorManager.Instance.ToDefault();
+        InfoPanelManager.Instance.UnRegisterTarget(this.gameObject);
     }
 
     private void OnMouseDown()
