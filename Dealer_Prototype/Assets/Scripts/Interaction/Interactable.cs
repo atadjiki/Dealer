@@ -101,7 +101,7 @@ public class Interactable : MonoBehaviour
     private void OnMouseEnter()
     {
         ToggleOutlineShader(true);
-        InfoPanelManager.Instance.RegisterTarget(this.gameObject);
+        InfoPanelManager.Instance.RegisterInteractable(this);
         // Debug.Log(this.gameObject.name);
     }
 
@@ -110,7 +110,7 @@ public class Interactable : MonoBehaviour
         Debug.Log("on mouse exit");
         ToggleOutlineShader(false);
         CursorManager.Instance.ToDefault();
-        InfoPanelManager.Instance.UnRegisterTarget(this.gameObject);
+  //      InfoPanelManager.Instance.UnRegisterInteractable(this);
     }
 
     private void OnMouseDown()
