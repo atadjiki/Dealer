@@ -19,6 +19,8 @@ public class Interactable : MonoBehaviour
     [SerializeField] internal Transform InteractionTransform;
     [SerializeField] internal MeshRenderer[] Meshes;
 
+    [SerializeField] internal GameObject uiPanelPrefab;
+
     public Transform GetInteractionTransform() { return InteractionTransform; }
 
     private void Awake()
@@ -52,7 +54,14 @@ public class Interactable : MonoBehaviour
             {
                 Destroy(this.gameObject);
             }
+
+            if (InfoPanelManager.Instance && uiPanelPrefab)
+            {
+                InfoPanelManager.Instance.RegisterInteractable(this, uiPanelPrefab);
+            }
         }
+
+
 
         yield return null;
 
@@ -101,16 +110,12 @@ public class Interactable : MonoBehaviour
     private void OnMouseEnter()
     {
         ToggleOutlineShader(true);
-        InfoPanelManager.Instance.RegisterInteractable(this);
-        // Debug.Log(this.gameObject.name);
     }
 
     private void OnMouseExit()
     {
-        Debug.Log("on mouse exit");
         ToggleOutlineShader(false);
         CursorManager.Instance.ToDefault();
-  //      InfoPanelManager.Instance.UnRegisterInteractable(this);
     }
 
     private void OnMouseDown()

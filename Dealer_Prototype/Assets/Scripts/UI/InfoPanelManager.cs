@@ -38,15 +38,16 @@ public class InfoPanelManager : MonoBehaviour
 
             Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
 
-            ((RectTransform) interactableUIPanel.gameObject.transform).anchoredPosition = targetScreenPoint;
+            Vector2 offset = new Vector2(0, -100);
+
+            ((RectTransform) interactableUIPanel.gameObject.transform).anchoredPosition = targetScreenPoint + offset;
         }
     }
 
-    private InteractableUIPanel BuildUIForTarget(Interactable interactable)
+    private InteractableUIPanel BuildUIForTarget(GameObject panelPrefab)
     {
-        GameObject interactablePanelObject = Instantiate(interactablePanelPrefab, transform);
+        GameObject interactablePanelObject = Instantiate(panelPrefab, transform);
         InteractableUIPanel interactableUIPanel = interactablePanelObject.GetComponent<InteractableUIPanel>();
-        interactableUIPanel.Build(interactable);
 
         return interactableUIPanel;
     }
@@ -62,11 +63,11 @@ public class InfoPanelManager : MonoBehaviour
     }
 
 
-    public void RegisterInteractable(Interactable interactable)
+    public void RegisterInteractable(Interactable interactable, GameObject panelPrefab)
     {
         if (uiMap.ContainsKey(interactable) == false)
         {
-            uiMap.Add(interactable, BuildUIForTarget(interactable));
+            uiMap.Add(interactable, BuildUIForTarget(panelPrefab));
         }
     }
 

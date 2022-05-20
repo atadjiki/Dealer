@@ -3,30 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class InteractableUIPanel : MonoBehaviour
+public class InteractableUIPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
-    [SerializeField] GameObject Panel_Main;
     [SerializeField] Button Button_Interactable;
-    [SerializeField] TextMeshProUGUI Button_TextMesh;
+    [SerializeField] TextMeshProUGUI Title_TextMesh;
     [SerializeField] TextMeshProUGUI Description_TextMesh;
 
     private Interactable interactable;
+    public bool expanded { get; set; }
 
     private Vector2 defaultSize = new Vector2(300.0f, 250.0f);
-    public void Build(Interactable toBuild)
+
+    private void Awake()
     {
-        interactable = toBuild;
-
         ((RectTransform)this.transform).sizeDelta = defaultSize;
+        ToggleButtonPanel(false);
 
-        Button_TextMesh.text = toBuild.GetID();
-        Description_TextMesh.text = "click to interact with " + toBuild.GetID();
+        interactable = GetComponentInParent<Interactable>();
     }
 
     public void OnButtonClick()
     {
+        Debug.Log("on mouse clicked " + this.name);
         InfoPanelManager.Instance.UnRegisterInteractable(interactable);
+    }
+
+    private void ToggleButtonPanel(bool visible)
+    {
+        Button_Interactable.gameObject.SetActive(visible);
+        expanded = visible;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        Debug.Log("on mouse enter GUI " + this.name);
+        ToggleButtonPanel(true);
+        CursorManager.Instance.ToInteract();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("on mouse exit GUI " + this.name);
+        ToggleButtonPanel(false);
+        CursorManager.Instance.ToDefault();
     }
 }
