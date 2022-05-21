@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameplayCanvas gameplayCanvas;
+    [SerializeField] private BehaviorCanvas behaviorCanvas;
     [SerializeField] private ConversationCanvas conversationCanvas;
 
     public enum UIState { None, Gameplay, Conversation };
@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
 
     private void Build()
     {
-        gameplayCanvas.Reset();
+        behaviorCanvas.Reset();
         conversationCanvas.Reset();
 
         GameState.Instance.onStateChangedDelegate += OnStateChanged;
@@ -78,7 +78,7 @@ public class UIManager : MonoBehaviour
             case UIState.Conversation:
                 return conversationCanvas;
             case UIState.Gameplay:
-                return gameplayCanvas;
+                return behaviorCanvas;
         }
 
         return null;

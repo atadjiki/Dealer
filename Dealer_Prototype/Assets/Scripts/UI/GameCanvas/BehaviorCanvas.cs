@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using Constants;
 
-public class GameplayCanvas : GameCanvas
+public class BehaviorCanvas : GameCanvas
 {
 
     [SerializeField] private TextMeshProUGUI Text_Interaction_Tip;

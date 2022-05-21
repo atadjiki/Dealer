@@ -59,8 +59,15 @@ public class Interactable : MonoBehaviour
             {
                 InfoPanelManager.Instance.RegisterInteractable(this, uiPanelPrefab);
             }
+            else if(InfoPanelManager.Instance == null)
+            {
+                Debug.Log("could not register " + this.name + ", infopanel manager is null");
+            }
         }
-
+        else
+        {
+            Debug.Log("could not initialize" + this.name + ", interactable manager is null");
+        }
 
 
         yield return null;
