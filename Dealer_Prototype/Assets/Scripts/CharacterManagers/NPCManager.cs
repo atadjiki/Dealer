@@ -52,6 +52,10 @@ public class NPCManager : CharacterManager
             {
                 PartyPanelList.Instance.RegisterCharacter(Character);
             }
+            if(NPCPanel.Instance)
+            {
+                NPCPanel.Instance.RegisterCharacter(Character);
+            }
 
             return true;
         }
@@ -65,6 +69,10 @@ public class NPCManager : CharacterManager
         {
             PartyPanelList.Instance.UnRegisterCharacter(Character);
         }
+        if (NPCPanel.Instance)
+        {
+            NPCPanel.Instance.UnRegisterCharacter(Character);
+        }
 
         NPCComponent npc = Character.GetComponent<NPCComponent>();
 
@@ -72,7 +80,6 @@ public class NPCManager : CharacterManager
         {
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Unregistered NPC " + npc.GetID());
             Characters.Remove(npc);
-
         }  
     }
 

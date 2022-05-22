@@ -42,15 +42,15 @@ public class PartyPanelList : MonoBehaviour
 
             if (characters[i] != null)
             {
-                string characterName = characters[i].GetID().ToString();
+                string characterName = characters[i].GetID();
 
                 string task = "task";
 
                 string days = "0d";
 
-                listItem.SetText(characterName + " - " + task + " - " + days);
-
                 listItem.ToggleVisiblity(true);
+
+                listItem.SetText(characterName + " - " + task + " - " + days);
             }
             else
             {
