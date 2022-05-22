@@ -31,7 +31,7 @@ public class SpawnPoint : MonoBehaviour
 
     internal virtual IEnumerator PerformSpawn(CharacterInfo characterInfo)
     {
-        if (BasicCharacterManager.Instance)
+        if (PartyManager.Instance)
         {
             State = CharacterSpawnerState.Spawning;
 
@@ -41,15 +41,15 @@ public class SpawnPoint : MonoBehaviour
             prefab.transform.parent = this.transform;
             prefab.transform.position = this.transform.position;
             prefab.transform.rotation = this.transform.rotation;
-            BasicCharacter basicCharacter = prefab.AddComponent<BasicCharacter>();
+            CharacterModel characterModel = prefab.GetComponent<CharacterModel>();
 
-            yield return new WaitWhile(() => basicCharacter == null);
+            yield return new WaitWhile(() => characterModel == null);
 
-            basicCharacter.Initialize(characterInfo);
+            characterModel.Initialize(characterInfo);
 
             State = CharacterSpawnerState.Spawned;
 
-            yield return new WaitWhile(() => !basicCharacter.HasInitialized());
+            yield return new WaitWhile(() => !characterModel.HasInitialized());
         }
 
         yield return null;

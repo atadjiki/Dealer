@@ -26,7 +26,6 @@ public struct CharacterInfo
 [System.Serializable]
 public struct GameState 
 {
-    [SerializeField] public CharacterInfo playerInfo;
     [SerializeField] public CharacterInfo[] partyInfo;
     [SerializeField] public float money;
 
@@ -35,8 +34,6 @@ public struct GameState
         string result = "Game State:\n";
 
         result += "Money: " + money + "\n";
-
-        result += playerInfo.toString();
 
         foreach(CharacterInfo info in partyInfo)
         {

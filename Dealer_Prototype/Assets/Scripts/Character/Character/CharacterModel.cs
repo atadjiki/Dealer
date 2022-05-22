@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class BasicCharacter : MonoBehaviour
+public class CharacterModel : MonoBehaviour
 {
     protected Animator _animator;
     protected CharacterAnimationComponent _characterAnimation;

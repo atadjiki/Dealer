@@ -35,8 +35,6 @@ public class GameStateManager : MonoBehaviour
     private void Start()
     {
         onStateChanged(state);
-
-        SpawnPoint.Instance.AttemptSpawn(state.playerInfo);
     }
 
     public void ToMode(Mode mode)

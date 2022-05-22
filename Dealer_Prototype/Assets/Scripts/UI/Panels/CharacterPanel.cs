@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class NPCPanel : MonoBehaviour
+public class CharacterPanel : MonoBehaviour
 {
-    private Dictionary<BasicCharacter, TextMeshProUGUI> characterMap;
+    private Dictionary<CharacterModel, TextMeshProUGUI> characterMap;
 
     [SerializeField] private GameObject TextMeshPrefab;
     [SerializeField] private Canvas uiCanvas;
     [SerializeField] private Camera uiCamera;
 
-    private static NPCPanel _instance;
+    private static CharacterPanel _instance;
 
-    public static NPCPanel Instance { get { return _instance; } }
+    public static CharacterPanel Instance { get { return _instance; } }
 
     private void Awake()
     {
@@ -31,49 +31,49 @@ public class NPCPanel : MonoBehaviour
 
     private void Build()
     {
-        characterMap = new Dictionary<BasicCharacter, TextMeshProUGUI>();
+        characterMap = new Dictionary<CharacterModel, TextMeshProUGUI>();
 
     }
 
-    private TextMeshProUGUI BuildTextMesh(BasicCharacter character)
+    private TextMeshProUGUI BuildTextMesh(CharacterModel characterModel)
     {
-        if(character != null)
+        if(characterModel != null)
         {
             GameObject textMeshObject = Instantiate(TextMeshPrefab, this.transform);
             TextMeshProUGUI textMesh = textMeshObject.GetComponent<TextMeshProUGUI>();
-            textMesh.text = character.GetID();
+            textMesh.text = characterModel.GetID();
             return textMesh;
         }
 
         return null;
     }
 
-    public void RegisterCharacter(BasicCharacter character)
+    public void RegisterCharacter(CharacterModel characterModel)
     {
-        if(characterMap.ContainsKey(character) == false)
+        if(characterMap.ContainsKey(characterModel) == false)
         {
-            characterMap.Add(character, BuildTextMesh(character));
+            characterMap.Add(characterModel, BuildTextMesh(characterModel));
         }
     }
 
-    public void UnRegisterCharacter(BasicCharacter character)
+    public void UnRegisterCharacter(CharacterModel characterModel)
     {
-        if(characterMap.ContainsKey(character))
+        if(characterMap.ContainsKey(characterModel))
         {
-            Destroy(characterMap[character].gameObject);
-            characterMap.Remove(character);
+            Destroy(characterMap[characterModel].gameObject);
+            characterMap.Remove(characterModel);
         }
     }
 
     private void FixedUpdate()
     {
-        foreach (BasicCharacter character in characterMap.Keys)
+        foreach (CharacterModel characterModel in characterMap.Keys)
         {
-            if(character.GetModel())
+            if(characterModel.GetModel())
             {
-                TextMeshProUGUI textMesh = characterMap[character];
+                TextMeshProUGUI textMesh = characterMap[characterModel];
 
-                GameObject model = character.GetModel();
+                GameObject model = characterModel.GetModel();
 
                 UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
 

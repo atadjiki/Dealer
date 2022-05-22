@@ -12,7 +12,7 @@ public class NavigatorComponent : MonoBehaviour
 {
     internal AIBase _AI;
     internal Seeker _Seeker;
-    private BasicCharacter parentCharacter;
+    private CharacterModel parentCharacter;
 
     private HashSet<GameObject> NavPointPrefabs;
 
@@ -21,7 +21,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void Awake()
     {
-        parentCharacter = GetComponentInParent<BasicCharacter>();
+        parentCharacter = GetComponentInParent<CharacterModel>();
         _AI = GetComponentInChildren<AIPath>();
         _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();

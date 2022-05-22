@@ -6,9 +6,6 @@ public class PartyPanelList : MonoBehaviour
 {
     public List<PartyListItem> Items;
 
-    const int capacity = 4;
-    private BasicCharacter[] characters;
-
     private static PartyPanelList _instance;
 
     public static PartyPanelList Instance { get { return _instance; } }
@@ -29,20 +26,20 @@ public class PartyPanelList : MonoBehaviour
 
     private void Build()
     {
-        characters = new BasicCharacter[capacity];
-
         UpdateList();
     }
 
-    private void UpdateList()
+    public void UpdateList()
     {
-        for(int i = 0; i < capacity; i++)
+        List<CharacterInfo> Party = PartyManager.Instance.GetParty();
+
+        for(int i = 0; i < Items.Count; i++)
         {
             PartyListItem listItem = Items[i];
 
-            if (characters[i] != null)
+            if (i < Party.Count)
             {
-                string characterName = characters[i].GetID();
+                string characterName = Party[i].ID.ToString();
 
                 string task = "task";
 
@@ -55,32 +52,6 @@ public class PartyPanelList : MonoBehaviour
             else
             {
                 listItem.ToggleVisiblity(false);
-            }
-        }
-    }
-
-    public void RegisterCharacter(BasicCharacter character)
-    {
-        for(int i = 0; i < capacity; i++)
-        {
-            if(characters[i] == null)
-            {
-                characters[i] = character;
-                UpdateList();
-                break;
-            }
-        }
-    }
-
-    public void UnRegisterCharacter(BasicCharacter character)
-    {
-        for (int i = 0; i < capacity; i++)
-        {
-            if (characters[i] == character)
-            {
-                characters[i] = null;
-                UpdateList();
-                break;
             }
         }
     }
