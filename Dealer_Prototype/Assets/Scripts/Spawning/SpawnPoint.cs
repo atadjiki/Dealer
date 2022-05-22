@@ -31,28 +31,25 @@ public class SpawnPoint : MonoBehaviour
 
     internal virtual IEnumerator PerformSpawn(CharacterInfo characterInfo)
     {
-        if (NPCManager.Instance)
+        if (BasicCharacterManager.Instance)
         {
             State = CharacterSpawnerState.Spawning;
 
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
-            GameObject Character = PrefabFactory.CreatePrefab(RegistryID.NPC, this.transform);
-            NPCComponent npcComp = Character.GetComponent<NPCComponent>();
+            GameObject prefab = new GameObject(characterInfo.ID.ToString());
+            prefab.transform.parent = this.transform;
+            prefab.transform.position = this.transform.position;
+            prefab.transform.rotation = this.transform.rotation;
+            BasicCharacter basicCharacter = prefab.AddComponent<BasicCharacter>();
 
-            yield return new WaitWhile(() => npcComp == null);
+            yield return new WaitWhile(() => basicCharacter == null);
 
-            SpawnData spawnData = new SpawnData();
-            spawnData.ID = characterInfo.ID;
-            spawnData.InitialAnim = characterInfo.InitialAnim;
-            spawnData.SetMode(AIConstants.Mode.Stationary);
-            spawnData.SetTeam(CharacterConstants.Team.Ally);
-
-            npcComp.Initialize(spawnData);
+            basicCharacter.Initialize(characterInfo);
 
             State = CharacterSpawnerState.Spawned;
 
-            yield return new WaitWhile(() => !npcComp.HasInitialized());
+            yield return new WaitWhile(() => !basicCharacter.HasInitialized());
         }
 
         yield return null;

@@ -28,6 +28,11 @@ public class CharacterStateComponent : ObjectStateComponent
         return CharacterID.ToString();
     }
 
+    public Constants.CharacterConstants.CharacterID GetCharacterID()
+    {
+        return CharacterID;
+    }
+
     public CharacterConstants.GenderType GetGender()
     {
         return Gender;

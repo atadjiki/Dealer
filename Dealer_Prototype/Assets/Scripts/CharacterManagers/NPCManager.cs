@@ -43,14 +43,14 @@ public class NPCManager : CharacterManager
 
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + npc.GetID());
 
-            if(PartyPanelList.Instance)
-            {
-                PartyPanelList.Instance.RegisterCharacter(Character);
-            }
-            if(NPCPanel.Instance)
-            {
-                NPCPanel.Instance.RegisterCharacter(Character);
-            }
+            //if(PartyPanelList.Instance)
+            //{
+            //    PartyPanelList.Instance.RegisterCharacter(Character);
+            //}
+            //if(NPCPanel.Instance)
+            //{
+            //    NPCPanel.Instance.RegisterCharacter(Character);
+            //}
 
             return true;
         }
@@ -60,14 +60,14 @@ public class NPCManager : CharacterManager
 
     public override void UnRegister(CharacterComponent Character)
     {
-        if (PartyPanelList.Instance)
-        {
-            PartyPanelList.Instance.UnRegisterCharacter(Character);
-        }
-        if (NPCPanel.Instance)
-        {
-            NPCPanel.Instance.UnRegisterCharacter(Character);
-        }
+        //if (PartyPanelList.Instance)
+        //{
+        //    PartyPanelList.Instance.UnRegisterCharacter(Character);
+        //}
+        //if (NPCPanel.Instance)
+        //{
+        //    NPCPanel.Instance.UnRegisterCharacter(Character);
+        //}
 
         NPCComponent npc = Character.GetComponent<NPCComponent>();
 

@@ -7,7 +7,7 @@ public class PartyPanelList : MonoBehaviour
     public List<PartyListItem> Items;
 
     const int capacity = 4;
-    private CharacterComponent[] characters;
+    private BasicCharacter[] characters;
 
     private static PartyPanelList _instance;
 
@@ -29,7 +29,7 @@ public class PartyPanelList : MonoBehaviour
 
     private void Build()
     {
-        characters = new CharacterComponent[capacity];
+        characters = new BasicCharacter[capacity];
 
         UpdateList();
     }
@@ -59,7 +59,7 @@ public class PartyPanelList : MonoBehaviour
         }
     }
 
-    public void RegisterCharacter(CharacterComponent character)
+    public void RegisterCharacter(BasicCharacter character)
     {
         for(int i = 0; i < capacity; i++)
         {
@@ -72,7 +72,7 @@ public class PartyPanelList : MonoBehaviour
         }
     }
 
-    public void UnRegisterCharacter(CharacterComponent character)
+    public void UnRegisterCharacter(BasicCharacter character)
     {
         for (int i = 0; i < capacity; i++)
         {

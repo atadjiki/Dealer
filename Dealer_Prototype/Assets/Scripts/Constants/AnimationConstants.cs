@@ -73,8 +73,10 @@ namespace Constants
         //interaction
         private const string Interaction_ButtonPush = "Interaction_ButtonPush";
 
-        public static string FetchAnimString(CharacterStateComponent charState, Anim anim)
+        public static string FetchAnimString(CharacterConstants.CharacterID ID, Anim anim)
         {
+            CharacterConstants.GenderType gender = Constants.CharacterConstants.GetGenderBYID(ID);
+
             switch(anim)
             {
                 case Anim.Emote_Acknowledging:
@@ -107,7 +109,7 @@ namespace Constants
                     return Emote_WeightShift;
 
                 case Anim.Idle:
-                    if(charState.GetGender() == CharacterConstants.GenderType.Male)
+                    if(gender == CharacterConstants.GenderType.Male)
                         return Idle_Male;
                     else 
                         return Idle_Female;
@@ -124,7 +126,7 @@ namespace Constants
                     return Talking_Default;
 
                 case Anim.Walking:
-                    if (charState.GetGender() == CharacterConstants.GenderType.Male)
+                    if (gender == CharacterConstants.GenderType.Male)
                         return Walking_Male;
                     else
                         return Walking_Female;

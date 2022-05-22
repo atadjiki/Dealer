@@ -155,7 +155,7 @@ public class CharacterComponent : MonoBehaviour
 
     public void FadeToAnimation(AnimationConstants.Anim anim, float time, bool canMove)
     {
-        string animString = AnimationConstants.FetchAnimString(_characterState, anim);
+        string animString = AnimationConstants.FetchAnimString(_characterState.GetCharacterID(), anim);
 
         if (_animator != null) _animator.CrossFade(animString, time);
         if(_navigator != null) _navigator.SetCanMove(canMove);
