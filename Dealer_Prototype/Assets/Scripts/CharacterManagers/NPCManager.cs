@@ -47,6 +47,12 @@ public class NPCManager : CharacterManager
             npc.SetUpdateState(AIConstants.UpdateState.Ready);
 
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + npc.GetID());
+
+            if(PartyPanelList.Instance)
+            {
+                PartyPanelList.Instance.RegisterCharacter(Character);
+            }
+
             return true;
         }
 
@@ -55,6 +61,11 @@ public class NPCManager : CharacterManager
 
     public override void UnRegister(CharacterComponent Character)
     {
+        if (PartyPanelList.Instance)
+        {
+            PartyPanelList.Instance.UnRegisterCharacter(Character);
+        }
+
         NPCComponent npc = Character.GetComponent<NPCComponent>();
 
         if (npc != null)

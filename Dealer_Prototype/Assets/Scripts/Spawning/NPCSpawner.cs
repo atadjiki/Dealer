@@ -44,11 +44,12 @@ public class NPCSpawner : CharacterSpawner
             yield return new WaitWhile(() => npcComp == null);
 
             spawnData.SetTeam(CharacterConstants.Team.NPC);
-
+            
             spawnData.SetMode(NPC_Mode);
             spawnData.SetScheduledTasks(ScheduledTasks);
 
             npcComp.Initialize(spawnData);
+            
 
             State = CharacterSpawnerState.Spawned;
 

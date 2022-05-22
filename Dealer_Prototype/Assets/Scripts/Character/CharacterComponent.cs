@@ -222,7 +222,7 @@ public class CharacterComponent : MonoBehaviour
 
     public string GetID()
     {
-        if (_characterInteraction != null)
+        if (_characterState != null)
             return _characterState.GetID();
         else
             return "";
