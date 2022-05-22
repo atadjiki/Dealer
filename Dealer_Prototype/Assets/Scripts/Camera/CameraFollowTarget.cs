@@ -15,6 +15,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     [SerializeField] private float MoveDistance = 0.5f;
     [SerializeField] private float LerpSpeed = 1.5f;
+    [SerializeField] private BoxCollider cameraBounds;
 
     private void Awake()
     {
@@ -47,7 +48,7 @@ public class CameraFollowTarget : MonoBehaviour
 
         Vector3 newLocation = this.transform.position + desiredMoveDirection * MoveDistance;
 
-        if (NavigationUtilities.Instance.ValidateDestination(newLocation))
+        if (cameraBounds.bounds.Contains(newLocation))
         {
             MoveTo(newLocation);
         }
@@ -60,12 +61,11 @@ public class CameraFollowTarget : MonoBehaviour
         if (State == CameraMovementState.Idle)
         {
             bool valid;
-            destination = NavigationUtilities.Instance.GetValidLocation(destination, out valid);
+            destination = cameraBounds.ClosestPointOnBounds(destination);
+            destination.y = 0;
 
-            if (valid)
-            {
-                StartCoroutine(PerformMove(destination));
-            }
+            StartCoroutine(PerformMove(destination));
+
         }
     }
 

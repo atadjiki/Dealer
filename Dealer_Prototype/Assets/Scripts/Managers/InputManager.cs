@@ -29,6 +29,10 @@ public class InputManager : MonoBehaviour
     {
         if (GameState.Instance.GetState() == GameState.State.GamePlay)
         {
+            float x = Input.GetAxis("Horizontal");
+            float y = Input.GetAxis("Vertical");
+
+            CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
         }
         else if (GameState.Instance.GetState() == GameState.State.Conversation)
         {
