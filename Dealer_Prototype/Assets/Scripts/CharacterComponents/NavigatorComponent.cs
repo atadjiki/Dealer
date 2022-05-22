@@ -12,7 +12,7 @@ public class NavigatorComponent : MonoBehaviour
 {
     internal AIBase _AI;
     internal Seeker _Seeker;
-    private CharacterComponent parentCharacter;
+    private BasicCharacter parentCharacter;
 
     private HashSet<GameObject> NavPointPrefabs;
 
@@ -21,7 +21,7 @@ public class NavigatorComponent : MonoBehaviour
 
     private void Awake()
     {
-        parentCharacter = GetComponentInParent<CharacterComponent>();
+        parentCharacter = GetComponentInParent<BasicCharacter>();
         _AI = GetComponentInChildren<AIPath>();
         _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();
@@ -33,19 +33,8 @@ public class NavigatorComponent : MonoBehaviour
 
     }
 
-    public bool MoveToRandomLocation()
-    {
-        return MoveToLocation(PickRandomPoint());
-    }
-
     private Tuple<NNInfo, NNInfo> ValidateLocation(Vector3 location, bool checkPath, out bool success)
     {
-
-        if (Vector3.Distance(this.transform.position, location) > parentCharacter.moveRadius)
-        {
-            success = false;
-            return null;
-        }
 
         NNInfo NearestNode_origin = AstarPath.active.GetNearest(this.transform.position, NNConstraint.Default);
         NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
@@ -168,24 +157,6 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-    }
-
-    private Vector3 PickRandomPoint()
-    {
-        var point = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(parentCharacter.moveRadius, parentCharacter.moveRadius * 1.5f);
-        point.y = 0;
-        point += this.transform.position;
-
-        var graph = AstarPath.active.data.recastGraph;
-
-        if (graph != null)
-        {
-            return graph.GetNearest(point, NNConstraint.Default).clampedPosition;
-        }
-        else
-        {
-            return point;
-        }
     }
 
     public void ToggleMovement(bool flag)

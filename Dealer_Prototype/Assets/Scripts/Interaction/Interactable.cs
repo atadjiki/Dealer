@@ -14,8 +14,6 @@ public class Interactable : MonoBehaviour
     public InteractableConstants.InteractionState GetState() { return CurrentState; }
     public void SetState(InteractableConstants.InteractionState newState) { CurrentState = newState; }
 
-    internal HashSet<CharacterComponent> _interactedWith;
-
     [SerializeField] internal Transform InteractionTransform;
     [SerializeField] internal MeshRenderer[] Meshes;
 
@@ -40,8 +38,6 @@ public class Interactable : MonoBehaviour
     {
         if(InteractableManager.Instance)
         {
-            _interactedWith = new HashSet<CharacterComponent>();
-
             _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
 
             yield return new WaitUntil(() => _interactionState != null);
@@ -72,11 +68,6 @@ public class Interactable : MonoBehaviour
 
         yield return null;
 
-    }
-
-    public bool HasBeenInteractedWith(CharacterComponent character)
-    {
-        return _interactedWith.Contains(character);
     }
 
     public void ToggleOutlineShader(bool flag)
@@ -123,16 +114,6 @@ public class Interactable : MonoBehaviour
     {
         ToggleOutlineShader(false);
         CursorManager.Instance.ToDefault();
-    }
-
-    public bool HasBeenInteractedWith(NPCComponent npc)
-    {
-        return false;   
-    }
-
-    public virtual void OnInteraction()
-    {
-
     }
 
     public bool IsVisible()

@@ -88,7 +88,6 @@ public class BasicCharacter : MonoBehaviour
     public void SetCurrentAnimation(AnimationConstants.Anim anim)
     {
         CurrentAnimation = anim;
-        if (UIManager.Instance) UIManager.Instance.HandleEvent(UI.Events.SetAnimText, anim);
     }
 
     public string GetID()

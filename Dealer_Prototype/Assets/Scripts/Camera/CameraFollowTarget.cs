@@ -86,18 +86,4 @@ public class CameraFollowTarget : MonoBehaviour
 
         yield return null;
     }
-
-    public void AttachTo(CharacterComponent character)
-    {
-        attached = true;
-        this.transform.parent = character.GetNavigatorComponent().transform;
-        this.transform.localPosition = Vector3.zero;
-    }
-
-    public void Release()
-    {
-        attached = false;
-        this.transform.parent = CharacterCameraManager.Instance.transform;
-
-    }
 }

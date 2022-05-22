@@ -72,11 +72,9 @@ public class BasicCharacterManager : MonoBehaviour
             NPCPanel.Instance.UnRegisterCharacter(Character);
         }
 
-        NPCComponent npc = Character.GetComponent<NPCComponent>();
-
-        if (npc != null)
+        if (Character != null)
         {
-            DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Unregistered NPC " + npc.GetID());
+            DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Unregistered NPC " + Character.GetID());
             Characters.Remove(Character);
         }
     }

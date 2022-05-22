@@ -74,11 +74,4 @@ public class Television : Interactable
     {
         MeshRenderer.material = material;
     }
-
-    public override void OnInteraction()
-    {
-        base.OnInteraction();
-
-        Switch();
-    }
 }
