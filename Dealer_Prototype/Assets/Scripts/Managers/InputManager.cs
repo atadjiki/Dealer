@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    private bool allowInput = false;
+
     //singleton stuff 
     private static InputManager _instance;
 
@@ -23,20 +25,29 @@ public class InputManager : MonoBehaviour
 
     private void Build()
     {
+        GameStateManager.Instance.onLevelStart += OnLevelStart;
+    }
+
+    private void OnLevelStart()
+    {
+        allowInput = true;
     }
 
     private void FixedUpdate()
     {
-        if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+        if(allowInput)
         {
-            float x = Input.GetAxis("Horizontal");
-            float y = Input.GetAxis("Vertical");
+            if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+            {
+                float x = Input.GetAxis("Horizontal");
+                float y = Input.GetAxis("Vertical");
 
-            CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
-        }
-        else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
-        {
+                CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
+            }
+            else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
+            {
 
+            }
         }
     }
 }

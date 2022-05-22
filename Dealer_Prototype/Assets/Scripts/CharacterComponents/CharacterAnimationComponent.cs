@@ -10,6 +10,6 @@ public class CharacterAnimationComponent : MonoBehaviour
 
     public void AnimEvent_Footstep()
     {
-        AudioManager.Instance.PlayAnimEventAudio(AudioManager.AnimEvent_Audio.Footstep_Indoor, socket);
+        AudioManager.PlayAnimEventAudio(AudioManager.AnimEvent_Audio.Footstep_Indoor, socket);
     }
 }

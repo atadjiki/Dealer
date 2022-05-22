@@ -23,8 +23,7 @@ public struct CharacterInfo
     }
 }
 
-[System.Serializable]
-public struct GameState 
+public class GameState : MonoBehaviour
 {
     [SerializeField] public CharacterInfo[] partyInfo;
     [SerializeField] public float money;

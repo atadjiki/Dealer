@@ -140,6 +140,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7aee3f56b1dc4610b0975ec67751120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!20 &1172706341 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3927388041997730406, guid: c3e56b27640944b7a821b25cd981c375, type: 3}
+  m_PrefabInstance: {fileID: 2073757544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1405888163 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5913480936190781336, guid: 4a4ad2ca57ba94ce2bfd516627c45635, type: 3}
@@ -164,13 +169,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2754570905604594955, guid: 4a4ad2ca57ba94ce2bfd516627c45635, type: 3}
+      propertyPath: uiCamera
+      value: 
+      objectReference: {fileID: 1172706341}
     - target: {fileID: 5913480936190781336, guid: 4a4ad2ca57ba94ce2bfd516627c45635, type: 3}
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
     - target: {fileID: 5913480936190781339, guid: 4a4ad2ca57ba94ce2bfd516627c45635, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5913480936190781339, guid: 4a4ad2ca57ba94ce2bfd516627c45635, type: 3}
       propertyPath: m_LocalPosition.x
@@ -221,9 +230,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1333640161286381423, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1333640161775544003, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1333640161775544003, guid: 23c18198e7cb34101bd153f257076bd5, type: 3}
       propertyPath: m_LocalPosition.x

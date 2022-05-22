@@ -19,6 +19,6 @@ public class NavPoint : MonoBehaviour
     {
         yield return new WaitForSeconds(CountdownSeconds);
 
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 }

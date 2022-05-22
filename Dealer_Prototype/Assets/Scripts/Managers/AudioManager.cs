@@ -9,29 +9,7 @@ public class AudioManager : MonoBehaviour
         Footstep_Indoor, None
     }
 
-    private static AudioManager _instance;
-
-    public static AudioManager Instance { get { return _instance; } }
-
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-
-        Build();
-    }
-
-    private void Build()
-    {
-    }
-
-    public void PlayAnimEventAudio(AnimEvent_Audio animEvent, GameObject socket)
+    public static void PlayAnimEventAudio(AnimEvent_Audio animEvent, GameObject socket)
     {
         switch (animEvent)
         {
@@ -43,7 +21,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlayOneShot(string eventPath, GameObject socket)
+    private static void PlayOneShot(string eventPath, GameObject socket)
     {
         if(socket != null)
         {
@@ -53,6 +31,5 @@ public class AudioManager : MonoBehaviour
         {
             FMODUnity.RuntimeManager.PlayOneShot(eventPath);
         }
-        
     }
 }

@@ -14,6 +14,9 @@ public class GameStateManager : MonoBehaviour
     public delegate void OnStateChanged(GameState state);
     public OnStateChanged onStateChanged;
 
+    public delegate void OnLevelStart();
+    public OnLevelStart onLevelStart;
+
     [SerializeField] public GameState state;
 
     private static GameStateManager _instance;
@@ -35,6 +38,7 @@ public class GameStateManager : MonoBehaviour
     private void Start()
     {
         onStateChanged(state);
+        onLevelStart();
     }
 
     public void ToMode(Mode mode)
@@ -58,5 +62,4 @@ public class GameStateManager : MonoBehaviour
         }
 
     }
-
 }

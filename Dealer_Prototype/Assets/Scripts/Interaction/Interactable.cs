@@ -36,7 +36,7 @@ public class Interactable : MonoBehaviour
 
     protected virtual IEnumerator DoInitialize()
     {
-        if(InteractableManager.Instance)
+        if (InteractableManager.Instance)
         {
             _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
 
@@ -55,7 +55,7 @@ public class Interactable : MonoBehaviour
             {
                 InfoPanelManager.Instance.RegisterInteractable(this, uiPanelPrefab);
             }
-            else if(InfoPanelManager.Instance == null)
+            else if (InfoPanelManager.Instance == null)
             {
                 Debug.Log("could not register " + this.name + ", infopanel manager is null");
             }
@@ -65,29 +65,26 @@ public class Interactable : MonoBehaviour
             Debug.Log("could not initialize" + this.name + ", interactable manager is null");
         }
 
-
         yield return null;
-
     }
 
     public void ToggleOutlineShader(bool flag)
     {
-        if(ColorManager.Instance)
+
+        if (flag)
         {
-            if (flag)
+            foreach (MeshRenderer renderer in Meshes)
             {
-                foreach (MeshRenderer renderer in Meshes)
-                {
-                    ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
-                }
+                ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
             }
-            else
+        }
+        else
+        {
+            foreach (MeshRenderer renderer in Meshes)
             {
-                foreach (MeshRenderer renderer in Meshes)
-                {
-                    ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
-                }
+                ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
             }
+
         }
     }
 
@@ -102,7 +99,7 @@ public class Interactable : MonoBehaviour
     private void OnMouseOver()
     {
         CursorManager.Instance.ToInteract();
-        
+
     }
 
     private void OnMouseEnter()
@@ -118,7 +115,7 @@ public class Interactable : MonoBehaviour
 
     public bool IsVisible()
     {
-        foreach(MeshRenderer mesh in Meshes)
+        foreach (MeshRenderer mesh in Meshes)
         {
             if (mesh.isVisible)
             {

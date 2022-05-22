@@ -35,8 +35,13 @@ public class PartyManager : MonoBehaviour
     {
         Party = new List<CharacterInfo>();
 
-        InitializeCharacters(GameStateManager.Instance.state);
+        GameStateManager.Instance.onLevelStart += OnLevelStart;
+    }
 
+    private void OnLevelStart()
+    {
+        Debug.Log(this.name + " - received on level start");
+        InitializeCharacters(GameStateManager.Instance.state);
     }
 
     private void InitializeCharacters(GameState state)

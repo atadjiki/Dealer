@@ -31,13 +31,14 @@ public class SpawnPoint : MonoBehaviour
 
     internal virtual IEnumerator PerformSpawn(CharacterInfo characterInfo)
     {
+
         if (PartyManager.Instance)
         {
             State = CharacterSpawnerState.Spawning;
 
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
-            GameObject prefab = new GameObject(characterInfo.ID.ToString());
+            GameObject prefab = PrefabFactory.GetCharacterPrefab(characterInfo.ID.ToString(), this.transform);
             prefab.transform.parent = this.transform;
             prefab.transform.position = this.transform.position;
             prefab.transform.rotation = this.transform.rotation;
