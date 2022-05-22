@@ -60,7 +60,6 @@ public class CameraFollowTarget : MonoBehaviour
 
         if (State == CameraMovementState.Idle)
         {
-            bool valid;
             destination = cameraBounds.ClosestPointOnBounds(destination);
             destination.y = 0;
 

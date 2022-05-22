@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class NPCComponent : CharacterComponent
 { 
-
-
     internal override void Initialize(SpawnData spawnData)
     {
         base.Initialize(spawnData);

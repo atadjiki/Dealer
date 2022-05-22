@@ -127,9 +127,6 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-        if (PlayableCharacterManager.Instance.GetSelectedCharacter() == parentCharacter)
-            SpawnNavPointPrefab(Destination);
-
         parentCharacter.FadeToAnimation(AnimationConstants.Anim.Walking, 0.15f, true);
 
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);

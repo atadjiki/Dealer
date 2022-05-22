@@ -42,18 +42,18 @@ public class UIManager : MonoBehaviour
         behaviorCanvas.Reset();
         conversationCanvas.Reset();
 
-        GameState.Instance.onStateChangedDelegate += OnStateChanged;
+        GameStateManager.Instance.onModeChanged += OnModeChanged;
 
-        OnStateChanged(GameState.Instance.GetState());
+        OnModeChanged(GameStateManager.Instance.GetMode());
     }
 
-    private void OnStateChanged(GameState.State newState)
+    private void OnModeChanged(GameStateManager.Mode newMode)
     {
-        if(newState == GameState.State.GamePlay)
+        if(newMode == GameStateManager.Mode.GamePlay)
         {
             SetState(UIState.Gameplay);
         }
-        else if(newState == GameState.State.Conversation)
+        else if(newMode == GameStateManager.Mode.Conversation)
         {
             SetState(UIState.Conversation);
         }

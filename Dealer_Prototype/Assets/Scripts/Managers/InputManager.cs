@@ -27,14 +27,14 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameState.Instance.GetState() == GameState.State.GamePlay)
+        if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
         {
             float x = Input.GetAxis("Horizontal");
             float y = Input.GetAxis("Vertical");
 
             CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
         }
-        else if (GameState.Instance.GetState() == GameState.State.Conversation)
+        else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
         {
 
         }

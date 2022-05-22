@@ -125,19 +125,6 @@ public class Interactable : MonoBehaviour
         CursorManager.Instance.ToDefault();
     }
 
-    private void OnMouseDown()
-    {
-        if (PlayableCharacterManager.Instance)
-        {
-            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
-            {
-                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this);
-            }
-        }
-
-    //    Debug.Log(this.name + " clicked.");
-    }
-
     public bool HasBeenInteractedWith(NPCComponent npc)
     {
         return false;   

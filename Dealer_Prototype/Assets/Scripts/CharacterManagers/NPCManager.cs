@@ -30,11 +30,6 @@ public class NPCManager : CharacterManager
 
         if(npc != null)
         {
-            //check if player
-            if (npc.GetComponent<PlayableCharacterComponent>() != null)
-            {
-                return true;
-            }
 
             if (Characters.Count == _popCap)
             {

@@ -77,7 +77,7 @@ public class LevelManager : MonoBehaviour
         float loadInterval = 0.5f;
         //
         _state = State.Busy;
-        GameState.Instance.ToState(GameState.State.Loading);
+        GameStateManager.Instance.ToMode(GameStateManager.Mode.Loading);
         LoadScreen.SetActive(true);
         LoadScreen_LevelName.text = "";
         LoadScreen_Text.text = "loading.";
@@ -113,11 +113,11 @@ public class LevelManager : MonoBehaviour
 
         if (levelData.Type == LevelDataConstants.LevelType.Menu)
         {
-            GameState.Instance.ToState(GameState.State.MainMenu);
+            GameStateManager.Instance.ToMode(GameStateManager.Mode.MainMenu);
         }
         else if(levelData.Type == LevelDataConstants.LevelType.GameLevel)
         {
-            GameState.Instance.ToState(GameState.State.GamePlay);
+            GameStateManager.Instance.ToMode(GameStateManager.Mode.GamePlay);
         }
 
         LoadScreen_LevelName.text = SceneManager.GetActiveScene().name;

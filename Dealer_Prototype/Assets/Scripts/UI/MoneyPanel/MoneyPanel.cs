@@ -11,14 +11,21 @@ public class MoneyPanel : MonoBehaviour
 
     private void Awake()
     {
-        SetMoney(0);
+        SetMoney(GameStateManager.Instance.state.money);
+
+        GameStateManager.Instance.onStateChanged += OnStateChanged;
     }
 
-    public void SetMoney(int money)
+    private void OnStateChanged(GameState state)
+    {
+        SetMoney(state.money);
+    }
+
+    public void SetMoney(float money)
     {
         if (money > 0)
         {
-            string moneyString = string.Format("{0:#.00}", money / 100);
+            string moneyString = string.Format("{0:#.00}", money);
             Text_Money.text = "$" + moneyString;
         }
         else
@@ -27,3 +34,4 @@ public class MoneyPanel : MonoBehaviour
         }
     }
 }
+

@@ -14,10 +14,6 @@ public class CharacterInteractionComponent : MonoBehaviour
         Meshes = new List<SkinnedMeshRenderer>(meshArray);
     }
 
-    private void OnMouseOver()
-    {
-    }
-
     private void OnMouseEnter()
     {
         ToggleOutlineShader(true);
@@ -26,17 +22,6 @@ public class CharacterInteractionComponent : MonoBehaviour
     private void OnMouseExit()
     {
         ToggleOutlineShader(false);   
-    }
-
-    private void OnMouseDown()
-    {
-        if (PlayableCharacterManager.Instance)
-        {
-            if (PlayableCharacterManager.Instance.GetSelectedCharacter() != null)
-            {
-                PlayableCharacterManager.Instance.AttemptInteractWithPossesedCharacter(this.CharPtr);
-            }
-        }
     }
 
     public void ToggleOutlineShader(bool flag)
@@ -104,14 +89,7 @@ public class CharacterInteractionComponent : MonoBehaviour
 
     public InteractableConstants.InteractionContext GetContext()
     {
-        if(CharPtr == PlayableCharacterManager.Instance.GetSelectedCharacter())
-        {
-            return InteractableConstants.InteractionContext.None;
-        }
-        else
-        {
-            return InteractableConstants.InteractionContext.Talk;
-        }
+        return InteractableConstants.InteractionContext.None;
     }
 
     public GameObject GetGameObject()

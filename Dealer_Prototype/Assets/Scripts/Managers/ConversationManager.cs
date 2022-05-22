@@ -23,11 +23,11 @@ public class ConversationManager : MonoBehaviour
 
     public void StartConversation()
     {
-        GameState.Instance.ToState(GameState.State.Conversation);
+        GameStateManager.Instance.ToMode(GameStateManager.Mode.Conversation);
     }
 
     public void EndConversation()
     {
-        GameState.Instance.ToState(GameState.State.GamePlay);
+        GameStateManager.Instance.ToMode(GameStateManager.Mode.GamePlay);
     }
 }
