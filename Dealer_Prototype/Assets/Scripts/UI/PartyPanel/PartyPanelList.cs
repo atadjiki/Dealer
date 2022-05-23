@@ -45,13 +45,21 @@ public class PartyPanelList : MonoBehaviour
 
                     CharacterTask characterTask = PartyManager.Instance.GetCharacterTask(Party[i]);
 
-                    string taskType = characterTask.Type.ToString();
+                    string taskType = " - " + characterTask.Type.ToString();
 
-                    string taskDays = characterTask.DaysRemaining + "d";
+                    string taskDays;
+                    if (characterTask.DaysRemaining > 0 )
+                    {
+                        taskDays = " - " + characterTask.DaysRemaining + "d"; 
+                    }
+                    else
+                    {
+                        taskDays = "";
+                    }
 
                     listItem.ToggleVisiblity(true);
 
-                    listItem.SetText(characterName + " - " + taskType + " - " + taskDays);
+                    listItem.SetText(characterName + taskType + taskDays);
                 }
                 else
                 {

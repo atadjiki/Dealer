@@ -70,11 +70,11 @@ public class CharacterPanel : MonoBehaviour
     {
         foreach (CharacterModel characterModel in characterMap.Keys)
         {
-            if(characterModel.GetModel())
+            if(characterModel.gameObject)
             {
                 TextMeshProUGUI textMesh = characterMap[characterModel];
 
-                GameObject model = characterModel.GetModel();
+                GameObject model = characterModel.gameObject;
 
                 UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
 

@@ -94,6 +94,7 @@ public class NavigatorComponent : MonoBehaviour
         {
             State = MovementState.Moving;
             StartCoroutine(DoMoveToLocation(VectorPair.Item2.position));
+            Debug.Log("movement success");
             return true;
         }
         else

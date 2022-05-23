@@ -10,13 +10,6 @@ public class CharacterModel : MonoBehaviour
     protected NavigatorComponent _navigator;
     protected Light _light;
 
-    private GameObject _model;
-
-    public GameObject GetModel()
-    {
-        return _model;
-    }
-
     [Header("Character Setup")]
 
     private CharacterInfo characterInfo;
@@ -36,6 +29,10 @@ public class CharacterModel : MonoBehaviour
         {
             CharacterPanel.Instance.UnRegisterCharacter(this);
         }
+        if(PartyManager.Instance)
+        {
+            PartyManager.Instance.UnRegisterCharacterModel(characterInfo);
+        }
     }
 
     internal virtual IEnumerator DoInitialize()
@@ -47,27 +44,30 @@ public class CharacterModel : MonoBehaviour
 
         yield return new WaitWhile(() => _navigator == null);
 
-        //setup character model and attach to navigator
-        _model = PrefabFactory.GetCharacterPrefab(characterInfo.ID.ToString(), NavigatorPrefab.transform);
         // ModelPrefab.transform.parent = NavigtorPrefab.transform;
-        _animator = _model.GetComponent<Animator>();
+        _animator = this.GetComponent<Animator>();
 
-        _characterAnimation = _model.GetComponent<CharacterAnimationComponent>();
+        _characterAnimation = GetComponent<CharacterAnimationComponent>();
         _characterAnimation.SetSocket(_navigator.gameObject);
 
         yield return new WaitWhile(() => _animator == null);
 
-        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, _model.transform);
+        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, this.transform);
         _light = CharacterLightPrefab.GetComponent<Light>();
 
         yield return new WaitWhile(() => _light == null);
 
-        FadeToAnimation(characterInfo.InitialAnim, 0.0f, false);
+        FadeToAnimation(characterInfo.InitialAnim, 0.0f, true);
 
         if (CharacterPanel.Instance)
         {
             Debug.Log("Attempting to register " + this.name);
             CharacterPanel.Instance.RegisterCharacter(this);
+        }
+
+        if(PartyManager.Instance)
+        {
+            PartyManager.Instance.RegisterCharacterModel(characterInfo, this);
         }
 
         bHasInitialized = true;

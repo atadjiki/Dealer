@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class PartyManager : MonoBehaviour
 {
-    private Dictionary<CharacterInfo, CharacterTask> CharacterMap;
+    private Dictionary<CharacterInfo, CharacterTask> CharacterTaskMap;
+    private Dictionary<CharacterInfo, CharacterModel> CharacterModelMap;
 
     private List<MarkedLocation> waitLocations;
     private const int _popCap = 4;
@@ -31,12 +32,15 @@ public class PartyManager : MonoBehaviour
 
     internal void Build()
     {
+        CharacterTaskMap = new Dictionary<CharacterInfo, CharacterTask>();
+        CharacterModelMap = new Dictionary<CharacterInfo, CharacterModel>();
+        waitLocations = new List<MarkedLocation>();
         GameStateManager.Instance.onLevelStart += OnLevelStart;
     }
 
     private void InitializeCharacters(GameState state)
     {
-        CharacterMap = new Dictionary<CharacterInfo, CharacterTask>();
+        CharacterTaskMap = new Dictionary<CharacterInfo, CharacterTask>();
 
         foreach (CharacterInfo info in state.partyInfo)
         {
@@ -47,13 +51,13 @@ public class PartyManager : MonoBehaviour
 
     public bool RegisterCharacter(CharacterInfo characterInfo)
     {
-        if (CharacterMap.Keys.Count == _popCap)
+        if (CharacterTaskMap.Keys.Count == _popCap)
         {
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Could not register NPC, reached pop cap");
             return false;
         }
 
-        CharacterMap.Add(characterInfo, CharacterTask.Empty());
+        CharacterTaskMap.Add(characterInfo, CharacterTask.Empty());
 
         DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterInfo.ID);
 
@@ -67,7 +71,7 @@ public class PartyManager : MonoBehaviour
 
     public void UnRegisterCharacter(CharacterInfo Character)
     {
-        CharacterMap.Remove(Character);
+        CharacterTaskMap.Remove(Character);
 
         if (PartyPanelList.Instance)
         {
@@ -75,9 +79,22 @@ public class PartyManager : MonoBehaviour
         }
     }
 
+    public void RegisterCharacterModel(CharacterInfo characterInfo, CharacterModel characterModel)
+    {
+        if (CharacterModelMap.ContainsKey(characterInfo) == false)
+        {
+            CharacterModelMap.Add(characterInfo, characterModel);
+        }
+    }
+
+    public void UnRegisterCharacterModel(CharacterInfo characterInfo)
+    {
+        CharacterModelMap.Remove(characterInfo);
+    }
+
     public void RegisterLocation(MarkedLocation location)
     {
-        if(location is WaitLocation)
+        if (location is WaitLocation)
         {
             waitLocations.Add(location);
         }
@@ -104,34 +121,80 @@ public class PartyManager : MonoBehaviour
 
     public List<CharacterInfo> GetParty()
     {
-        return CharacterMap.Keys.ToList(); ;
+        return CharacterTaskMap.Keys.ToList(); ;
     }
 
     public CharacterTask GetCharacterTask(CharacterInfo characterInfo)
     {
-        return CharacterMap[characterInfo];
+        return CharacterTaskMap[characterInfo];
+    }
+
+    private void FixedUpdate()
+    {
+        UpdateCharacterTasks();
     }
 
     public void UpdateCharacterTasks()
     {
-        foreach(CharacterInfo characterInfo in CharacterMap.Keys.ToArray())
+        foreach (CharacterInfo characterInfo in CharacterTaskMap.Keys.ToArray())
         {
-            CharacterTask task = CharacterMap[characterInfo];
+            CharacterTask task = CharacterTaskMap[characterInfo];
+
 
             //if this character is inactive, make sure they are performing a wait
-            if(task.State == TaskConstants.TaskState.InActive)
+            if (task.Type == TaskConstants.TaskType.Waiting && task.markedLocation == null)
             {
-                //find an unoccupied wait location
-                foreach(WaitLocation waitLocation in waitLocations)
+                if (CharacterModelMap.ContainsKey(characterInfo))
                 {
-                    if(waitLocation.occupied == false)
+                    CharacterModel model = CharacterModelMap[characterInfo];
+
+                    if (model != null)
                     {
-                        task.markedLocation = waitLocation;
-                        waitLocation.occupied = true;
+                        //find an unoccupied wait location
+                        foreach (WaitLocation waitLocation in waitLocations)
+                        {
+                            if (waitLocation.occupied == false)
+                            {
+                                task.markedLocation = waitLocation;
+                                waitLocation.occupied = true;
+                                CharacterTaskMap[characterInfo] = task;
+
+                                StartCoroutine(MoveModelToMarkedLocation(model, waitLocation));
+
+
+                                Debug.Log(characterInfo.name + " sent to wait at " + waitLocation.transform.position);
+                                break;
+                            }
+
+                        }
                     }
+
                 }
             }
         }
+    }
+
+    public IEnumerator MoveModelToMarkedLocation(CharacterModel model, MarkedLocation markedLocation)
+    {
+        model.GetNavigatorComponent().SetCanMove(true);
+        model.GetNavigatorComponent().ToggleMovement(true);
+        model.GetNavigatorComponent()._AI.maxSpeed = 5;
+
+        model.GetNavigatorComponent().MoveToLocation(markedLocation.transform.position);
+
+        Debug.Log("attempting move");
+
+        yield return new WaitForSeconds(0.2f);
+
+        yield return new WaitUntil(() => model.GetNavigatorComponent()._AI.isStopped);
+
+        Debug.Log("completed move");
+
+        model.transform.position = markedLocation.transform.position;
+        model.transform.rotation = markedLocation.transform.rotation;
+        model.FadeToAnimation(markedLocation.LocationAnim, 0.0f, true);
+
+        yield return null;
     }
 
 }
