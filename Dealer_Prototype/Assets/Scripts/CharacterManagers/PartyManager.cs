@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Constants;
 using UnityEngine;
 
 public class PartyManager : MonoBehaviour
 {
+    private Dictionary<CharacterInfo, CharacterTask> CharacterMap;
+
+    private List<MarkedLocation> waitLocations;
+    private const int _popCap = 4;
+
     private static PartyManager _instance;
 
     public static PartyManager Instance { get { return _instance; } }
-
-    private List<CharacterInfo> Party;
-    private const int _popCap = 4;
 
     private void Awake()
     {
@@ -26,49 +29,31 @@ public class PartyManager : MonoBehaviour
         Build();
     }
 
-    public List<CharacterInfo> GetParty()
+    internal void Build()
     {
-        return Party;
-    }
-
-    private void Build()
-    {
-        Party = new List<CharacterInfo>();
-
         GameStateManager.Instance.onLevelStart += OnLevelStart;
-    }
-
-    private void OnLevelStart()
-    {
-        Debug.Log(this.name + " - received on level start");
-        InitializeCharacters(GameStateManager.Instance.state);
     }
 
     private void InitializeCharacters(GameState state)
     {
-        Party = new List<CharacterInfo>();
+        CharacterMap = new Dictionary<CharacterInfo, CharacterTask>();
 
-        foreach(CharacterInfo info in state.partyInfo)
+        foreach (CharacterInfo info in state.partyInfo)
         {
-            Register(info);
+            RegisterCharacter(info);
             SpawnPoint.Instance.AttemptSpawn(info);
         }
     }
 
-    public void OnStateChanged(GameState state)
+    public bool RegisterCharacter(CharacterInfo characterInfo)
     {
-
-    }
-
-    public bool Register(CharacterInfo characterInfo)
-    {
-        if (Party.Count == _popCap)
+        if (CharacterMap.Keys.Count == _popCap)
         {
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Could not register NPC, reached pop cap");
             return false;
         }
 
-        Party.Add(characterInfo);
+        CharacterMap.Add(characterInfo, CharacterTask.Empty());
 
         DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterInfo.ID);
 
@@ -76,28 +61,77 @@ public class PartyManager : MonoBehaviour
         {
             PartyPanelList.Instance.UpdateList();
         }
-        //if (CharacterPanel.Instance)
-        //{
-        //    CharacterPanel.Instance.RegisterCharacter(characterInfo);
-        //}
 
         return true;
     }
 
-    public void UnRegister(CharacterInfo Character)
+    public void UnRegisterCharacter(CharacterInfo Character)
     {
-        Party.Remove(Character);
+        CharacterMap.Remove(Character);
 
         if (PartyPanelList.Instance)
         {
             PartyPanelList.Instance.UpdateList();
         }
-        //if (CharacterPanel.Instance)
-        //{
-        //    CharacterPanel.Instance.UnRegisterCharacter(Character);
-        //}
+    }
 
-     
+    public void RegisterLocation(MarkedLocation location)
+    {
+        if(location is WaitLocation)
+        {
+            waitLocations.Add(location);
+        }
+    }
+
+    public void UnRegisterLocation(MarkedLocation location)
+    {
+        if (location is WaitLocation && waitLocations.Contains(location))
+        {
+            waitLocations.Remove(location);
+        }
+    }
+
+    internal void OnLevelStart()
+    {
+        Debug.Log(this.name + " - received on level start");
+        InitializeCharacters(GameStateManager.Instance.state);
+    }
+
+    public void OnStateChanged(GameState state)
+    {
 
     }
+
+    public List<CharacterInfo> GetParty()
+    {
+        return CharacterMap.Keys.ToList(); ;
+    }
+
+    public CharacterTask GetCharacterTask(CharacterInfo characterInfo)
+    {
+        return CharacterMap[characterInfo];
+    }
+
+    public void UpdateCharacterTasks()
+    {
+        foreach(CharacterInfo characterInfo in CharacterMap.Keys.ToArray())
+        {
+            CharacterTask task = CharacterMap[characterInfo];
+
+            //if this character is inactive, make sure they are performing a wait
+            if(task.State == TaskConstants.TaskState.InActive)
+            {
+                //find an unoccupied wait location
+                foreach(WaitLocation waitLocation in waitLocations)
+                {
+                    if(waitLocation.occupied == false)
+                    {
+                        task.markedLocation = waitLocation;
+                        waitLocation.occupied = true;
+                    }
+                }
+            }
+        }
+    }
+
 }

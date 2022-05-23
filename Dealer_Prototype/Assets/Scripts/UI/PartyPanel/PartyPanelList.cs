@@ -33,25 +33,30 @@ public class PartyPanelList : MonoBehaviour
     {
         List<CharacterInfo> Party = PartyManager.Instance.GetParty();
 
-        for(int i = 0; i < Items.Count; i++)
+        if(Party != null)
         {
-            PartyListItem listItem = Items[i];
-
-            if (i < Party.Count)
+            for (int i = 0; i < Items.Count; i++)
             {
-                string characterName = Party[i].ID.ToString();
+                PartyListItem listItem = Items[i];
 
-                string task = "task";
+                if (i < Party.Count)
+                {
+                    string characterName = Party[i].ID.ToString();
 
-                string days = "0d";
+                    CharacterTask characterTask = PartyManager.Instance.GetCharacterTask(Party[i]);
 
-                listItem.ToggleVisiblity(true);
+                    string taskType = characterTask.Type.ToString();
 
-                listItem.SetText(characterName + " - " + task + " - " + days);
-            }
-            else
-            {
-                listItem.ToggleVisiblity(false);
+                    string taskDays = characterTask.DaysRemaining + "d";
+
+                    listItem.ToggleVisiblity(true);
+
+                    listItem.SetText(characterName + " - " + taskType + " - " + taskDays);
+                }
+                else
+                {
+                    listItem.ToggleVisiblity(false);
+                }
             }
         }
     }

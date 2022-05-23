@@ -53,6 +53,7 @@ public class CharacterPanel : MonoBehaviour
         if(characterMap.ContainsKey(characterModel) == false)
         {
             characterMap.Add(characterModel, BuildTextMesh(characterModel));
+            Debug.Log("Registered model " + characterModel.gameObject.name);
         }
     }
 

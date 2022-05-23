@@ -30,6 +30,14 @@ public class CharacterModel : MonoBehaviour
         StartCoroutine(DoInitialize());
     }
 
+    private void OnDestroy()
+    {
+        if (CharacterPanel.Instance)
+        {
+            CharacterPanel.Instance.UnRegisterCharacter(this);
+        }
+    }
+
     internal virtual IEnumerator DoInitialize()
     {
         //setup navigator
@@ -55,6 +63,12 @@ public class CharacterModel : MonoBehaviour
         yield return new WaitWhile(() => _light == null);
 
         FadeToAnimation(characterInfo.InitialAnim, 0.0f, false);
+
+        if (CharacterPanel.Instance)
+        {
+            Debug.Log("Attempting to register " + this.name);
+            CharacterPanel.Instance.RegisterCharacter(this);
+        }
 
         bHasInitialized = true;
     }
