@@ -65,7 +65,7 @@ namespace Constants
                     PathString = "Prefabs/Behavior/BehaviorDecal";
                     return true;
                 case RegistryID.NPC:
-                    PathString = "Prefabs/Characters/NPC_Empty";
+                    PathString = "Prefabs/Characters/Character_Empty";
                     return true;
                 case RegistryID.Player:
                     PathString = "Prefabs/Characters/Player_Empty";

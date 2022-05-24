@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    private Dictionary<CharacterInfo, CharacterTask> CharacterTaskMap;
-    private Dictionary<CharacterInfo, CharacterComponent> CharacterModelMap;
+    private List<CharacterComponent> characters;
 
     private List<MarkedLocation> waitLocations;
     private const int _popCap = 4;
@@ -32,64 +31,47 @@ public class CharacterManager : MonoBehaviour
 
     internal void Build()
     {
-        CharacterTaskMap = new Dictionary<CharacterInfo, CharacterTask>();
-        CharacterModelMap = new Dictionary<CharacterInfo, CharacterComponent>();
+        characters = new List<CharacterComponent>();
         waitLocations = new List<MarkedLocation>();
         GameStateManager.Instance.onLevelStart += OnLevelStart;
     }
 
-    private void InitializeCharacters(GameState state)
+    public bool RegisterCharacter(CharacterComponent characterComponent)
     {
-        CharacterTaskMap = new Dictionary<CharacterInfo, CharacterTask>();
-
-        foreach (CharacterInfo info in state.partyInfo)
-        {
-            RegisterCharacter(info);
-            SpawnPoint.Instance.AttemptSpawn(info);
-        }
-    }
-
-    public bool RegisterCharacter(CharacterInfo characterInfo)
-    {
-        if (CharacterTaskMap.Keys.Count == _popCap)
+        if (characters.Count == _popCap)
         {
             DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Could not register NPC, reached pop cap");
             return false;
         }
 
-        CharacterTaskMap.Add(characterInfo, CharacterTask.Empty());
+        characters.Add(characterComponent);
 
-        DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterInfo.ID);
+        DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterComponent.GetID());
 
         if (PartyPanelList.Instance)
         {
             PartyPanelList.Instance.UpdateList();
+        }
+        if (CharacterPanel.Instance)
+        {
+            CharacterPanel.Instance.RegisterCharacter(characterComponent);
         }
 
         return true;
     }
 
-    public void UnRegisterCharacter(CharacterInfo Character)
+    public void UnRegisterCharacter(CharacterComponent characterComponent)
     {
-        CharacterTaskMap.Remove(Character);
+        characters.Remove(characterComponent);
 
         if (PartyPanelList.Instance)
         {
             PartyPanelList.Instance.UpdateList();
         }
-    }
-
-    public void RegisterCharacterModel(CharacterInfo characterInfo, CharacterComponent characterModel)
-    {
-        if (CharacterModelMap.ContainsKey(characterInfo) == false)
+        if (CharacterPanel.Instance)
         {
-            CharacterModelMap.Add(characterInfo, characterModel);
+            CharacterPanel.Instance.UnRegisterCharacter(characterComponent);
         }
-    }
-
-    public void UnRegisterCharacterModel(CharacterInfo characterInfo)
-    {
-        CharacterModelMap.Remove(characterInfo);
     }
 
     public void RegisterLocation(MarkedLocation location)
@@ -110,23 +92,11 @@ public class CharacterManager : MonoBehaviour
 
     internal void OnLevelStart()
     {
-        Debug.Log(this.name + " - received on level start");
-        InitializeCharacters(GameStateManager.Instance.state);
     }
 
-    public void OnStateChanged(GameState state)
+    public List<CharacterComponent> GetParty()
     {
-
-    }
-
-    public List<CharacterInfo> GetParty()
-    {
-        return CharacterTaskMap.Keys.ToList(); ;
-    }
-
-    public CharacterTask GetCharacterTask(CharacterInfo characterInfo)
-    {
-        return CharacterTaskMap[characterInfo];
+        return characters;
     }
 
     private void FixedUpdate()
@@ -134,19 +104,31 @@ public class CharacterManager : MonoBehaviour
         UpdateCharacterTasks();
     }
 
+    public bool IsSpawned(CharacterInfo info)
+    {
+        foreach(CharacterComponent character in characters)
+        {
+            if(character.GetCharacterID() == info.ID)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void UpdateCharacterTasks()
     {
-        foreach (CharacterInfo characterInfo in CharacterTaskMap.Keys.ToArray())
+        foreach (CharacterComponent character in characters)
         {
-            CharacterTask task = CharacterTaskMap[characterInfo];
-
+            CharacterTask task = character.GetTaskComponent().GetTask();
 
             //if this character is inactive, make sure they are performing a wait
             if (task.Type == TaskConstants.TaskType.Waiting && task.markedLocation == null)
             {
-                if (CharacterModelMap.ContainsKey(characterInfo))
+                if (character.GetAnimationComponent().IsHidden() == false)
                 {
-                    CharacterComponent model = CharacterModelMap[characterInfo];
+                    CharacterAnimationComponent model = character.GetAnimationComponent();
 
                     if (model != null)
                     {
@@ -157,12 +139,12 @@ public class CharacterManager : MonoBehaviour
                             {
                                 task.markedLocation = waitLocation;
                                 waitLocation.occupied = true;
-                                CharacterTaskMap[characterInfo] = task;
+                                character.GetTaskComponent().SetTask(task);
 
-                                StartCoroutine(MoveModelToMarkedLocation(model, waitLocation));
+                                //move to location 
+                                character.GetNavigatorComponent().MoveToLocation(waitLocation,false);
 
-
-                                Debug.Log(characterInfo.name + " sent to wait at " + waitLocation.transform.position);
+                                Debug.Log(character.name + " sent to wait at " + waitLocation.transform.position);
                                 break;
                             }
 
@@ -173,28 +155,4 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-
-    public IEnumerator MoveModelToMarkedLocation(CharacterComponent model, MarkedLocation markedLocation)
-    {
-        model.GetNavigatorComponent().SetCanMove(true);
-        model.GetNavigatorComponent().ToggleMovement(true);
-        model.GetNavigatorComponent()._AI.maxSpeed = 5;
-
-        model.GetNavigatorComponent().MoveToLocation(markedLocation.transform.position);
-
-        Debug.Log("attempting move");
-
-        yield return new WaitForSeconds(0.2f);
-
-        yield return new WaitUntil(() => model.GetNavigatorComponent()._AI.isStopped);
-
-        Debug.Log("completed move");
-
-        model.transform.position = markedLocation.transform.position;
-        model.transform.rotation = markedLocation.transform.rotation;
-        model.FadeToAnimation(markedLocation.LocationAnim, 0.0f, true);
-
-        yield return null;
-    }
-
 }

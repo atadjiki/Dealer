@@ -40,20 +40,20 @@ public class NavigatorComponent : MonoBehaviour
         NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
 
         //check distances
-        if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 0.1f)
-        {
-            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around origin");
+        //if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 0.1f)
+        //{
+        //    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around origin");
 
-            success = false;
-            return null;
-        }
-        else if (Vector3.Distance(NearestNode_destination.position, location) > 0.1f)
-        {
-            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around destination");
+        //    success = false;
+        //    return null;
+        //}
+        //else if (Vector3.Distance(NearestNode_destination.position, location) > 0.1f)
+        //{
+        //    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around destination");
 
-            success = false;
-            return null;
-        }
+        //    success = false;
+        //    return null;
+        //}
 
         if (checkPath)
         {
@@ -67,46 +67,41 @@ public class NavigatorComponent : MonoBehaviour
         }
     }
 
-    public bool TeleportToLocation(Transform transform)
+    public bool TeleportToLocation(MarkedLocation markedLocation)
     {
-        bool success;
-        Tuple<NNInfo, NNInfo> VectorPair = ValidateLocation(transform.position, false, out success);
-
-        if (success)
-        {
-            this.transform.position = VectorPair.Item2.position;
-         //   this.transform.rotation = transform.rotation;
-            return true;
-        }
-        else
-        {
-            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, name + ": " + "Path not possible to " + transform.position);
-            return false;
-        }
+        this.transform.position = markedLocation.transform.position;
+        this.transform.rotation = markedLocation.transform.rotation;
+        return true;
     }
 
-    public bool MoveToLocation(Vector3 location)
+    public bool MoveToLocation(MarkedLocation markedLocation, bool teleportOnFail)
     {
         bool success;
-        Tuple<NNInfo, NNInfo> VectorPair = ValidateLocation(location, false, out success);
+        Tuple<NNInfo, NNInfo> VectorPair = ValidateLocation(markedLocation.transform.position, false, out success);
 
         if (success)
         {
             State = MovementState.Moving;
-            StartCoroutine(DoMoveToLocation(VectorPair.Item2.position));
+            StartCoroutine(DoMoveToLocation(markedLocation, VectorPair.Item2.position));
             Debug.Log("movement success");
             return true;
         }
         else
         {
-            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, name + ": " + "Path not possible to " + location);
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, name + ": " + "Path not possible to " + markedLocation);
+
+            if (teleportOnFail)
+            {
+                TeleportToLocation(markedLocation);
+            }
+
             return false;
         }
     }
 
-    private IEnumerator DoMoveToLocation(Vector3 Destination)
+    private IEnumerator DoMoveToLocation(MarkedLocation markedLocation, Vector3 verifiedLocation)
     {
-        _AI.destination = Destination;
+        _AI.destination = verifiedLocation;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
         float timeStamp = Time.time;
         yield return new WaitForEndOfFrame();
@@ -117,15 +112,15 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
-        parentCharacter.FadeToAnimation(AnimationConstants.Anim.Walking, 0.15f, true);
+        parentCharacter.GetAnimationComponent().FadeToAnimation(AnimationConstants.Anim.Walking, 0.15f, true);
 
-        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
-        parentCharacter.OnNewDestination(Destination);
+        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 1, 1, false);
+        parentCharacter.OnNewDestination(verifiedLocation);
 
         // Wait until the agent has reached the destination
         while (true)
         {
-            if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 0.25f, Time.fixedDeltaTime, false);
+            if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 0.25f, Time.fixedDeltaTime, false);
 
             yield return new WaitForEndOfFrame();
 
@@ -136,20 +131,22 @@ public class NavigatorComponent : MonoBehaviour
                 break;
             }
 
-            if (Vector3.Distance(this.transform.position, Destination) < 0.1f)
+            if (Vector3.Distance(this.transform.position, verifiedLocation) < 0.1f)
             {
                 break;
             }
         }
 
         // The agent has reached the destination now
-        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(Destination, Color.green, 1, 1, false);
-
-        parentCharacter.FadeToAnimation(AnimationConstants.Anim.Idle, 0.0f, false);
+        if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 1, 1, false);
 
         yield return new WaitForSeconds(0.1f);
 
-        parentCharacter.OnDestinationReached(Destination);
+        parentCharacter.GetAnimationComponent().FadeToAnimation(markedLocation.LocationAnim, 0f, false);
+
+        yield return StartCoroutine(LerpToTransform(markedLocation.transform, 1.5f));
+
+   
         State = MovementState.Stopped;
 
         //get rid of any existing prefabs that are out there first
@@ -158,6 +155,26 @@ public class NavigatorComponent : MonoBehaviour
             Destroy(todestroy);
         }
 
+    }
+
+    private IEnumerator LerpToTransform(Transform targetTransform, float lerpTime)
+    {
+        Transform initialTransform = this.transform;
+
+        float time = 0;
+
+        while (time < lerpTime)
+        {
+            transform.position = Vector3.Slerp(initialTransform.position, targetTransform.position, time/lerpTime);
+            transform.rotation = Quaternion.Slerp(initialTransform.rotation, targetTransform.rotation, time/lerpTime);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        this.transform.position = targetTransform.position;
+        this.transform.rotation = targetTransform.rotation;
+
+        yield return null;
     }
 
     public void ToggleMovement(bool flag)
@@ -176,10 +193,5 @@ public class NavigatorComponent : MonoBehaviour
     {
         _AI.canMove = flag;
     }
-
-    private void SpawnNavPointPrefab(Vector3 prefabLocation)
-    {
-        GameObject NavPointEffect = PrefabFactory.CreatePrefab(RegistryID.NavPoint, prefabLocation, Quaternion.identity, null);
-        NavPointPrefabs.Add(NavPointEffect);
-    }
 }
+

@@ -62,7 +62,7 @@ MonoBehaviour:
   traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
-    value: -1
+    value: 1
 --- !u!114 &6996634114165824155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   version: 5
   radius: 0.5
   height: 2
-  canMove: 0
+  canMove: 1
   maxSpeed: 2
   gravity: {x: 0, y: 0, z: 0}
   groundMask:
@@ -91,7 +91,7 @@ MonoBehaviour:
   enableRotation: 1
   autoRepath:
     mode: 2
-    interval: NaN
+    interval: 0.2
     sensitivity: 10
     maximumInterval: 2
     visualizeSensitivity: 0
@@ -101,7 +101,7 @@ MonoBehaviour:
   slowdownDistance: 0
   pickNextWaypointDist: 2
   endReachedDistance: 0.5
-  alwaysDrawGizmos: 0
+  alwaysDrawGizmos: 1
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   wallAvoidForce: 1
   wallAvoidFalloff: 1
   priority: 0.5
-  debug: 0
+  debug: 1
 --- !u!114 &6996634114165823845
 MonoBehaviour:
   m_ObjectHideFlags: 0

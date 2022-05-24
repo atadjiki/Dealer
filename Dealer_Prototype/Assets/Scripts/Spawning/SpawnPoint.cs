@@ -22,6 +22,21 @@ public class SpawnPoint : MonoBehaviour
         {
             _instance = this;
         }
+
+        DoSpawnUpdate();
+    }
+
+
+    public void DoSpawnUpdate()
+    {
+        //get the party from the game state
+        foreach(CharacterInfo characterInfo in GameStateManager.Instance.state.partyInfo)
+        {
+            if(CharacterManager.Instance.IsSpawned(characterInfo) == false)
+            {
+                AttemptSpawn(characterInfo);
+            }
+        }
     }
 
     public void AttemptSpawn(CharacterInfo characterInfo)
@@ -31,23 +46,22 @@ public class SpawnPoint : MonoBehaviour
 
     internal virtual IEnumerator PerformSpawn(CharacterInfo characterInfo)
     {
-
         if (CharacterManager.Instance)
         {
             State = CharacterSpawnerState.Spawning;
 
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
-            GameObject prefab = PrefabFactory.GetCharacterPrefab(characterInfo.ID.ToString(), this.transform);
-            CharacterComponent characterModel = prefab.GetComponent<CharacterComponent>();
+            GameObject prefab = PrefabFactory.CreatePrefab(RegistryID.NPC, this.transform);
+            CharacterComponent characterComponent = prefab.GetComponent<CharacterComponent>();
 
-            yield return new WaitWhile(() => characterModel == null);
+            yield return new WaitWhile(() => characterComponent == null);
 
-            characterModel.Initialize(characterInfo);
+            characterComponent.Initialize(characterInfo);
 
             State = CharacterSpawnerState.Spawned;
 
-            yield return new WaitWhile(() => !characterModel.HasInitialized());
+            yield return new WaitWhile(() => !characterComponent.HasInitialized());
         }
 
         yield return null;

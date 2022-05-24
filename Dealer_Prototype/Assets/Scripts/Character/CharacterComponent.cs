@@ -5,112 +5,85 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    protected Animator _animator;
-    protected CharacterAnimationComponent _characterAnimation;
-    protected NavigatorComponent _navigator;
-    protected Light _light;
+
+    [SerializeField] private NavigatorComponent _navigator;
+    [SerializeField] private CharacterTaskComponent _taskComponent;
 
     [Header("Character Setup")]
 
     private CharacterInfo characterInfo;
-    private AnimationConstants.Anim CurrentAnimation = AnimationConstants.Anim.Idle;
+    private CharacterAnimationComponent _animationComponent;
 
     private bool bHasInitialized = false;
 
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
         characterInfo = _characterInfo;
+
         StartCoroutine(DoInitialize());
+
+        if (CharacterManager.Instance)
+        {
+            CharacterManager.Instance.RegisterCharacter(this);
+        }
+
     }
 
     private void OnDestroy()
     {
-        if (CharacterPanel.Instance)
+        if (CharacterManager.Instance)
         {
-            CharacterPanel.Instance.UnRegisterCharacter(this);
-        }
-        if(CharacterManager.Instance)
-        {
-            CharacterManager.Instance.UnRegisterCharacterModel(characterInfo);
+            CharacterManager.Instance.UnRegisterCharacter(this);
         }
     }
 
     internal virtual IEnumerator DoInitialize()
     {
-        //setup navigator
-        GameObject NavigatorPrefab = PrefabFactory.CreatePrefab(RegistryID.Navigator, this.transform);
-        _navigator = NavigatorPrefab.GetComponent<NavigatorComponent>();
-        _navigator.SetCanMove(true);
+        GameObject ModelPrefab = PrefabFactory.GetCharacterPrefab(characterInfo.ID.ToString(), _navigator.gameObject.transform);
 
-        yield return new WaitWhile(() => _navigator == null);
+        _animationComponent = ModelPrefab.GetComponent<CharacterAnimationComponent>();
+        _animationComponent.FadeToAnimation(characterInfo.InitialAnim, 0.0f, true);
 
-        // ModelPrefab.transform.parent = NavigtorPrefab.transform;
-        _animator = this.GetComponent<Animator>();
-
-        _characterAnimation = GetComponent<CharacterAnimationComponent>();
-        _characterAnimation.SetSocket(_navigator.gameObject);
-
-        yield return new WaitWhile(() => _animator == null);
-
-        GameObject CharacterLightPrefab = PrefabFactory.CreatePrefab(RegistryID.CharacterLight, this.transform);
-        _light = CharacterLightPrefab.GetComponent<Light>();
-
-        yield return new WaitWhile(() => _light == null);
-
-        FadeToAnimation(characterInfo.InitialAnim, 0.0f, true);
-
-        if (CharacterPanel.Instance)
-        {
-            Debug.Log("Attempting to register " + this.name);
-            CharacterPanel.Instance.RegisterCharacter(this);
-        }
-
-        if(CharacterManager.Instance)
-        {
-            CharacterManager.Instance.RegisterCharacterModel(characterInfo, this);
-        }
+        _navigator.ToggleMovement(true);
 
         bHasInitialized = true;
+
+        yield return null;
     }
 
     public bool HasInitialized() { return bHasInitialized; }
 
-    public void SetPositionRotation(Vector3 Position, Quaternion Rotation)
-    {
-        _navigator.gameObject.transform.position = Position;
-        _navigator.gameObject.transform.rotation = Rotation;
-
-    }
-
     public virtual void OnNewDestination(Vector3 destination) { }
 
     public virtual void OnDestinationReached(Vector3 destination) { }
-
-    public void FadeToAnimation(AnimationConstants.Anim anim, float time, bool canMove)
-    {
-        string animString = AnimationConstants.FetchAnimString(characterInfo.ID, anim);
-
-        if (_animator != null) _animator.CrossFade(animString, time);
-        if (_navigator != null) _navigator.SetCanMove(canMove);
-        SetCurrentAnimation(anim);
-
-        DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "Fading to anim " + animString);
-    }
-
-    public AnimationConstants.Anim GetCurrentAnimation() { return CurrentAnimation; }
-
-    public void SetCurrentAnimation(AnimationConstants.Anim anim)
-    {
-        CurrentAnimation = anim;
-    }
 
     public string GetID()
     {
         return characterInfo.ID.ToString();
     }
 
+    public CharacterConstants.CharacterID GetCharacterID()
+    {
+        return characterInfo.ID;
+    }
+
     public NavigatorComponent GetNavigatorComponent()
     {
         return _navigator;
+    }
+
+    public CharacterAnimationComponent GetAnimationComponent()
+    {
+        return _animationComponent;
+    }
+
+    public CharacterTaskComponent GetTaskComponent()
+    {
+        return _taskComponent;
+    }
+
+    public CharacterInfo GetCharacterInfo()
+    {
+        return characterInfo;
     }
 }

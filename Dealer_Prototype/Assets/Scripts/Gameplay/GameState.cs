@@ -18,7 +18,6 @@ public struct CharacterInfo
             "Name: " + name + "\n" +
             "Model: " + ID.ToString() + "\n" +
             "Initial Anim : " + InitialAnim.ToString() + "\n"
-
         ;
     }
 }

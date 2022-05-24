@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TaskComponent : MonoBehaviour
+public class CharacterTaskComponent : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private CharacterTask task;
+
+    private void Awake()
     {
-        
+        task = CharacterTask.Empty();
     }
 
-    // Update is called once per frame
-    void Update()
+    public CharacterTask GetTask()
     {
-        
+        return task;
+    }
+
+    public void SetTask(CharacterTask _task)
+    {
+        task = _task;
     }
 }

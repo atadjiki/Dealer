@@ -68,7 +68,6 @@ public class InfoPanelManager : MonoBehaviour
         if (uiMap.ContainsKey(interactable) == false)
         {
             uiMap.Add(interactable, BuildUIForTarget(panelPrefab));
-            Debug.Log("registered interactable " + interactable.name);
         }
     }
 
