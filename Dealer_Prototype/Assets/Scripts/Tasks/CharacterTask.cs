@@ -13,7 +13,7 @@ public struct CharacterTask
         CharacterTask task = new CharacterTask();
         task.DaysRemaining = -1;
         task.markedLocation = null;
-        task.Type = Constants.TaskConstants.TaskType.Waiting;
+        task.Type = Constants.TaskConstants.TaskType.None;
 
         return task;
     }

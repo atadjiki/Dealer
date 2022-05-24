@@ -18,6 +18,11 @@ public class PartyListItem : MonoBehaviour
         textBox.text = text;
     }
 
+    public void SetTextColor(Color color)
+    {
+        textBox.color = color;
+    }
+
     public void ToggleVisiblity(bool flag)
     {
         this.gameObject.SetActive(flag);

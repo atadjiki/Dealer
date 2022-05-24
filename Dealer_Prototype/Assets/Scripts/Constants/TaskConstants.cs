@@ -2,6 +2,7 @@ namespace Constants
 {
     public class TaskConstants
     {
-        public enum TaskType { Process, Sell, Pickup, Waiting };
+        public enum TaskState { WaitingForUpdate, Idle, Busy, None };
+        public enum TaskType { Process, Sell, Pickup, None };
     }
 }

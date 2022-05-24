@@ -53,6 +53,7 @@ public class SpawnPoint : MonoBehaviour
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
             GameObject prefab = PrefabFactory.CreatePrefab(RegistryID.NPC, this.transform);
+            prefab.name = characterInfo.ID + "-" + characterInfo.name;
             CharacterComponent characterComponent = prefab.GetComponent<CharacterComponent>();
 
             yield return new WaitWhile(() => characterComponent == null);

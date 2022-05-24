@@ -130,6 +130,8 @@ public class NavigatorComponent : MonoBehaviour
             }
         }
 
+        onReachedLocation(parentCharacter, markedLocation);
+
         // The agent has reached the destination now
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 1, 1, false);
 
@@ -141,8 +143,6 @@ public class NavigatorComponent : MonoBehaviour
 
    
         State = MovementState.Stopped;
-
-        onReachedLocation(parentCharacter, markedLocation);
     }
 
     private IEnumerator LerpToTransform(Transform targetTransform, float lerpTime)

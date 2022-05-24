@@ -43,7 +43,7 @@ public class CharacterPanel : MonoBehaviour
 
     private TextMeshProUGUI BuildTextMesh(CharacterComponent characterComponent)
     {
-        if(characterComponent != null)
+        if (characterComponent != null)
         {
             GameObject textMeshObject = Instantiate(TextMeshPrefab, this.transform);
             TextMeshProUGUI textMesh = textMeshObject.GetComponent<TextMeshProUGUI>();
@@ -55,7 +55,7 @@ public class CharacterPanel : MonoBehaviour
 
     public void RegisterCharacter(CharacterComponent characterModel)
     {
-        if(characterMap.ContainsKey(characterModel) == false)
+        if (characterMap.ContainsKey(characterModel) == false)
         {
             characterMap.Add(characterModel, BuildTextMesh(characterModel));
             Debug.Log("Registered character " + characterModel.gameObject.name);
@@ -64,7 +64,7 @@ public class CharacterPanel : MonoBehaviour
 
     public void UnRegisterCharacter(CharacterComponent characterComponent)
     {
-        if(characterMap.ContainsKey(characterComponent))
+        if (characterMap.ContainsKey(characterComponent))
         {
             Destroy(characterMap[characterComponent].gameObject);
             characterMap.Remove(characterComponent);
@@ -75,57 +75,59 @@ public class CharacterPanel : MonoBehaviour
     {
         foreach (CharacterComponent character in characterMap.Keys)
         {
-            if(character.gameObject)
+            int lines;
+
+            TextMeshProUGUI textMesh = characterMap[character];
+            textMesh.text = BuildCharacterString(character, out lines);
+
+            if (character.GetAnimationComponent().IsVisible())
             {
-                int lines;
-
-                TextMeshProUGUI textMesh = characterMap[character];
-                textMesh.text = BuildCharacterString(character, out lines);
-
-                GameObject model = character.gameObject;
-
-                UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
-
-                Vector3 anchorPoint = anchor.transform.position;
-
-                Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
-
-                textMesh.rectTransform.anchoredPosition = targetScreenPoint + (offset*lines);
+                textMesh.color = Color.yellow;
+                textMesh.alpha = 0.80f;
+        }
+            else
+            {
+                textMesh.color = Color.grey;
+                textMesh.alpha = 0.25f;
             }
+
+            GameObject model = character.GetAnimationComponent().gameObject;
+
+            UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
+
+            Vector3 anchorPoint = anchor.transform.position;
+
+            Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
+
+            textMesh.rectTransform.anchoredPosition = targetScreenPoint + (offset * lines);
         }
     }
 
     private string BuildCharacterString(CharacterComponent character, out int lines)
     {
-        string characterString = "";
         lines = 0;
+        string characterString = "";
 
-        if(displayName)
+        if (displayName)
         {
             characterString += character.GetCharacterInfo().name;
             lines++;
         }
-        if (displayID)
+
+        if (displayID && character.GetAnimationComponent().IsVisible())
         {
             characterString += "\n" + character.GetCharacterInfo().ID;
             lines++;
         }
         if (displayTask)
         {
-            if(character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving)
-            {
-                characterString += "\n" + character.GetNavigatorComponent().State.ToString();
-            }
-            else
-            {
-                characterString += "\n" + character.GetTaskComponent().GetTask().Type.ToString();
-            }
-          
+            characterString += "\n" + CharacterTaskComponent.GetUIString(character);
+
             lines++;
         }
-        if (displayTime)
+        if (displayTime && character.GetAnimationComponent().IsVisible())
         {
-            if(character.timeSinceLastUpdate > 0)
+            if (character.timeSinceLastUpdate > 0)
             {
                 characterString += "\n" + string.Format("{0:0.#}", character.timeSinceLastUpdate) + "/" + ((int)character.updateTime);
                 lines++;

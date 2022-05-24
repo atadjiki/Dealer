@@ -13,8 +13,9 @@ public class CharacterAnimationComponent : MonoBehaviour
 
     private CharacterComponent charPtr;
 
-    private bool hidden = false;
+    private bool visible = false;
 
+    public bool IsVisible() { return visible; }
     public void SetSocket(GameObject inObject) { socket = inObject; }
 
     private void Awake()
@@ -27,17 +28,22 @@ public class CharacterAnimationComponent : MonoBehaviour
         _navigator.SetCanMove(true);
 
         SetSocket(this.transform.parent.gameObject);
+
+        ToggleVisiblity(visible);
     }
 
     public void FadeToAnimation(AnimationConstants.Anim anim, float time, bool canMove)
     {
-        string animString = AnimationConstants.FetchAnimString(charPtr.GetCharacterID(), anim);
+        if(visible)
+        {
+            string animString = AnimationConstants.FetchAnimString(charPtr.GetCharacterID(), anim);
 
-        if (_animator != null) _animator.CrossFade(animString, time);
-        if (_navigator != null) _navigator.SetCanMove(canMove);
-        SetCurrentAnimation(anim);
+            if (_animator != null) _animator.CrossFade(animString, time);
+            if (_navigator != null) _navigator.SetCanMove(canMove);
+            SetCurrentAnimation(anim);
 
-        DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "Fading to anim " + animString);
+            DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "Fading to anim " + animString);
+        }
     }
 
     public AnimationConstants.Anim GetCurrentAnimation() { return CurrentAnimation; }
@@ -49,13 +55,14 @@ public class CharacterAnimationComponent : MonoBehaviour
 
     public bool IsHidden()
     {
-        return hidden;
+        return visible;
     }
 
     public void ToggleVisiblity(bool flag)
     {
-        hidden = flag;
-        this.gameObject.SetActive(hidden);
+        visible = flag;
+        this.gameObject.SetActive(flag);
+        PartyPanelList.Instance.UpdateList();
     }
 
 }

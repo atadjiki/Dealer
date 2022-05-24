@@ -45,7 +45,7 @@ public class PartyPanelList : MonoBehaviour
 
                     CharacterTask characterTask = Party[i].GetTaskComponent().GetTask();
 
-                    string taskType = " - " + characterTask.Type.ToString();
+                    string taskStatus = " - " + CharacterTaskComponent.GetUIString(Party[i]);
 
                     string taskDays;
                     if (characterTask.DaysRemaining > 0 )
@@ -59,7 +59,16 @@ public class PartyPanelList : MonoBehaviour
 
                     listItem.ToggleVisiblity(true);
 
-                    listItem.SetText(characterName + taskType + taskDays);
+                    listItem.SetText(characterName + taskStatus + taskDays);
+
+                    if (Party[i].GetAnimationComponent().IsVisible())
+                    {
+                        listItem.SetTextColor(Color.yellow);
+                    }
+                    else
+                    {
+                        listItem.SetTextColor(Color.gray);
+                    }
                 }
                 else
                 {

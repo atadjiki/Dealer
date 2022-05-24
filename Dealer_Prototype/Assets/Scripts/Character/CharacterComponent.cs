@@ -22,7 +22,7 @@ public class CharacterComponent : MonoBehaviour
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
 
-        updateTime = Random.Range(5, 10);
+        updateTime = Random.Range(1,5);
 
         characterInfo = _characterInfo;
 
