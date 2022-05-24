@@ -21,6 +21,9 @@ public class CharacterComponent : MonoBehaviour
 
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
+
+        updateTime = Random.Range(5, 10);
+
         characterInfo = _characterInfo;
 
         StartCoroutine(DoInitialize());

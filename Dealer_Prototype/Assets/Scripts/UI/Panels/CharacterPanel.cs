@@ -10,6 +10,12 @@ public class CharacterPanel : MonoBehaviour
     [SerializeField] private GameObject TextMeshPrefab;
     [SerializeField] private Canvas uiCanvas;
     [SerializeField] private Camera uiCamera;
+    [SerializeField] private Vector2 offset;
+
+    [SerializeField] private bool displayName;
+    [SerializeField] private bool displayID;
+    [SerializeField] private bool displayTask;
+    [SerializeField] private bool displayTime;
 
     private static CharacterPanel _instance;
 
@@ -41,7 +47,6 @@ public class CharacterPanel : MonoBehaviour
         {
             GameObject textMeshObject = Instantiate(TextMeshPrefab, this.transform);
             TextMeshProUGUI textMesh = textMeshObject.GetComponent<TextMeshProUGUI>();
-            textMesh.text = characterComponent.GetCharacterInfo().name;
             return textMesh;
         }
 
@@ -68,13 +73,16 @@ public class CharacterPanel : MonoBehaviour
 
     private void FixedUpdate()
     {
-        foreach (CharacterComponent characterModel in characterMap.Keys)
+        foreach (CharacterComponent character in characterMap.Keys)
         {
-            if(characterModel.gameObject)
+            if(character.gameObject)
             {
-                TextMeshProUGUI textMesh = characterMap[characterModel];
+                int lines;
 
-                GameObject model = characterModel.gameObject;
+                TextMeshProUGUI textMesh = characterMap[character];
+                textMesh.text = BuildCharacterString(character, out lines);
+
+                GameObject model = character.gameObject;
 
                 UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
 
@@ -82,13 +90,51 @@ public class CharacterPanel : MonoBehaviour
 
                 Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
 
-                Vector2 offset = new Vector2(0, 50);
-
-                textMesh.rectTransform.anchoredPosition = targetScreenPoint + offset;
+                textMesh.rectTransform.anchoredPosition = targetScreenPoint + (offset*lines);
             }
- 
         }
     }
+
+    private string BuildCharacterString(CharacterComponent character, out int lines)
+    {
+        string characterString = "";
+        lines = 0;
+
+        if(displayName)
+        {
+            characterString += character.GetCharacterInfo().name;
+            lines++;
+        }
+        if (displayID)
+        {
+            characterString += "\n" + character.GetCharacterInfo().ID;
+            lines++;
+        }
+        if (displayTask)
+        {
+            if(character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Moving)
+            {
+                characterString += "\n" + character.GetNavigatorComponent().State.ToString();
+            }
+            else
+            {
+                characterString += "\n" + character.GetTaskComponent().GetTask().Type.ToString();
+            }
+          
+            lines++;
+        }
+        if (displayTime)
+        {
+            if(character.timeSinceLastUpdate > 0)
+            {
+                characterString += "\n" + string.Format("{0:0.#}", character.timeSinceLastUpdate) + "/" + ((int)character.updateTime);
+                lines++;
+            }
+        }
+
+        return characterString;
+    }
+
 
     public static Vector2 WorldToCanvas(Canvas canvas, Vector3 worldPoint, Camera camera)
     {
