@@ -4,17 +4,17 @@ using System.Linq;
 using Constants;
 using UnityEngine;
 
-public class PartyManager : MonoBehaviour
+public class CharacterManager : MonoBehaviour
 {
     private Dictionary<CharacterInfo, CharacterTask> CharacterTaskMap;
-    private Dictionary<CharacterInfo, CharacterModel> CharacterModelMap;
+    private Dictionary<CharacterInfo, CharacterComponent> CharacterModelMap;
 
     private List<MarkedLocation> waitLocations;
     private const int _popCap = 4;
 
-    private static PartyManager _instance;
+    private static CharacterManager _instance;
 
-    public static PartyManager Instance { get { return _instance; } }
+    public static CharacterManager Instance { get { return _instance; } }
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class PartyManager : MonoBehaviour
     internal void Build()
     {
         CharacterTaskMap = new Dictionary<CharacterInfo, CharacterTask>();
-        CharacterModelMap = new Dictionary<CharacterInfo, CharacterModel>();
+        CharacterModelMap = new Dictionary<CharacterInfo, CharacterComponent>();
         waitLocations = new List<MarkedLocation>();
         GameStateManager.Instance.onLevelStart += OnLevelStart;
     }
@@ -79,7 +79,7 @@ public class PartyManager : MonoBehaviour
         }
     }
 
-    public void RegisterCharacterModel(CharacterInfo characterInfo, CharacterModel characterModel)
+    public void RegisterCharacterModel(CharacterInfo characterInfo, CharacterComponent characterModel)
     {
         if (CharacterModelMap.ContainsKey(characterInfo) == false)
         {
@@ -146,7 +146,7 @@ public class PartyManager : MonoBehaviour
             {
                 if (CharacterModelMap.ContainsKey(characterInfo))
                 {
-                    CharacterModel model = CharacterModelMap[characterInfo];
+                    CharacterComponent model = CharacterModelMap[characterInfo];
 
                     if (model != null)
                     {
@@ -174,7 +174,7 @@ public class PartyManager : MonoBehaviour
         }
     }
 
-    public IEnumerator MoveModelToMarkedLocation(CharacterModel model, MarkedLocation markedLocation)
+    public IEnumerator MoveModelToMarkedLocation(CharacterComponent model, MarkedLocation markedLocation)
     {
         model.GetNavigatorComponent().SetCanMove(true);
         model.GetNavigatorComponent().ToggleMovement(true);

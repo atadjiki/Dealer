@@ -5,7 +5,7 @@ using TMPro;
 
 public class CharacterPanel : MonoBehaviour
 {
-    private Dictionary<CharacterModel, TextMeshProUGUI> characterMap;
+    private Dictionary<CharacterComponent, TextMeshProUGUI> characterMap;
 
     [SerializeField] private GameObject TextMeshPrefab;
     [SerializeField] private Canvas uiCanvas;
@@ -31,11 +31,11 @@ public class CharacterPanel : MonoBehaviour
 
     private void Build()
     {
-        characterMap = new Dictionary<CharacterModel, TextMeshProUGUI>();
+        characterMap = new Dictionary<CharacterComponent, TextMeshProUGUI>();
 
     }
 
-    private TextMeshProUGUI BuildTextMesh(CharacterModel characterModel)
+    private TextMeshProUGUI BuildTextMesh(CharacterComponent characterModel)
     {
         if(characterModel != null)
         {
@@ -48,7 +48,7 @@ public class CharacterPanel : MonoBehaviour
         return null;
     }
 
-    public void RegisterCharacter(CharacterModel characterModel)
+    public void RegisterCharacter(CharacterComponent characterModel)
     {
         if(characterMap.ContainsKey(characterModel) == false)
         {
@@ -57,7 +57,7 @@ public class CharacterPanel : MonoBehaviour
         }
     }
 
-    public void UnRegisterCharacter(CharacterModel characterModel)
+    public void UnRegisterCharacter(CharacterComponent characterModel)
     {
         if(characterMap.ContainsKey(characterModel))
         {
@@ -68,7 +68,7 @@ public class CharacterPanel : MonoBehaviour
 
     private void FixedUpdate()
     {
-        foreach (CharacterModel characterModel in characterMap.Keys)
+        foreach (CharacterComponent characterModel in characterMap.Keys)
         {
             if(characterModel.gameObject)
             {

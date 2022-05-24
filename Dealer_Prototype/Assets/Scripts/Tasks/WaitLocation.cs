@@ -6,11 +6,11 @@ public class WaitLocation : MarkedLocation
 {
     private void Awake()
     {
-        PartyManager.Instance.RegisterLocation(this);
+        CharacterManager.Instance.RegisterLocation(this);
     }
 
     private void OnDestroy()
     {
-        PartyManager.Instance.UnRegisterLocation(this);
+        CharacterManager.Instance.UnRegisterLocation(this);
     }
 }

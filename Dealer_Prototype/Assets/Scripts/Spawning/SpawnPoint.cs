@@ -32,14 +32,14 @@ public class SpawnPoint : MonoBehaviour
     internal virtual IEnumerator PerformSpawn(CharacterInfo characterInfo)
     {
 
-        if (PartyManager.Instance)
+        if (CharacterManager.Instance)
         {
             State = CharacterSpawnerState.Spawning;
 
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
             GameObject prefab = PrefabFactory.GetCharacterPrefab(characterInfo.ID.ToString(), this.transform);
-            CharacterModel characterModel = prefab.GetComponent<CharacterModel>();
+            CharacterComponent characterModel = prefab.GetComponent<CharacterComponent>();
 
             yield return new WaitWhile(() => characterModel == null);
 

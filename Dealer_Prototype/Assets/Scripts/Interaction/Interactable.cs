@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
-    private InteractableStateComponent _interactionState;
     [SerializeField] private InteractableConstants.InteractableID ID;
 
     internal InteractableConstants.InteractionState CurrentState;
@@ -38,12 +37,6 @@ public class Interactable : MonoBehaviour
     {
         if (InteractableManager.Instance)
         {
-            _interactionState = this.gameObject.AddComponent<InteractableStateComponent>();
-
-            yield return new WaitUntil(() => _interactionState != null);
-
-            _interactionState.SetInteractableID(ID);
-
             SetState(InteractableConstants.InteractionState.Available);
 
             if (InteractableManager.Instance.Register(this) == false)
@@ -90,10 +83,7 @@ public class Interactable : MonoBehaviour
 
     public string GetID()
     {
-        if (_interactionState != null)
-            return _interactionState.GetID();
-        else
-            return "";
+        return ID.ToString();
     }
 
     private void OnMouseOver()

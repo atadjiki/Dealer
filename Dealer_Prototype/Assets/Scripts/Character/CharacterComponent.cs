@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class CharacterModel : MonoBehaviour
+public class CharacterComponent : MonoBehaviour
 {
     protected Animator _animator;
     protected CharacterAnimationComponent _characterAnimation;
@@ -29,9 +29,9 @@ public class CharacterModel : MonoBehaviour
         {
             CharacterPanel.Instance.UnRegisterCharacter(this);
         }
-        if(PartyManager.Instance)
+        if(CharacterManager.Instance)
         {
-            PartyManager.Instance.UnRegisterCharacterModel(characterInfo);
+            CharacterManager.Instance.UnRegisterCharacterModel(characterInfo);
         }
     }
 
@@ -65,9 +65,9 @@ public class CharacterModel : MonoBehaviour
             CharacterPanel.Instance.RegisterCharacter(this);
         }
 
-        if(PartyManager.Instance)
+        if(CharacterManager.Instance)
         {
-            PartyManager.Instance.RegisterCharacterModel(characterInfo, this);
+            CharacterManager.Instance.RegisterCharacterModel(characterInfo, this);
         }
 
         bHasInitialized = true;

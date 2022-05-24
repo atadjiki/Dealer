@@ -31,7 +31,7 @@ public class PartyPanelList : MonoBehaviour
 
     public void UpdateList()
     {
-        List<CharacterInfo> Party = PartyManager.Instance.GetParty();
+        List<CharacterInfo> Party = CharacterManager.Instance.GetParty();
 
         if(Party != null)
         {
@@ -43,7 +43,7 @@ public class PartyPanelList : MonoBehaviour
                 {
                     string characterName = Party[i].ID.ToString();
 
-                    CharacterTask characterTask = PartyManager.Instance.GetCharacterTask(Party[i]);
+                    CharacterTask characterTask = CharacterManager.Instance.GetCharacterTask(Party[i]);
 
                     string taskType = " - " + characterTask.Type.ToString();
 
