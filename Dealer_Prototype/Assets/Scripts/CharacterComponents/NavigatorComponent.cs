@@ -14,10 +14,11 @@ public class NavigatorComponent : MonoBehaviour
     internal Seeker _Seeker;
     private CharacterComponent parentCharacter;
 
-    private HashSet<GameObject> NavPointPrefabs;
-
     public enum MovementState { Stopped, Moving };
     public MovementState State = MovementState.Stopped;
+
+    public delegate void OnReachedLocation(CharacterComponent character, MarkedLocation location);
+    public OnReachedLocation onReachedLocation;
 
     private void Awake()
     {
@@ -25,8 +26,6 @@ public class NavigatorComponent : MonoBehaviour
         _AI = GetComponentInChildren<AIPath>();
         _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();
-
-        NavPointPrefabs = new HashSet<GameObject>();
 
         _AI.autoRepath.mode = AutoRepathPolicy.Mode.EveryNSeconds;
         _AI.autoRepath.interval = 0.2f;
@@ -106,12 +105,6 @@ public class NavigatorComponent : MonoBehaviour
         float timeStamp = Time.time;
         yield return new WaitForEndOfFrame();
 
-        //get rid of any existing prefabs that are out there first
-        foreach (GameObject todestroy in NavPointPrefabs)
-        {
-            Destroy(todestroy);
-        }
-
         parentCharacter.GetAnimationComponent().FadeToAnimation(AnimationConstants.Anim.Walking, 0.15f, true);
 
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 1, 1, false);
@@ -149,12 +142,7 @@ public class NavigatorComponent : MonoBehaviour
    
         State = MovementState.Stopped;
 
-        //get rid of any existing prefabs that are out there first
-        foreach (GameObject todestroy in NavPointPrefabs)
-        {
-            Destroy(todestroy);
-        }
-
+        onReachedLocation(parentCharacter, markedLocation);
     }
 
     private IEnumerator LerpToTransform(Transform targetTransform, float lerpTime)

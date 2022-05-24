@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class WaitLocation : MarkedLocation
 {
+    public float minWaitTime;
+    public float maxWaitTime;
+
     private void Awake()
     {
         CharacterManager.Instance.RegisterLocation(this);

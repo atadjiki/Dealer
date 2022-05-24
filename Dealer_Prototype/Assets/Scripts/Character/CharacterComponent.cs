@@ -16,6 +16,9 @@ public class CharacterComponent : MonoBehaviour
 
     private bool bHasInitialized = false;
 
+    public float updateTime { get; set; } //update when we hit this threshhold
+    public float timeSinceLastUpdate { get; set; } //current time
+
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
         characterInfo = _characterInfo;

@@ -9,7 +9,6 @@ public struct CharacterInfo
     public CharacterConstants.CharacterID ID;
     public AnimationConstants.Anim InitialAnim;
     public string name;
-
     public string toString()
     {
         return

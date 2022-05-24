@@ -167,6 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
+  minWaitTime: 20
+  maxWaitTime: 60
 --- !u!1 &941018714
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,6 +213,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 1
+  minWaitTime: 15
+  maxWaitTime: 20
 --- !u!1 &951335969
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +317,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117973299}
   m_LocalRotation: {x: -0, y: 0.39144817, z: -0, w: 0.9202002}
-  m_LocalPosition: {x: -0.57, y: 0.5, z: -3.95}
+  m_LocalPosition: {x: -0.57, y: 0, z: -3.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 951335970}
@@ -332,6 +336,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
+  minWaitTime: 20
+  maxWaitTime: 60
 --- !u!1 &1237396803
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +656,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606c9ccab87ec4991916b50a651d5eaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocationAnim: 1
+  LocationAnim: 18
+  minWaitTime: 15
+  maxWaitTime: 25
 --- !u!1001 &634946025051975210
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -35,13 +35,13 @@ public class CharacterPanel : MonoBehaviour
 
     }
 
-    private TextMeshProUGUI BuildTextMesh(CharacterComponent characterModel)
+    private TextMeshProUGUI BuildTextMesh(CharacterComponent characterComponent)
     {
-        if(characterModel != null)
+        if(characterComponent != null)
         {
             GameObject textMeshObject = Instantiate(TextMeshPrefab, this.transform);
             TextMeshProUGUI textMesh = textMeshObject.GetComponent<TextMeshProUGUI>();
-            textMesh.text = characterModel.GetID();
+            textMesh.text = characterComponent.GetCharacterInfo().name;
             return textMesh;
         }
 
@@ -57,12 +57,12 @@ public class CharacterPanel : MonoBehaviour
         }
     }
 
-    public void UnRegisterCharacter(CharacterComponent characterModel)
+    public void UnRegisterCharacter(CharacterComponent characterComponent)
     {
-        if(characterMap.ContainsKey(characterModel))
+        if(characterMap.ContainsKey(characterComponent))
         {
-            Destroy(characterMap[characterModel].gameObject);
-            characterMap.Remove(characterModel);
+            Destroy(characterMap[characterComponent].gameObject);
+            characterMap.Remove(characterComponent);
         }
     }
 

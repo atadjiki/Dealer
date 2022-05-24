@@ -1,53 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2016859109
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2016859110}
-  - component: {fileID: 2016859111}
-  m_Layer: 0
-  m_Name: GameState
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2016859110
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016859109}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1333640160879706260}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2016859111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016859109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9246d36bfcbd641c2bb740ee73e8c065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  partyInfo:
-  - ID: 0
-    InitialAnim: 1
-    name: PLAYER
-  money: 50.13
 --- !u!1 &1333640160879706261
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1333640160879706260}
   - component: {fileID: 1333640160879706259}
+  - component: {fileID: 8675067808678464408}
   m_Layer: 0
   m_Name: GameStateManager
   m_TagString: Untagged
@@ -78,7 +31,6 @@ Transform:
   m_Children:
   - {fileID: 1333640161599269034}
   - {fileID: 1333640162096271761}
-  - {fileID: 2016859110}
   m_Father: {fileID: 1333640161775544003}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -94,8 +46,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e4b378ab740428b8476698c1393f08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: {fileID: 2016859111}
+  state: {fileID: 8675067808678464408}
   UpdateState: 0
+--- !u!114 &8675067808678464408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333640160879706261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9246d36bfcbd641c2bb740ee73e8c065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  partyInfo: []
+  money: 0
 --- !u!1 &1333640161286381423
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1333640161599269034}
-  - component: {fileID: 1333640161599269033}
+  - component: {fileID: 4947477106587913706}
   m_Layer: 0
   m_Name: PartyManager
   m_TagString: Untagged
@@ -180,7 +146,7 @@ Transform:
   m_Father: {fileID: 1333640160879706260}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1333640161599269033
+--- !u!114 &4947477106587913706
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -189,7 +155,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1333640161599269035}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1285714e1e49d4d1e9e615cae810bef7, type: 3}
+  m_Script: {fileID: 11500000, guid: 666a501345e0940cb9744463e422afb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1333640161775544005
