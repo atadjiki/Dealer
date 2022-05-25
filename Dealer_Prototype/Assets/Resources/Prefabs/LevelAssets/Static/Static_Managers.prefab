@@ -60,7 +60,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9246d36bfcbd641c2bb740ee73e8c065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partyInfo: []
+  partyInfo:
+  - ID: 0
+    InitialAnim: 16
+    name: GOON 1
+  - ID: 1
+    InitialAnim: 17
+    name: GOON 2
   money: 0
 --- !u!1 &1333640161286381423
 GameObject:
@@ -126,7 +132,7 @@ GameObject:
   - component: {fileID: 1333640161599269034}
   - component: {fileID: 4947477106587913706}
   m_Layer: 0
-  m_Name: PartyManager
+  m_Name: CharacterManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

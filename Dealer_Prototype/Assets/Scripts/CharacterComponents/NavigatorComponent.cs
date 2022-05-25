@@ -131,12 +131,6 @@ public class NavigatorComponent : MonoBehaviour
             }
 
             moveDuration += Time.fixedDeltaTime;
-
-            if(moveDuration > 10.0f)
-            {
-                Debug.Log("move has taken forever");
-                break;
-            }
         }
 
         onReachedLocation(parentCharacter, markedLocation);

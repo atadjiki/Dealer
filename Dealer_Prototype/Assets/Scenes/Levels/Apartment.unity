@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
-  minWaitTime: 25
-  maxWaitTime: 35
+  minWaitTime: 60
+  maxWaitTime: 120
 --- !u!1 &941018714
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,8 +213,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 1
-  minWaitTime: 5
-  maxWaitTime: 10
+  minWaitTime: 30
+  maxWaitTime: 60
 --- !u!1 &951335969
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,49 +246,6 @@ Transform:
   - {fileID: 941018715}
   - {fileID: 327051133}
   - {fileID: 1684479465}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1061202206
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1061202208}
-  - component: {fileID: 1061202207}
-  m_Layer: 0
-  m_Name: Debug
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1061202207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061202206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6b33bf73b78943e68eecab9c0fb1dc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1061202208
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061202206}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -336,8 +293,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
-  minWaitTime: 25
-  maxWaitTime: 35
+  minWaitTime: 60
+  maxWaitTime: 120
 --- !u!1 &1237396803
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,8 +614,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 18
-  minWaitTime: 15
-  maxWaitTime: 25
+  minWaitTime: 30
+  maxWaitTime: 60
 --- !u!1001 &634946025051975210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -666,14 +623,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 211801791275509999, guid: 817d344ea6db84f1692889939e97893a, type: 3}
-      propertyPath: m_Name
-      value: Chair_InteractionTransform
-      objectReference: {fileID: 0}
-    - target: {fileID: 634946024468401618, guid: 817d344ea6db84f1692889939e97893a, type: 3}
-      propertyPath: m_Name
-      value: TV_InteractionTransform
-      objectReference: {fileID: 0}
     - target: {fileID: 634946024991872932, guid: 817d344ea6db84f1692889939e97893a, type: 3}
       propertyPath: m_Name
       value: Apartment
@@ -721,10 +670,6 @@ PrefabInstance:
     - target: {fileID: 634946024991872933, guid: 817d344ea6db84f1692889939e97893a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5283101196341779543, guid: 817d344ea6db84f1692889939e97893a, type: 3}
-      propertyPath: m_Name
-      value: Fridge_InteractionTransform
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 817d344ea6db84f1692889939e97893a, type: 3}
@@ -783,21 +728,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3268550949009779833, guid: 8e269ca92d9df4ac3a358be700b0447b, type: 3}
-      propertyPath: scanOnStartup
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3268550949009779833, guid: 8e269ca92d9df4ac3a358be700b0447b, type: 3}
-      propertyPath: data.dataString
-      value: UEsDBBQAAAgIAACQn+unGxte8gEAANgDAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFtU01z2jAQ/SuMzy3jjxhIjyVMeijQwTlk0ulhkRZbE1misgQEhv/elZHBGXqS/Vbvrfft8yliFRhgFs0KuHBN9G0QD/Mvg4hpZbUzczjMjNGG8MSjKGUhjthe88Ae5DusJf5AUVY23OrAqRT12l8lrIZDIfXWM7PwPuMl/kRV2irwaqFWWAqtQouUMOTCavMiJAYwSScE2wC83iFvV8Q16Hl+JmscEmJQ4g6UfTawrQpnNsBwrrmXjZ70QtsV/nXCYOTvQkOukOBUSyk4Gq+zAdlgvzjHpvrUoSu8oDEg1P8qBvsMFuRXXf0JLQjpp7j41LzT82kQ7UA6/6V5nI8GZz8xlPNL9fcf/3rpWEC9vZqV+cbagiVTLyqHsI+PcB792cpttGHIv2uneDNFRXL3jGSYpHnHGsYPaR7HcXpHD90DOUmHLckLpMNxxyc4y4iftPSm0ntv5tJZKRTe/PGFBe1oqpVC5gfpL6KjhWXeaArBYGMLOli1VPLj9a1HQ+XzuYBdTdyps1ao8sYtneCfPafgj7L88XE9zvOHyeMo/ZrhZJ1mk3jMxyM2Wo+jdgqhhBUgf5G+tJ3FlPpeDhTUreIKGW180EbR540b2D+LY6172RBqowtGeVHLi8Z1bEoKSHKZz9r/o8B2BE+NTufo/A9QSwMEFAAACAgAAJCf60R+EztvAAAAegAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tFJyqpmxqaVlkrmpqYmFpZmRrnGqRZKRsYWBeYq5WbJZkrlSLFB9SWVBql9ibipET0BiSUZaZl5KZl66XlBqcmJxiTvIcKXYWgBQSwECLQAUAAAICAAAkJ/rpxsbXvIBAADYAwAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAkJ/rRH4TO28AAAB6AAAACQAkAAAAAAAAAAAAAAA/AgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAPkCAAAAAA==
-      objectReference: {fileID: 0}
-    - target: {fileID: 3268550949009779833, guid: 8e269ca92d9df4ac3a358be700b0447b, type: 3}
-      propertyPath: data.cacheStartup
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3268550949009779833, guid: 8e269ca92d9df4ac3a358be700b0447b, type: 3}
-      propertyPath: data.file_cachedStartup
-      value: 
-      objectReference: {fileID: 4900000, guid: 14c28720cba674bb1ab06b25cd00d468, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e269ca92d9df4ac3a358be700b0447b, type: 3}
