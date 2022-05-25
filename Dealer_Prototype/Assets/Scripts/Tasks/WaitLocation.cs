@@ -16,4 +16,9 @@ public class WaitLocation : MarkedLocation
     {
         CharacterManager.Instance.UnRegisterLocation(this);
     }
+
+    public float GetWaitTime()
+    {
+        return Random.Range(minWaitTime, maxWaitTime);
+    }
 }

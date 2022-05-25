@@ -32,7 +32,6 @@ public class CharacterComponent : MonoBehaviour
         {
             CharacterManager.Instance.RegisterCharacter(this);
         }
-
     }
 
     internal virtual IEnumerator DoInitialize()
@@ -77,10 +76,25 @@ public class CharacterComponent : MonoBehaviour
 
     public CharacterConstants.CharacterState GetState() { return state; }
 
-    public void SetState(CharacterConstants.CharacterState _state)
+    private void SetState(CharacterConstants.CharacterState _state)
     {
         Debug.Log(characterInfo.name + " state changed from " + state + " to " + _state);
         state = _state;
         PartyPanelList.Instance.UpdateList();
+    }
+
+    public void ToWaitingForUpdate()
+    {
+        SetState(CharacterConstants.CharacterState.WaitingForUpdate);
+    }
+
+    public void ToMoving()
+    {
+        SetState(CharacterConstants.CharacterState.Moving);
+    }
+
+    public void ToWaiting()
+    {
+        SetState(CharacterConstants.CharacterState.Waiting);
     }
 }

@@ -43,7 +43,7 @@ public class CharacterManager : MonoBehaviour
             return false;
         }
 
-        characterComponent.SetState(CharacterConstants.CharacterState.WaitingForUpdate);
+        characterComponent.ToWaitingForUpdate();
         characters.Add(characterComponent);
 
         DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterComponent.GetID());
@@ -118,52 +118,49 @@ public class CharacterManager : MonoBehaviour
             }
             else
             {
+                character.timeSinceLastUpdate += Time.fixedDeltaTime;
+                //  Debug.Log("character tick " + character.timeSinceLastUpdate + "/" + character.updateTime);
+
                 //if it is time for an update:
-                if ((character.timeSinceLastUpdate + Time.fixedDeltaTime) >= character.updateTime)
+                if (character.timeSinceLastUpdate >= (character.updateTime))
                 {
+                    character.timeSinceLastUpdate = 0; //reset time
+
                     //if we are waiting for an update, find a new wait location
                     if (character.GetState() == CharacterConstants.CharacterState.WaitingForUpdate)
                     {
-                        List<WaitLocation> avaialbleWaitLocations = GetWaitLocationsForCharacter(character);
+                        EjectCharacterFromWaitLocation(character); //remove the character from any locations
+
+                        List<WaitLocation> avaialbleWaitLocations = GetWaitLocationsForCharacter(character); //get locations to place them
 
                         if (avaialbleWaitLocations.Count > 0)
                         {
                             WaitLocation waitLocation = avaialbleWaitLocations[Random.Range(0, avaialbleWaitLocations.Count)];
 
-                            character.timeSinceLastUpdate = 0;
-
                             waitLocation.SetOccupant(character);
 
-                            character.GetNavigatorComponent().onReachedLocation += OnReachedLocation;
+                            character.GetNavigatorComponent().onReachedLocation += OnReachedLocation; //callback for when we get there
 
                             //move to location 
-                            character.GetAnimationComponent().ToggleVisiblity(true);
-                            character.GetNavigatorComponent().MoveToLocation(waitLocation, true);
+                            character.GetAnimationComponent().ToggleVisiblity(true); //unhide model 
+                            character.GetNavigatorComponent().MoveToLocation(waitLocation, true); //start moving
 
-                            character.SetState(CharacterConstants.CharacterState.Moving);
+                            character.ToMoving(); //change state
                         }
                         else
                         {
-                            ResetWaitLocationOccupancies(character);
+                            character.ToWaiting(); //if there are no locations for us, go back to waiting
                         }
                     }
                     //if they're already waiting but its time for an update, kick them off their wait location
                     else if (character.GetState() == CharacterConstants.CharacterState.Waiting)
                     {
-                        character.updateTime = 0; //force an update next time
-
-                        EjectCharacterFromWaitLocation(character);
-                        character.SetState(CharacterConstants.CharacterState.WaitingForUpdate);
+                        character.ToWaitingForUpdate();
+                        character.timeSinceLastUpdate = character.updateTime;
+                      //  character.updateTime = 0; //force an update next time
                     }
 
                 }
-                //increment the tick
-                else
-                {
-                    character.timeSinceLastUpdate += Time.fixedDeltaTime;
-                  //  Debug.Log("character tick " + character.timeSinceLastUpdate + "/" + character.updateTime);
-                }
-
             }
         }
     }
@@ -172,13 +169,10 @@ public class CharacterManager : MonoBehaviour
     {
         if (location is WaitLocation && character.GetState() == CharacterConstants.CharacterState.Moving)
         {
-            WaitLocation waitLocation = (WaitLocation)location;
+            character.ToWaiting();
+            character.updateTime = ((WaitLocation)location).GetWaitTime();
 
-            character.SetState(CharacterConstants.CharacterState.Waiting);
-            character.timeSinceLastUpdate = 0;
-            character.updateTime = Random.Range(waitLocation.minWaitTime, waitLocation.maxWaitTime);
-
-            Debug.Log("next update in " + character.updateTime);
+         //   Debug.Log("next update in " + character.updateTime);
         }
         else
         {

@@ -27,7 +27,7 @@ public class InteractableUIPanel : MonoBehaviour, IPointerEnterHandler, IPointer
     public void OnButtonClick()
     {
         Debug.Log("on mouse clicked " + this.name);
-        InfoPanelManager.Instance.UnRegisterInteractable(interactable);
+   //     InfoPanelManager.Instance.UnRegisterInteractable(interactable);
     }
 
     private void ToggleButtonPanel(bool visible)

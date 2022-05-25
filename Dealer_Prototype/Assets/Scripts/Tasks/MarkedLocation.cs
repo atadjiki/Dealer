@@ -11,8 +11,7 @@ public class MarkedLocation : MonoBehaviour
 
     private void Awake()
     {
-        currentOccupant = null;
-        previousOccupant = null;
+        Reset();
     }
 
     public void SetOccupant(CharacterComponent character)
@@ -21,19 +20,14 @@ public class MarkedLocation : MonoBehaviour
         currentOccupant = character;
     }
 
-    public CharacterComponent GetCurrentOccupant()
-    {
-        return currentOccupant;
-    }
-
-    public CharacterComponent GetPreviousOccupant()
-    {
-        return previousOccupant;
-    }
-
     public void Reset()
     {
         currentOccupant = null;
         previousOccupant = null; 
     }
+
+
+    public CharacterComponent GetCurrentOccupant() { return currentOccupant; }
+
+    public CharacterComponent GetPreviousOccupant() { return previousOccupant; }
 }

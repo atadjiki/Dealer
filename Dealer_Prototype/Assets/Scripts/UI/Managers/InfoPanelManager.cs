@@ -73,7 +73,10 @@ public class InfoPanelManager : MonoBehaviour
 
     public void UnRegisterInteractable(Interactable interactable)
     {
-        Destroy(uiMap[interactable].gameObject);
-        uiMap.Remove(interactable);
+        if(uiMap.ContainsKey(interactable))
+        {
+            Destroy(uiMap[interactable].gameObject);
+            uiMap.Remove(interactable);
+        }
     }
 }
