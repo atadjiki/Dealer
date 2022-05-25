@@ -25,11 +25,9 @@ public class AudioManager : MonoBehaviour
     {
         if(socket != null)
         {
-            FMODUnity.RuntimeManager.PlayOneShotAttached(eventPath, socket);
         }
         else
         {
-            FMODUnity.RuntimeManager.PlayOneShot(eventPath);
         }
     }
 }

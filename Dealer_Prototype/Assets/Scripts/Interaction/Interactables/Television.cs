@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using FMODUnity;
 using UnityEngine;
 
-[RequireComponent(typeof(StudioEventEmitter))]
 public class Television : Interactable
 {
     public enum State { Off, On };
@@ -21,13 +19,8 @@ public class Television : Interactable
     //
     [SerializeField] private Light Light_TV;
 
-    //fmod stuff
-    private StudioEventEmitter FMOD_Emitter;
-
     protected override IEnumerator DoInitialize()
     {
-        FMOD_Emitter = GetComponent<StudioEventEmitter>();
-
         _currentState = DefaultState;
 
         SwitchToState(_currentState);
@@ -45,14 +38,10 @@ public class Television : Interactable
             case State.On:
                 SetMaterial(Mat_On);
                 Light_TV.enabled = true;
-                if (FMOD_Emitter.IsPlaying() == false) FMOD_Emitter.Play();
-                FMOD_Emitter.EventInstance.setPaused(false);
-                
                 break;
             case State.Off:
                 SetMaterial(Mat_Off);
                 Light_TV.enabled = false;
-                FMOD_Emitter.EventInstance.setPaused(true);
                 break;
         }
     }
