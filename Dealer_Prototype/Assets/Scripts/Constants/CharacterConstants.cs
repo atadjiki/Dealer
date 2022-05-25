@@ -2,6 +2,25 @@ namespace Constants
 {
     public class CharacterConstants
     {
+        public enum CharacterState { None, WaitingForUpdate, Moving, Waiting, PerformingTask };
+
+        public static string StateToString(CharacterState state)
+        {
+            switch(state)
+            {
+                case CharacterState.Moving:
+                    return "Moving";
+                case CharacterState.PerformingTask:
+                    return "Performing Task";
+                case CharacterState.Waiting:
+                    return "Waiting";
+                case CharacterState.WaitingForUpdate:
+                    return "Waiting For Update";
+                default:
+                    return "";
+            }
+        }
+
         public enum Team { NPC, Ally, Enemy };
 
         public enum CharacterID

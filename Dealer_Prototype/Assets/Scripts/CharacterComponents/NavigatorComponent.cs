@@ -82,7 +82,6 @@ public class NavigatorComponent : MonoBehaviour
         {
             State = MovementState.Moving;
             StartCoroutine(DoMoveToLocation(markedLocation, VectorPair.Item2.position));
-            Debug.Log("movement success");
             return true;
         }
         else
@@ -110,6 +109,8 @@ public class NavigatorComponent : MonoBehaviour
         if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 1, 1, false);
         parentCharacter.OnNewDestination(verifiedLocation);
 
+        float moveDuration = 0;
+
         // Wait until the agent has reached the destination
         while (true)
         {
@@ -126,6 +127,14 @@ public class NavigatorComponent : MonoBehaviour
 
             if (Vector3.Distance(this.transform.position, verifiedLocation) < 0.1f)
             {
+                break;
+            }
+
+            moveDuration += Time.fixedDeltaTime;
+
+            if(moveDuration > 10.0f)
+            {
+                Debug.Log("move has taken forever");
                 break;
             }
         }

@@ -14,6 +14,7 @@ public class CharacterPanel : MonoBehaviour
 
     [SerializeField] private bool displayName;
     [SerializeField] private bool displayID;
+    [SerializeField] private bool displayState;
     [SerializeField] private bool displayTask;
     [SerializeField] private bool displayTime;
 
@@ -119,9 +120,15 @@ public class CharacterPanel : MonoBehaviour
             characterString += "\n" + character.GetCharacterInfo().ID;
             lines++;
         }
+        if (displayState)
+        {
+            characterString += "\n" + Constants.CharacterConstants.StateToString(character.GetState());
+
+            lines++;
+        }
         if (displayTask)
         {
-            characterString += "\n" + CharacterTaskComponent.GetUIString(character);
+            characterString += "\n" + character.GetTaskComponent().GetTask().Type;
 
             lines++;
         }

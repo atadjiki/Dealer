@@ -41,11 +41,13 @@ public class PartyPanelList : MonoBehaviour
 
                 if (i < Party.Count)
                 {
-                    string characterName = Party[i].GetID();
+                    CharacterComponent character = Party[i];
+
+                    string name = character.GetCharacterInfo().name;
 
                     CharacterTask characterTask = Party[i].GetTaskComponent().GetTask();
 
-                    string taskStatus = " - " + CharacterTaskComponent.GetUIString(Party[i]);
+                    string state = " - " + Constants.CharacterConstants.StateToString(character.GetState()); 
 
                     string taskDays;
                     if (characterTask.DaysRemaining > 0 )
@@ -59,7 +61,7 @@ public class PartyPanelList : MonoBehaviour
 
                     listItem.ToggleVisiblity(true);
 
-                    listItem.SetText(characterName + taskStatus + taskDays);
+                    listItem.SetText(name + state + taskDays);
 
                     if (Party[i].GetAnimationComponent().IsVisible())
                     {

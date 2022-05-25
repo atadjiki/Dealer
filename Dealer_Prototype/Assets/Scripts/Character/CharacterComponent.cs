@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
+    [SerializeField] private CharacterConstants.CharacterState state = CharacterConstants.CharacterState.None;
 
     [SerializeField] private NavigatorComponent _navigator;
     [SerializeField] private CharacterTaskComponent _taskComponent;
@@ -21,7 +22,6 @@ public class CharacterComponent : MonoBehaviour
 
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
-
         updateTime = Random.Range(1,5);
 
         characterInfo = _characterInfo;
@@ -33,14 +33,6 @@ public class CharacterComponent : MonoBehaviour
             CharacterManager.Instance.RegisterCharacter(this);
         }
 
-    }
-
-    private void OnDestroy()
-    {
-        if (CharacterManager.Instance)
-        {
-            CharacterManager.Instance.UnRegisterCharacter(this);
-        }
     }
 
     internal virtual IEnumerator DoInitialize()
@@ -57,39 +49,38 @@ public class CharacterComponent : MonoBehaviour
         yield return null;
     }
 
+    private void OnDestroy()
+    {
+        if (CharacterManager.Instance)
+        {
+            CharacterManager.Instance.UnRegisterCharacter(this);
+        }
+    }
+
     public bool HasInitialized() { return bHasInitialized; }
 
     public virtual void OnNewDestination(Vector3 destination) { }
 
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public string GetID()
-    {
-        return characterInfo.ID.ToString();
-    }
+    public string GetID() {  return characterInfo.ID.ToString(); }    
 
-    public CharacterConstants.CharacterID GetCharacterID()
-    {
-        return characterInfo.ID;
-    }
+    public CharacterConstants.CharacterID GetCharacterID()  { return characterInfo.ID; }
 
-    public NavigatorComponent GetNavigatorComponent()
-    {
-        return _navigator;
-    }
+    public NavigatorComponent GetNavigatorComponent() { return _navigator; }
 
-    public CharacterAnimationComponent GetAnimationComponent()
-    {
-        return _animationComponent;
-    }
+    public CharacterAnimationComponent GetAnimationComponent() { return _animationComponent; }
 
-    public CharacterTaskComponent GetTaskComponent()
-    {
-        return _taskComponent;
-    }
+    public CharacterTaskComponent GetTaskComponent() { return _taskComponent; }
 
-    public CharacterInfo GetCharacterInfo()
+    public CharacterInfo GetCharacterInfo() { return characterInfo; }
+
+    public CharacterConstants.CharacterState GetState() { return state; }
+
+    public void SetState(CharacterConstants.CharacterState _state)
     {
-        return characterInfo;
+        Debug.Log(characterInfo.name + " state changed from " + state + " to " + _state);
+        state = _state;
+        PartyPanelList.Instance.UpdateList();
     }
 }

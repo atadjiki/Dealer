@@ -33,7 +33,6 @@ public class CharacterManager : MonoBehaviour
     {
         characters = new List<CharacterComponent>();
         waitLocations = new List<MarkedLocation>();
-        GameStateManager.Instance.onLevelStart += OnLevelStart;
     }
 
     public bool RegisterCharacter(CharacterComponent characterComponent)
@@ -44,6 +43,7 @@ public class CharacterManager : MonoBehaviour
             return false;
         }
 
+        characterComponent.SetState(CharacterConstants.CharacterState.WaitingForUpdate);
         characters.Add(characterComponent);
 
         DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterComponent.GetID());
@@ -90,15 +90,6 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    internal void OnLevelStart()
-    {
-    }
-
-    public List<CharacterComponent> GetParty()
-    {
-        return characters;
-    }
-
     private void FixedUpdate()
     {
         UpdateCharacterTasks();
@@ -121,90 +112,99 @@ public class CharacterManager : MonoBehaviour
     {
         foreach (CharacterComponent character in characters)
         {
-            if (character.GetNavigatorComponent().State == NavigatorComponent.MovementState.Stopped)
+            if (character.GetState() == CharacterConstants.CharacterState.Moving)
             {
-                //check if its time for an update
-                if (character.timeSinceLastUpdate >= character.updateTime)
+                //no update here
+            }
+            else
+            {
+                //if it is time for an update:
+                if ((character.timeSinceLastUpdate + Time.fixedDeltaTime) >= character.updateTime)
                 {
-                    CharacterTask task = character.GetTaskComponent().GetTask();
-
-                    //if this character is inactive and not at a wait location, make sure they go to one
-                    if (character.GetTaskComponent().GetState() == TaskConstants.TaskState.WaitingForUpdate)
+                    //if we are waiting for an update, find a new wait location
+                    if (character.GetState() == CharacterConstants.CharacterState.WaitingForUpdate)
                     {
-
-                        List<WaitLocation> avaialbleWaitLocations = GetUnoccupiedWaitLocations();
-                        avaialbleWaitLocations.Remove((WaitLocation)task.markedLocation);
+                        List<WaitLocation> avaialbleWaitLocations = GetWaitLocationsForCharacter(character);
 
                         if (avaialbleWaitLocations.Count > 0)
                         {
                             WaitLocation waitLocation = avaialbleWaitLocations[Random.Range(0, avaialbleWaitLocations.Count)];
 
                             character.timeSinceLastUpdate = 0;
-                            character.updateTime = 0;
 
-                            task.markedLocation = waitLocation;
-                            waitLocation.occupied = true;
-                            character.GetTaskComponent().SetTask(task);
+                            waitLocation.SetOccupant(character);
 
                             character.GetNavigatorComponent().onReachedLocation += OnReachedLocation;
 
                             //move to location 
                             character.GetAnimationComponent().ToggleVisiblity(true);
-                            character.GetNavigatorComponent().MoveToLocation(waitLocation, false);
+                            character.GetNavigatorComponent().MoveToLocation(waitLocation, true);
 
-                            Debug.Log(character.name + " sent to wait at " + waitLocation.transform.position);
-
-                            break;
+                            character.SetState(CharacterConstants.CharacterState.Moving);
                         }
                         else
                         {
-                            Debug.Log("cant update character, no available wait locations");
+                            ResetWaitLocationOccupancies(character);
                         }
-
                     }
                     //if they're already waiting but its time for an update, kick them off their wait location
-                    else if (character.GetTaskComponent().GetState() == TaskConstants.TaskState.Idle)
+                    else if (character.GetState() == CharacterConstants.CharacterState.Waiting)
                     {
-                        task.markedLocation.occupied = false;
-                        character.GetTaskComponent().SetTask(task);
-                        character.GetTaskComponent().SetState(TaskConstants.TaskState.WaitingForUpdate);
-
                         character.updateTime = 0; //force an update next time
-                        Debug.Log(character.name + " wait reset");
-                    }
-                    else
-                    {
-                        Debug.Log("cant update " + character.name + " | state = " + character.GetTaskComponent().GetState());
+
+                        EjectCharacterFromWaitLocation(character);
+                        character.SetState(CharacterConstants.CharacterState.WaitingForUpdate);
                     }
 
                 }
+                //increment the tick
                 else
                 {
                     character.timeSinceLastUpdate += Time.fixedDeltaTime;
+                  //  Debug.Log("character tick " + character.timeSinceLastUpdate + "/" + character.updateTime);
                 }
+
             }
         }
     }
 
     public void OnReachedLocation(CharacterComponent character, MarkedLocation location)
     {
-        if (location is WaitLocation)
+        if (location is WaitLocation && character.GetState() == CharacterConstants.CharacterState.Moving)
         {
             WaitLocation waitLocation = (WaitLocation)location;
+
+            character.SetState(CharacterConstants.CharacterState.Waiting);
             character.timeSinceLastUpdate = 0;
             character.updateTime = Random.Range(waitLocation.minWaitTime, waitLocation.maxWaitTime);
-            character.GetTaskComponent().SetState(TaskConstants.TaskState.Idle);
+
             Debug.Log("next update in " + character.updateTime);
+        }
+        else
+        {
+            Debug.Log("error: character state is waiting on reached location");
         }
     }
 
-    public List<WaitLocation> GetUnoccupiedWaitLocations()
+    public void EjectCharacterFromWaitLocation(CharacterComponent character)
+    {
+        foreach (WaitLocation waitLocation in waitLocations)
+        {
+            if (waitLocation.GetCurrentOccupant() == character)
+            {
+                waitLocation.SetOccupant(null);
+                return;
+            }
+        }
+    }
+
+    public List<WaitLocation> GetWaitLocationsForCharacter(CharacterComponent character)
     {
         List<WaitLocation> unoccupied = new List<WaitLocation>();
 
         foreach (WaitLocation waitLocation in waitLocations)
         {
-            if (waitLocation.occupied == false)
+            if (waitLocation.GetCurrentOccupant() == null && waitLocation.GetPreviousOccupant() != character)
             {
                 unoccupied.Add(waitLocation);
             }
@@ -212,4 +212,17 @@ public class CharacterManager : MonoBehaviour
 
         return unoccupied;
     }
+
+    public void ResetWaitLocationOccupancies(CharacterComponent character)
+    {
+        foreach(WaitLocation waitLocation in waitLocations)
+        {
+            if (waitLocation.GetCurrentOccupant() != null &&  waitLocation.GetPreviousOccupant() == character)
+            {
+                waitLocation.Reset();
+            }
+        }
+    }
+
+    public List<CharacterComponent> GetParty() { return characters; }
 }
