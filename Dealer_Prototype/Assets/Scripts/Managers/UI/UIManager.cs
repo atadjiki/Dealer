@@ -9,6 +9,12 @@ public class UIManager : MonoBehaviour
 
     private UIState currentState = UIState.None;
 
+    //
+
+    [SerializeField] private InGamePanel inGamePanel;
+
+    //
+
     private static UIManager _instance;
 
     public static UIManager Instance { get { return _instance; } }
@@ -36,7 +42,26 @@ public class UIManager : MonoBehaviour
     {
         GameStateManager.Instance.onModeChanged += OnModeChanged;
 
-        OnModeChanged(GameStateManager.Instance.GetMode());
+        LevelManager.Instance.onLoadStart += OnLoadStart;
+        LevelManager.Instance.onLoadProgress += OnLoadProgress;
+        LevelManager.Instance.onLoadEnd += OnLoadEnd;
+    }
+
+    private void OnLoadStart()
+    {
+        //hide in game UI
+        inGamePanel.gameObject.SetActive(false);
+    }
+
+    private void OnLoadProgress(float progress)
+    {
+        
+    }
+
+    private void OnLoadEnd()
+    {
+        //bring back in game UI
+        if (inGamePanel != null) inGamePanel.gameObject.SetActive(true);
     }
 
     private void OnModeChanged(GameStateManager.Mode newMode)

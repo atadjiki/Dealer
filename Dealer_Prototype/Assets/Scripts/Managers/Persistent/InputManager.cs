@@ -25,10 +25,16 @@ public class InputManager : MonoBehaviour
 
     private void Build()
     {
-        GameStateManager.Instance.onLevelStart += OnLevelStart;
+        LevelManager.Instance.onLoadStart += OnLoadStart;
+        LevelManager.Instance.onLoadEnd += OnLoadEnd;
     }
 
-    private void OnLevelStart()
+    private void OnLoadStart()
+    {
+        allowInput = false;
+    }
+
+    private void OnLoadEnd()
     {
         allowInput = true;
     }
