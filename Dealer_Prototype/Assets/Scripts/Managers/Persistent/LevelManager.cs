@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Constants;
-using TMPro;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private LevelDataConstants.LevelName initialLevel;
+
     private enum State { Busy, None };
 
     private State _state = State.None;
-
-    /// ////
-    ///
 
     private static LevelManager _instance;
 
@@ -34,14 +32,33 @@ public class LevelManager : MonoBehaviour
 
     private void Build()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+
+        if(initialLevel != LevelDataConstants.LevelName.None)
+        {
+            LoadLevel(initialLevel);
+        }
     }
 
-    public void LoadLevel(LevelData levelData)
+    // called second
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+    }
+
+    void OnSceneUnloaded(Scene scene)
+    {
+        Debug.Log("OnSceneUnloaded: " + scene.name);
+    }
+
+    public void LoadLevel(LevelDataConstants.LevelName levelName)
     {
         if(_state == State.None)
         {
-            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelData.Name);
-            StartCoroutine(DoLoadLevel(levelData));
+            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelName);
+            StartCoroutine(DoLoadLevel(levelName));
         }
         else
         {
@@ -50,9 +67,12 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    private IEnumerator DoLoadLevel(LevelData levelData)
+    private IEnumerator DoLoadLevel(LevelDataConstants.LevelName levelName)
     {
+        SceneManager.LoadSceneAsync(levelName.ToString(), LoadSceneMode.Additive);
         yield return null;
     }
-    
+
+  
+
 }
