@@ -9,7 +9,24 @@ public class SpawnPoint : MonoBehaviour
     public void SetState(SpawnConstants.CharacterSpawnerState newState) { State = newState; }
     public SpawnConstants.CharacterSpawnerState GetState() { return State; }
 
-    private void Awake()  { SpawnManager.Instance.RegisterSpawnPoint(this); }
+    private void Awake()
+    {
+        if(LevelManager.IsManagerLoaded())
+        {
+            SpawnManager.Instance.RegisterSpawnPoint(this);
+        }
+        else
+        {
+            this.enabled = false;
+        }
+       
+    }
 
-    private void OnDestroy() {  SpawnManager.Instance.UnRegisterSpawnPoint(this); }
+    private void OnDestroy()
+    {
+        if (LevelManager.IsManagerLoaded())
+        {
+            SpawnManager.Instance.UnRegisterSpawnPoint(this);
+        } 
+    }
 }

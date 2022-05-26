@@ -22,12 +22,20 @@ public class Interactable : MonoBehaviour
 
     private void Awake()
     {
-        StartCoroutine(DoInitialize());
+        if(LevelManager.IsManagerLoaded())
+        {
+            StartCoroutine(DoInitialize());
+        }
+
+        else
+        {
+            this.enabled = false;
+        }
     }
 
     private void OnDestroy()
     {
-        if (InteractableManager.Instance)
+        if (LevelManager.IsManagerLoaded())
         {
             InteractableManager.Instance.UnRegister(this);
         }

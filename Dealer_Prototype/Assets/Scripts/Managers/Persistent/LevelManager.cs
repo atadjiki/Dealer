@@ -35,17 +35,12 @@ public class LevelManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-        if(initialLevel != LevelDataConstants.LevelName.None)
-        {
-            LoadLevel(initialLevel);
-        }
+        StartCoroutine(LoadLevel(initialLevel));
     }
 
-    // called second
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
     }
 
     void OnSceneUnloaded(Scene scene)
@@ -53,26 +48,58 @@ public class LevelManager : MonoBehaviour
         Debug.Log("OnSceneUnloaded: " + scene.name);
     }
 
-    public void LoadLevel(LevelDataConstants.LevelName levelName)
+    public IEnumerator LoadLevel(LevelDataConstants.LevelName levelName)
     {
-        if(_state == State.None)
+        //is this already loaded?
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(levelName.ToString());
+
+        if (buildIndex == -1)
         {
-            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelName);
-            StartCoroutine(DoLoadLevel(levelName));
+            Debug.Log("Build index is not valid: " + levelName.ToString());
+            yield break;
         }
         else
         {
-            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "Level manager is busy");
+            Debug.Log(levelName + "| Build index: " + buildIndex);
         }
 
+        Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
+
+        if(scene != null)
+        {
+           if(scene.isLoaded == true)
+            {
+                Debug.Log(scene.name + " is already loaded.");
+                yield break;
+            }
+            else
+            {
+                if (_state == State.None)
+                {
+                    _state = State.Busy;
+
+                    DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelName);
+
+                    AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
+
+                    // Wait until the asynchronous scene fully loads
+                    while (!asyncLoad.isDone)
+                    {
+                        yield return null;
+                    }
+
+                    _state = State.Busy;
+                }
+                else
+                {
+                    DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "Level manager is busy");
+                }
+            }
+        }
     }
 
-    private IEnumerator DoLoadLevel(LevelDataConstants.LevelName levelName)
+    public static bool IsManagerLoaded()
     {
-        SceneManager.LoadSceneAsync(levelName.ToString(), LoadSceneMode.Additive);
-        yield return null;
+        return SceneManager.GetSceneByBuildIndex(0).isLoaded;
     }
-
-  
-
 }
