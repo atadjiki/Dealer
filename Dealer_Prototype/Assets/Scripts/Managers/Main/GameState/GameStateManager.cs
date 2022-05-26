@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateManager : MonoBehaviour
+public class GameStateManager : Manager
 {
     public enum Mode { MainMenu, GamePlay, Conversation, GamePlayPaused, Loading };
 
@@ -20,7 +20,7 @@ public class GameStateManager : MonoBehaviour
 
     public static GameStateManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -30,6 +30,23 @@ public class GameStateManager : MonoBehaviour
         {
             _instance = this;
         }
+
+        base.Build();
+    }
+
+    public override int AssignDelegates()
+    {
+        LevelManager.Instance.onLoadEnd += OnLoadEnd;
+
+        return 1;
+    }
+
+    public void OnLoadEnd(Constants.LevelConstants.LevelName levelName)
+    {
+        if(levelName == Constants.LevelConstants.LevelName.Apartment)
+        {
+            ToMode(Mode.GamePlay);
+        }
     }
 
     public void ToMode(Mode mode)
@@ -37,6 +54,7 @@ public class GameStateManager : MonoBehaviour
         _currentMode = mode;
 
         onModeChanged(_currentMode);
+        onStateChanged(state);
     }
 
     public Mode GetMode() { return _currentMode; }

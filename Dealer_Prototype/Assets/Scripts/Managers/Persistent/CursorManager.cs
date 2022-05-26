@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CursorManager : MonoBehaviour
+public class CursorManager : Manager
 {
     //cursor materials
     [Header("Cursor Textures")]
@@ -12,7 +12,7 @@ public class CursorManager : MonoBehaviour
 
     public static CursorManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -22,6 +22,8 @@ public class CursorManager : MonoBehaviour
         {
             _instance = this;
         }
+
+        base.Build();
     }
 
     public void ToDefault()

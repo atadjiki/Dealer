@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : Manager
 {
+    public override void Build()
+    {
+        base.Build();
+    }
+
     public enum AnimEvent_Audio
     {
         Footstep_Indoor, None

@@ -22,48 +22,21 @@ public class Interactable : MonoBehaviour
 
     private void Awake()
     {
-        if(LevelManager.IsManagerLoaded())
-        {
-            StartCoroutine(DoInitialize());
-        }
-
-        else
-        {
-            this.enabled = false;
-        }
+        StartCoroutine(DoInitialize());
     }
 
     private void OnDestroy()
     {
-        if (LevelManager.IsManagerLoaded())
-        {
-            InteractableManager.Instance.UnRegister(this);
-        }
+        InteractableManager.Instance.UnRegister(this);
     }
 
     protected virtual IEnumerator DoInitialize()
     {
-        if (InteractableManager.Instance)
-        {
-            SetState(InteractableConstants.InteractionState.Available);
+        SetState(InteractableConstants.InteractionState.Available);
 
-            if (InteractableManager.Instance.Register(this) == false)
-            {
-                Destroy(this.gameObject);
-            }
-
-            if (InfoPanelManager.Instance && uiPanelPrefab)
-            {
-                InfoPanelManager.Instance.RegisterInteractable(this, uiPanelPrefab);
-            }
-            else if (InfoPanelManager.Instance == null)
-            {
-                Debug.Log("could not register " + this.name + ", infopanel manager is null");
-            }
-        }
-        else
+        if (InteractableManager.Instance.Register(this) == false)
         {
-            Debug.Log("could not initialize" + this.name + ", interactable manager is null");
+            Destroy(this.gameObject);
         }
 
         yield return null;
@@ -71,7 +44,6 @@ public class Interactable : MonoBehaviour
 
     public void ToggleOutlineShader(bool flag)
     {
-
         if (flag)
         {
             foreach (MeshRenderer renderer in Meshes)
@@ -85,7 +57,6 @@ public class Interactable : MonoBehaviour
             {
                 ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
             }
-
         }
     }
 

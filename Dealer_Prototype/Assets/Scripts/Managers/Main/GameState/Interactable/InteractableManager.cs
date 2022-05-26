@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class InteractableManager : MonoBehaviour
+public class InteractableManager : Manager
 {
     private static InteractableManager _instance;
 
@@ -11,7 +11,15 @@ public class InteractableManager : MonoBehaviour
 
     private List<Interactable> Interactables;
 
-    private void Awake()
+    public delegate void OnInteractableRegistered(Interactable interactable);
+    public delegate void OnInteractableUnRegistered(Interactable interactable);
+    public delegate void OnInteractableManagerUpdate();
+
+    public OnInteractableRegistered onInteractableRegistered;
+    public OnInteractableUnRegistered onInteractableUnRegistered;
+    public OnInteractableManagerUpdate onInteractableManagerUpdate;
+
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -22,17 +30,15 @@ public class InteractableManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
-    }
-
-    private void Build()
-    {
         Interactables = new List<Interactable>();
+
+        base.Build();
     }
 
     public bool Register(Interactable interactable)
     {
         Interactables.Add(interactable);
+        onInteractableRegistered(interactable);
 
         DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Registered Interactable " + interactable.GetID());
         return true;
@@ -41,6 +47,7 @@ public class InteractableManager : MonoBehaviour
     public void UnRegister(Interactable interactable)
     {
         DebugManager.Instance.Print(DebugManager.Log.LogInteractableManager, "Unregistered Interactable " + interactable.GetID());
+        onInteractableUnRegistered(interactable);
         Interactables.Remove(interactable);
     }
 

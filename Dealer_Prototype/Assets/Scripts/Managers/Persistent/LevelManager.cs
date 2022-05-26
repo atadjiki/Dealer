@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 using Constants;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : Manager
 {
-    [SerializeField] private LevelDataConstants.LevelName initialLevel;
+    [SerializeField] private LevelConstants.LevelName initialLevel;
 
     private enum State { Busy, None };
 
@@ -16,17 +16,16 @@ public class LevelManager : MonoBehaviour
 
     public static LevelManager Instance { get { return _instance; } }
 
-    public delegate void OnLevelLoaded(LevelDataConstants.LevelName levelName);
-    public delegate void OnLoadStart();
-    public delegate void OnLoadProgress(float progress);
-    public delegate void OnLoadEnd();
+    public delegate void OnLoadStart(LevelConstants.LevelName levelName);
+    public delegate void OnLoadProgress(LevelConstants.LevelName levelName, float progress);
+    public delegate void OnLoadEnd(LevelConstants.LevelName levelName);
 
-    public OnLevelLoaded onLevelLoaded;
+
     public OnLoadStart onLoadStart;
     public OnLoadProgress onLoadProgress;
     public OnLoadEnd onLoadEnd;
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -37,15 +36,21 @@ public class LevelManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
+        base.Build();
     }
 
-    private void Build()
+    public override int AssignDelegates()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-        StartCoroutine(LoadLevel(initialLevel));
+        return 2;
+    }
+
+    public override void Activate()
+    {
+        LoadLevel(initialLevel);
+        base.Activate();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -58,72 +63,110 @@ public class LevelManager : MonoBehaviour
         Debug.Log("OnSceneUnloaded: " + scene.name);
     }
 
-    void OnAsyncLoadComplete(AsyncOperation asyncOperation)
+    void OnAsyncLoadComplete(LevelConstants.LevelName levelName, AsyncOperation asyncOperation)
     {
-        Debug.Log("OnAsyncLoadComplete: " + asyncOperation.ToString());
-        asyncOperation.allowSceneActivation = true;
+        Debug.Log("OnAsyncLoadComplete: " + levelName.ToString());
         _state = State.Busy;
-        if(onLoadEnd != null) onLoadEnd();
+        asyncOperation.allowSceneActivation = true;
+        onLoadEnd(levelName);
     }
 
-    public IEnumerator LoadLevel(LevelDataConstants.LevelName levelName)
+    public void LoadLevel(LevelConstants.LevelName levelName)
     {
-        yield return new WaitForSeconds(5.0f);
-
-        //is this already loaded?
-        int buildIndex = SceneUtility.GetBuildIndexByScenePath(levelName.ToString());
-
-        if (buildIndex == -1)
+        if(IsLevelActive(levelName))
         {
-//            Debug.Log("Build index is not valid: " + levelName.ToString());
-            yield break;
+        //    Debug.Log("Cannot load " + levelName + ", as it is already active");
         }
         else
         {
-            Debug.Log(levelName + "| Build index: " + buildIndex);
+            StartCoroutine(LoadLevel_Coroutine(levelName));
+        }   
+    }
+
+    private IEnumerator LoadLevel_Coroutine(LevelConstants.LevelName levelName)
+    {
+        if (_state == State.Busy)
+        {
+            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "Level manager is busy");
+            yield break;
         }
 
-        Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
-
-        if(scene != null)
+        if (IsSceneLoaded(levelName) > -1 )
         {
-           if(scene.isLoaded == true)
+            _state = State.Busy;
+
+            DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelName);
+
+            onLoadStart(levelName);
+
+            yield return new WaitForSeconds(0.1f);
+
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(levelName.ToString(), LoadSceneMode.Additive);
+            asyncLoad.allowSceneActivation = false;
+
+            // Wait until the asynchronous scene fully loads
+            while (!asyncLoad.isDone)
             {
-                Debug.Log(scene.name + " is already loaded.");
-                yield break;
-            }
-            else
-            {
-                if (_state == State.None)
-                {
-                    _state = State.Busy;
+                onLoadProgress(levelName, asyncLoad.progress);
+                yield return new WaitForSeconds(0.1f);
 
-                    DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "loading level " + levelName);
-
-                    if(onLoadStart != null) onLoadStart();
-
-                    AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
-                    asyncLoad.allowSceneActivation = false;
-                    asyncLoad.completed += OnAsyncLoadComplete;
-
-                    // Wait until the asynchronous scene fully loads
-                    while (!asyncLoad.isDone)
-                    {
-                        Debug.Log("Load progress " + asyncLoad.progress);
-                        if(onLoadProgress != null) onLoadProgress(asyncLoad.progress);
-                        yield return new WaitForFixedUpdate();
-                    }
-                }
-                else
-                {
-                    DebugManager.Instance.Print(DebugManager.Log.LogLevelmanager, "Level manager is busy");
+                if (asyncLoad.progress == 0.9f) 
+                { 
+                    OnAsyncLoadComplete(levelName, asyncLoad);
+                    yield break;
                 }
             }
         }
     }
 
-    public static bool IsManagerLoaded()
+    public static bool IsLevelActive(LevelConstants.LevelName levelName)
     {
-        return SceneManager.GetSceneByBuildIndex(0).isLoaded;
+        int sceneCount = SceneManager.sceneCount;
+
+        for (int i = 0; i < sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name == levelName.ToString())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static int IsSceneLoaded(LevelConstants.LevelName levelName)
+    {
+        int buildIndex;
+
+        if (IsLevelValid(levelName, out buildIndex))
+        {
+            Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
+
+            if (scene != null)
+            {
+                if (scene.isLoaded == true)
+                {
+                    Debug.Log(scene.name + " is loaded.");
+                }
+            }
+        }
+
+        return buildIndex;
+    }
+
+    public static bool IsLevelValid(LevelConstants.LevelName levelName, out int buildIndex)
+    {
+        //is this level valid?
+        buildIndex = SceneUtility.GetBuildIndexByScenePath(levelName.ToString());
+
+        if (buildIndex == -1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }

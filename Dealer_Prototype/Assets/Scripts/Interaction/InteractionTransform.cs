@@ -6,13 +6,6 @@ public class InteractionTransform : MonoBehaviour
 {
     private void Awake()
     {
-        if(LevelManager.IsManagerLoaded())
-        {
-            ColorManager.Instance.SetObjectToColor(this.gameObject, ColorManager.Instance.GetInteractionTransformColor());
-        }
-        else
-        {
-            this.enabled = false;
-        }
+        ColorManager.Instance.SetObjectToColor(this.gameObject, ColorManager.Instance.GetInteractionTransformColor());
     }
 }

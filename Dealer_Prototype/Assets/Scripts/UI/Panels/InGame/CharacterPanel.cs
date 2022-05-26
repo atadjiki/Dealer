@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class CharacterPanel : MonoBehaviour
+public class CharacterPanel : UIPanel
 {
     private Dictionary<CharacterComponent, TextMeshProUGUI> characterMap;
 
@@ -18,28 +18,21 @@ public class CharacterPanel : MonoBehaviour
     [SerializeField] private bool displayTask;
     [SerializeField] private bool displayTime;
 
-    private static CharacterPanel _instance;
-
-    public static CharacterPanel Instance { get { return _instance; } }
-
-    private void Awake()
+    public override void ShowPanel()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-
-        Build();
+        base.ShowPanel();
     }
 
-    private void Build()
+    public override void HidePanel()
+    {
+        base.HidePanel();
+    }
+
+    public override void Build()
     {
         characterMap = new Dictionary<CharacterComponent, TextMeshProUGUI>();
 
+        base.Build();
     }
 
     private TextMeshProUGUI BuildTextMesh(CharacterComponent characterComponent)
@@ -48,6 +41,7 @@ public class CharacterPanel : MonoBehaviour
         {
             GameObject textMeshObject = Instantiate(TextMeshPrefab, this.transform);
             TextMeshProUGUI textMesh = textMeshObject.GetComponent<TextMeshProUGUI>();
+            textMesh.text = "NULL";
             return textMesh;
         }
 
@@ -67,12 +61,15 @@ public class CharacterPanel : MonoBehaviour
     {
         if (characterMap.ContainsKey(characterComponent))
         {
-            Destroy(characterMap[characterComponent].gameObject);
+            TextMeshProUGUI textMesh = characterMap[characterComponent];
+
+            if(textMesh != null) { Destroy(textMesh.gameObject); }
+
             characterMap.Remove(characterComponent);
         }
     }
 
-    private void FixedUpdate()
+    public override void UpdatePanel()
     {
         foreach (CharacterComponent character in characterMap.Keys)
         {

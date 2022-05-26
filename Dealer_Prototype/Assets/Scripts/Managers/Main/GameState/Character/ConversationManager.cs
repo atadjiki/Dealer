@@ -1,13 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public class ConversationManager : MonoBehaviour
+public class ConversationManager : Manager
 {
     private static ConversationManager _instance;
 
     public static ConversationManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -18,7 +18,7 @@ public class ConversationManager : MonoBehaviour
             _instance = this;
         }
 
-
+        base.Build();
     }
 
     public void StartConversation()

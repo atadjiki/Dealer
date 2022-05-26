@@ -4,12 +4,11 @@ namespace Constants
     {
 
         public enum Anim
-        {
-            Sitting_Default,
-
+        { 
             Idle,
             Idle_Drunk,
 
+            Sitting_Default,
             Walking,
 
             Talking_Default,

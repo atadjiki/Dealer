@@ -62,7 +62,5 @@ public class CharacterAnimationComponent : MonoBehaviour
     {
         visible = flag;
         this.gameObject.SetActive(flag);
-        PartyPanelList.Instance.UpdateList();
     }
-
 }

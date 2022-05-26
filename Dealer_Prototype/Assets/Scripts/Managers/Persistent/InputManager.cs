@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+public class InputManager : Manager
 {
     private bool allowInput = false;
 
@@ -9,7 +9,7 @@ public class InputManager : MonoBehaviour
 
     public static InputManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -20,40 +20,49 @@ public class InputManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
+        base.Build();
     }
 
-    private void Build()
+    public override int AssignDelegates()
     {
         LevelManager.Instance.onLoadStart += OnLoadStart;
         LevelManager.Instance.onLoadEnd += OnLoadEnd;
+
+        return 2;
     }
 
-    private void OnLoadStart()
+    private void OnLoadStart(Constants.LevelConstants.LevelName levelName)
     {
         allowInput = false;
     }
 
-    private void OnLoadEnd()
+    private void OnLoadEnd(Constants.LevelConstants.LevelName levelName)
     {
         allowInput = true;
     }
 
-    private void FixedUpdate()
+    public override bool PerformUpdate(float tick)
     {
-        if(allowInput)
+        if(base.PerformUpdate(tick))
         {
-            if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+            if (allowInput)
             {
-                float x = Input.GetAxis("Horizontal");
-                float y = Input.GetAxis("Vertical");
+                if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+                {
+                    float x = Input.GetAxis("Horizontal");
+                    float y = Input.GetAxis("Vertical");
 
-                CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
-            }
-            else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
-            {
+                    CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
+                }
+                else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
+                {
 
+                }
+
+                return true;
             }
         }
+
+        return false;
     }
 }

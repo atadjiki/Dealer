@@ -15,16 +15,27 @@ public class PartyListItem : MonoBehaviour
 
     public void SetText(string text)
     {
-        textBox.text = text;
+        if(textBox != null)
+        {
+            textBox.text = text;
+        }
     }
 
     public void SetTextColor(Color color)
     {
-        textBox.color = color;
+        if(textBox != null)
+        {
+            textBox.color = color;
+        }
     }
 
     public void ToggleVisiblity(bool flag)
     {
+        if(textBox != null)
+        {
+            textBox.enabled = flag;
+        }
+
         this.gameObject.SetActive(flag);
     }
 

@@ -9,6 +9,16 @@ public struct CharacterInfo
     public CharacterConstants.CharacterID ID;
     public AnimationConstants.Anim InitialAnim;
     public string name;
+
+    public static CharacterInfo Empty()
+    {
+        CharacterInfo characterInfo = new CharacterInfo();
+        characterInfo.ID = CharacterConstants.CharacterID.Male_1;
+        characterInfo.InitialAnim = AnimationConstants.Anim.Idle;
+        characterInfo.name = "NO_NAME";
+        return characterInfo;
+    }
+
     public string toString()
     {
         return

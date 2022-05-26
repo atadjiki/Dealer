@@ -9,22 +9,14 @@ public class WaitLocation : MarkedLocation
 
     private void Awake()
     {
-        if(LevelManager.IsManagerLoaded())
-        {
-            CharacterManager.Instance.RegisterLocation(this);
-        }
-        else
-        {
-            this.enabled = false;
-        }
+        CharacterManager.Instance.RegisterLocation(this);
     }
 
     private void OnDestroy()
     {
-        if (LevelManager.IsManagerLoaded())
-        {
-            CharacterManager.Instance.UnRegisterLocation(this);
-        }
+
+        CharacterManager.Instance.UnRegisterLocation(this);
+
     }
 
     public float GetWaitTime()

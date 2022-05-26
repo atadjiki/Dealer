@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InteractableUIPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class InteractableUIPanel : UIPanel, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Button Button_Interactable;
     [SerializeField] TextMeshProUGUI Title_TextMesh;
@@ -48,5 +48,10 @@ public class InteractableUIPanel : MonoBehaviour, IPointerEnterHandler, IPointer
         Debug.Log("on mouse exit GUI " + this.name);
         ToggleButtonPanel(false);
         CursorManager.Instance.ToDefault();
+    }
+
+    public override void UpdatePanel()
+    {
+        base.UpdatePanel();
     }
 }

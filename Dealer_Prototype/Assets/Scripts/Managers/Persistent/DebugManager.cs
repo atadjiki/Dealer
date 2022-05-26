@@ -4,7 +4,7 @@ using Pathfinding;
 using TMPro;
 using UnityEngine;
 
-public class DebugManager : MonoBehaviour
+public class DebugManager : Manager
 {
     public enum State { None, LogOnly, VisualLogOnly, LogAndVisual };
 
@@ -81,7 +81,7 @@ public class DebugManager : MonoBehaviour
 
     public static DebugManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -92,10 +92,6 @@ public class DebugManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
-    }
-
-    private void Build()
-    { 
+        base.Build();
     }
 }

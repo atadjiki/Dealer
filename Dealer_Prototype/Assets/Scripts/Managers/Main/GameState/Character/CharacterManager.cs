@@ -4,18 +4,26 @@ using System.Linq;
 using Constants;
 using UnityEngine;
 
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : Manager
 {
     private List<CharacterComponent> characters;
 
     private List<MarkedLocation> waitLocations;
     private const int _popCap = 4;
 
+    public delegate void OnCharacterRegistered(CharacterComponent character);
+    public delegate void OnCharacterUnRegistered(CharacterComponent character);
+    public delegate void OnCharacterManagerUpdate();
+
+    public OnCharacterRegistered onCharacterRegistered;
+    public OnCharacterUnRegistered onCharacterUnRegistered;
+    public OnCharacterManagerUpdate onCharacterManagerUpdate;
+
     private static CharacterManager _instance;
 
     public static CharacterManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -26,13 +34,10 @@ public class CharacterManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
-    }
-
-    internal void Build()
-    {
         characters = new List<CharacterComponent>();
         waitLocations = new List<MarkedLocation>();
+
+        base.Build();
     }
 
     public bool RegisterCharacter(CharacterComponent characterComponent)
@@ -48,14 +53,8 @@ public class CharacterManager : MonoBehaviour
 
         DebugManager.Instance.Print(DebugManager.Log.LogNPCManager, "Registered NPC " + characterComponent.GetID());
 
-        if (PartyPanelList.Instance)
-        {
-            PartyPanelList.Instance.UpdateList();
-        }
-        if (CharacterPanel.Instance)
-        {
-            CharacterPanel.Instance.RegisterCharacter(characterComponent);
-        }
+        onCharacterManagerUpdate();
+        onCharacterRegistered(characterComponent);
 
         return true;
     }
@@ -64,14 +63,8 @@ public class CharacterManager : MonoBehaviour
     {
         characters.Remove(characterComponent);
 
-        if (PartyPanelList.Instance)
-        {
-            PartyPanelList.Instance.UpdateList();
-        }
-        if (CharacterPanel.Instance)
-        {
-            CharacterPanel.Instance.UnRegisterCharacter(characterComponent);
-        }
+        onCharacterManagerUpdate();
+        onCharacterUnRegistered(characterComponent);
     }
 
     public void RegisterLocation(MarkedLocation location)
@@ -90,11 +83,17 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    public override bool PerformUpdate(float tick)
     {
-        UpdateCharacterTasks();
-    }
+        if (base.PerformUpdate(tick))
+        {
+            UpdateCharacterTasks();
 
+            return true;
+        }
+
+        return false;
+    }
     public bool IsSpawned(CharacterInfo info)
     {
         foreach (CharacterComponent character in characters)
@@ -159,6 +158,8 @@ public class CharacterManager : MonoBehaviour
                         character.timeSinceLastUpdate = character.updateTime;
                       //  character.updateTime = 0; //force an update next time
                     }
+
+                    onCharacterManagerUpdate();
 
                 }
             }

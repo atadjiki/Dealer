@@ -5,18 +5,26 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class MoneyPanel : MonoBehaviour
-{
+public class Panel_InGame_Money : UIPanel
+{ 
     [SerializeField] private TextMeshProUGUI Text_Money;
 
-    private void Awake()
+    public override void Build()
     {
-        SetMoney(GameStateManager.Instance.state.money);
-
-        GameStateManager.Instance.onStateChanged += OnStateChanged;
+        base.Build();
     }
 
-    private void OnStateChanged(GameState state)
+    public override void ShowPanel()
+    {
+        Text_Money.enabled = true;
+    }
+
+    public override void HidePanel()
+    {
+        Text_Money.enabled = false;
+    }
+
+    public void OnStateChanged(GameState state)
     {
         SetMoney(state.money);
     }

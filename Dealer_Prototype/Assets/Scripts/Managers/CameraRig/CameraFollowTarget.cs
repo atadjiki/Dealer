@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CameraFollowTarget : MonoBehaviour
+public class CameraFollowTarget : Manager
 {
     private static CameraFollowTarget _instance;
 
@@ -17,7 +17,7 @@ public class CameraFollowTarget : MonoBehaviour
     [SerializeField] private float LerpSpeed = 1.5f;
     [SerializeField] private BoxCollider cameraBounds;
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -28,6 +28,7 @@ public class CameraFollowTarget : MonoBehaviour
             _instance = this;
         }
 
+        base.Build();
     }
 
     public void MoveInDirection(Vector2 InputVector)

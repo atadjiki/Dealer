@@ -1,45 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class PartyPanelList : MonoBehaviour
+public class PartyPanelList : UIPanel
 {
+    public GameObject Text_Title;
     public List<PartyListItem> Items;
 
-    private static PartyPanelList _instance;
-
-    public static PartyPanelList Instance { get { return _instance; } }
-
-    private void Awake()
+    public void OnCharacterManagerUpdate()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-
-        Build();
+        UpdatePanel();
     }
 
-    private void Build()
+    public override void ShowPanel()
     {
-        UpdateList();
+        Text_Title.SetActive(true);
+        UpdatePanel();
+        base.ShowPanel();
     }
 
-    public void UpdateList()
+    public override void HidePanel()
     {
+        Text_Title.SetActive(false);
+        base.HidePanel();
+    }
+
+    public override void UpdatePanel()
+    {
+       
         List<CharacterComponent> Party = CharacterManager.Instance.GetParty();
 
-        if(Party != null)
+        if (Party != null)
         {
             for (int i = 0; i < Items.Count; i++)
             {
                 PartyListItem listItem = Items[i];
 
-                if (i < Party.Count)
+                if (i < Party.Count && listItem != null)
                 {
                     CharacterComponent character = Party[i];
 
@@ -47,12 +45,12 @@ public class PartyPanelList : MonoBehaviour
 
                     CharacterTask characterTask = Party[i].GetTaskComponent().GetTask();
 
-                    string state = " - " + Constants.CharacterConstants.StateToString(character.GetState()); 
+                    string state = " - " + Constants.CharacterConstants.StateToString(character.GetState());
 
                     string taskDays;
-                    if (characterTask.DaysRemaining > 0 )
+                    if (characterTask.DaysRemaining > 0)
                     {
-                        taskDays = " - " + characterTask.DaysRemaining + "d"; 
+                        taskDays = " - " + characterTask.DaysRemaining + "d";
                     }
                     else
                     {
@@ -72,11 +70,19 @@ public class PartyPanelList : MonoBehaviour
                         listItem.SetTextColor(Color.gray);
                     }
                 }
+                else if(listItem == null)
+                {
+                    Debug.Log("list item is null");
+                }
                 else
                 {
                     listItem.ToggleVisiblity(false);
                 }
             }
         }
+
+        base.UpdatePanel();
     }
+
 }
+

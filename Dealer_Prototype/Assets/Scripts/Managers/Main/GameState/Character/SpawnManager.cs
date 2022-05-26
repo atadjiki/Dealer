@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager : Manager
 {
     private static SpawnManager _instance;
 
@@ -11,7 +11,7 @@ public class SpawnManager : MonoBehaviour
 
     private List<SpawnPoint> SpawnPoints;
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -22,12 +22,14 @@ public class SpawnManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
+        SpawnPoints = new List<SpawnPoint>();
+
+        base.Build();
     }
 
-    private void Build()
+    public override void Activate()
     {
-        SpawnPoints = new List<SpawnPoint>();
+        base.Activate();
     }
 
     public void RegisterSpawnPoint(SpawnPoint spawnPoint)

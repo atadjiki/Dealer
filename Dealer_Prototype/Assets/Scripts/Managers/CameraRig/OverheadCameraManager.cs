@@ -2,13 +2,11 @@ using Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(CinemachineVirtualCamera))]
-public class OverheadCameraManager : MonoBehaviour
+public class OverheadCameraManager : Manager
 {
     private static OverheadCameraManager _instance;
 
     public static OverheadCameraManager Instance { get { return _instance; } }
-
-    private CinemachineVirtualCamera CM_Main;
 
     private int characterLayerMask;
     private int doorLayerMask;
@@ -16,8 +14,7 @@ public class OverheadCameraManager : MonoBehaviour
     private int groundLayerMask;
     private int interactableLayerMask;
 
-
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -28,18 +25,13 @@ public class OverheadCameraManager : MonoBehaviour
             _instance = this;
         }
 
-        Build();
-    }
-
-    private void Build()
-    {
-        CM_Main = GetComponent<CinemachineVirtualCamera>();
-
         characterLayerMask = 1 << LayerMask.NameToLayer("Character");
         doorLayerMask = 1 << LayerMask.NameToLayer("Door");
         doorFrameLayerMask = 1 << LayerMask.NameToLayer("DoorFrame");
         groundLayerMask = 1 << LayerMask.NameToLayer("Ground");
         interactableLayerMask = 1 << LayerMask.NameToLayer("Interactable");
+
+        base.Build();
     }
 
     public void SetCullingMask()

@@ -22,16 +22,13 @@ public class CharacterComponent : MonoBehaviour
 
     internal virtual void Initialize(CharacterInfo _characterInfo)
     {
-        updateTime = Random.Range(1,5);
+        updateTime = Random.Range(1, 5);
 
         characterInfo = _characterInfo;
 
         StartCoroutine(DoInitialize());
 
-        if (CharacterManager.Instance)
-        {
-            CharacterManager.Instance.RegisterCharacter(this);
-        }
+        CharacterManager.Instance.RegisterCharacter(this);
     }
 
     internal virtual IEnumerator DoInitialize()
@@ -50,10 +47,7 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (CharacterManager.Instance)
-        {
-            CharacterManager.Instance.UnRegisterCharacter(this);
-        }
+        CharacterManager.Instance.UnRegisterCharacter(this);
     }
 
     public bool HasInitialized() { return bHasInitialized; }
@@ -62,9 +56,9 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void OnDestinationReached(Vector3 destination) { }
 
-    public string GetID() {  return characterInfo.ID.ToString(); }    
+    public string GetID() { return characterInfo.ID.ToString(); }
 
-    public CharacterConstants.CharacterID GetCharacterID()  { return characterInfo.ID; }
+    public CharacterConstants.CharacterID GetCharacterID() { return characterInfo.ID; }
 
     public NavigatorComponent GetNavigatorComponent() { return _navigator; }
 
@@ -80,7 +74,6 @@ public class CharacterComponent : MonoBehaviour
     {
         Debug.Log(characterInfo.name + " state changed from " + state + " to " + _state);
         state = _state;
-        PartyPanelList.Instance.UpdateList();
     }
 
     public void ToWaitingForUpdate()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class ColorManager : MonoBehaviour
+public class ColorManager : Manager
 {
     [Header("Teams")]
     [SerializeField] private Color Team_Ally;
@@ -27,7 +27,7 @@ public class ColorManager : MonoBehaviour
 
     public static ColorManager Instance { get { return _instance; } }
 
-    private void Awake()
+    public override void Build()
     {
         if (_instance != null && _instance != this)
         {
@@ -37,6 +37,8 @@ public class ColorManager : MonoBehaviour
         {
             _instance = this;
         }
+
+        base.Build();
     }
 
     public Material GetOutlineMaterial() { return OutlineMaterial; }

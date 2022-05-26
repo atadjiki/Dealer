@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Constants
 {
-    public class LevelDataConstants 
+    public class LevelConstants 
     {
         public enum LevelName { StartMenu, Apartment, None };
     }
