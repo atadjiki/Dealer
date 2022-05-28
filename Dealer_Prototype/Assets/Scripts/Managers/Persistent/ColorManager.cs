@@ -19,10 +19,6 @@ public class ColorManager : Manager
     [SerializeField] private Color Behavior_Active;
     [SerializeField] private Color InteractionTransform;
 
-    [Header("Materials")]
-    [SerializeField] private Material OutlineMaterial;
-
-
     private static ColorManager _instance;
 
     public static ColorManager Instance { get { return _instance; } }
@@ -39,73 +35,6 @@ public class ColorManager : Manager
         }
 
         base.Build();
-    }
-
-    public Material GetOutlineMaterial() { return OutlineMaterial; }
-
-    public void ApplyOutlineMaterialToMesh(MeshRenderer renderer)
-    {
-        if(renderer != null)
-        {
-            List<Material> materials = new List<Material>(renderer.materials);
-
-            if(materials.Count == 1)
-            {
-                materials.Add(OutlineMaterial);
-
-                renderer.materials = materials.ToArray();
-            }
-        }
-
-    }
-
-    public void RemoveOutlineMaterialFromMesh(MeshRenderer renderer)
-    {
-        if(renderer != null)
-        {
-            List<Material> materials = new List<Material>(renderer.materials);
-
-            if(materials.Count == 2)
-            {
-                materials.RemoveAt(1);
-
-                renderer.materials = materials.ToArray();
-            }
-
-        }
-    }
-
-
-    public void ApplyOutlineMaterialToMesh(SkinnedMeshRenderer renderer)
-    {
-        if (renderer != null)
-        {
-            List<Material> materials = new List<Material>(renderer.materials);
-
-            if (materials.Count == 3)
-            {
-                materials.Add(OutlineMaterial);
-
-                renderer.materials = materials.ToArray();
-            }
-        }
-
-    }
-
-    public void RemoveOutlineMaterialFromMesh(SkinnedMeshRenderer renderer)
-    {
-        if (renderer != null)
-        {
-            List<Material> materials = new List<Material>(renderer.materials);
-
-            if (materials.Count == 4)
-            {
-                materials.RemoveAt(3);
-
-                renderer.materials = materials.ToArray();
-            }
-
-        }
     }
 
     public Color GetPlayerColor()

@@ -48,14 +48,14 @@ public class Interactable : MonoBehaviour
         {
             foreach (MeshRenderer renderer in Meshes)
             {
-                ColorManager.Instance.ApplyOutlineMaterialToMesh(renderer);
+                MaterialManager.Instance.ApplyOutlineMaterialToMesh(renderer);
             }
         }
         else
         {
             foreach (MeshRenderer renderer in Meshes)
             {
-                ColorManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
+                MaterialManager.Instance.RemoveOutlineMaterialFromMesh(renderer);
             }
         }
     }

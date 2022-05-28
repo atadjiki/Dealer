@@ -1143,6 +1143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1333640161997015920}
   - component: {fileID: 1333640161997015923}
+  - component: {fileID: 1333640161997015922}
   m_Layer: 0
   m_Name: ColorManager
   m_TagString: Untagged
@@ -1150,6 +1151,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1333640161997015922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333640161997015921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3fcca75b017941a7921fbdaedbe1976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OutlineMaterial: {fileID: 2100000, guid: 077121a3e15db4af5bf87aafaec73912, type: 2}
+  SkinMaterials:
+  - {fileID: 2100000, guid: 634399ca674554b31a9485c37629e62d, type: 2}
+  - {fileID: 2100000, guid: aa9e71de5612848b5a30c81f80106b10, type: 2}
+  - {fileID: 2100000, guid: 33aa25ac170dd425fbacc61fe293badf, type: 2}
+  - {fileID: 2100000, guid: 7fcd08cfd9e3a4c27a7fe9e778b1f70f, type: 2}
+  - {fileID: 2100000, guid: ee4fc99eb23474187bb3744dc67c74f4, type: 2}
+  HairMaterials:
+  - {fileID: 2100000, guid: b2150da85cd8345a68e21e061a23890d, type: 2}
+  - {fileID: 2100000, guid: 1616ff425bfad45ef8d470c08fcf521b, type: 2}
+  - {fileID: 2100000, guid: 22958fbd1ed834164b549af760d95281, type: 2}
+  - {fileID: 2100000, guid: 167e90b4329b046428881cc01b51a2e1, type: 2}
+  TopMaterials: []
+  BottomMaterials: []
+  ShoeMaterials: []
 --- !u!114 &1333640161997015923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1171,7 +1199,6 @@ MonoBehaviour:
   Behavior_Inactive: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   Behavior_Active: {r: 0, g: 0.5, b: 0.07, a: 1}
   InteractionTransform: {r: 0, g: 0.5, b: 0.1, a: 1}
-  OutlineMaterial: {fileID: 2100000, guid: a763af238a2b5455599f3b330e47de83, type: 2}
 --- !u!4 &1333640162680476810
 Transform:
   m_ObjectHideFlags: 0

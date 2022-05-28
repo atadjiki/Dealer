@@ -52,5 +52,8 @@ namespace Constants
 
             return GenderType.Male;
         }
+
+        //mesh constants
+        public enum CharacterMeshType { Hair, Body, Top, Bottom, Shoes, Accessories };
     }
 }
