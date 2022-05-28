@@ -1,3 +1,4 @@
+using System;
 using Constants;
 using UnityEngine;
 
@@ -28,13 +29,12 @@ public class PrefabFactory : MonoBehaviour
 
     public static GameObject GetCharacterPrefab(string ID, Transform transform)
     {
-        if (ID == CharacterConstants.CharacterID.Male_1.ToString())
+        string temp = "Model_" + ID;
+        RegistryID registryID;
+
+        if(Enum.TryParse<RegistryID>(temp, out registryID))
         {
-            return CreatePrefab(RegistryID.Model_Male_1, transform);
-        }
-        else if (ID == CharacterConstants.CharacterID.Female_1.ToString())
-        {
-            return CreatePrefab(RegistryID.Model_Female_1, transform);
+            return CreatePrefab(registryID, transform);     
         }
 
         return null;

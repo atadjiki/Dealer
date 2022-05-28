@@ -26,7 +26,13 @@ namespace Constants
         public enum CharacterID
         {
             Male_1,
-            Female_1
+            Male_2,
+            Male_3,
+            Male_4,
+            Female_1,
+            Female_2,
+            Female_3,
+            Female_4
         };
 
         public enum GenderType
@@ -37,12 +43,11 @@ namespace Constants
 
         public static GenderType GetGenderBYID(CharacterID ID)
         {
-            switch(ID)
+            string idString = ID.ToString();
+
+            if(idString.Contains(GenderType.Female.ToString()))
             {
-                case CharacterID.Male_1:
-                    return GenderType.Male;
-                case CharacterID.Female_1:
-                    return GenderType.Female;
+                return GenderType.Female;
             }
 
             return GenderType.Male;

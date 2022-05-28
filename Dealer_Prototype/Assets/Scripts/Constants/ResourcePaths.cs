@@ -2,24 +2,17 @@ namespace Constants
 {
     public enum RegistryID
     {
-        Player,
         Navigator,
-        NavPoint,
         Interaction,
         NPC,
         Model_Male_1,
+        Model_Male_2,
+        Model_Male_3,
+        Model_Male_4,
         Model_Female_1,
-        Managers,
-        CharacterCanvas,
-        CharacterStateCanvas,
-        CM_Character,
-        CharacterCameraRig,
-        CharacterLight,
-        SelectionComponent,
-        BehaviorDecal,
-        PerLevel_Managers,
-        Static_Managers,
-        StartMenu
+        Model_Female_2,
+        Model_Female_3,
+        Model_Female_4,
     }
 
     public class Registry
@@ -28,59 +21,38 @@ namespace Constants
         {
            switch(RegistryID)
             {
-                case RegistryID.CharacterCameraRig:
-                    PathString = "Prefabs/Components/CharacterCameraRig";
-                    return true;
-                case RegistryID.CharacterLight:
-                    PathString = "Prefabs/Components/CharacterLight";
-                    return true;
-                case RegistryID.CharacterCanvas:
-                    PathString = "Prefabs/Components/CharacterCanvas";
-                    return true;
-                case RegistryID.CharacterStateCanvas:
-                    PathString = "Prefabs/Components/CharacterStateCanvas";
-                    return true;
-                case RegistryID.CM_Character:
-                    PathString = "Prefabs/Camera/CM_Character";
-                    return true;
                 case RegistryID.Interaction:
                     PathString = "Prefabs/Components/CharacterInteractionComponent";
-                    return true;
-                case RegistryID.Managers:
-                    PathString = "Prefabs/LevelAssets/Managers";
                     return true;
                 case RegistryID.Model_Female_1:
                     PathString = "Prefabs/Models/Model_Female1";
                     return true;
+                case RegistryID.Model_Female_2:
+                    PathString = "Prefabs/Models/Model_Female2";
+                    return true;
+                case RegistryID.Model_Female_3:
+                    PathString = "Prefabs/Models/Model_Female3";
+                    return true;
+                case RegistryID.Model_Female_4:
+                    PathString = "Prefabs/Models/Model_Female4";
+                    return true;
                 case RegistryID.Model_Male_1:
                     PathString = "Prefabs/Models/Model_Male1";
+                    return true;
+                case RegistryID.Model_Male_2:
+                    PathString = "Prefabs/Models/Model_Male2";
+                    return true;
+                case RegistryID.Model_Male_3:
+                    PathString = "Prefabs/Models/Model_Male3";
+                    return true;
+                case RegistryID.Model_Male_4:
+                    PathString = "Prefabs/Models/Model_Male4";
                     return true;
                 case RegistryID.Navigator:
                     PathString = "Prefabs/Components/Navigator";
                     return true;
-                case RegistryID.NavPoint:
-                    PathString = "Prefabs/Navigation/NavPoint";
-                    return true;
-                case RegistryID.BehaviorDecal:
-                    PathString = "Prefabs/Behavior/BehaviorDecal";
-                    return true;
                 case RegistryID.NPC:
                     PathString = "Prefabs/Characters/Character_Empty";
-                    return true;
-                case RegistryID.Player:
-                    PathString = "Prefabs/Characters/Player_Empty";
-                    return true;
-                case RegistryID.SelectionComponent:
-                    PathString = "Prefabs/Components/SelectionComponent";
-                    return true;
-                case RegistryID.PerLevel_Managers:
-                    PathString = "Prefabs/LevelAssets/PerLevel_Managers";
-                    return true;
-                case RegistryID.Static_Managers:
-                    PathString = "Prefabs/LevelAssets/Static_Managers";
-                    return true;
-                case RegistryID.StartMenu:
-                    PathString = "Prefabs/LevelAssets/StartMenu";
                     return true;
                 default:
                     PathString = "NOT FOUND";
