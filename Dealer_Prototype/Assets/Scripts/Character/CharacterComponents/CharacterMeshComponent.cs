@@ -6,8 +6,6 @@ using Constants;
 [RequireComponent(typeof(SkinnedMeshRenderer))]
 public class CharacterMeshComponent : MonoBehaviour
 {
-    [SerializeField] private CharacterConstants.CharacterMeshType _type;
-
     private SkinnedMeshRenderer _renderer;
 
     private void Awake()

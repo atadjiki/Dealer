@@ -24,21 +24,6 @@ public class MaterialManager : Manager
 
     [Header("Character Materials")]
     [SerializeField] private Material OutlineMaterial;
-    [Space]
-    [Space]
-    [Header("Character Mesh Materials")]
-    [Space]
-    [SerializeField] private Material[] SkinMaterials;
-    [Space]
-    [SerializeField] private Material[] HairMaterials;
-    [Space]
-    [SerializeField] private Material[] TopMaterials;
-    [Space]
-    [SerializeField] private Material[] BottomMaterials;
-    [Space]
-    [SerializeField] private Material[] ShoeMaterials;
-
-
 
     public Material GetOutlineMaterial() { return OutlineMaterial; }
 
@@ -55,7 +40,6 @@ public class MaterialManager : Manager
                 renderer.materials = materials.ToArray();
             }
         }
-
     }
 
     public void RemoveOutlineMaterialFromMesh(MeshRenderer renderer)
@@ -70,7 +54,6 @@ public class MaterialManager : Manager
 
                 renderer.materials = materials.ToArray();
             }
-
         }
     }
 
@@ -87,7 +70,6 @@ public class MaterialManager : Manager
                 renderer.materials = materials.ToArray();
             }
         }
-
     }
 
     public void RemoveOutlineMaterialFromMesh(SkinnedMeshRenderer renderer)
@@ -102,7 +84,6 @@ public class MaterialManager : Manager
 
                 renderer.materials = materials.ToArray();
             }
-
         }
     }
 }

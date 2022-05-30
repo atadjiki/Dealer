@@ -4,60 +4,9 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class ColorManager : Manager
+public class ColorManager : MonoBehaviour
 {
-    [Header("Teams")]
-    [SerializeField] private Color Team_Ally;
-    [SerializeField] private Color Team_Enemy;
-    [SerializeField] private Color Team_NPC;
-    [SerializeField] private Color Team_Player;
-
-    [Header("Decals")]
-    [SerializeField] private Color NavPoint;
-    [SerializeField] private Color Selection;
-    [SerializeField] private Color Behavior_Inactive;
-    [SerializeField] private Color Behavior_Active;
-    [SerializeField] private Color InteractionTransform;
-
-    private static ColorManager _instance;
-
-    public static ColorManager Instance { get { return _instance; } }
-
-    public override void Build()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-
-        base.Build();
-    }
-
-    public Color GetPlayerColor()
-    {
-        return Team_Player;
-    }
-
-    public Color GetColorByTeam(CharacterConstants.Team Team)
-    {
-        switch (Team)
-        {
-            case CharacterConstants.Team.Ally:
-                return Team_Ally;
-            case CharacterConstants.Team.NPC:
-                return Team_NPC;
-            case CharacterConstants.Team.Enemy:
-                return Team_Enemy;
-        }
-
-        return Color.clear;
-    }
-
-    public void SetObjectToColor(GameObject _object, Color color)
+    public static void SetObjectToColor(GameObject _object, Color color)
     {
         if (_object is null)
         {
@@ -83,32 +32,5 @@ public class ColorManager : Manager
                 material.SetFloat("InBlendAmount", color.a/2);
             }
         }
-    }
-
-    public Color GetNavPointColor()
-    {
-        return NavPoint;
-    }
-
-    public Color GetSelectionColor()
-    {
-        return Selection;
-    }
-
-    public Color GetBehaviorDecalColor(bool active)
-    {
-        if(active)
-        {
-            return Behavior_Active;
-        }
-        else
-        {
-            return Behavior_Inactive;
-        }
-    }
-
-    public Color GetInteractionTransformColor()
-    {
-        return InteractionTransform;
     }
 }

@@ -4,8 +4,4 @@ using UnityEngine;
 
 public class InteractionTransform : MonoBehaviour
 {
-    private void Awake()
-    {
-        ColorManager.Instance.SetObjectToColor(this.gameObject, ColorManager.Instance.GetInteractionTransformColor());
-    }
 }

@@ -18,8 +18,12 @@ public class CharacterAnimationComponent : MonoBehaviour
     public bool IsVisible() { return visible; }
     public void SetSocket(GameObject inObject) { socket = inObject; }
 
+    private List<CharacterMeshComponent> _meshes;
+
     private void Awake()
     {
+        _meshes = new List<CharacterMeshComponent>(GetComponentsInChildren<CharacterMeshComponent>());
+
         _animator = GetComponent<Animator>();
         _navigator = GetComponentInParent<NavigatorComponent>();
 
@@ -61,6 +65,10 @@ public class CharacterAnimationComponent : MonoBehaviour
     public void ToggleVisiblity(bool flag)
     {
         visible = flag;
-        this.gameObject.SetActive(flag);
+
+        foreach(CharacterMeshComponent mesh in _meshes)
+        {
+            mesh.ToggleVisibility(flag);
+        }
     }
 }
