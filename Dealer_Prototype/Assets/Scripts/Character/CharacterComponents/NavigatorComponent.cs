@@ -101,7 +101,7 @@ public class NavigatorComponent : MonoBehaviour
     {
         _AI.destination = verifiedLocation;
         _AI.SearchPath(); // Start to search for a path to the destination immediately
-        float timeStamp = Time.time;
+        float timeStamp = Time.unscaledTime;
         yield return new WaitForEndOfFrame();
 
         parentCharacter.GetAnimationComponent().FadeToAnimation(AnimationConstants.Anim.Walking, 0.15f, true);
@@ -114,11 +114,11 @@ public class NavigatorComponent : MonoBehaviour
         // Wait until the agent has reached the destination
         while (true)
         {
-            if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 0.25f, Time.fixedDeltaTime, false);
+            if (DebugManager.Instance.State_Navigator != DebugManager.State.None) DebugExtension.DebugWireSphere(verifiedLocation, Color.green, 0.25f, Time.deltaTime, false);
 
             yield return new WaitForEndOfFrame();
 
-            float timeElapsed = Mathf.Abs(Time.time - timeStamp);
+            float timeElapsed = Mathf.Abs(Time.unscaledTime - timeStamp);
 
             if (timeElapsed > 0.15f && _AI.velocity == Vector3.zero)
             {
@@ -130,7 +130,7 @@ public class NavigatorComponent : MonoBehaviour
                 break;
             }
 
-            moveDuration += Time.fixedDeltaTime;
+            moveDuration += Time.unscaledTime;
         }
 
         onReachedLocation(parentCharacter, markedLocation);
@@ -158,7 +158,7 @@ public class NavigatorComponent : MonoBehaviour
         {
             transform.position = Vector3.Slerp(initialTransform.position, targetTransform.position, time/lerpTime);
             transform.rotation = Quaternion.Slerp(initialTransform.rotation, targetTransform.rotation, time/lerpTime);
-            time += Time.deltaTime;
+            time += Time.unscaledDeltaTime;
             yield return null;
         }
 

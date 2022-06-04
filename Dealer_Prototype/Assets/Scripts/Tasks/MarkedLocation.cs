@@ -6,8 +6,8 @@ public class MarkedLocation : MonoBehaviour
 {
     public Constants.AnimationConstants.Anim LocationAnim;
 
-    private CharacterComponent currentOccupant;
-    private CharacterComponent previousOccupant;
+    [SerializeField] private CharacterComponent currentOccupant;
+    [SerializeField] private CharacterComponent previousOccupant;
 
     private void Awake()
     {

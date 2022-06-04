@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class Manager : MonoBehaviour
 {
     public delegate void OnBuildComplete(Manager manager);

@@ -20,7 +20,7 @@ public class CharacterAnimationComponent : MonoBehaviour
 
     private List<CharacterMeshComponent> _meshes;
 
-    private void Awake()
+    private void Start()
     {
         _meshes = new List<CharacterMeshComponent>(GetComponentsInChildren<CharacterMeshComponent>());
 

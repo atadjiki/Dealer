@@ -72,7 +72,7 @@ public class PartyPanelList : UIPanel
                 }
                 else if(listItem == null)
                 {
-                    Debug.Log("list item is null");
+                  //  Debug.Log("list item is null");
                 }
                 else
                 {

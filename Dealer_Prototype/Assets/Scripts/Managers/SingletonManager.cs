@@ -111,7 +111,7 @@ public class SingletonManager : MonoBehaviour
         return buildCount == managers.Count;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if(allowUpdate)
         {

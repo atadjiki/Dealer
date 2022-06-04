@@ -8,13 +8,16 @@ public class CharacterMeshComponent : MonoBehaviour
 {
     private SkinnedMeshRenderer _renderer;
 
-    private void Awake()
+    private void Start()
     {
         _renderer = GetComponent<SkinnedMeshRenderer>();
     }
 
     public void ToggleVisibility(bool flag)
     {
-        _renderer.enabled = flag;
+        if(_renderer != null)
+        {
+            _renderer.enabled = flag;
+        }
     }
 }

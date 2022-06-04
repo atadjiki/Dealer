@@ -8,13 +8,14 @@ public class Panel_InGame : UIPanel
     [SerializeField] private PartyPanelList panel_party;
     [SerializeField] private InteractablesPanel panel_interactables;
     [SerializeField] private Panel_InGame_Money panel_money;
+    [SerializeField] private TimePanel panel_time;
 
     private List<UIPanel> panels;
     private int buildCount = 0;
 
     public override void Build()
     {
-        panels = new List<UIPanel> { panel_character, panel_party, panel_interactables, panel_money };
+        panels = new List<UIPanel> { panel_character, panel_party, panel_interactables, panel_money, panel_time };
 
         foreach(UIPanel panel in panels)
         {
@@ -83,5 +84,10 @@ public class Panel_InGame : UIPanel
     public Panel_InGame_Money GetMoneyPanel()
     {
         return panel_money;
+    }
+
+    public TimePanel GetTimePanel()
+    {
+        return panel_time;
     }
 }

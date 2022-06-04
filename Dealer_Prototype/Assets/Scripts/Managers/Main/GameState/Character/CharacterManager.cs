@@ -117,7 +117,7 @@ public class CharacterManager : Manager
             }
             else
             {
-                character.timeSinceLastUpdate += Time.fixedDeltaTime;
+                character.timeSinceLastUpdate += Time.deltaTime;
                 //  Debug.Log("character tick " + character.timeSinceLastUpdate + "/" + character.updateTime);
 
                 //if it is time for an update:
@@ -125,11 +125,11 @@ public class CharacterManager : Manager
                 {
                     character.timeSinceLastUpdate = 0; //reset time
 
+                    EjectCharacterFromWaitLocation(character); //remove the character from any locations
+
                     //if we are waiting for an update, find a new wait location
                     if (character.GetState() == CharacterConstants.CharacterState.WaitingForUpdate)
                     {
-                        EjectCharacterFromWaitLocation(character); //remove the character from any locations
-
                         List<WaitLocation> avaialbleWaitLocations = GetWaitLocationsForCharacter(character); //get locations to place them
 
                         if (avaialbleWaitLocations.Count > 0)
@@ -138,16 +138,17 @@ public class CharacterManager : Manager
 
                             waitLocation.SetOccupant(character);
 
+                            character.ToMoving(); //change state
+
                             character.GetNavigatorComponent().onReachedLocation += OnReachedLocation; //callback for when we get there
 
                             //move to location 
                             character.GetAnimationComponent().ToggleVisiblity(true); //unhide model 
                             character.GetNavigatorComponent().MoveToLocation(waitLocation, true); //start moving
-
-                            character.ToMoving(); //change state
                         }
                         else
                         {
+                            Debug.Log("no available wait locations");
                             character.ToWaiting(); //if there are no locations for us, go back to waiting
                         }
                     }
@@ -156,11 +157,9 @@ public class CharacterManager : Manager
                     {
                         character.ToWaitingForUpdate();
                         character.timeSinceLastUpdate = character.updateTime;
-                      //  character.updateTime = 0; //force an update next time
                     }
 
                     onCharacterManagerUpdate();
-
                 }
             }
         }
@@ -168,12 +167,19 @@ public class CharacterManager : Manager
 
     public void OnReachedLocation(CharacterComponent character, MarkedLocation location)
     {
-        if (location is WaitLocation && character.GetState() == CharacterConstants.CharacterState.Moving)
-        {
-            character.ToWaiting();
-            character.updateTime = ((WaitLocation)location).GetWaitTime();
+        character.GetNavigatorComponent().onReachedLocation = null; 
 
-         //   Debug.Log("next update in " + character.updateTime);
+        if (location is WaitLocation)
+        {
+            if(character.GetState() == CharacterConstants.CharacterState.Moving)
+            {
+                character.ToWaiting();
+                character.updateTime = ((WaitLocation)location).GetWaitTime();
+            }
+            else 
+            {
+                Debug.Log("error: character is at location but state is " + character.GetState().ToString());
+            }
         }
         else
         {
@@ -188,7 +194,6 @@ public class CharacterManager : Manager
             if (waitLocation.GetCurrentOccupant() == character)
             {
                 waitLocation.SetOccupant(null);
-                return;
             }
         }
     }
@@ -199,7 +204,7 @@ public class CharacterManager : Manager
 
         foreach (WaitLocation waitLocation in waitLocations)
         {
-            if (waitLocation.GetCurrentOccupant() == null && waitLocation.GetPreviousOccupant() != character)
+            if (waitLocation.GetCurrentOccupant() == null)
             {
                 unoccupied.Add(waitLocation);
             }

@@ -100,7 +100,6 @@ public class UIManager : Manager
         GameStateManager.Instance.onStateChanged += OnStateChanged;
         GameStateManager.Instance.onModeChanged += OnModeChanged;
 
-
         return 10;
     }
 
