@@ -38,22 +38,6 @@ public class NavigatorComponent : MonoBehaviour
         NNInfo NearestNode_origin = AstarPath.active.GetNearest(this.transform.position, NNConstraint.Default);
         NNInfo NearestNode_destination = AstarPath.active.GetNearest(location, NNConstraint.Default);
 
-        //check distances
-        //if (Vector3.Distance(NearestNode_origin.position, this.transform.position) > 0.1f)
-        //{
-        //    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around origin");
-
-        //    success = false;
-        //    return null;
-        //}
-        //else if (Vector3.Distance(NearestNode_destination.position, location) > 0.1f)
-        //{
-        //    DebugManager.Instance.Print(DebugManager.Log.LogCharacter, "No nodes available around destination");
-
-        //    success = false;
-        //    return null;
-        //}
-
         if (checkPath)
         {
             success = PathUtilities.IsPathPossible(NearestNode_origin.node, NearestNode_destination.node);

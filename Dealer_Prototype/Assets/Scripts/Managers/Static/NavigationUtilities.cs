@@ -7,13 +7,13 @@ public class NavigationUtilities : MonoBehaviour
 {
     public static bool ValidateDestination(Vector3 destination)
     {
-        RecastGraph graph = AstarPath.active.data.recastGraph;
+        GridGraph graph = AstarPath.active.data.gridGraph;
 
         if (graph != null)
         {
-            GraphNode node = graph.PointOnNavmesh(destination, NNConstraint.None);
+            NNInfoInternal info =  graph.GetNearest(destination);
 
-            if (node != null)
+            if (info.node != null)
             {
                 return true;
             }
