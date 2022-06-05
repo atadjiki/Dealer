@@ -47,11 +47,11 @@ public class SingletonManager : MonoBehaviour
 
         if (AreManagersBuilt())
         {
-            Debug.Log(this.name + " | Managers Built = " + buildCount + "/" + managers.Count);
+//            Debug.Log(this.name + " | Managers Built = " + buildCount + "/" + managers.Count);
 
             int delegateCount = GatherManagerDelegates();
 
-            Debug.Log(this.name + " | Assigned " + delegateCount + " delegates");
+    //        Debug.Log(this.name + " | Assigned " + delegateCount + " delegates");
 
             //at this stage, the managers are all registered and ready to go, so we can activate them
             ActivateManagers(true);

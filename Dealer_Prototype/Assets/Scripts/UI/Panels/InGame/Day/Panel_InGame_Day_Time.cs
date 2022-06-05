@@ -1,34 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Constants;
 
-public class TimePanel : UIPanel
+public class Panel_InGame_Day_Time : UIPanel
 {
+
     [SerializeField] private TextMeshProUGUI ButtonText;
     [SerializeField] private TextMeshProUGUI ClockText;
-    public override void Build()
+
+    public override void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
     {
-        base.Build();
+        switch(GamePlayMode)
+        {
+            case State.GamePlayMode.Day:
+                ShowPanel();
+                allowUpdate = true;
+                break;
+            default:
+                HidePanel();
+                allowUpdate = false;
+                break;
+        }
     }
 
     public override void ShowPanel()
     {
+        ButtonText.enabled = true;
+        ClockText.enabled = true;
+
         UpdateButton();
-        base.ShowPanel();
     }
 
     public override void HidePanel()
     {
-        base.HidePanel();
+        ButtonText.text = "";
+        ClockText.text = "";
+
+        ButtonText.enabled = false;
+        ClockText.enabled = false;
     }
 
     public override void UpdatePanel()
     {
-        ClockText.text = TimeManager.Instance.GetDayProgressAsTime();
-
-        base.UpdatePanel();
+        if(allowUpdate)
+        {
+            if (ClockText.enabled)
+            {
+                ClockText.text = TimeManager.Instance.GetDayProgressAsTime();
+            }
+        }
     }
 
     private void UpdateButton()
@@ -51,11 +74,6 @@ public class TimePanel : UIPanel
                 ButtonText.text = "fastest";
                 break;
         }
-    }
-
-    public void OnModeChanged(State.GameMode Mode)
-    {
-        UpdateButton();
     }
 
     public void OnButtonClicked()

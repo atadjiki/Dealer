@@ -37,7 +37,7 @@ public class SpawnManager : Manager
         if(SpawnPoints.Contains(spawnPoint) == false)
         {
             SpawnPoints.Add(spawnPoint);
-            DoSpawnUpdate(spawnPoint);
+          //  DoSpawnUpdate(spawnPoint);
         }
     }
 

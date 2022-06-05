@@ -167,12 +167,13 @@ public class TimeManager : Manager
                 break;
         }
 
-        Debug.Log("Time Scale: " + Time.timeScale + " (" + _currentMode.ToString() + ")");
+//        Debug.Log("Time Scale: " + Time.timeScale + " (" + _currentMode.ToString() + ")");
     }
 
     public override bool PerformUpdate(float tick)
     {
-        if(GameStateManager.Instance.GetGameMode() == State.GameMode.GamePlay)
+        if(GameStateManager.Instance.GetGameMode() == State.GameMode.GamePlay
+            && GameStateManager.Instance.GetGamePlayMode() == State.GamePlayMode.Day)
         {
             dayProgress += tick * Time.timeScale;
 

@@ -2,49 +2,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class InteractablesPanel : UIPanel
+public class Panel_InGame_Day_Interactables : UIPanel
 { 
     [SerializeField] private GameObject interactablePanelPrefab;
     [SerializeField] private Camera uiCamera;
     [SerializeField] private Canvas uiCanvas;
 
-    private Dictionary<Interactable, InteractableUIPanel> uiMap; //map interactable to panel
+    private Dictionary<Interactable, Panel_InGame_Day_Interactable> uiMap; //map interactable to panel
 
     public override void Build()
     {
-        uiMap = new Dictionary<Interactable, InteractableUIPanel>();
+        uiMap = new Dictionary<Interactable, Panel_InGame_Day_Interactable>();
 
         base.Build();
     }
 
     public override void UpdatePanel()
     {
-        foreach (Interactable interactable in uiMap.Keys)
+        if(allowUpdate)
         {
-            InteractableUIPanel interactableUIPanel = uiMap[interactable];
-
-            if(interactableUIPanel != null)
+            foreach (Interactable interactable in uiMap.Keys)
             {
+                Panel_InGame_Day_Interactable interactableUIPanel = uiMap[interactable];
 
-                Vector3 anchorPoint = interactable.GetComponent<Collider>().bounds.max;
+                if (interactableUIPanel != null)
+                {
 
-                Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
+                    Vector3 anchorPoint = interactable.GetComponent<Collider>().bounds.max;
 
-                Vector2 offset = new Vector2(0, -100);
+                    Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
 
-                ((RectTransform)interactableUIPanel.gameObject.transform).anchoredPosition = targetScreenPoint + offset;
+                    Vector2 offset = new Vector2(0, -100);
+
+                    ((RectTransform)interactableUIPanel.gameObject.transform).anchoredPosition = targetScreenPoint + offset;
+                }
             }
         }
-
-        base.UpdatePanel();
     }
 
-    private InteractableUIPanel BuildUIForTarget(Interactable interactable)
+    private Panel_InGame_Day_Interactable BuildUIForTarget(Interactable interactable)
     {
         if(interactable.uiPanelPrefab)
         {
             GameObject interactablePanelObject = Instantiate(interactable.uiPanelPrefab, interactable.transform);
-            InteractableUIPanel interactableUIPanel = interactablePanelObject.GetComponent<InteractableUIPanel>();
+            Panel_InGame_Day_Interactable interactableUIPanel = interactablePanelObject.GetComponent<Panel_InGame_Day_Interactable>();
 
             return interactableUIPanel;
         }
@@ -62,7 +63,7 @@ public class InteractablesPanel : UIPanel
     }
 
 
-    public void RegisterInteractable(Interactable interactable)
+    public override void RegisterInteractable(Interactable interactable)
     {
         if (uiMap.ContainsKey(interactable) == false)
         {
@@ -70,7 +71,7 @@ public class InteractablesPanel : UIPanel
         }
     }
 
-    public void UnRegisterInteractable(Interactable interactable)
+    public override void UnRegisterInteractable(Interactable interactable)
     {
         if(uiMap.ContainsKey(interactable))
         {

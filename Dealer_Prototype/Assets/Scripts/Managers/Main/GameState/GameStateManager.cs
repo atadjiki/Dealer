@@ -5,8 +5,8 @@ using Constants;
 
 public class GameStateManager : Manager
 {
-    private State.GameMode _gameMode = State.GameMode.GamePlay;
-    private State.GamePlayMode _gamePlayMode = State.GamePlayMode.Day;
+    private State.GameMode _gameMode = State.GameMode.Loading;
+    private State.GamePlayMode _gamePlayMode = State.GamePlayMode.Paused;
 
     public State.GameMode GetGameMode() { return _gameMode; }
     public State.GamePlayMode GetGamePlayMode() { return _gamePlayMode; }
@@ -37,6 +37,8 @@ public class GameStateManager : Manager
             _instance = this;
         }
 
+        _gameState = GetComponent<GameState>();
+
         base.Build();
     }
 
@@ -51,9 +53,9 @@ public class GameStateManager : Manager
     {
         if(levelName == LevelConstants.LevelName.Apartment)
         {
-            onGameStateChanged(_gameState);
             ToGameMode(State.GameMode.GamePlay);
-            ToGamePlayMode(State.GamePlayMode.Day);
+            ToGamePlayMode(State.GamePlayMode.PreDay);
+            GameStateUpdate();
         }
     }
 
@@ -62,8 +64,6 @@ public class GameStateManager : Manager
         _gameMode = gameMode;
 
         onGameModeChanged(_gameMode);
-        onGamePlayModeChanged(_gamePlayMode);
-        onGameStateChanged(_gameState);
     }
 
     public void ToGamePlayMode(State.GamePlayMode gamePlayMode)
@@ -71,7 +71,6 @@ public class GameStateManager : Manager
         _gamePlayMode = gamePlayMode;
 
         onGamePlayModeChanged(_gamePlayMode);
-        onGameStateChanged(_gameState);
     }
 
     [InspectorButton("StateUpdate")]
@@ -84,6 +83,5 @@ public class GameStateManager : Manager
             onGameStateChanged(_gameState);
             Debug.Log(_gameState.toString());
         }
-
     }
 }

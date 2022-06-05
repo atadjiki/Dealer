@@ -1,9 +1,10 @@
 ﻿<Properties StartupConfiguration="{2AA29506-95F3-D309-9058-ABBE89690FC2}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Managers/Main/GameState/Character/SpawnManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Managers/UI/UIManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Constants/GameStateConstants.cs" Line="1" Column="1" IsPinned="True" />
-      <File FileName="Assets/Scripts/Managers/Main/GameState/GameStateManager.cs" Line="54" Column="44" />
-      <File FileName="Assets/Scripts/Managers/Main/GameState/Character/SpawnManager.cs" Line="40" Column="11" />
+      <File FileName="Assets/Scripts/UI/Panels/InGame/Day/Panel_InGame_Day.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UI/Panels/InGame/Day/Panel_InGame_Day_Time.cs" Line="24" Column="37" />
+      <File FileName="Assets/Scripts/UI/Panels/InGame/Day/PartyPanel/Panel_InGame_Day_Party.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Managers/UI/UIManager.cs" Line="8" Column="2" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -19,20 +20,23 @@
                 <Node name="Managers" expanded="True">
                   <Node name="Main" expanded="True">
                     <Node name="GameState" expanded="True">
-                      <Node name="Character" expanded="True">
-                        <Node name="SpawnManager.cs" selected="True" />
-                      </Node>
+                      <Node name="Character" expanded="True" />
                     </Node>
                   </Node>
                   <Node name="Persistent" expanded="True" />
                   <Node name="Static" expanded="True" />
-                  <Node name="UI" expanded="True" />
+                  <Node name="UI" expanded="True">
+                    <Node name="UIManager.cs" selected="True" />
+                  </Node>
                 </Node>
                 <Node name="UI" expanded="True">
                   <Node name="Panels" expanded="True">
                     <Node name="InGame" expanded="True">
-                      <Node name="MoneyPanel" expanded="True" />
+                      <Node name="Day" expanded="True">
+                        <Node name="PartyPanel" expanded="True" />
+                      </Node>
                     </Node>
+                    <Node name="Loading" expanded="True" />
                   </Node>
                 </Node>
               </Node>
@@ -45,7 +49,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.AstarPathfindingProjectEditor PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="675b9385-ce39-4d94-bac7-1048eaabb054" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="0049c1ca-078d-41a1-8191-756eaa17fe87" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InteractableUIPanel : UIPanel, IPointerEnterHandler, IPointerExitHandler
+public class Panel_InGame_Day_Interactable : UIPanel, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Button Button_Interactable;
     [SerializeField] TextMeshProUGUI Title_TextMesh;
@@ -27,7 +27,6 @@ public class InteractableUIPanel : UIPanel, IPointerEnterHandler, IPointerExitHa
     public void OnButtonClick()
     {
         Debug.Log("on mouse clicked " + this.name);
-   //     InfoPanelManager.Instance.UnRegisterInteractable(interactable);
     }
 
     private void ToggleButtonPanel(bool visible)

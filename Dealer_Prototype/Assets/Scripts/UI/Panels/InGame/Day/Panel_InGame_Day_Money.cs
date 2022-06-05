@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using Constants;
 
-public class Panel_InGame_Money : UIPanel
+public class Panel_InGame_Day_Money : UIPanel
 { 
     [SerializeField] private TextMeshProUGUI Text_Money;
 
@@ -24,7 +25,22 @@ public class Panel_InGame_Money : UIPanel
         Text_Money.enabled = false;
     }
 
-    public void OnGameStateChanged(GameState state)
+    public override void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
+    {
+        switch(GamePlayMode)
+        {
+            case State.GamePlayMode.Day:
+                allowUpdate = true;
+                ShowPanel();
+                break;
+            default:
+                allowUpdate = false;
+                HidePanel();
+                break;
+        }
+    }
+
+    public override void OnGameStateChanged(GameState state)
     {
         if(Text_Money != null && state != null)
             SetMoney(state.money);

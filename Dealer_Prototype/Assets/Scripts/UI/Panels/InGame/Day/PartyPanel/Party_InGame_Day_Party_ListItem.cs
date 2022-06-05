@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PartyListItem : MonoBehaviour
+public class Party_InGame_Day_Party_ListItem : MonoBehaviour
 {
     private TextMeshProUGUI textBox;
 

@@ -6,12 +6,8 @@ using UnityEngine;
 
 public class UIManager : Manager
 {
-    public enum UIState { None, Gameplay, Conversation, Loading };
-
-    private UIState currentState = UIState.None;
-
     [SerializeField] private Panel_Loading Panel_Loading;
-    [SerializeField] private Panel_InGame Panel_InGame;
+    [SerializeField] private Panel_InGame_Day Panel_InGame;
 
     private List<UIPanel> panels;
 
@@ -20,37 +16,6 @@ public class UIManager : Manager
     private int buildCount = 0;
 
     public static UIManager Instance { get { return _instance; } }
-
-    private void HideAll()
-    {
-        foreach(UIPanel panel in panels)
-        {
-            panel.HidePanel();
-        }
-    }
-
-    public void SetState(UIState newState)
-    {
-        if(newState == currentState) { return; }
-
-        currentState = newState;
-
-        HideAll();
-
-        switch (currentState)
-        {
-            case UIState.Gameplay:
-                Panel_InGame.ShowPanel();
-                break;
-            case UIState.Loading:
-                Panel_Loading.ShowPanel();
-                break;
-            default:
-                break;
-        }
-
-        Debug.Log("UI State = " + currentState);
-    }
 
     public override void Build()
     {
@@ -78,8 +43,6 @@ public class UIManager : Manager
 
         if (buildCount == panels.Count)
         {
-            Debug.Log(this.name + " | Panels Built = " + buildCount + "/" + panels.Count);
-
             onBuildComplete(this);
         }
     }
@@ -106,92 +69,97 @@ public class UIManager : Manager
 
     private void RegisterCharacter(CharacterComponent character)
     {
-        Panel_InGame.GetCharacterPanel().RegisterCharacter(character);
+        foreach(UIPanel panel in panels)
+        {
+            panel.RegisterCharacter(character);
+        }
     }
 
     private void UnRegisterCharacter(CharacterComponent character)
     {
-        Panel_InGame.GetCharacterPanel().UnRegisterCharacter(character);
+        foreach (UIPanel panel in panels)
+        {
+            panel.UnRegisterCharacter(character);
+        }
     }
 
     private void OnCharacterManagerUpdate()
     {
-        Panel_InGame.GetPartyPanel().OnCharacterManagerUpdate();
+        foreach (UIPanel panel in panels)
+        {
+            panel.OnCharacterManagerUpdate();
+        }
     }
 
     private void RegisterInteractable(Interactable interactable)
     {
-        Panel_InGame.GetInteractablesPanel().RegisterInteractable(interactable);
+        foreach (UIPanel panel in panels)
+        {
+            panel.RegisterInteractable(interactable);
+        }
     }
 
     private void UnRegisterInteractable(Interactable interactable)
     {
-        Panel_InGame.GetInteractablesPanel().UnRegisterInteractable(interactable);
-    }
-
-    private void OnLoadStart(LevelConstants.LevelName levelName)
-    {
-        SetState(UIState.Loading);
-    }
-
-    private void OnLoadProgress(LevelConstants.LevelName levelName, float progress)
-    {
-
-    }
-
-    private void OnLoadEnd(LevelConstants.LevelName levelName)
-    {
-        if (levelName == LevelConstants.LevelName.Apartment)
+        foreach (UIPanel panel in panels)
         {
-            SetState(UIState.Gameplay);
+            panel.UnRegisterInteractable(interactable);
         }
-        else
-        {
-            SetState(UIState.None);
-        }
-    }
-
-
-    public override void Activate()
-    {
-        base.Activate();
-        SetState(UIState.Loading);
     }
 
     private void OnGameStateChanged(GameState GameState)
     {
-        Panel_InGame.OnGameStateChanged(GameState);
+        foreach (UIPanel panel in panels)
+        {
+            panel.OnGameStateChanged(GameState);
+        }
+    }
+
+    private void OnLoadStart(LevelConstants.LevelName levelName)
+    {
+        foreach (UIPanel panel in panels)
+        {
+            panel.OnLoadStart(levelName);
+        }
+    }
+
+    private void OnLoadProgress(LevelConstants.LevelName levelName, float progress)
+    {
+        foreach (UIPanel panel in panels)
+        {
+            panel.OnLoadProgress(levelName, progress);
+        }
+    }
+
+    private void OnLoadEnd(LevelConstants.LevelName levelName)
+    {
+        foreach (UIPanel panel in panels)
+        {
+            panel.OnLoadEnd(levelName);
+        }
     }
 
     private void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
     {
-        switch(GamePlayMode)
+        foreach(UIPanel panel in panels)
         {
-            case State.GamePlayMode.Conversation:
-                SetState(UIState.Conversation);
-                break;
+            panel.OnGamePlayModeChanged(GamePlayMode);
         }
     }
 
     private void OnGameModeChanged(State.GameMode GameMode)
     {
-        switch(GameMode)
+        foreach(UIPanel panel in panels)
         {
-            case State.GameMode.GamePlay:
-                SetState(UIState.Gameplay);
-                break;
-            default:
-                SetState(UIState.None);
-                break;
-
+            panel.OnGameModeChanged(GameMode);
         }
     }
 
     public override bool PerformUpdate(float tick)
     {
-        if (currentState == UIState.Gameplay)
+        foreach (UIPanel panel in panels)
         {
-            Panel_InGame.UpdatePanel();
+            panel.UpdatePanel();
         }
 
         return base.PerformUpdate(tick);

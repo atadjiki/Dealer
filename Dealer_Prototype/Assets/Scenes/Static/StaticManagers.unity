@@ -123,6 +123,45 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &87916457
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 87916458}
+  m_Layer: 5
+  m_Name: Day
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &87916458
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87916457}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 181495884}
+  - {fileID: 2213838648116718745}
+  - {fileID: 587421610}
+  - {fileID: 1443551528}
+  m_Father: {fileID: 3892157699670136467}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &107646664
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,7 +375,7 @@ GameObject:
   - component: {fileID: 504884904}
   - component: {fileID: 504884903}
   m_Layer: 5
-  m_Name: TimeScaleButton
+  m_Name: Scale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -771,7 +810,7 @@ GameObject:
   - component: {fileID: 1443551528}
   - component: {fileID: 1443551529}
   m_Layer: 5
-  m_Name: TimePanel
+  m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -784,13 +823,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1443551527}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 504884902}
   - {fileID: 353585971}
-  m_Father: {fileID: 3892157699670136467}
+  m_Father: {fileID: 87916458}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -871,7 +910,7 @@ GameObject:
   - component: {fileID: 1710645505}
   - component: {fileID: 1710645504}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Scale_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1168,7 +1207,7 @@ GameObject:
   - component: {fileID: 5786449408089131498}
   - component: {fileID: 7233420638425157306}
   m_Layer: 5
-  m_Name: ItemText
+  m_Name: Item_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1242,7 +1281,7 @@ GameObject:
   - component: {fileID: 3584681982798993750}
   - component: {fileID: 1039409974274158909}
   m_Layer: 5
-  m_Name: Text_Party_Title
+  m_Name: Title_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1784,7 +1823,7 @@ GameObject:
   - component: {fileID: 3435722387419883106}
   - component: {fileID: 4766453501543118963}
   m_Layer: 5
-  m_Name: ItemText
+  m_Name: Item_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1944,7 +1983,7 @@ GameObject:
   - component: {fileID: 815772532143087004}
   - component: {fileID: 2541561783610213923}
   m_Layer: 5
-  m_Name: Button_PartyList_Item_3
+  m_Name: PartyList_Item_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1962,7 +2001,7 @@ GameObject:
   - component: {fileID: 3663615511636484631}
   - component: {fileID: 6098405196661292548}
   m_Layer: 5
-  m_Name: ItemText
+  m_Name: Item_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2171,7 +2210,7 @@ RectTransform:
   m_Children:
   - {fileID: 8885444277389876713}
   - {fileID: 1408606737645158396}
-  m_Father: {fileID: 3892157699670136467}
+  m_Father: {fileID: 87916458}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2189,7 +2228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2213838648116718745}
   m_Layer: 5
-  m_Name: GameStatePanel
+  m_Name: GameState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2207,7 +2246,7 @@ GameObject:
   - component: {fileID: 65896636126400905}
   - component: {fileID: 1546241208812517185}
   m_Layer: 5
-  m_Name: ItemText
+  m_Name: Item_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2307,7 +2346,7 @@ GameObject:
   - component: {fileID: 4823492409996777566}
   - component: {fileID: 6886093465035617410}
   m_Layer: 5
-  m_Name: Panel_Party
+  m_Name: Party
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2523,11 +2562,11 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 3892157699670136467}
+    m_TransformParent: {fileID: 87916458}
     m_Modifications:
     - target: {fileID: 3099961339051151459, guid: 62d7f61bf06124f739f906b7b5cc9b29, type: 3}
       propertyPath: m_Name
-      value: CharacterPanel
+      value: Character
       objectReference: {fileID: 0}
     - target: {fileID: 3099961339051151459, guid: 62d7f61bf06124f739f906b7b5cc9b29, type: 3}
       propertyPath: m_IsActive
@@ -2671,10 +2710,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 181495884}
-  - {fileID: 2213838648116718745}
-  - {fileID: 587421610}
-  - {fileID: 1443551528}
+  - {fileID: 87916458}
   m_Father: {fileID: 5913480935874534451}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4032,7 +4068,7 @@ GameObject:
   - component: {fileID: 426845816030671229}
   - component: {fileID: 8645269923176037196}
   m_Layer: 5
-  m_Name: Button_PartyList_Item_2
+  m_Name: PartyList_Item_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4186,7 +4222,7 @@ GameObject:
   - component: {fileID: 3069459226601923998}
   - component: {fileID: 524809693885214009}
   m_Layer: 5
-  m_Name: Panel_Money
+  m_Name: Money
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4367,7 +4403,7 @@ GameObject:
   - component: {fileID: 5034930233927472748}
   - component: {fileID: 9176435556429270232}
   m_Layer: 5
-  m_Name: Button_PartyList_Item_1
+  m_Name: PartyList_Item_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4507,7 +4543,7 @@ GameObject:
   - component: {fileID: 3005377852267028404}
   - component: {fileID: 3152597939147075283}
   m_Layer: 5
-  m_Name: Button_PartyList_Item
+  m_Name: PartyList_Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4538,11 +4574,11 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 3892157699670136467}
+    m_TransformParent: {fileID: 87916458}
     m_Modifications:
     - target: {fileID: 6890751051757801720, guid: 8d39b6ccd7a1f403ba82499fd04d6861, type: 3}
       propertyPath: m_Name
-      value: InteractablesPanel
+      value: Interactables
       objectReference: {fileID: 0}
     - target: {fileID: 6890751051757801720, guid: 8d39b6ccd7a1f403ba82499fd04d6861, type: 3}
       propertyPath: m_IsActive

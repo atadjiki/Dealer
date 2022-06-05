@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Constants;
 
-public class CharacterPanel : UIPanel
+public class Panel_InGame_Day_Character : UIPanel
 {
     private Dictionary<CharacterComponent, TextMeshProUGUI> characterMap;
 
@@ -18,21 +19,42 @@ public class CharacterPanel : UIPanel
     [SerializeField] private bool displayTask;
     [SerializeField] private bool displayTime;
 
-    public override void ShowPanel()
-    {
-        base.ShowPanel();
-    }
-
-    public override void HidePanel()
-    {
-        base.HidePanel();
-    }
-
     public override void Build()
     {
         characterMap = new Dictionary<CharacterComponent, TextMeshProUGUI>();
 
         base.Build();
+    }
+
+    public override void ShowPanel()
+    {
+        foreach (CharacterComponent character in characterMap.Keys)
+        {
+            characterMap[character].text = "";
+        }
+    }
+
+    public override void HidePanel()
+    {
+        foreach(CharacterComponent character in characterMap.Keys)
+        {
+            characterMap[character].text = "";
+        }
+    }
+
+    public override void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
+    {
+        switch(GamePlayMode)
+        {
+            case State.GamePlayMode.Day:
+                allowUpdate = true;
+                ShowPanel();
+                break;
+            default:
+                allowUpdate = false;
+                HidePanel();
+                break;
+        }
     }
 
     private TextMeshProUGUI BuildTextMesh(CharacterComponent characterComponent)
@@ -48,7 +70,7 @@ public class CharacterPanel : UIPanel
         return null;
     }
 
-    public void RegisterCharacter(CharacterComponent characterModel)
+    public override void RegisterCharacter(CharacterComponent characterModel)
     {
         if (characterMap.ContainsKey(characterModel) == false)
         {
@@ -57,7 +79,7 @@ public class CharacterPanel : UIPanel
         }
     }
 
-    public void UnRegisterCharacter(CharacterComponent characterComponent)
+    public override void UnRegisterCharacter(CharacterComponent characterComponent)
     {
         if (characterMap.ContainsKey(characterComponent))
         {
@@ -71,33 +93,36 @@ public class CharacterPanel : UIPanel
 
     public override void UpdatePanel()
     {
-        foreach (CharacterComponent character in characterMap.Keys)
+        if(allowUpdate)
         {
-            int lines;
-
-            TextMeshProUGUI textMesh = characterMap[character];
-            textMesh.text = BuildCharacterString(character, out lines);
-
-            if (character.GetAnimationComponent().IsVisible())
+            foreach (CharacterComponent character in characterMap.Keys)
             {
-                textMesh.color = Color.yellow;
-                textMesh.alpha = 0.80f;
-        }
-            else
-            {
-                textMesh.color = Color.grey;
-                textMesh.alpha = 0.25f;
+                int lines;
+
+                TextMeshProUGUI textMesh = characterMap[character];
+                textMesh.text = BuildCharacterString(character, out lines);
+
+                if (character.GetAnimationComponent().IsVisible())
+                {
+                    textMesh.color = Color.yellow;
+                    textMesh.alpha = 0.80f;
+                }
+                else
+                {
+                    textMesh.color = Color.grey;
+                    textMesh.alpha = 0.25f;
+                }
+
+                GameObject model = character.GetAnimationComponent().gameObject;
+
+                UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
+
+                Vector3 anchorPoint = anchor.transform.position;
+
+                Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
+
+                textMesh.rectTransform.anchoredPosition = targetScreenPoint + (offset * lines);
             }
-
-            GameObject model = character.GetAnimationComponent().gameObject;
-
-            UIAnchor anchor = model.GetComponentInChildren<UIAnchor>();
-
-            Vector3 anchorPoint = anchor.transform.position;
-
-            Vector2 targetScreenPoint = WorldToCanvas(uiCanvas, anchorPoint, uiCamera);
-
-            textMesh.rectTransform.anchoredPosition = targetScreenPoint + (offset * lines);
         }
     }
 
@@ -141,7 +166,6 @@ public class CharacterPanel : UIPanel
         return characterString;
     }
 
-
     public static Vector2 WorldToCanvas(Canvas canvas, Vector3 worldPoint, Camera camera)
     {
         Vector2 viewportPos = camera.WorldToViewportPoint(worldPoint);
@@ -150,5 +174,4 @@ public class CharacterPanel : UIPanel
         return new Vector2((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f),
             (viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f));
     }
-
 }
