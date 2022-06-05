@@ -32,12 +32,29 @@ public class SpawnManager : Manager
         base.Activate();
     }
 
+    public override int AssignDelegates()
+    {
+        GameStateManager.Instance.onGamePlayModeChanged += OnGamePlayModeChanged;
+
+        return 1;
+    }
+
+    public void OnGamePlayModeChanged(Constants.State.GamePlayMode GamePlayMode)
+    {
+        switch(GamePlayMode)
+        {
+            case State.GamePlayMode.Day:
+                DoSpawnUpdate(SpawnPoints[Random.Range(0, SpawnPoints.Count -1)]);
+                break;
+        }
+    }
+
     public void RegisterSpawnPoint(SpawnPoint spawnPoint)
     {
         if(SpawnPoints.Contains(spawnPoint) == false)
         {
             SpawnPoints.Add(spawnPoint);
-          //  DoSpawnUpdate(spawnPoint);
+          
         }
     }
 

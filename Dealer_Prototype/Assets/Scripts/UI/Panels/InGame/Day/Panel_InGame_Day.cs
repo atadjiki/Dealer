@@ -45,6 +45,8 @@ public class Panel_InGame_Day : UIPanel
 
     public override void ShowPanel()
     {
+        this.gameObject.SetActive(true);
+
         foreach(UIPanel panel in panels)
         {
             panel.ShowPanel();
@@ -56,7 +58,9 @@ public class Panel_InGame_Day : UIPanel
         foreach (UIPanel panel in panels)
         {
             panel.HidePanel();
-        }    
+        }
+
+        this.gameObject.SetActive(false);
     }
 
     public override void OnGameStateChanged(GameState gameState)
@@ -69,6 +73,18 @@ public class Panel_InGame_Day : UIPanel
 
     public override void OnGamePlayModeChanged(Constants.State.GamePlayMode gamePlayMode)
     {
+        switch (gamePlayMode)
+        {
+            case Constants.State.GamePlayMode.Day:
+                allowUpdate = true;
+                ShowPanel();
+                break;
+            default:
+                allowUpdate = false;
+                HidePanel();
+                break;
+        }
+
         foreach (UIPanel panel in panels)
         {
             panel.OnGamePlayModeChanged(gamePlayMode);

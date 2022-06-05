@@ -30,15 +30,10 @@ public class Panel_InGame_Day_Time : UIPanel
     {
         ButtonText.enabled = true;
         ClockText.enabled = true;
-
-        UpdateButton();
     }
 
     public override void HidePanel()
     {
-        ButtonText.text = "";
-        ClockText.text = "";
-
         ButtonText.enabled = false;
         ClockText.enabled = false;
     }
@@ -51,36 +46,20 @@ public class Panel_InGame_Day_Time : UIPanel
             {
                 ClockText.text = TimeManager.Instance.GetDayProgressAsTime();
             }
+
+            UpdateButton();
         }
     }
 
     private void UpdateButton()
     {
-        switch(TimeManager.Instance.GetTimeMode())
-        {
-            case State.TimeMode.Paused:
-                ButtonText.text = "paused";
-                break;
-            case State.TimeMode.Normal:
-                ButtonText.text = "normal";
-                break;
-            case State.TimeMode.Slow:
-                ButtonText.text = "slow";
-                break;
-            case State.TimeMode.Fast:
-                ButtonText.text = "fast";
-                break;
-            case State.TimeMode.VeryFast:
-                ButtonText.text = "fastest";
-                break;
-        }
+        ButtonText.text = TimeManager.Instance.GetTimeMode().ToString();
     }
 
     public void OnButtonClicked()
     {
         Debug.Log(this.name + " clicked");
         TimeManager.Instance.CycleTimeScale();
-        UpdateButton();
     }
 }
 
