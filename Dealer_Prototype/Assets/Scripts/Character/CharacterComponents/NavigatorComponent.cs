@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
@@ -23,7 +23,7 @@ public class NavigatorComponent : MonoBehaviour
     private void Awake()
     {
         parentCharacter = GetComponentInParent<CharacterComponent>();
-        _AI = GetComponentInChildren<AIPath>();
+        _AI = GetComponentInChildren<AIBase>();
         _AI.gravity = Vector3.zero;
         _Seeker = GetComponentInChildren<Seeker>();
 
@@ -104,7 +104,7 @@ public class NavigatorComponent : MonoBehaviour
 
             float timeElapsed = Mathf.Abs(Time.unscaledTime - timeStamp);
 
-            if (timeElapsed > 0.15f && _AI.velocity == Vector3.zero)
+            if (timeElapsed > 1.0f && _AI.velocity == Vector3.zero)
             {
                 break;
             }
