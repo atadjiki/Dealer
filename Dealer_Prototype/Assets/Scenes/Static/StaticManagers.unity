@@ -1724,8 +1724,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e4b378ab740428b8476698c1393f08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: {fileID: 8675067809557471110}
-  UpdateState: 0
+  _gameState: {fileID: 0}
+  UpdateGameState: 0
 --- !u!1 &1370105738118709873
 GameObject:
   m_ObjectHideFlags: 0
@@ -4492,12 +4492,6 @@ MonoBehaviour:
   - ID: 2
     InitialAnim: 0
     name: ALBERT
-  - ID: 5
-    InitialAnim: 0
-    name: RUBY
-  - ID: 7
-    InitialAnim: 0
-    name: FARNOSH
   money: 23.99
 --- !u!1 &8679470330473843807
 GameObject:

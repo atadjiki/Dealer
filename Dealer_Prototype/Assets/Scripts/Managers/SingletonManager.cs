@@ -117,7 +117,7 @@ public class SingletonManager : MonoBehaviour
         {
             foreach(Manager manager in managers)
             {
-                manager.PerformUpdate(Time.fixedDeltaTime);
+                manager.PerformUpdate(Time.unscaledDeltaTime);
             }
         }
     }

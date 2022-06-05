@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Constants;
 
 public class TimePanel : UIPanel
 {
@@ -34,25 +35,25 @@ public class TimePanel : UIPanel
     {
         switch(TimeManager.Instance.GetTimeMode())
         {
-            case TimeManager.TimeMode.Paused:
+            case State.TimeMode.Paused:
                 ButtonText.text = "paused";
                 break;
-            case TimeManager.TimeMode.Normal:
+            case State.TimeMode.Normal:
                 ButtonText.text = "normal";
                 break;
-            case TimeManager.TimeMode.Slow:
+            case State.TimeMode.Slow:
                 ButtonText.text = "slow";
                 break;
-            case TimeManager.TimeMode.Fast:
+            case State.TimeMode.Fast:
                 ButtonText.text = "fast";
                 break;
-            case TimeManager.TimeMode.VeryFast:
+            case State.TimeMode.VeryFast:
                 ButtonText.text = "fastest";
                 break;
         }
     }
 
-    public void OnModeChanged(GameStateManager.Mode Mode)
+    public void OnModeChanged(State.GameMode Mode)
     {
         UpdateButton();
     }

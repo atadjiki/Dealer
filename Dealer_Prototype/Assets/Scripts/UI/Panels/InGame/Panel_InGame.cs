@@ -66,6 +66,24 @@ public class Panel_InGame : UIPanel
         base.HidePanel();
     }
 
+    public void OnGameStateChanged(GameState gameState)
+    {
+        if(GetMoneyPanel() != null)
+        {
+            GetMoneyPanel().OnGameStateChanged(gameState);
+        }
+    }
+
+    public void OnGamePlayModeChanged(Constants.State.GamePlayMode gamePlayMode)
+    {
+
+    }
+
+    public void OnGameModeChanged(Constants.State.GameMode gameMode)
+    {
+
+    }
+
     public CharacterPanel GetCharacterPanel()
     {
         return panel_character;

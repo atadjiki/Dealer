@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Constants;
 
 public class ConversationManager : Manager
 {
@@ -23,11 +24,11 @@ public class ConversationManager : Manager
 
     public void StartConversation()
     {
-        GameStateManager.Instance.ToMode(GameStateManager.Mode.Conversation);
+        GameStateManager.Instance.ToGamePlayMode(State.GamePlayMode.Conversation);
     }
 
     public void EndConversation()
     {
-        GameStateManager.Instance.ToMode(GameStateManager.Mode.GamePlay);
+        GameStateManager.Instance.ToGamePlayMode(State.GamePlayMode.Day);
     }
 }

@@ -52,7 +52,7 @@ public class SpawnManager : Manager
     public void DoSpawnUpdate(SpawnPoint spawnPoint)
     {
         //get the party from the game state
-        foreach (CharacterInfo characterInfo in GameStateManager.Instance.state.partyInfo)
+        foreach (CharacterInfo characterInfo in GameStateManager.Instance._gameState.partyInfo)
         {
             if (CharacterManager.Instance.IsSpawned(characterInfo) == false)
             {
@@ -74,7 +74,7 @@ public class SpawnManager : Manager
 
             DebugManager.Instance.Print(DebugManager.Log.LogSpawner, "Spawning NPC");
 
-            GameObject prefab = PrefabFactory.CreatePrefab(Constants.RegistryID.NPC, spawnPoint.transform);
+            GameObject prefab = PrefabFactory.CreatePrefab(RegistryID.NPC, spawnPoint.transform);
             prefab.name = characterInfo.ID + "-" + characterInfo.name;
             CharacterComponent characterComponent = prefab.GetComponent<CharacterComponent>();
 

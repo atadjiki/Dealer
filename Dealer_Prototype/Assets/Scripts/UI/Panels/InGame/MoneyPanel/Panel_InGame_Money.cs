@@ -24,9 +24,10 @@ public class Panel_InGame_Money : UIPanel
         Text_Money.enabled = false;
     }
 
-    public void OnStateChanged(GameState state)
+    public void OnGameStateChanged(GameState state)
     {
-        SetMoney(state.money);
+        if(Text_Money != null && state != null)
+            SetMoney(state.money);
     }
 
     public void SetMoney(float money)

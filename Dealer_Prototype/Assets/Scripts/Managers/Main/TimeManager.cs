@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class TimeManager : Manager
 {
@@ -9,10 +10,8 @@ public class TimeManager : Manager
 
     public static TimeManager Instance { get { return _instance; } }
 
-    public enum TimeMode { Slow, Paused, Normal, Fast, VeryFast };
-
-    private TimeMode _currentMode = TimeMode.Normal;
-    private TimeMode _previousMode = TimeMode.Normal;
+    private State.TimeMode _currentMode = State.TimeMode.Normal;
+    private State.TimeMode _previousMode = State.TimeMode.Normal;
     private float dayProgress = 0;
 
     private float dayLength = 6000;
@@ -22,7 +21,7 @@ public class TimeManager : Manager
     [SerializeField] private float Scale_Fast = 5.0f;
     [SerializeField] private float Scale_VeryFast = 10f;
 
-    public TimeMode GetTimeMode() { return _currentMode; }
+    public State.TimeMode GetTimeMode() { return _currentMode; }
 
     public float GetDayProgressAsPercentage() { return dayProgress / (dayLength * dayScale); }
 
@@ -54,27 +53,47 @@ public class TimeManager : Manager
 
     public override int AssignDelegates()
     {
-        GameStateManager.Instance.onModeChanged += OnGameModeChanged;
+        GameStateManager.Instance.onGameModeChanged += OnGameModeChanged;
+        GameStateManager.Instance.onGamePlayModeChanged += OnGamePlayModeChanged;
         return base.AssignDelegates();
     }
 
-    public void OnGameModeChanged(GameStateManager.Mode GameMode)
+    public void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
+    {
+        switch(GamePlayMode)
+        {
+            case State.GamePlayMode.Paused:
+                PauseTimeScale();
+                break;
+            case State.GamePlayMode.Day:
+                UnPauseTimeScale();
+                break;
+            case State.GamePlayMode.Conversation:
+                PauseTimeScale();
+                break;
+            case State.GamePlayMode.PreDay:
+                PauseTimeScale();
+                break;
+            case State.GamePlayMode.PostDay:
+                PauseTimeScale();
+                break;
+            case State.GamePlayMode.RandomEvent:
+                PauseTimeScale();
+                break;
+        }
+    }
+
+    public void OnGameModeChanged(State.GameMode GameMode)
     {
         switch(GameMode)
         {
-            case GameStateManager.Mode.GamePlayPaused:
-                PauseTimeScale();
-                break;
-            case GameStateManager.Mode.GamePlay:
+            case State.GameMode.GamePlay:
                 UnPauseTimeScale();
                 break;
-            case GameStateManager.Mode.Conversation:
+            case State.GameMode.Loading:
                 PauseTimeScale();
                 break;
-            case GameStateManager.Mode.Loading:
-                PauseTimeScale();
-                break;
-            case GameStateManager.Mode.MainMenu:
+            case State.GameMode.MainMenu:
                 PauseTimeScale();
                 break;
         }
@@ -83,15 +102,17 @@ public class TimeManager : Manager
     public void PauseTimeScale()
     {
         _previousMode = _currentMode;
-        _currentMode = TimeMode.Paused;
+        _currentMode = State.TimeMode.Paused;
 
         UpdateTimeScale();
     }
 
     public void UnPauseTimeScale()
     {
-        _currentMode = _previousMode;
-        _previousMode = TimeMode.Paused;
+        if(_previousMode == State.TimeMode.Paused) { _currentMode = State.TimeMode.Normal; }
+        else { _currentMode = _previousMode; }
+       
+        _previousMode = State.TimeMode.Paused;
 
         UpdateTimeScale();
     }
@@ -100,21 +121,21 @@ public class TimeManager : Manager
     {
         _previousMode = _currentMode;
 
-        if(_currentMode == TimeMode.VeryFast)
+        if(_currentMode == State.TimeMode.VeryFast)
         {
-            _currentMode = TimeMode.Slow;
+            _currentMode = State.TimeMode.Slow;
         }
-        else if(_currentMode == TimeMode.Fast)
+        else if(_currentMode == State.TimeMode.Fast)
         {
-            _currentMode = TimeMode.VeryFast;
+            _currentMode = State.TimeMode.VeryFast;
         }
-        else if(_currentMode == TimeMode.Normal)
+        else if(_currentMode == State.TimeMode.Normal)
         {
-            _currentMode = TimeMode.Fast;
+            _currentMode = State.TimeMode.Fast;
         }
-        else if(_currentMode == TimeMode.Slow)
+        else if(_currentMode == State.TimeMode.Slow)
         {
-            _currentMode = TimeMode.Normal;
+            _currentMode = State.TimeMode.Normal;
         }
 
         UpdateTimeScale();
@@ -129,19 +150,19 @@ public class TimeManager : Manager
     {
         switch (_currentMode)
         {
-            case TimeMode.Paused:
+            case State.TimeMode.Paused:
                 Time.timeScale = 0.0f;
                 break;
-            case TimeMode.Normal:
+            case State.TimeMode.Normal:
                 Time.timeScale = Scale_Normal;
                 break;
-            case TimeMode.Slow:
+            case State.TimeMode.Slow:
                 Time.timeScale = Scale_Slow;
                 break;
-            case TimeMode.Fast:
+            case State.TimeMode.Fast:
                 Time.timeScale = Scale_Fast;
                 break;
-            case TimeMode.VeryFast:
+            case State.TimeMode.VeryFast:
                 Time.timeScale = Scale_VeryFast;
                 break;
         }
@@ -151,13 +172,13 @@ public class TimeManager : Manager
 
     public override bool PerformUpdate(float tick)
     {
-        if(GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+        if(GameStateManager.Instance.GetGameMode() == State.GameMode.GamePlay)
         {
             dayProgress += tick * Time.timeScale;
 
            if(GetDayProgressAsPercentage() >= 1.0f)
             {
-                GameStateManager.Instance.ToMode(GameStateManager.Mode.GamePlayPaused);
+                GameStateManager.Instance.ToGamePlayMode(State.GamePlayMode.Paused);
             }
         }
 

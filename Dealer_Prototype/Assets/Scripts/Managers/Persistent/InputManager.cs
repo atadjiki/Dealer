@@ -1,4 +1,5 @@
 using UnityEngine;
+using Constants;
 
 public class InputManager : Manager
 {
@@ -47,14 +48,14 @@ public class InputManager : Manager
         {
             if (allowInput)
             {
-                if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.GamePlay)
+                if (GameStateManager.Instance.GetGameMode() == State.GameMode.GamePlay)
                 {
                     float x = Input.GetAxis("Horizontal");
                     float y = Input.GetAxis("Vertical");
 
                     CameraFollowTarget.Instance.MoveInDirection(new Vector2(x, y));
                 }
-                else if (GameStateManager.Instance.GetMode() == GameStateManager.Mode.Conversation)
+                else if (GameStateManager.Instance.GetGamePlayMode() == State.GamePlayMode.Conversation)
                 {
 
                 }

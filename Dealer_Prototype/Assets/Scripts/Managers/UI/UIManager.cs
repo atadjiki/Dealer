@@ -97,15 +97,11 @@ public class UIManager : Manager
         CharacterManager.Instance.onCharacterUnRegistered += UnRegisterCharacter;
         CharacterManager.Instance.onCharacterManagerUpdate += OnCharacterManagerUpdate;
 
-        GameStateManager.Instance.onStateChanged += OnStateChanged;
-        GameStateManager.Instance.onModeChanged += OnModeChanged;
+        GameStateManager.Instance.onGameStateChanged += OnGameStateChanged;
+        GameStateManager.Instance.onGameModeChanged += OnGameModeChanged;
+        GameStateManager.Instance.onGamePlayModeChanged += OnGamePlayModeChanged;
 
-        return 10;
-    }
-
-    private void OnStateChanged(GameState state)
-    {
-        Panel_InGame.GetMoneyPanel().OnStateChanged(state);
+        return 11;
     }
 
     private void RegisterCharacter(CharacterComponent character)
@@ -135,7 +131,6 @@ public class UIManager : Manager
 
     private void OnLoadStart(LevelConstants.LevelName levelName)
     {
-        //hide in game UI
         SetState(UIState.Loading);
     }
 
@@ -163,19 +158,32 @@ public class UIManager : Manager
         SetState(UIState.Loading);
     }
 
-    private void OnModeChanged(GameStateManager.Mode newMode)
+    private void OnGameStateChanged(GameState GameState)
     {
-        if (newMode == GameStateManager.Mode.GamePlay)
+        Panel_InGame.OnGameStateChanged(GameState);
+    }
+
+    private void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
+    {
+        switch(GamePlayMode)
         {
-            SetState(UIState.Gameplay);
+            case State.GamePlayMode.Conversation:
+                SetState(UIState.Conversation);
+                break;
         }
-        else if (newMode == GameStateManager.Mode.Conversation)
+    }
+
+    private void OnGameModeChanged(State.GameMode GameMode)
+    {
+        switch(GameMode)
         {
-            SetState(UIState.Conversation);
-        }
-        else
-        {
-            SetState(UIState.None);
+            case State.GameMode.GamePlay:
+                SetState(UIState.Gameplay);
+                break;
+            default:
+                SetState(UIState.None);
+                break;
+
         }
     }
 
