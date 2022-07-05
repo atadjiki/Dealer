@@ -7,6 +7,7 @@ using UnityEngine;
 public class UIManager : Manager
 {
     [SerializeField] private Panel_Loading Panel_Loading;
+    [SerializeField] private Panel_InGame_Main Panel_InGame_Main;
 
     private List<UIPanel> panels;
 
@@ -27,7 +28,7 @@ public class UIManager : Manager
             _instance = this;
         }
 
-        panels = new List<UIPanel>() { Panel_Loading };
+        panels = new List<UIPanel>() { Panel_Loading, Panel_InGame_Main };
 
         foreach (UIPanel panel in panels)
         {

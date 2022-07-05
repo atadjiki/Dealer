@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6261967
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3400,6 +3400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Panel_Loading: {fileID: 107646666}
+  Panel_InGame_Main: {fileID: 8344055821913063474}
 --- !u!1 &8344055821913063473
 GameObject:
   m_ObjectHideFlags: 0
@@ -3411,7 +3412,7 @@ GameObject:
   - component: {fileID: 3892157699670136467}
   - component: {fileID: 8344055821913063474}
   m_Layer: 5
-  m_Name: Panel_InGame
+  m_Name: Panel_InGame_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3429,3 +3430,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e70ee97d333389142b9617ec15b9efa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SubPanel: {fileID: 6261966}
