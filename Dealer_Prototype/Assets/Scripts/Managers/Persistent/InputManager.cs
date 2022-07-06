@@ -24,20 +24,12 @@ public class InputManager : Manager
         base.Build();
     }
 
-    public override int AssignDelegates()
-    {
-        LevelManager.Instance.onLoadStart += OnLoadStart;
-        LevelManager.Instance.onLoadEnd += OnLoadEnd;
-
-        return 2;
-    }
-
-    private void OnLoadStart(Constants.LevelConstants.LevelName levelName)
+    private void OnLoadStart(Constants.GameConstants.GameMode levelName)
     {
         allowInput = false;
     }
 
-    private void OnLoadEnd(Constants.LevelConstants.LevelName levelName)
+    private void OnLoadEnd(Constants.GameConstants.GameMode levelName)
     {
         allowInput = true;
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameLevel : MonoBehaviour
 {
-    public Constants.LevelConstants.LevelName LevelName;
+    public Constants.GameConstants.GameMode LevelName;
     private LevelContent content = null;
 
     private void Awake()

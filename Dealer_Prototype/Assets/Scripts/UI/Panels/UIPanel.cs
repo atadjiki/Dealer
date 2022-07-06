@@ -27,11 +27,11 @@ public class UIPanel : MonoBehaviour
 
     public virtual void UnRegisterInteractable(Interactable interactable) { }
 
-    public virtual void OnLoadStart(Constants.LevelConstants.LevelName levelName) { }
+    public virtual void OnLoadStart(Constants.GameConstants.GameMode levelName) { }
 
-    public virtual void OnLoadProgress(Constants.LevelConstants.LevelName levelName, float progress) { }
+    public virtual void OnLoadProgress(Constants.GameConstants.GameMode levelName, float progress) { }
 
-    public virtual void OnLoadEnd(Constants.LevelConstants.LevelName levelName) { }
+    public virtual void OnLoadEnd(Constants.GameConstants.GameMode levelName) { }
 
     public virtual void OnGameStateChanged(GameState gameState) { }
 

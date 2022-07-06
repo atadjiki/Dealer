@@ -42,16 +42,9 @@ public class GameStateManager : Manager
         base.Build();
     }
 
-    public override int AssignDelegates()
+    public void OnLoadEnd(GameConstants.GameMode levelName)
     {
-        LevelManager.Instance.onLoadEnd += OnLoadEnd;
-
-        return 1;
-    }
-
-    public void OnLoadEnd(LevelConstants.LevelName levelName)
-    {
-        if(levelName == LevelConstants.LevelName.Apartment)
+        if(levelName == GameConstants.GameMode.Apartment)
         {
             ToGameMode(State.GameMode.GamePlay);
             ToGamePlayMode(State.GamePlayMode.PreDay);

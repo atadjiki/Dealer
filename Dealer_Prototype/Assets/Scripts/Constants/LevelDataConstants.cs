@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Constants
 {
-    public class LevelConstants 
+    public class GameConstants 
     {
-        public enum LevelName { StartMenu, Apartment, None };
+        public enum GameMode { StartMenu, Apartment, None };
     }
 }
 

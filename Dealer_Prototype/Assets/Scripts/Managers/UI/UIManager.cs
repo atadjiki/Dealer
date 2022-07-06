@@ -49,10 +49,6 @@ public class UIManager : Manager
 
     public override int AssignDelegates()
     {
-        LevelManager.Instance.onLoadStart += OnLoadStart;
-        LevelManager.Instance.onLoadProgress += OnLoadProgress;
-        LevelManager.Instance.onLoadEnd += OnLoadEnd;
-
         InteractableManager.Instance.onInteractableRegistered += RegisterInteractable;
         InteractableManager.Instance.onInteractableUnRegistered += UnRegisterInteractable;
 
@@ -115,7 +111,7 @@ public class UIManager : Manager
         }
     }
 
-    private void OnLoadStart(LevelConstants.LevelName levelName)
+    private void OnLoadStart(GameConstants.GameMode levelName)
     {
         foreach (UIPanel panel in panels)
         {
@@ -123,7 +119,7 @@ public class UIManager : Manager
         }
     }
 
-    private void OnLoadProgress(LevelConstants.LevelName levelName, float progress)
+    private void OnLoadProgress(GameConstants.GameMode levelName, float progress)
     {
         foreach (UIPanel panel in panels)
         {
@@ -131,7 +127,7 @@ public class UIManager : Manager
         }
     }
 
-    private void OnLoadEnd(LevelConstants.LevelName levelName)
+    private void OnLoadEnd(GameConstants.GameMode levelName)
     {
         foreach (UIPanel panel in panels)
         {
