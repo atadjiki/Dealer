@@ -22,6 +22,8 @@ public class GameStateManager : Manager
 
     [SerializeField] public GameState _gameState;
 
+    public State.GameMode InitialGameMode = State.GameMode.GamePlay;
+
     private static GameStateManager _instance;
 
     public static GameStateManager Instance { get { return _instance; } }
@@ -42,6 +44,13 @@ public class GameStateManager : Manager
         base.Build();
     }
 
+    public override void Activate()
+    {
+        base.Activate();
+
+        ToGameMode(InitialGameMode);
+    }
+
     public void OnLoadEnd(GameConstants.GameMode levelName)
     {
         if(levelName == GameConstants.GameMode.Apartment)
@@ -54,6 +63,8 @@ public class GameStateManager : Manager
 
     public void ToGameMode(State.GameMode gameMode)
     {
+        Debug.Log("Game mode changed " + gameMode.ToString());
+
         _gameMode = gameMode;
 
         onGameModeChanged(_gameMode);

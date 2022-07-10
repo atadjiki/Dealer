@@ -49,13 +49,6 @@ public class UIManager : Manager
 
     public override int AssignDelegates()
     {
-        InteractableManager.Instance.onInteractableRegistered += RegisterInteractable;
-        InteractableManager.Instance.onInteractableUnRegistered += UnRegisterInteractable;
-
-        CharacterManager.Instance.onCharacterRegistered += RegisterCharacter;
-        CharacterManager.Instance.onCharacterUnRegistered += UnRegisterCharacter;
-        CharacterManager.Instance.onCharacterManagerUpdate += OnCharacterManagerUpdate;
-
         GameStateManager.Instance.onGameStateChanged += OnGameStateChanged;
         GameStateManager.Instance.onGameModeChanged += OnGameModeChanged;
         GameStateManager.Instance.onGamePlayModeChanged += OnGamePlayModeChanged;
@@ -137,7 +130,7 @@ public class UIManager : Manager
 
     private void OnGamePlayModeChanged(State.GamePlayMode GamePlayMode)
     {
-        foreach(UIPanel panel in panels)
+        foreach (UIPanel panel in panels)
         {
             panel.OnGamePlayModeChanged(GamePlayMode);
         }
@@ -145,7 +138,9 @@ public class UIManager : Manager
 
     private void OnGameModeChanged(State.GameMode GameMode)
     {
-        foreach(UIPanel panel in panels)
+        Debug.Log("Game mode changed " + GameMode.ToString());
+
+        foreach (UIPanel panel in panels)
         {
             panel.OnGameModeChanged(GameMode);
         }

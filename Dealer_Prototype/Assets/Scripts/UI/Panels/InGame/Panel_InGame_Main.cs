@@ -9,9 +9,12 @@ public class Panel_InGame_Main : UIPanel
 
     public override void OnGameModeChanged(State.GameMode GameMode)
     {
+
+        Debug.Log("Game mode changed " + GameMode.ToString());
+
         switch (GameMode)
         {
-            case State.GameMode.Loading:
+            case State.GameMode.GamePlay:
                 ShowPanel();
                 allowUpdate = true;
                 break;
@@ -35,3 +38,4 @@ public class Panel_InGame_Main : UIPanel
         base.HidePanel();
     }
 }
+
