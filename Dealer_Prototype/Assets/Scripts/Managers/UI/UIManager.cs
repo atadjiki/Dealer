@@ -138,8 +138,6 @@ public class UIManager : Manager
 
     private void OnGameModeChanged(State.GameMode GameMode)
     {
-        Debug.Log("Game mode changed " + GameMode.ToString());
-
         foreach (UIPanel panel in panels)
         {
             panel.OnGameModeChanged(GameMode);

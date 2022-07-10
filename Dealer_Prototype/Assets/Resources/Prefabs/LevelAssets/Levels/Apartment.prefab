@@ -713,6 +713,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
+  currentOccupant: {fileID: 0}
+  previousOccupant: {fileID: 0}
   minWaitTime: 60
   maxWaitTime: 120
 --- !u!1 &7521584973075431227
@@ -1007,6 +1009,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 18
+  currentOccupant: {fileID: 0}
+  previousOccupant: {fileID: 0}
   minWaitTime: 30
   maxWaitTime: 60
 --- !u!1 &7521584973669786248
@@ -1239,7 +1243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2db4a61e614645e3a01567375d2ebb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelName: 0
+  ActiveOnMode: 0
+  content: {fileID: 0}
 --- !u!1 &7521584974182869077
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,7 +1254,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7521584974182869076}
-  - component: {fileID: 7521584974182869067}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -1275,18 +1279,6 @@ Transform:
   m_Father: {fileID: 7521584973811625729}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7521584974182869067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7521584974182869077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15a93326ff7a6e3429df0bf37b0bb75c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7521584974223423143
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,6 +1323,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 0
+  currentOccupant: {fileID: 0}
+  previousOccupant: {fileID: 0}
   minWaitTime: 60
   maxWaitTime: 120
 --- !u!1 &7521584974337510616
@@ -1441,6 +1435,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocationAnim: 1
+  currentOccupant: {fileID: 0}
+  previousOccupant: {fileID: 0}
   minWaitTime: 30
   maxWaitTime: 60
 --- !u!1001 &366040168897252966

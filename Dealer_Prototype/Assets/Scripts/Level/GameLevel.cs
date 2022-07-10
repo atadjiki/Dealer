@@ -1,19 +1,35 @@
+using Constants;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameLevel : MonoBehaviour
 {
-    public Constants.GameConstants.GameMode LevelName;
-    private LevelContent content = null;
+    public State.GameMode ActiveOnMode;
+    public GameObject content;
 
     private void Awake()
     {
-        content = GetComponentInChildren<LevelContent>();
-        content.gameObject.SetActive(false);
-        if (SingletonManager.Instance.AreManagersBuilt())
+        GameStateManager.Instance.onGameModeChanged += OnGameModeChanged;
+
+        GameModeUpdate(GameStateManager.Instance.GetGameMode());
+    }
+    
+    private void GameModeUpdate(State.GameMode gameMode)
+    {
+        if (gameMode == ActiveOnMode)
         {
-            content.gameObject.SetActive(true);
+            Debug.Log("activate " + this.gameObject.name);
+            content.SetActive(true);
         }
+        else
+        {
+            content.gameObject.SetActive(false);
+        }
+    }
+
+    private void OnGameModeChanged(State.GameMode gameMode)
+    {
+        GameModeUpdate(gameMode);
     }
 }

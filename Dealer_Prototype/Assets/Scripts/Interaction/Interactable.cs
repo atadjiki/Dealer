@@ -27,17 +27,17 @@ public class Interactable : MonoBehaviour
 
     private void OnDestroy()
     {
-        InteractableManager.Instance.UnRegister(this);
+     //   InteractableManager.Instance.UnRegister(this);
     }
 
     protected virtual IEnumerator DoInitialize()
     {
         SetState(InteractableConstants.InteractionState.Available);
 
-        if (InteractableManager.Instance.Register(this) == false)
-        {
-            Destroy(this.gameObject);
-        }
+        //if (InteractableManager.Instance.Register(this) == false)
+        //{
+        //    Destroy(this.gameObject);
+        //}
 
         yield return null;
     }

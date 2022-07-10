@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &382902535 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7521584974182869077, guid: 817d344ea6db84f1692889939e97893a, type: 3}
+  m_PrefabInstance: {fileID: 7521584974013583835}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7521584974013583835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143,7 +148,15 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7521584973811625728, guid: 817d344ea6db84f1692889939e97893a, type: 3}
+      propertyPath: content
+      value: 
+      objectReference: {fileID: 382902535}
+    - target: {fileID: 7521584973811625728, guid: 817d344ea6db84f1692889939e97893a, type: 3}
       propertyPath: LevelName
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7521584973811625728, guid: 817d344ea6db84f1692889939e97893a, type: 3}
+      propertyPath: ActiveOnMode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7521584973811625729, guid: 817d344ea6db84f1692889939e97893a, type: 3}
@@ -196,7 +209,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7521584974182869077, guid: 817d344ea6db84f1692889939e97893a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7521584974223423141, guid: 817d344ea6db84f1692889939e97893a, type: 3}
       propertyPath: LocationAnim

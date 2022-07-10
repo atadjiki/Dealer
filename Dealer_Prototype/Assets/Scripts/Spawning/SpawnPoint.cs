@@ -11,11 +11,11 @@ public class SpawnPoint : MonoBehaviour
 
     private void Awake()
     {
-        SpawnManager.Instance.RegisterSpawnPoint(this);
+     //   SpawnManager.Instance.RegisterSpawnPoint(this);
     }
 
     private void OnDestroy()
     {
-        SpawnManager.Instance.UnRegisterSpawnPoint(this);
+     //   SpawnManager.Instance.UnRegisterSpawnPoint(this);
     }
 }

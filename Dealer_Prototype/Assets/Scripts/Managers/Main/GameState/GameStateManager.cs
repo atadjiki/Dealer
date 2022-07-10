@@ -63,8 +63,6 @@ public class GameStateManager : Manager
 
     public void ToGameMode(State.GameMode gameMode)
     {
-        Debug.Log("Game mode changed " + gameMode.ToString());
-
         _gameMode = gameMode;
 
         onGameModeChanged(_gameMode);
