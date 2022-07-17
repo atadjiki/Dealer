@@ -18,12 +18,14 @@ public class EventManager : Singleton<EventManager>
     //level loaded, level unloaded
 
     public delegate void GameModeChanged(Enumerations.GameMode gameMode);
+    public delegate void GameplayStateChanged(Enumerations.GamePlayState gamePlayState);
     public delegate void GameStateChanged();
     public delegate void SceneLoaded(string sceneName);
     public delegate void SceneUnloaded(string sceneName);
     public delegate void GameSaved();
 
     public GameModeChanged OnGameModeChanged;
+    public GameplayStateChanged OnGameplayStateChanged;
     public GameStateChanged OnGameStateChanged;
     public SceneLoaded OnSceneLoaded;
     public SceneUnloaded OnSceneUnloaded;

@@ -57,7 +57,7 @@ public class UIManager : Singleton<UIManager>
         }
         else if (mode == Enumerations.GameMode.Loading)
         {
-            return Instantiate(Prefab_Mode_GamePlay, _canvas.transform);
+            return Instantiate(Prefab_Mode_Loading, _canvas.transform);
         }
         else if (mode == Enumerations.GameMode.Paused)
         {

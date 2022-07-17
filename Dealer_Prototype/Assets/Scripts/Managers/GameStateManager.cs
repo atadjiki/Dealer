@@ -4,14 +4,18 @@ using UnityEngine;
 using Constants;
 
 public class GameStateManager : Singleton<GameStateManager>
-{ 
-    private Enumerations.GameMode _gameMode;
-    public Enumerations.GameMode GetGameMode() { return _gameMode; }
+{
+    public Enumerations.GameMode DefaultGameMode;
+    public Enumerations.GamePlayState DefaultGameplayState;
+
+    private Enumerations.GameMode _gameMode; public Enumerations.GameMode GetGameMode() { return _gameMode; }
+    private Enumerations.GamePlayState _gameplayState; Enumerations.GamePlayState GetGameplayState() { return _gameplayState; }
 
     protected override void Start()
     {
         PerformLoad();
-        UpdateGameMode(_gameMode);
+        UpdateGameMode(DefaultGameMode);
+        UpdateGameplayState(DefaultGameplayState);
     }
 
     protected override void OnApplicationQuit()
@@ -23,6 +27,12 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         _gameMode = newMode;
         EventManager.Instance.OnGameModeChanged(_gameMode);  
+    }
+
+    private void UpdateGameplayState(Enumerations.GamePlayState newState)
+    {
+        _gameplayState = newState;
+        EventManager.Instance.OnGameplayStateChanged(_gameplayState);
     }
 
     public void ToPause()
@@ -38,12 +48,10 @@ public class GameStateManager : Singleton<GameStateManager>
     protected override void PerformSave()
     {
         base.PerformSave();
-        ES3.Save(SaveKeys.GameMode, _gameMode);
     }
 
     protected override void PerformLoad()
     {
         base.PerformLoad();
-        _gameMode = ES3.Load(SaveKeys.GameMode, Enumerations.GameMode.Paused);
     }
 }

@@ -18,32 +18,30 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
 
     protected override void Start()
     {
-        EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
-
-        AddEnvironmentFromGameMode(GameStateManager.Instance.GetGameMode());
+        EventManager.Instance.OnGameplayStateChanged += OnGameplayStateChanged;
     }
 
     protected override void OnApplicationQuit()
     {
     }
 
-    private void OnGameModeChanged(Enumerations.GameMode gameMode)
+    private void OnGameplayStateChanged(Enumerations.GamePlayState gameplayState)
     {
-        Debug.Log(this.name + " - On Game Mode Changed: " + gameMode.ToString());
+        Debug.Log(this.name + " - On Gameplay State Changed: " + gameplayState.ToString());
 
         Clear();
 
-        AddEnvironmentFromGameMode(gameMode);
+        AddEnvironmentFromGameplayState(gameplayState);
     }
 
-    private void AddEnvironmentFromGameMode(Enumerations.GameMode mode)
+    private void AddEnvironmentFromGameplayState(Enumerations.GamePlayState gameplayState)
     {
-        ActiveEnvironment = GetPrefabFromGameMode(mode);
+        ActiveEnvironment = GetPrefabFromGameplayState(gameplayState);
     }
 
-    private GameObject GetPrefabFromGameMode(Enumerations.GameMode mode)
+    private GameObject GetPrefabFromGameplayState(Enumerations.GamePlayState gameplayState)
     {
-        if (mode == Enumerations.GameMode.GamePlay)
+        if (gameplayState == Enumerations.GamePlayState.Safehouse)
         {
             return Instantiate(Prefab_Environment_Safehouse, this.transform);
         }
