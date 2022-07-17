@@ -90,7 +90,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1693321321315916904}
-  - component: {fileID: 894836253471480104}
   - component: {fileID: 2404555033683744708}
   m_Layer: 7
   m_Name: Wall_grey_8unit
@@ -114,22 +113,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &894836253471480104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739844107993079299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0215f1e93ef32447f8a9b977d9dc268d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Mesh_Low: {fileID: 4300000, guid: 485a0f3c47edf463aa45e4748645a8ab, type: 2}
-  Mesh_High: {fileID: 4300000, guid: 6cfc05df119b243658159f5716e16815, type: 2}
-  Locked: 0
-  defaultState: 1
 --- !u!64 &2404555033683744708
 MeshCollider:
   m_ObjectHideFlags: 0

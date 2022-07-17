@@ -90,7 +90,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8525788686648002285}
-  - component: {fileID: 6766321150003427244}
   - component: {fileID: 4871231533756931817}
   m_Layer: 7
   m_Name: wall_with_gap
@@ -114,22 +113,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6766321150003427244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9014657306721426519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0215f1e93ef32447f8a9b977d9dc268d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Mesh_Low: {fileID: 4300000, guid: 12d99a9abadc04e47bac3db9a6f312c9, type: 2}
-  Mesh_High: {fileID: 4300000, guid: f1a39ad25030047f6b7e005b8223edcc, type: 2}
-  Locked: 0
-  defaultState: 1
 --- !u!64 &4871231533756931817
 MeshCollider:
   m_ObjectHideFlags: 0

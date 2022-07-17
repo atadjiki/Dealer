@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1032325138056264696}
   - component: {fileID: 1237731376329014151}
-  - component: {fileID: 5293055197028151389}
-  - component: {fileID: -2291193309782224805}
   m_Layer: 12
   m_Name: milk crate_and_TV
   m_TagString: Furniture
@@ -48,60 +46,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.83, z: 0}
---- !u!114 &5293055197028151389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1237731376329014149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fea0e4e0e30ea4380a07bf87e9af4693, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 2
-  InteractionTransform: {fileID: 6785044667940415648}
-  Meshes:
-  - {fileID: 2578029352622798402}
-  - {fileID: 6785044668786935281}
-  DefaultState: 0
-  MeshRenderer: {fileID: 2900937789788865018}
-  Mat_Off: {fileID: 2100000, guid: ee013c2934ff3435e9dfb68af8160f3b, type: 2}
-  Mat_On: {fileID: 2100000, guid: 46311da8cefa2472aab7f8c1d0af6121, type: 2}
-  AudioSource_TV: {fileID: 0}
-  AudioClip_On: {fileID: 8300000, guid: 4823c555170ee0b4ba0b212b563f17df, type: 3}
-  Light_TV: {fileID: 12645209172155993}
---- !u!114 &-2291193309782224805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1237731376329014149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  Event: 
-  PlayEvent: 0
-  StopEvent: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: -1
-  OverrideMaxDistance: -1
 --- !u!1 &2112047297460184995
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,7 +230,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6785044667940415648}
-  - component: {fileID: 6785044667940415651}
   m_Layer: 12
   m_Name: InteractionTransform
   m_TagString: Untagged
@@ -308,18 +251,6 @@ Transform:
   m_Father: {fileID: 1032325138056264696}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &6785044667940415651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6785044667940415649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9138072b2d002470f91a58f8c911c0c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6785044668786935292
 GameObject:
   m_ObjectHideFlags: 0
