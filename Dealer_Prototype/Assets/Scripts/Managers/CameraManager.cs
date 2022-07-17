@@ -9,7 +9,11 @@ public class CameraManager : Singleton<CameraManager>
         base.Awake();
     }
 
-    protected override void Start() { }
+    protected override void Start()
+    { 
+    }
 
-    protected override void OnApplicationQuit() { }
+    protected override void OnApplicationQuit()
+    {
+    }
 }

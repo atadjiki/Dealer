@@ -34,6 +34,9 @@ public class EventManager : Singleton<EventManager>
     protected override void Awake()
     {
         base.Awake();
+
+        OnGameplayStateChanged += Callback_OnGameplayStateChanged;
+        OnGameModeChanged += Callback_OnGameModeChanged;
     }
 
     protected override void Start()
@@ -44,6 +47,16 @@ public class EventManager : Singleton<EventManager>
 
     protected override void OnApplicationQuit()
     {
+    }
+
+    protected void Callback_OnGameModeChanged(Enumerations.GameMode gameMode)
+    {
+
+    }
+
+    protected void Callback_OnGameplayStateChanged(Enumerations.GamePlayState gamePlayState)
+    {
+        
     }
 
     private void Callback_SceneLoaded(Scene scene, LoadSceneMode mode)
