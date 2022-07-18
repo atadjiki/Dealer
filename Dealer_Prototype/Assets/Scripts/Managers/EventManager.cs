@@ -37,6 +37,7 @@ public class EventManager : Singleton<EventManager>
 
         OnGameplayStateChanged += Callback_OnGameplayStateChanged;
         OnGameModeChanged += Callback_OnGameModeChanged;
+        OnGameStateChanged += Callback_OnGameStateChanged;
     }
 
     protected override void Start()

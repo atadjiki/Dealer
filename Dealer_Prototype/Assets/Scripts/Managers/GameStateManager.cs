@@ -21,8 +21,10 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         PerformLoad();
 
-        UpdateGameMode(DefaultGameMode);
-        UpdateGameplayState(DefaultGameplayState);
+        _gameState.gameMode = DefaultGameMode;
+        _gameState.gameplayState = DefaultGameplayState;
+
+        Refresh();
         
     }
 
@@ -31,15 +33,20 @@ public class GameStateManager : Singleton<GameStateManager>
         PerformSave();
     }
 
-    private void UpdateGameMode(Enumerations.GameMode newMode)
+    public void Refresh()
     {
-        _gameState.gameMode = newMode;
+        UpdateGameMode();
+        UpdateGameplayState();
+        UpdateGameState();
+    }
+
+    private void UpdateGameMode()
+    {
         EventManager.Instance.OnGameModeChanged(_gameState.gameMode);
     }
 
-    private void UpdateGameplayState(Enumerations.GamePlayState newState)
+    private void UpdateGameplayState()
     {
-        _gameState.gameplayState = newState;
         EventManager.Instance.OnGameplayStateChanged(_gameState.gameplayState);
     }
 
@@ -50,12 +57,14 @@ public class GameStateManager : Singleton<GameStateManager>
 
     public void ToPause()
     {
-        UpdateGameMode(Enumerations.GameMode.Paused);
+        _gameState.gameMode = Enumerations.GameMode.Paused;
+        UpdateGameMode();
     }
 
     public void ToGamePlay()
     {
-        UpdateGameMode(Enumerations.GameMode.GamePlay);
+        _gameState.gameMode = Enumerations.GameMode.GamePlay;
+        UpdateGameMode();
     }
 
     protected override void PerformSave()

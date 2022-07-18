@@ -10,7 +10,6 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
 
     private GameObject ActiveEnvironment = null;
 
-
     protected override void Awake()
     {
         base.Awake();
@@ -19,6 +18,8 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
     protected override void Start()
     {
         EventManager.Instance.OnGameplayStateChanged += OnGameplayStateChanged;
+
+        GameStateManager.Instance.Refresh();
     }
 
     protected override void OnApplicationQuit()
@@ -43,6 +44,7 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
     {
         if (gameplayState == Enumerations.GamePlayState.Safehouse)
         {
+            Debug.Log("loading environment " + Prefab_Environment_Safehouse.name);
             return Instantiate(Prefab_Environment_Safehouse, this.transform);
         }
 
