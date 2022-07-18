@@ -14,7 +14,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private GameObject Prefab_Mode_Loading;
     [SerializeField] private GameObject Prefab_Mode_GamePlay;
 
-    private List<GameObject> ActiveUI;
+    private List<UIPanel> ActiveUI;
 
 
     protected override void Awake()
@@ -24,15 +24,26 @@ public class UIManager : Singleton<UIManager>
 
     protected override void Start()
     {
-        ActiveUI = new List<GameObject>();
+        ActiveUI = new List<UIPanel>();
 
         EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
+        EventManager.Instance.OnGameStateChanged += OnGameStateChanged;
 
         AddUIFromGameMode(GameStateManager.Instance.GetGameMode());
     }
 
     protected override void OnApplicationQuit()
     {
+    }
+
+    private void OnGameStateChanged(GameState gameState)
+    {
+        Debug.Log(this.name + " - On Game Mode Changed");
+
+        foreach (UIPanel uiPanel in ActiveUI)
+        {
+            uiPanel.PerformUpdate();
+        }
     }
 
     private void OnGameModeChanged(Enumerations.GameMode gameMode)
@@ -44,9 +55,18 @@ public class UIManager : Singleton<UIManager>
         AddUIFromGameMode(gameMode);
     }
 
-    private void  AddUIFromGameMode(Enumerations.GameMode mode)
+    private void AddUIFromGameMode(Enumerations.GameMode mode)
     {
-        ActiveUI.Add(GetPrefabFromGameMode(mode));
+        GameObject prefab = GetPrefabFromGameMode(mode);
+
+        UIPanel uiPanel = prefab.GetComponent<UIPanel>();
+
+        if(uiPanel != null)
+        {
+            ActiveUI.Add(uiPanel);
+
+            uiPanel.PerformUpdate();
+        }
     }
 
     private GameObject GetPrefabFromGameMode(Enumerations.GameMode mode)
@@ -70,9 +90,12 @@ public class UIManager : Singleton<UIManager>
     //clear out existing UI on screen 
     private void Clear()
     {
-        foreach(GameObject gameObject in ActiveUI)
+        foreach (UIPanel uIPanel in ActiveUI)
         {
-            Destroy(gameObject);
+            if (uIPanel != null)
+            {
+                Destroy(uIPanel.gameObject);
+            }
         }
 
         ActiveUI.Clear();

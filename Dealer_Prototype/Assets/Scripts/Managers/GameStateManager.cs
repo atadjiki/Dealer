@@ -23,6 +23,7 @@ public class GameStateManager : Singleton<GameStateManager>
 
         UpdateGameMode(DefaultGameMode);
         UpdateGameplayState(DefaultGameplayState);
+        
     }
 
     protected override void OnApplicationQuit()
@@ -40,6 +41,11 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         _gameState.gameplayState = newState;
         EventManager.Instance.OnGameplayStateChanged(_gameState.gameplayState);
+    }
+
+    private void UpdateGameState()
+    {
+        EventManager.Instance.OnGameStateChanged(_gameState);
     }
 
     public void ToPause()
@@ -75,4 +81,15 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         return _gameState.gameplayState;
     }
+
+    public void AdjustPlayerMoney(int amount)
+    {
+        _gameState.playerData.Money += amount;
+
+        Debug.Log("Player Money " + _gameState.playerData.Money);
+
+        UpdateGameState();
+    }
+
+    public GameState GetGameState() { return _gameState; }
 }

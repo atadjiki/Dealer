@@ -35,5 +35,9 @@ public class InputManager : Singleton<InputManager>
                 GameStateManager.Instance.ToGamePlay();
             }
         }
+        else if(Input.GetKeyDown(KeyCode.M))
+        {
+            GameStateManager.Instance.AdjustPlayerMoney(1);
+        }
     }
 }

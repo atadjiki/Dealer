@@ -19,7 +19,7 @@ public class EventManager : Singleton<EventManager>
 
     public delegate void GameModeChanged(Enumerations.GameMode gameMode);
     public delegate void GameplayStateChanged(Enumerations.GamePlayState gamePlayState);
-    public delegate void GameStateChanged();
+    public delegate void GameStateChanged(GameState gameState);
     public delegate void SceneLoaded(string sceneName);
     public delegate void SceneUnloaded(string sceneName);
     public delegate void GameSaved();
@@ -49,6 +49,11 @@ public class EventManager : Singleton<EventManager>
     {
     }
 
+    protected void Callback_OnGameStateChanged(GameState gameState)
+    {
+
+    }
+
     protected void Callback_OnGameModeChanged(Enumerations.GameMode gameMode)
     {
 
@@ -69,3 +74,4 @@ public class EventManager : Singleton<EventManager>
         OnSceneUnloaded(scene.name);
     }
 }
+
