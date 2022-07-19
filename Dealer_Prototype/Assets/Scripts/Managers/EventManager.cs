@@ -27,8 +27,6 @@ public class EventManager : Singleton<EventManager>
     public GameModeChanged OnGameModeChanged;
     public GameplayStateChanged OnGameplayStateChanged;
     public GameStateChanged OnGameStateChanged;
-    public SceneLoaded OnSceneLoaded;
-    public SceneUnloaded OnSceneUnloaded;
     public GameSaved OnGameSaved;
 
     protected override void Awake()
@@ -38,12 +36,13 @@ public class EventManager : Singleton<EventManager>
         OnGameplayStateChanged += Callback_OnGameplayStateChanged;
         OnGameModeChanged += Callback_OnGameModeChanged;
         OnGameStateChanged += Callback_OnGameStateChanged;
+        SceneManager.sceneLoaded += Callback_SceneLoaded;
+        SceneManager.sceneUnloaded += Callback_SceneUnloaded;
     }
 
     protected override void Start()
     {
-        SceneManager.sceneLoaded += Callback_SceneLoaded;
-        SceneManager.sceneUnloaded += Callback_SceneUnloaded;
+
     }
 
     protected override void OnApplicationQuit()
@@ -67,12 +66,11 @@ public class EventManager : Singleton<EventManager>
 
     private void Callback_SceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        OnSceneLoaded(scene.name);
+        Debug.Log("Scene loaded: " + scene.name);
     }
 
     private void Callback_SceneUnloaded(Scene scene)
     {
-        OnSceneUnloaded(scene.name);
+        Debug.Log("Scene unloaded: " + scene.name);
     }
 }
-

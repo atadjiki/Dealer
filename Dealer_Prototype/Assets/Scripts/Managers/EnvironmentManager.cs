@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Constants;
 
 public class EnvironmentManager : Singleton<EnvironmentManager>
 {
     [Header("GameMode Prefabs")]
-    [SerializeField] private GameObject Prefab_Environment_Safehouse;
+    [SerializeField] private Object Scene_Environment_Safehouse;
 
-    private GameObject ActiveEnvironment = null;
+    private string ActiveSceneName;
 
     protected override void Awake()
     {
@@ -37,15 +38,17 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
 
     private void AddEnvironmentFromGameplayState(Enumerations.GamePlayState gameplayState)
     {
-        ActiveEnvironment = GetPrefabFromGameplayState(gameplayState);
+        ActiveSceneName = GetSceneFromGameplayState(gameplayState);
+
+        SceneManager.LoadSceneAsync(ActiveSceneName, LoadSceneMode.Additive);
     }
 
-    private GameObject GetPrefabFromGameplayState(Enumerations.GamePlayState gameplayState)
+    private string GetSceneFromGameplayState(Enumerations.GamePlayState gameplayState)
     {
         if (gameplayState == Enumerations.GamePlayState.Safehouse)
         {
-            Debug.Log("loading environment " + Prefab_Environment_Safehouse.name);
-            return Instantiate(Prefab_Environment_Safehouse, this.transform);
+            Debug.Log("loading environment " + Scene_Environment_Safehouse.name);
+            return Scene_Environment_Safehouse.name;
         }
 
         return null;
@@ -54,11 +57,11 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
     //clear out existing environment
     private void Clear()
     {
-        if(ActiveEnvironment != null)
+        if(ActiveSceneName != null)
         {
-            Destroy(ActiveEnvironment);
+            SceneManager.UnloadSceneAsync(ActiveSceneName, UnloadSceneOptions.None);
 
-            ActiveEnvironment = null;
+            ActiveSceneName = null;
         }
     }
 }
