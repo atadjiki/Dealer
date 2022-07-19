@@ -1,3 +1,4 @@
+using Constants;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,72 +6,133 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    private Dictionary<Object, string> SceneMap;
+    private Dictionary<Enumerations.SceneType, Enumerations.SceneName> _map;
 
     protected override void Awake()
     {
         base.Awake();
 
-        SceneMap = new Dictionary<Object, string>();
+        _map = new Dictionary<Enumerations.SceneType, Enumerations.SceneName>();
+
+        PerformLoad(Enumerations.SceneName.Scene_CameraRig);
     }
 
     protected override void Start()
     {
+        base.Start();
+
         EventManager.Instance.OnSceneLoaded += OnSceneLoaded;
         EventManager.Instance.OnSceneUnloaded += OnSceneUnloaded;
     }
 
-    protected override void OnApplicationQuit()
-    {
-        base.OnApplicationQuit();
-
-        foreach(Object key in SceneMap.Keys)
-        {
-            SceneManager.UnloadSceneAsync(SceneMap[key]);
-        }
-    }
-
-    protected void OnSceneLoaded(string sceneName)
+    protected void OnSceneLoaded(Enumerations.SceneName SceneName)
     {
 
     }
 
-    protected void OnSceneUnloaded(string sceneName)
+    protected void OnSceneUnloaded(Enumerations.SceneName SceneName)
     {
 
     }
 
-    public void RegisterScene(Object caller, string sceneName)
+    public bool IsSceneLoaded(Enumerations.SceneName sceneName)
     {
-        if(caller == null)
+        Scene scene = SceneManager.GetSceneByName(sceneName.ToString());
+
+        if (scene != null)
         {
-            Debug.Log("caller is null!");
-            return;
+            return scene.isLoaded;
         }
 
-        if(!SceneMap.ContainsKey(caller))
-        {
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            SceneMap.Add(caller, sceneName);
-            return;
-        }
-
-        Debug.Log("A scene is already registered for object " + caller.name);
+        return false;
     }
 
-    public void UnRegisterScene(Object caller)
+    private bool PerformLoad(Enumerations.SceneName sceneName)
     {
-        if (caller == null)
+        if(sceneName == Enumerations.SceneName.Null) { return false; }
+        if (IsSceneLoaded(sceneName))
         {
-            Debug.Log("caller is null!");
-            return;
+            if (debug) Debug.Log("Scene " + sceneName.ToString() + " is already loaded");
+            return false;
         }
 
-        if (SceneMap.ContainsKey(caller))
+        StartCoroutine(Coroutine_PerformLoad(sceneName));
+        return true;
+    }
+
+    private IEnumerator Coroutine_PerformLoad(Enumerations.SceneName sceneName)
+    {
+        GameStateManager.Instance.Loading_Start();
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
+        loadOperation.completed += Callback_PerformLoad;
+
+        yield return null;
+    }
+
+    private void Callback_PerformLoad(AsyncOperation asyncOperation)
+    {
+        GameStateManager.Instance.Loading_End();
+    }
+
+    private void PerformUnload(Enumerations.SceneName sceneName)
+    {
+        if (IsSceneLoaded(sceneName))
         {
-            SceneManager.UnloadSceneAsync(SceneMap[caller]);
-            SceneMap.Remove(caller);
+            StartCoroutine(Coroutine_PerformUnload(sceneName));
         }
+    }
+
+    private IEnumerator Coroutine_PerformUnload(Enumerations.SceneName sceneName)
+    {
+        AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(sceneName.ToString());
+        unloadOperation.completed += Callback_PerformUnload;
+
+        yield return null;
+    }
+
+    private void Callback_PerformUnload(AsyncOperation asyncOperation)
+    {
+
+    }
+
+
+    public bool RegisterScene(Enumerations.SceneType type, Enumerations.SceneName name)
+    {
+        Enumerations.SceneName value;
+        if (_map.TryGetValue(type, out value) == false)
+        {
+            _map.Add(type, name);
+
+            if (PerformLoad(name))
+            {
+                return true;
+            }
+        }
+
+        if (debug) Debug.Log("A scene is already registered for " + type);
+        return false;
+    }
+
+    public bool UnRegisterScene(Enumerations.SceneType type)
+    {
+        Enumerations.SceneName value;
+        if (_map.TryGetValue(type, out value))
+        {
+            PerformUnload(_map[type]);
+            _map.Remove(type);
+            return true;
+        }
+
+        return false;
+    }
+
+    public Enumerations.SceneName HasSceneRegistered(Enumerations.SceneType type)
+    {
+        if (_map.ContainsKey(type))
+        {
+            return _map[type];
+        }
+
+        return Enumerations.SceneName.Null;
     }
 }
-

@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Constants;
+using UnityEngine;
 
 public class GameStateManager : Singleton<GameStateManager>
 {
-    public Enumerations.GameMode DefaultGameMode;
-    public Enumerations.GamePlayState DefaultGameplayState;
-
     private GameState _gameState;
 
     protected override void Awake()
@@ -15,39 +10,31 @@ public class GameStateManager : Singleton<GameStateManager>
         base.Awake();
 
         _gameState = new GameState();
+        _gameState.EnqueueGameMode(Enumerations.GameMode.Root);
     }
 
     protected override void Start()
     {
+        base.Start();
+
         PerformLoad();
-
-        _gameState.gameMode = DefaultGameMode;
-        _gameState.gameplayState = DefaultGameplayState;
-
-        Refresh();
-        
     }
 
     protected override void OnApplicationQuit()
     {
+        base.OnApplicationQuit();
+
         PerformSave();
     }
 
-    public void Refresh()
+    private void UpdateGameMode(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
     {
-        UpdateGameMode();
-        UpdateGameplayState();
-        UpdateGameState();
+        EventManager.Instance.OnGameModeChanged(previousMode, currentMode);
     }
 
-    private void UpdateGameMode()
+    private void UpdateGameplayState(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
     {
-        EventManager.Instance.OnGameModeChanged(_gameState.gameMode);
-    }
-
-    private void UpdateGameplayState()
-    {
-        EventManager.Instance.OnGameplayStateChanged(_gameState.gameplayState);
+        EventManager.Instance.OnGameplayStateChanged(previousState, currentState);
     }
 
     private void UpdateGameState()
@@ -55,16 +42,47 @@ public class GameStateManager : Singleton<GameStateManager>
         EventManager.Instance.OnGameStateChanged(_gameState);
     }
 
-    public void ToPause()
+    public void Loading_Start()
     {
-        _gameState.gameMode = Enumerations.GameMode.Paused;
-        UpdateGameMode();
+        ToggleGameMode(Enumerations.GameMode.Loading, true);
     }
 
-    public void ToGamePlay()
+    public void Loading_End()
     {
-        _gameState.gameMode = Enumerations.GameMode.GamePlay;
-        UpdateGameMode();
+        ToggleGameMode(Enumerations.GameMode.Loading, false);
+    }
+
+    public void Pause()
+    {
+        ToggleGameMode(Enumerations.GameMode.Paused, true);
+    }
+
+    public void UnPause()
+    {
+        ToggleGameMode(Enumerations.GameMode.Paused, false);
+    }
+
+    public void ToGameplay()
+    {
+        ToggleGameMode(Enumerations.GameMode.GamePlay, true);
+    }
+
+    private void ToggleGameMode(Enumerations.GameMode mode, bool enqueue)
+    {
+        Enumerations.GameMode previousMode = _gameState.GetActiveMode();
+
+        bool success;
+        if (enqueue)
+        {
+            success = _gameState.EnqueueGameMode(mode);
+        }
+        else
+        {
+            success = _gameState.DequeueGameMode(mode);
+        }
+
+        if (success) UpdateGameMode(previousMode, _gameState.GetActiveMode());
+
     }
 
     protected override void PerformSave()
@@ -83,22 +101,23 @@ public class GameStateManager : Singleton<GameStateManager>
 
     public Enumerations.GameMode GetGameMode()
     {
-        return _gameState.gameMode;
+        return _gameState.GetActiveMode();
     }
 
     public Enumerations.GamePlayState GetGameplayState()
     {
-        return _gameState.gameplayState;
+        return _gameState.GetGameplayState();
     }
 
     public void AdjustPlayerMoney(int amount)
     {
-        _gameState.playerData.Money += amount;
+        _gameState.GetPlayerData().Money += amount;
 
-        Debug.Log("Player Money " + _gameState.playerData.Money);
+        if (debug) Debug.Log("Player Money " + _gameState.GetPlayerData().Money);
 
         UpdateGameState();
     }
 
     public GameState GetGameState() { return _gameState; }
 }
+

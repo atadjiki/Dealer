@@ -5,34 +5,17 @@ using Constants;
 
 public class InputManager : Singleton<InputManager>
 {
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
-    protected override void Start()
-    {
-        EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
-    }
-
-    protected override void OnApplicationQuit(){}
-
-    public void OnGameModeChanged(Enumerations.GameMode gameMode)
-    {
-        Debug.Log(this.name + " - On Game Mode Changed: " + gameMode.ToString());
-    }
-
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
             if(GameStateManager.Instance.GetGameMode() == Enumerations.GameMode.GamePlay)
             {
-                GameStateManager.Instance.ToPause();
+                GameStateManager.Instance.Pause();
             }
             else
             {
-                GameStateManager.Instance.ToGamePlay();
+                GameStateManager.Instance.ToGameplay();
             }
         }
         else if(Input.GetKeyDown(KeyCode.M))

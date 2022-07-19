@@ -7,12 +7,12 @@ public class Data
 {
     public virtual void Load()
     {
-        Debug.Log("Loading " + this.GetType().Name);
+        if (GameStateManager.Instance.debug) Debug.Log("Loading " + this.GetType().Name);
     }
 
     public virtual void Save()
     {
-        Debug.Log("Saving " + this.GetType().Name);
+        if (GameStateManager.Instance.debug) Debug.Log("Saving " + this.GetType().Name);
     }
 }
 
@@ -26,7 +26,7 @@ public class PlayerData : Data
     {
         base.Load();
 
-        if(ES3.KeyExists(SaveKeys.Player_Name))
+        if (ES3.KeyExists(SaveKeys.Player_Name))
         {
             Name = ES3.Load<string>(SaveKeys.Player_Name);
         }
@@ -34,7 +34,7 @@ public class PlayerData : Data
         {
             Name = "Default_Player_Name";
         }
-        
+
         Money = ES3.Load<int>(SaveKeys.Player_Money, 0);
         Drugs = ES3.Load<int>(SaveKeys.Player_Drugs, 0);
     }
@@ -68,16 +68,18 @@ public class GameData : Data
     }
 }
 
-public class GameState 
+public class GameState
 {
-    public Enumerations.GameMode gameMode; 
-    public Enumerations.GamePlayState gameplayState; 
+    private Stack<Enumerations.GameMode> modeQueue;
+    private Enumerations.GamePlayState gameplayState = Enumerations.GamePlayState.Inactive;
 
-    public PlayerData playerData;
-    public GameData gameData;
+    private PlayerData playerData;
+    private GameData gameData;
 
     public GameState()
     {
+        modeQueue = new Stack<Enumerations.GameMode>();
+
         playerData = new PlayerData();
         gameData = new GameData();
     }
@@ -92,5 +94,54 @@ public class GameState
     {
         playerData.Load();
         gameData.Load();
+    }
+
+    public bool EnqueueGameMode(Enumerations.GameMode mode)
+    {
+        if (modeQueue.Contains(mode)) return false;
+
+        modeQueue.Push(mode);
+        PrintModeQueue();
+        return true;
+    }
+
+    public bool DequeueGameMode(Enumerations.GameMode mode)
+    {
+        if (modeQueue.Count == 0) { return false; }
+
+        modeQueue.Pop();
+        PrintModeQueue();
+        return true;
+    }
+
+    public Enumerations.GameMode GetActiveMode()
+    {
+        if (modeQueue.Count == 0) { return Enumerations.GameMode.Root; }
+
+        return modeQueue.Peek();
+    }
+
+    public Enumerations.GamePlayState GetGameplayState()
+    {
+        return gameplayState;
+    }
+
+    public PlayerData GetPlayerData() { return playerData; }
+    public GameData GetGameData() { return gameData; }
+
+    private void PrintModeQueue()
+    {
+        if (GameStateManager.Instance.debug)
+        {
+            string output = "Mode Queue: ";
+
+            foreach (Enumerations.GameMode mode in modeQueue)
+            {
+                output += mode.ToString();
+                output += ", ";
+            }
+
+            Debug.Log(output);
+        }
     }
 }

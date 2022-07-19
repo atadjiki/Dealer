@@ -17,11 +17,11 @@ public class EventManager : Singleton<EventManager>
     //game state changed
     //level loaded, level unloaded
 
-    public delegate void GameModeChanged(Enumerations.GameMode gameMode);
-    public delegate void GameplayStateChanged(Enumerations.GamePlayState gamePlayState);
+    public delegate void GameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode);
+    public delegate void GameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState);
     public delegate void GameStateChanged(GameState gameState);
-    public delegate void SceneLoaded(string sceneName);
-    public delegate void SceneUnloaded(string sceneName);
+    public delegate void SceneLoaded(Enumerations.SceneName SceneName);
+    public delegate void SceneUnloaded(Enumerations.SceneName SceneName);
     public delegate void GameSaved();
 
     public GameModeChanged OnGameModeChanged;
@@ -46,51 +46,58 @@ public class EventManager : Singleton<EventManager>
 
     protected override void Start()
     {
+        base.Start();
+
+        if (debug) Debug.Log("Event: On Start");
+
         SceneManager.sceneLoaded += Callback_OnSceneLoaded;
         SceneManager.sceneUnloaded += Callback_OnSceneUnloaded;
     }
 
     protected override void OnApplicationQuit()
     {
+        base.OnApplicationQuit();
+
+        if (debug) Debug.Log("Event: On Application Quit");
     }
 
     protected void Callback_OnGameStateChanged(GameState gameState)
     {
-        Debug.Log("Game State Changed");
+        if (debug) Debug.Log("Event: Game State Changed");
     }
 
-    protected void Callback_OnGameModeChanged(Enumerations.GameMode gameMode)
+    protected void Callback_OnGameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
     {
-        Debug.Log("Game Mode Changed");
+        if (debug) Debug.Log("Event: Game Mode Changed " + previousMode + " -> " + currentMode);
     }
 
-    protected void Callback_OnGameplayStateChanged(Enumerations.GamePlayState gamePlayState)
+    protected void Callback_OnGameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
     {
-        Debug.Log("Gameplay State Changed");
+        if (debug) Debug.Log("Event: Gameplay State Changed " + previousState + " -> " + currentState);
     }
 
     protected void Callback_OnGameSaved()
     {
-        Debug.Log("Game Saved");
+        if (debug) Debug.Log("Event: Game Saved");
     }
 
     protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        OnSceneLoaded(scene.name);
+        OnSceneLoaded(Enumerations.GetSceneNameFromScene(scene));
     }
 
     protected void Callback_OnSceneUnloaded(Scene scene)
     {
-        OnSceneUnloaded(scene.name);
+        OnSceneUnloaded(Enumerations.GetSceneNameFromScene(scene));
     }
 
-    protected void Callback_SceneLoaded(string sceneName)
+    protected void Callback_SceneLoaded(Enumerations.SceneName SceneName)
     {
-        Debug.Log("Scene loaded: " + sceneName);
+        if (debug) Debug.Log("Event: Scene loaded: " + SceneName);
     }
 
-    protected void Callback_SceneUnloaded(string sceneName)
+    protected void Callback_SceneUnloaded(Enumerations.SceneName SceneName)
     {
-        Debug.Log("Scene unloaded: " + sceneName);
+        if (debug) Debug.Log("Event: Scene unloaded: " + SceneName);
     }
 }

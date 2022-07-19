@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T : Component
 {
+
+    public bool debug = false;
+    
     private static T _instance;
     public static T Instance
     {
@@ -29,11 +32,11 @@ public class Singleton<T> : MonoBehaviour where T : Component
 
     protected virtual void PerformLoad()
     {
-        Debug.Log(this.name + " loading...");
+        if(debug) Debug.Log(this.name + " loading...");
     }
 
     protected virtual void PerformSave()
     {
-        Debug.Log(this.name + " saving...");
+        if (debug) Debug.Log(this.name + " saving...");
     }
 }
