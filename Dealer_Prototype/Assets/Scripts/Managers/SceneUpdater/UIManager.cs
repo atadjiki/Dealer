@@ -15,21 +15,21 @@ public class UIManager : Singleton<UIManager>
 
     private void OnGameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
     {
-        if(previousMode != currentMode)
-        {
+
             UpdateUI(currentMode);
-        }
+        
     }
 
     private void UpdateUI(Enumerations.GameMode mode)
     {
-        if(LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.UI) != Enumerations.SceneName.Null)
+        string sceneName = SceneName.GetSceneNameFromGameMode(mode);
+
+        if (LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.UI, sceneName))
         {
             Clear();
-
         }
 
-        LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, Enumerations.GetSceneNameFromGameMode(mode));
+        LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, sceneName);
     }
 
     private void Clear()

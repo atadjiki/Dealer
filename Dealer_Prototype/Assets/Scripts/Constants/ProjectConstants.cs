@@ -10,59 +10,75 @@ namespace Constants
         public enum SceneType
         {
             Root,
-            Environment, 
+            Environment,
             UI,
             Null
         }
 
-        public enum SceneName 
-        { 
-            //root
-            Scene_StaticManagers, 
-            Scene_CameraRig, 
-            //ui
-            Scene_UI_GamePlay,
-            Scene_UI_Loading,
-            Scene_UI_Pause,
-            //environments
-            Scene_Environment_Safehouse, 
-            //
-            Null 
-        }
-
-        public static Enumerations.SceneName GetSceneNameFromGameMode(Enumerations.GameMode gameMode)
+        public static bool AllowSceneActivation(Enumerations.SceneType type)
         {
-            if(gameMode == GameMode.GamePlay)
+            switch (type)
             {
-                return SceneName.Scene_UI_GamePlay;
+                case Enumerations.SceneType.Environment:
+                    return false;
+                default:
+                    return true;
             }
-            else if(gameMode == GameMode.Loading)
-            {
-                return SceneName.Scene_UI_Loading;
-            }
-            else if(gameMode == GameMode.Paused)
-            {
-                return SceneName.Scene_UI_Pause;
-            }
-            else if(gameMode == GameMode.Root)
-            {
-                return SceneName.Scene_UI_Loading;
-            }
-
-            return SceneName.Null;
         }
 
-        public static Enumerations.SceneName GetSceneNameFromGameplayState(Enumerations.GamePlayState gameplayState)
+        public static bool RequiresLoadingScreen(Enumerations.SceneType type)
+        {
+            switch (type)
+            {
+                case SceneType.Environment:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+    public class SceneName
+    {
+        //root
+        public const string StaticManagers = "Scene_StaticManagers";
+        public const string CameraRig = "Scene_CameraRig";
+        //ui
+        public const string UI_GamePlay = "Scene_UI_GamePlay";
+        public const string UI_Loading = "Scene_UI_Loading";
+        public const string UI_Pause = "Scene_UI_Pause";
+        //environments
+        public const string Environment_Safehouse = "Scene_Environment_Safehouse";
+
+        public static string GetSceneNameFromGameMode(Enumerations.GameMode gameMode)
+        {
+            if (gameMode == Enumerations.GameMode.GamePlay)
+            {
+                return UI_GamePlay;
+            }
+            else if (gameMode == Enumerations.GameMode.Loading)
+            {
+                return UI_Loading;
+            }
+            else if (gameMode == Enumerations.GameMode.Paused)
+            {
+                return UI_Pause;
+            }
+
+            return null;
+        }
+
+        public static string GetSceneNameFromGameplayState(Enumerations.GamePlayState gameplayState)
         {
             if (gameplayState == Enumerations.GamePlayState.Safehouse)
             {
-                return Enumerations.SceneName.Scene_Environment_Safehouse;
+                return Environment_Safehouse;
             }
 
-            return Enumerations.SceneName.Null;
+            return null;
         }
     }
-    
+
     public class SaveKeys
     {
         public const string Player_Name = "Player_Name";

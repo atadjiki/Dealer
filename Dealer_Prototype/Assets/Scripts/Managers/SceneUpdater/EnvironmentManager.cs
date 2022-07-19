@@ -15,8 +15,6 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
     protected override void Start()
     {
         base.Start();
-
-        GameStateManager.Instance.ToSafehouse();
     }
 
     private void OnGameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
@@ -29,12 +27,14 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
 
     private void UpdateEnvironment(Enumerations.GamePlayState gameplayState)
     {
-        if(LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.Environment) != Enumerations.SceneName.Null)
+        string sceneName = SceneName.GetSceneNameFromGameplayState(gameplayState);
+
+        if (LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.Environment, sceneName))
         {
             Clear();
         }
 
-        LevelManager.Instance.RegisterScene(Enumerations.SceneType.Environment, Enumerations.GetSceneNameFromGameplayState(gameplayState));
+        LevelManager.Instance.RegisterScene(Enumerations.SceneType.Environment, sceneName);
     }
 
     private void Clear()

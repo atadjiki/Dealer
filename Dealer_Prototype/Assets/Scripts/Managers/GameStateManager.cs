@@ -9,16 +9,17 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         base.Awake();
 
-        EventManager.Instance.OnSceneLoaded += Callback_OnSceneLoaded;
-
         _gameState = new GameState();
         _gameState.EnqueueGameMode(Enumerations.GameMode.Root);
+
+        EventManager.Instance.OnSceneLoaded += Callback_OnSceneLoaded;
+
     }
 
     //callbacks
     private void Callback_OnSceneLoaded(string sceneName)
     {
-        if(sceneName == Enumerations.SceneName.Scene_Environment_Safehouse.ToString())
+        if(sceneName == SceneName.Environment_Safehouse)
         {
             ToggleGameMode(Enumerations.GameMode.GamePlay, true);
         }
@@ -28,9 +29,16 @@ public class GameStateManager : Singleton<GameStateManager>
     {
         Enumerations.GamePlayState previousState = _gameState.GetGameplayState();
 
-        _gameState.SetGameplayState(state);
+        if(previousState != state)
+        {
+            _gameState.SetGameplayState(state);
 
-        UpdateGameplayState(previousState, _gameState.GetGameplayState());
+            UpdateGameplayState(previousState, _gameState.GetGameplayState());
+        }
+        else
+        {
+           // if (debug) Debug.Log("ToggleGameplayState - Could not transition from " + previousState + " to " + state);
+        }
     }
 
     private void ToggleGameMode(Enumerations.GameMode mode, bool enqueue)
@@ -47,8 +55,12 @@ public class GameStateManager : Singleton<GameStateManager>
             success = _gameState.DequeueGameMode(mode);
         }
 
-        if (success) UpdateGameMode(previousMode, _gameState.GetActiveMode());
+        if (success)
+        {
+            UpdateGameMode(previousMode, _gameState.GetActiveMode());
+        }
 
+      //  if(debug) Debug.Log("ToggleGameMode - Could not transition from " + previousMode + " to " + mode);
     }
 
     private void UpdateGameMode(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
@@ -69,6 +81,7 @@ public class GameStateManager : Singleton<GameStateManager>
     //events
     public void ToSafehouse()
     {
+        ToGameplay();
         ToggleGameplayState(Enumerations.GamePlayState.Safehouse);
     }
 
@@ -82,14 +95,16 @@ public class GameStateManager : Singleton<GameStateManager>
         ToggleGameMode(Enumerations.GameMode.Loading, false);
     }
 
-    public void Pause()
+    public void TogglePause()
     {
-        ToggleGameMode(Enumerations.GameMode.Paused, true);
-    }
-
-    public void UnPause()
-    {
-        ToggleGameMode(Enumerations.GameMode.Paused, false);
+        if (_gameState.GetActiveMode() == Enumerations.GameMode.Paused)
+        {
+            ToggleGameMode(Enumerations.GameMode.Paused, false);
+        }
+        else
+        {
+            ToggleGameMode(Enumerations.GameMode.Paused, true);
+        }
     }
 
     public void ToGameplay()

@@ -6,46 +6,47 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    
-    private Dictionary<string, Enumerations.SceneName> _map;
+    private Dictionary<string, Stack<string>> _map;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _map = new Dictionary<string, Enumerations.SceneName>();
+        InitMap();
     }
 
     protected override void Start()
     {
         base.Start();
 
-        RegisterScene(Enumerations.SceneType.Root, Enumerations.SceneName.Scene_CameraRig);
+        RegisterScene(Enumerations.SceneType.Root, SceneName.CameraRig);
     }
 
-    public bool RegisterScene(Enumerations.SceneType type, Enumerations.SceneName name)
+    public bool RegisterScene(Enumerations.SceneType type, string name)
     {
+        if(name == null) { return false; }
+
         string key = type.ToString();
 
-        if (!_map.ContainsKey(key))
+        if (!_map[key].Contains(name))
         {
-            StartCoroutine(Coroutine_PerformLoad(type, name, AllowSceneActivation(type)));
+            StartCoroutine(Coroutine_PerformLoad(type, name, Enumerations.AllowSceneActivation(type)));
             return true;
         }
         else
         {
-            if (debug) Debug.Log("Cant register " + name +  " , a scene is already registered for " + type + " - " + _map[key]);
+            if (debug) Debug.Log("Cant register " + name +  ", it is already registered for " + type);
             return false;
         }
     }
 
-    private IEnumerator Coroutine_PerformLoad(Enumerations.SceneType type, Enumerations.SceneName name, bool allowSceneActivation)
+    private IEnumerator Coroutine_PerformLoad(Enumerations.SceneType type, string name, bool allowSceneActivation)
     {
         string key = type.ToString();
 
-        if (type == Enumerations.SceneType.Environment) GameStateManager.Instance.Loading_Start();
+        if(Enumerations.RequiresLoadingScreen(type)) GameStateManager.Instance.Loading_Start();
 
-        _map.Add(key, name);
+        _map[key].Push(name);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -62,7 +63,7 @@ public class LevelManager : Singleton<LevelManager>
             yield return null;
         }
 
-        if (type == Enumerations.SceneType.Environment) GameStateManager.Instance.Loading_End();
+        if (Enumerations.RequiresLoadingScreen(type)) GameStateManager.Instance.Loading_End();
 
         if(debug) DumpSceneMap();
 
@@ -73,9 +74,9 @@ public class LevelManager : Singleton<LevelManager>
     {
         string key = type.ToString();
 
-        if (_map.ContainsKey(key))
+        if (_map[key].Count > 0)
         {
-            string sceneName = _map[key].ToString(); 
+            string sceneName = _map[key].Peek();
 
             StartCoroutine(Coroutine_PerformUnload(key, sceneName));
             return true;
@@ -93,47 +94,60 @@ public class LevelManager : Singleton<LevelManager>
 
         SceneManager.UnloadSceneAsync(sceneName);
 
-        _map.Remove(key);
+        _map[key].Pop();
 
         if (debug) DumpSceneMap();
 
         yield return null;
     }
 
-    //helper 
-    private bool AllowSceneActivation(Enumerations.SceneType type)
-    {
-        switch (type)
-        {
-            case Enumerations.SceneType.Environment:
-                return false;
-            default:
-                return true;
-        }
-    }
-
-    public Enumerations.SceneName HasSceneRegistered(Enumerations.SceneType type)
+    public bool HasSceneRegistered(Enumerations.SceneType type, string sceneName)
     {
         string key = type.ToString();
 
         if (_map.ContainsKey(key))
         {
-            return _map[key];
+            return _map[key].Contains(sceneName);
         }
 
-        return Enumerations.SceneName.Null;
+        return false;
     }
+
+    //helpers
 
     private void DumpSceneMap()
     {
-        string output = "Scene Map: \n";
+        string output = "Scenes: \n";
 
         foreach(string key in _map.Keys)
         {
-            output += "( " + key + " , " + _map[key] + " ), ";
+            output += "[ " + key + "] - ";
+
+            foreach (string scene in _map[key].ToArray())
+            {
+                output += scene + " , ";
+            }
+
+            output += "\n";
         }
 
-        Debug.Log(output);
+        if(debug) Debug.Log(output);
+    }
+
+    private void InitMap()
+    {
+        _map = new Dictionary<string, Stack<string>>()
+        {
+            {
+                Enumerations.SceneType.Root.ToString(), new Stack<string>()
+            },
+            {
+                Enumerations.SceneType.Environment.ToString(), new Stack<string>()
+            },
+            {
+                Enumerations.SceneType.UI.ToString(), new Stack<string>()
+            },
+        };
     }
 }
 
