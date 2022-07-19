@@ -28,6 +28,8 @@ public class EventManager : Singleton<EventManager>
     public GameplayStateChanged OnGameplayStateChanged;
     public GameStateChanged OnGameStateChanged;
     public GameSaved OnGameSaved;
+    public SceneLoaded OnSceneLoaded;
+    public SceneUnloaded OnSceneUnloaded;
 
     protected override void Awake()
     {
@@ -36,13 +38,16 @@ public class EventManager : Singleton<EventManager>
         OnGameplayStateChanged += Callback_OnGameplayStateChanged;
         OnGameModeChanged += Callback_OnGameModeChanged;
         OnGameStateChanged += Callback_OnGameStateChanged;
-        SceneManager.sceneLoaded += Callback_SceneLoaded;
-        SceneManager.sceneUnloaded += Callback_SceneUnloaded;
+        OnGameSaved += Callback_OnGameSaved;
+        OnSceneLoaded += Callback_SceneLoaded;
+        OnSceneUnloaded += Callback_SceneUnloaded;
+
     }
 
     protected override void Start()
     {
-
+        SceneManager.sceneLoaded += Callback_OnSceneLoaded;
+        SceneManager.sceneUnloaded += Callback_OnSceneUnloaded;
     }
 
     protected override void OnApplicationQuit()
@@ -51,26 +56,41 @@ public class EventManager : Singleton<EventManager>
 
     protected void Callback_OnGameStateChanged(GameState gameState)
     {
-
+        Debug.Log("Game State Changed");
     }
 
     protected void Callback_OnGameModeChanged(Enumerations.GameMode gameMode)
     {
-
+        Debug.Log("Game Mode Changed");
     }
 
     protected void Callback_OnGameplayStateChanged(Enumerations.GamePlayState gamePlayState)
     {
-        
+        Debug.Log("Gameplay State Changed");
     }
 
-    private void Callback_SceneLoaded(Scene scene, LoadSceneMode mode)
+    protected void Callback_OnGameSaved()
     {
-        Debug.Log("Scene loaded: " + scene.name);
+        Debug.Log("Game Saved");
     }
 
-    private void Callback_SceneUnloaded(Scene scene)
+    protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("Scene unloaded: " + scene.name);
+        OnSceneLoaded(scene.name);
+    }
+
+    protected void Callback_OnSceneUnloaded(Scene scene)
+    {
+        OnSceneUnloaded(scene.name);
+    }
+
+    protected void Callback_SceneLoaded(string sceneName)
+    {
+        Debug.Log("Scene loaded: " + sceneName);
+    }
+
+    protected void Callback_SceneUnloaded(string sceneName)
+    {
+        Debug.Log("Scene unloaded: " + sceneName);
     }
 }
