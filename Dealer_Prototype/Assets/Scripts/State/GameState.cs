@@ -101,7 +101,7 @@ public class GameState
         if (modeQueue.Contains(mode)) return false;
 
         modeQueue.Push(mode);
-        PrintModeQueue();
+      //  PrintModeQueue();
         return true;
     }
 
@@ -110,7 +110,7 @@ public class GameState
         if (modeQueue.Count == 0) { return false; }
 
         modeQueue.Pop();
-        PrintModeQueue();
+     //   PrintModeQueue();
         return true;
     }
 
@@ -119,6 +119,11 @@ public class GameState
         if (modeQueue.Count == 0) { return Enumerations.GameMode.Root; }
 
         return modeQueue.Peek();
+    }
+
+    public void SetGameplayState(Enumerations.GamePlayState state)
+    {
+        gameplayState = state;
     }
 
     public Enumerations.GamePlayState GetGameplayState()

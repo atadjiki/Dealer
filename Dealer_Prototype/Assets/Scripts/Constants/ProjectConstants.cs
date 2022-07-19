@@ -44,6 +44,10 @@ namespace Constants
             {
                 return SceneName.Scene_UI_Pause;
             }
+            else if(gameMode == GameMode.Root)
+            {
+                return SceneName.Scene_UI_Loading;
+            }
 
             return SceneName.Null;
         }
@@ -53,28 +57,6 @@ namespace Constants
             if (gameplayState == Enumerations.GamePlayState.Safehouse)
             {
                 return Enumerations.SceneName.Scene_Environment_Safehouse;
-            }
-
-            return Enumerations.SceneName.Null;
-        }
-
-        public static Enumerations.SceneName GetSceneNameFromScene(Scene scene)
-        {
-            if (scene.name == Enumerations.SceneName.Scene_Environment_Safehouse.ToString())
-            {
-                return Enumerations.SceneName.Scene_Environment_Safehouse;
-            }
-            else if(scene.name == Enumerations.SceneName.Scene_UI_GamePlay.ToString())
-            {
-                return SceneName.Scene_UI_GamePlay;
-            }
-            else if (scene.name == Enumerations.SceneName.Scene_UI_Loading.ToString())
-            {
-                return SceneName.Scene_UI_Loading;
-            }
-            else if (scene.name == Enumerations.SceneName.Scene_UI_Pause.ToString())
-            {
-                return SceneName.Scene_UI_Pause;
             }
 
             return Enumerations.SceneName.Null;

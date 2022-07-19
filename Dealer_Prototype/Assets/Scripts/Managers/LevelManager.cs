@@ -6,133 +6,134 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    private Dictionary<Enumerations.SceneType, Enumerations.SceneName> _map;
+    
+    private Dictionary<string, Enumerations.SceneName> _map;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _map = new Dictionary<Enumerations.SceneType, Enumerations.SceneName>();
-
-        PerformLoad(Enumerations.SceneName.Scene_CameraRig);
+        _map = new Dictionary<string, Enumerations.SceneName>();
     }
 
     protected override void Start()
     {
         base.Start();
 
-        EventManager.Instance.OnSceneLoaded += OnSceneLoaded;
-        EventManager.Instance.OnSceneUnloaded += OnSceneUnloaded;
+        RegisterScene(Enumerations.SceneType.Root, Enumerations.SceneName.Scene_CameraRig);
     }
-
-    protected void OnSceneLoaded(Enumerations.SceneName SceneName)
-    {
-
-    }
-
-    protected void OnSceneUnloaded(Enumerations.SceneName SceneName)
-    {
-
-    }
-
-    public bool IsSceneLoaded(Enumerations.SceneName sceneName)
-    {
-        Scene scene = SceneManager.GetSceneByName(sceneName.ToString());
-
-        if (scene != null)
-        {
-            return scene.isLoaded;
-        }
-
-        return false;
-    }
-
-    private bool PerformLoad(Enumerations.SceneName sceneName)
-    {
-        if(sceneName == Enumerations.SceneName.Null) { return false; }
-        if (IsSceneLoaded(sceneName))
-        {
-            if (debug) Debug.Log("Scene " + sceneName.ToString() + " is already loaded");
-            return false;
-        }
-
-        StartCoroutine(Coroutine_PerformLoad(sceneName));
-        return true;
-    }
-
-    private IEnumerator Coroutine_PerformLoad(Enumerations.SceneName sceneName)
-    {
-        GameStateManager.Instance.Loading_Start();
-        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
-        loadOperation.completed += Callback_PerformLoad;
-
-        yield return null;
-    }
-
-    private void Callback_PerformLoad(AsyncOperation asyncOperation)
-    {
-        GameStateManager.Instance.Loading_End();
-    }
-
-    private void PerformUnload(Enumerations.SceneName sceneName)
-    {
-        if (IsSceneLoaded(sceneName))
-        {
-            StartCoroutine(Coroutine_PerformUnload(sceneName));
-        }
-    }
-
-    private IEnumerator Coroutine_PerformUnload(Enumerations.SceneName sceneName)
-    {
-        AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(sceneName.ToString());
-        unloadOperation.completed += Callback_PerformUnload;
-
-        yield return null;
-    }
-
-    private void Callback_PerformUnload(AsyncOperation asyncOperation)
-    {
-
-    }
-
 
     public bool RegisterScene(Enumerations.SceneType type, Enumerations.SceneName name)
     {
-        Enumerations.SceneName value;
-        if (_map.TryGetValue(type, out value) == false)
-        {
-            _map.Add(type, name);
+        string key = type.ToString();
 
-            if (PerformLoad(name))
+        if (!_map.ContainsKey(key))
+        {
+            StartCoroutine(Coroutine_PerformLoad(type, name, AllowSceneActivation(type)));
+            return true;
+        }
+        else
+        {
+            if (debug) Debug.Log("Cant register " + name +  " , a scene is already registered for " + type + " - " + _map[key]);
+            return false;
+        }
+    }
+
+    private IEnumerator Coroutine_PerformLoad(Enumerations.SceneType type, Enumerations.SceneName name, bool allowSceneActivation)
+    {
+        string key = type.ToString();
+
+        if (type == Enumerations.SceneType.Environment) GameStateManager.Instance.Loading_Start();
+
+        _map.Add(key, name);
+
+        yield return new WaitForSeconds(0.1f);
+
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(name.ToString(), LoadSceneMode.Additive);
+        asyncOperation.allowSceneActivation = allowSceneActivation;
+
+        while (!asyncOperation.isDone)
+        {
+            if (asyncOperation.progress >= 0.9f)
             {
-                return true;
+                asyncOperation.allowSceneActivation = true;
             }
+
+            yield return null;
         }
 
-        if (debug) Debug.Log("A scene is already registered for " + type);
-        return false;
+        if (type == Enumerations.SceneType.Environment) GameStateManager.Instance.Loading_End();
+
+        if(debug) DumpSceneMap();
+
+        yield return null;
     }
 
     public bool UnRegisterScene(Enumerations.SceneType type)
     {
-        Enumerations.SceneName value;
-        if (_map.TryGetValue(type, out value))
+        string key = type.ToString();
+
+        if (_map.ContainsKey(key))
         {
-            PerformUnload(_map[type]);
-            _map.Remove(type);
+            string sceneName = _map[key].ToString(); 
+
+            StartCoroutine(Coroutine_PerformUnload(key, sceneName));
             return true;
         }
+        else
+        {
+            if (debug) Debug.Log("A scene has not been registered for " + type + " - " + _map[key]);
+            return false;
+        }
+    }
 
-        return false;
+    private IEnumerator Coroutine_PerformUnload(string key, string sceneName)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        SceneManager.UnloadSceneAsync(sceneName);
+
+        _map.Remove(key);
+
+        if (debug) DumpSceneMap();
+
+        yield return null;
+    }
+
+    //helper 
+    private bool AllowSceneActivation(Enumerations.SceneType type)
+    {
+        switch (type)
+        {
+            case Enumerations.SceneType.Environment:
+                return false;
+            default:
+                return true;
+        }
     }
 
     public Enumerations.SceneName HasSceneRegistered(Enumerations.SceneType type)
     {
-        if (_map.ContainsKey(type))
+        string key = type.ToString();
+
+        if (_map.ContainsKey(key))
         {
-            return _map[type];
+            return _map[key];
         }
 
         return Enumerations.SceneName.Null;
     }
+
+    private void DumpSceneMap()
+    {
+        string output = "Scene Map: \n";
+
+        foreach(string key in _map.Keys)
+        {
+            output += "( " + key + " , " + _map[key] + " ), ";
+        }
+
+        Debug.Log(output);
+    }
 }
+

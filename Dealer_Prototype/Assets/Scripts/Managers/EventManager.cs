@@ -20,8 +20,8 @@ public class EventManager : Singleton<EventManager>
     public delegate void GameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode);
     public delegate void GameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState);
     public delegate void GameStateChanged(GameState gameState);
-    public delegate void SceneLoaded(Enumerations.SceneName SceneName);
-    public delegate void SceneUnloaded(Enumerations.SceneName SceneName);
+    public delegate void SceneLoaded(string sceneName);
+    public delegate void SceneUnloaded(string sceneName);
     public delegate void GameSaved();
 
     public GameModeChanged OnGameModeChanged;
@@ -83,21 +83,21 @@ public class EventManager : Singleton<EventManager>
 
     protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        OnSceneLoaded(Enumerations.GetSceneNameFromScene(scene));
+        OnSceneLoaded(scene.name);
     }
 
     protected void Callback_OnSceneUnloaded(Scene scene)
     {
-        OnSceneUnloaded(Enumerations.GetSceneNameFromScene(scene));
+        OnSceneUnloaded(scene.name);
     }
 
-    protected void Callback_SceneLoaded(Enumerations.SceneName SceneName)
+    protected void Callback_SceneLoaded(string sceneName)
     {
-        if (debug) Debug.Log("Event: Scene loaded: " + SceneName);
+        if (debug) Debug.Log("Event: Scene loaded: " + sceneName);
     }
 
-    protected void Callback_SceneUnloaded(Enumerations.SceneName SceneName)
+    protected void Callback_SceneUnloaded(string sceneName)
     {
-        if (debug) Debug.Log("Event: Scene unloaded: " + SceneName);
+        if (debug) Debug.Log("Event: Scene unloaded: " + sceneName);
     }
 }

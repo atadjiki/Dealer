@@ -6,22 +6,29 @@ using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
     }
 
     private void OnGameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
     {
-        UpdateUI(currentMode); 
+        if(previousMode != currentMode)
+        {
+            UpdateUI(currentMode);
+        }
     }
 
     private void UpdateUI(Enumerations.GameMode mode)
     {
-        Clear();
-       
+        if(LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.UI) != Enumerations.SceneName.Null)
+        {
+            Clear();
+
+        }
+
         LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, Enumerations.GetSceneNameFromGameMode(mode));
     }
 

@@ -5,22 +5,26 @@ using Constants;
 
 public class EnvironmentManager : Singleton<EnvironmentManager>
 {
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         EventManager.Instance.OnGameplayStateChanged += OnGameplayStateChanged;
     }
 
+    protected override void Start()
+    {
+        base.Start();
+
+        GameStateManager.Instance.ToSafehouse();
+    }
+
     private void OnGameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
     {
-        if(LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.Environment) != Enumerations.SceneName.Null)
+        if(previousState != currentState)
         {
-            if (debug) Debug.Log("Dont need to update environment");
-            return;
+            UpdateEnvironment(currentState);
         }
-
-        UpdateEnvironment(currentState);
     }
 
     private void UpdateEnvironment(Enumerations.GamePlayState gameplayState)

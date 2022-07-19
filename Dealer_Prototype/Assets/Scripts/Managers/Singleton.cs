@@ -32,11 +32,11 @@ public class Singleton<T> : MonoBehaviour where T : Component
 
     protected virtual void PerformLoad()
     {
-        if(debug) Debug.Log(this.name + " loading...");
+    //    if(debug) Debug.Log(this.name + " loading...");
     }
 
     protected virtual void PerformSave()
     {
-        if (debug) Debug.Log(this.name + " saving...");
+      //  if (debug) Debug.Log(this.name + " saving...");
     }
 }
