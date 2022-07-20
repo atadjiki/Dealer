@@ -13,27 +13,41 @@ public class UIManager : Singleton<UIManager>
         EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
     }
 
-    private void OnGameModeChanged(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
+    private void OnGameModeChanged(Enumerations.GameMode previous, Enumerations.GameMode current)
     {
-
-            UpdateUI(currentMode);
-        
+        HandleModeCases(previous, current);
     }
 
-    private void UpdateUI(Enumerations.GameMode mode)
+    private void HandleModeCases(Enumerations.GameMode previous, Enumerations.GameMode current)
     {
-        string sceneName = SceneName.GetSceneNameFromGameMode(mode);
-
-        if (LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.UI, sceneName))
+        //cases for loading UI
+        if (current == Enumerations.GameMode.Loading)
         {
-            Clear();
+            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
+        }
+        else if (previous == Enumerations.GameMode.Loading)
+        {
+            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
         }
 
-        LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, sceneName);
-    }
+        //cases for pause UI
+        if (current == Enumerations.GameMode.Paused)
+        {
+            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
+        }
+        else if (previous == Enumerations.GameMode.Paused)
+        {
+            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
+        }
 
-    private void Clear()
-    {
-        LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI);
+        //cases for gameplay UI
+        if (current == Enumerations.GameMode.GamePlay)
+        {
+            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
+        }
+        else if (previous == Enumerations.GameMode.GamePlay)
+        {
+            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
+        }
     }
 }

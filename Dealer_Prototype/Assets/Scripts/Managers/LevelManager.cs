@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    private Dictionary<string, Stack<string>> _map;
+    private Dictionary<string, HashSet<string>> _map;
 
     protected override void Awake()
     {
@@ -46,7 +46,7 @@ public class LevelManager : Singleton<LevelManager>
 
         if(Enumerations.RequiresLoadingScreen(type)) GameStateManager.Instance.Loading_Start();
 
-        _map[key].Push(name);
+        _map[key].Add(name);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -70,15 +70,13 @@ public class LevelManager : Singleton<LevelManager>
         yield return null;
     }
 
-    public bool UnRegisterScene(Enumerations.SceneType type)
+    public bool UnRegisterScene(Enumerations.SceneType type, string name)
     {
         string key = type.ToString();
 
         if (_map[key].Count > 0)
         {
-            string sceneName = _map[key].Peek();
-
-            StartCoroutine(Coroutine_PerformUnload(key, sceneName));
+            StartCoroutine(Coroutine_PerformUnload(key, name));
             return true;
         }
         else
@@ -88,26 +86,26 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
-    private IEnumerator Coroutine_PerformUnload(string key, string sceneName)
+    private IEnumerator Coroutine_PerformUnload(string key, string name)
     {
         yield return new WaitForSeconds(0.1f);
 
-        SceneManager.UnloadSceneAsync(sceneName);
+        SceneManager.UnloadSceneAsync(name);
 
-        _map[key].Pop();
+        _map[key].Remove(name);
 
         if (debug) DumpSceneMap();
 
         yield return null;
     }
 
-    public bool HasSceneRegistered(Enumerations.SceneType type, string sceneName)
+    public bool HasSceneRegistered(Enumerations.SceneType type, string name)
     {
         string key = type.ToString();
 
         if (_map.ContainsKey(key))
         {
-            return _map[key].Contains(sceneName);
+            return _map[key].Contains(name);
         }
 
         return false;
@@ -123,7 +121,7 @@ public class LevelManager : Singleton<LevelManager>
         {
             output += "[ " + key + "] - ";
 
-            foreach (string scene in _map[key].ToArray())
+            foreach (string scene in _map[key])
             {
                 output += scene + " , ";
             }
@@ -136,16 +134,16 @@ public class LevelManager : Singleton<LevelManager>
 
     private void InitMap()
     {
-        _map = new Dictionary<string, Stack<string>>()
+        _map = new Dictionary<string, HashSet<string>>()
         {
             {
-                Enumerations.SceneType.Root.ToString(), new Stack<string>()
+                Enumerations.SceneType.Root.ToString(), new HashSet<string>()
             },
             {
-                Enumerations.SceneType.Environment.ToString(), new Stack<string>()
+                Enumerations.SceneType.Environment.ToString(), new HashSet<string>()
             },
             {
-                Enumerations.SceneType.UI.ToString(), new Stack<string>()
+                Enumerations.SceneType.UI.ToString(), new HashSet<string>()
             },
         };
     }

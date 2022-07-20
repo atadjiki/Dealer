@@ -17,28 +17,21 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
         base.Start();
     }
 
-    private void OnGameplayStateChanged(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
+    private void OnGameplayStateChanged(Enumerations.GamePlayState previous, Enumerations.GamePlayState current)
     {
-        if(previousState != currentState)
-        {
-            UpdateEnvironment(currentState);
-        }
+        HandleGameplayStateChanged(previous, current);
     }
 
-    private void UpdateEnvironment(Enumerations.GamePlayState gameplayState)
+    private void HandleGameplayStateChanged(Enumerations.GamePlayState previous, Enumerations.GamePlayState current)
     {
-        string sceneName = SceneName.GetSceneNameFromGameplayState(gameplayState);
-
-        if (LevelManager.Instance.HasSceneRegistered(Enumerations.SceneType.Environment, sceneName))
+        //for safehouse
+        if(current == Enumerations.GamePlayState.Safehouse)
         {
-            Clear();
+            LevelManager.Instance.RegisterScene(Enumerations.SceneType.Environment, SceneName.Environment_Safehouse);
         }
-
-        LevelManager.Instance.RegisterScene(Enumerations.SceneType.Environment, sceneName);
-    }
-
-    private void Clear()
-    {
-        LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.Environment);
+        else if(previous == Enumerations.GamePlayState.Safehouse)
+        {
+            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.Environment, SceneName.Environment_Safehouse);
+        }
     }
 }

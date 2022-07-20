@@ -7,17 +7,15 @@ public class InputManager : Singleton<InputManager>
 {
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
+            if (debug) Debug.Log("key press " + KeyCode.Tab);
             GameStateManager.Instance.TogglePause();
-
-            if (debug) Debug.Log("Key press " + KeyCode.Tab);
         }
-        else if(Input.GetKeyDown(KeyCode.Space))
+        else if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (debug) Debug.Log("key press " + KeyCode.Space);
             GameStateManager.Instance.ToSafehouse();
-
-            if (debug) Debug.Log("Key press " + KeyCode.Space);
         }
     }
 }
