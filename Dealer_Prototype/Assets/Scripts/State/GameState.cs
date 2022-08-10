@@ -71,6 +71,7 @@ public class GameData : Data
 public class GameState
 {
     private Stack<Enumerations.GameMode> modeQueue;
+
     private Enumerations.GamePlayState gameplayState = Enumerations.GamePlayState.Inactive;
 
     private PlayerData playerData;

@@ -3,27 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 
-public class EnvironmentManager : Singleton<EnvironmentManager>
+public class EnvironmentManager : Singleton<EnvironmentManager>, IEventReceiver
 {
+    Enumerations.GamePlayState previous = Enumerations.GamePlayState.None;
+
     protected override void Awake()
     {
         base.Awake();
-
-        EventManager.Instance.OnGameplayStateChanged += OnGameplayStateChanged;
     }
 
     protected override void Start()
     {
         base.Start();
+
+        EventManager.Instance.RegisterReceiver(this);
     }
 
-    private void OnGameplayStateChanged(Enumerations.GamePlayState previous, Enumerations.GamePlayState current)
+    private void OnDestroy()
     {
-        HandleGameplayStateChanged(previous, current);
+        EventManager.Instance.UnregisterReceiver(this);
     }
 
-    private void HandleGameplayStateChanged(Enumerations.GamePlayState previous, Enumerations.GamePlayState current)
+    public void HandleEvent(Enumerations.EventID eventID)
     {
+        if(eventID == Enumerations.EventID.GameplayStateChanged)
+        {
+            HandleGameplayStateChanged();
+        }
+    }
+
+    private void HandleGameplayStateChanged()
+    {
+        Enumerations.GamePlayState current = GameStateManager.Instance.GetGameplayState();
+
         //for safehouse
         if(current == Enumerations.GamePlayState.Safehouse)
         {
@@ -33,5 +45,7 @@ public class EnvironmentManager : Singleton<EnvironmentManager>
         {
             LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.Environment, SceneName.Environment_Safehouse);
         }
+
+        previous = current;
     }
 }

@@ -4,22 +4,39 @@ using Constants;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class UIManager : Singleton<UIManager>
+public class UIManager : Singleton<UIManager>, IEventReceiver
 {
+    Enumerations.GameMode previous = Enumerations.GameMode.None;
+
     protected override void Awake()
     {
         base.Awake();
-
-        EventManager.Instance.OnGameModeChanged += OnGameModeChanged;
     }
 
-    private void OnGameModeChanged(Enumerations.GameMode previous, Enumerations.GameMode current)
+    protected override void Start()
     {
-        HandleModeCases(previous, current);
+        base.Start();
+
+        EventManager.Instance.RegisterReceiver(this);
     }
 
-    private void HandleModeCases(Enumerations.GameMode previous, Enumerations.GameMode current)
+    private void OnDestroy()
     {
+        EventManager.Instance.UnregisterReceiver(this);
+    }
+
+    public void HandleEvent(Enumerations.EventID eventID)
+    {
+        if(eventID == Enumerations.EventID.GameModeChanged)
+        {
+            HandleModeCases();
+        }
+    }
+
+    private void HandleModeCases()
+    {
+        Enumerations.GameMode current = GameStateManager.Instance.GetGameMode();
+
         //cases for loading UI
         if (current == Enumerations.GameMode.Loading)
         {
@@ -49,5 +66,7 @@ public class UIManager : Singleton<UIManager>
         {
             LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
         }
+
+        previous = current;
     }
 }

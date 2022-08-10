@@ -1,7 +1,8 @@
 using Constants;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameStateManager : Singleton<GameStateManager>
+public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 {
     private GameState _gameState;
 
@@ -11,18 +12,41 @@ public class GameStateManager : Singleton<GameStateManager>
 
         _gameState = new GameState();
         _gameState.EnqueueGameMode(Enumerations.GameMode.Root);
-
-        EventManager.Instance.OnSceneLoaded += Callback_OnSceneLoaded;
-
     }
 
-    //callbacks
-    private void Callback_OnSceneLoaded(string sceneName)
+    protected override void Start()
     {
-        if(sceneName == SceneName.Environment_Safehouse)
+        base.Start();
+
+        EventManager.Instance.RegisterReceiver(this);
+
+        SceneManager.sceneLoaded += Callback_OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.UnregisterReceiver(this);
+    }
+
+    protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(scene != null && scene.name != null)
+        {
+            HandleEvent_OnSceneLoaded(scene.name);
+        }
+    }
+
+    private void HandleEvent_OnSceneLoaded(string sceneName)
+    {
+        //get scene name from somewhere
+        if (sceneName == SceneName.Environment_Safehouse)
         {
             ToggleGameMode(Enumerations.GameMode.GamePlay, true);
         }
+    }
+
+    public void HandleEvent(Enumerations.EventID eventID)
+    {
     }
 
     private void ToggleGameplayState(Enumerations.GamePlayState state)
@@ -33,7 +57,9 @@ public class GameStateManager : Singleton<GameStateManager>
         {
             _gameState.SetGameplayState(state);
 
-            UpdateGameplayState(previousState, _gameState.GetGameplayState());
+            EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameplayStateChanged);
+
+            if (debug) Debug.Log("GamePlayState - " + previousState + " to " + state);
         }
         else
         {
@@ -57,25 +83,12 @@ public class GameStateManager : Singleton<GameStateManager>
 
         if (success)
         {
-            UpdateGameMode(previousMode, _gameState.GetActiveMode());
+            EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameModeChanged);
+
+            if (debug) Debug.Log("GameMode - " + previousMode + " to " + mode);
         }
 
-      //  if(debug) Debug.Log("ToggleGameMode - Could not transition from " + previousMode + " to " + mode);
-    }
-
-    private void UpdateGameMode(Enumerations.GameMode previousMode, Enumerations.GameMode currentMode)
-    {
-        EventManager.Instance.OnGameModeChanged(previousMode, currentMode);
-    }
-
-    private void UpdateGameplayState(Enumerations.GamePlayState previousState, Enumerations.GamePlayState currentState)
-    {
-        EventManager.Instance.OnGameplayStateChanged(previousState, currentState);
-    }
-
-    private void UpdateGameState()
-    {
-        EventManager.Instance.OnGameStateChanged(_gameState);
+        if(debug) Debug.Log("ToggleGameMode - Could not transition from " + previousMode + " to " + mode);
     }
 
     //events
@@ -118,7 +131,7 @@ public class GameStateManager : Singleton<GameStateManager>
 
         if (debug) Debug.Log("Player Money " + _gameState.GetPlayerData().Money);
 
-        UpdateGameState();
+        EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameStateChanged);
     }
 
     //state

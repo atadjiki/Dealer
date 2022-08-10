@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : Singleton<LevelManager>
+public class LevelManager : Singleton<LevelManager>, IEventReceiver
 {
     private Dictionary<string, HashSet<string>> _map;
 
@@ -19,7 +19,17 @@ public class LevelManager : Singleton<LevelManager>
     {
         base.Start();
 
-        RegisterScene(Enumerations.SceneType.Root, SceneName.CameraRig);
+        EventManager.Instance.RegisterReceiver(this);
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.UnregisterReceiver(this);
+    }
+
+    public void HandleEvent(Enumerations.EventID eventID)
+    {
+        
     }
 
     public bool RegisterScene(Enumerations.SceneType type, string name)
