@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class LevelManager : Singleton<LevelManager>, IEventReceiver
 {
     private Dictionary<string, HashSet<string>> _map;
+    private bool bIsLoading = false;
 
     protected override void Awake()
     {
@@ -20,6 +21,8 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         base.Start();
 
         EventManager.Instance.RegisterReceiver(this);
+
+        SceneManager.sceneLoaded += Callback_OnSceneLoaded;
     }
 
     private void OnDestroy()
@@ -30,6 +33,15 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     public void HandleEvent(Enumerations.EventID eventID)
     {
         
+    }
+
+    protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(bIsLoading)
+        {
+            bIsLoading = false;
+            SceneManager.UnloadSceneAsync(SceneName.UI_Loading);
+        }
     }
 
     public bool RegisterScene(Enumerations.SceneType type, string name)
@@ -56,7 +68,11 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
 
         yield return new WaitForSeconds(0.1f);
 
-        //display loading screen
+        bIsLoading = true;
+
+        yield return SceneManager.LoadSceneAsync(SceneName.UI_Loading, LoadSceneMode.Additive);
+
+        yield return new WaitForSeconds(0.1f);
 
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(name.ToString(), LoadSceneMode.Additive);
         asyncOperation.allowSceneActivation = allowSceneActivation;
@@ -75,7 +91,7 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
 
         _map[key].Add(name);
 
-        //remove loading screen
+        yield return new WaitForSeconds(0.1f);
 
         if (debug) DumpSceneMap();
 

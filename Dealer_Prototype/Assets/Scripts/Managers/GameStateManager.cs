@@ -79,16 +79,6 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
         SetEnvironment(Enumerations.Environment.Safehouse);
     }
 
-    public void Loading_Start()
-    {
-        ToggleGameMode(Enumerations.GameMode.Loading, true);
-    }
-
-    public void Loading_End()
-    {
-        ToggleGameMode(Enumerations.GameMode.Loading, false);
-    }
-
     public void TogglePause()
     {
         if (GetGameMode() == Enumerations.GameMode.Paused)

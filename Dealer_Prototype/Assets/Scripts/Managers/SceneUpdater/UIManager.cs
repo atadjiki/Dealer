@@ -45,9 +45,6 @@ public class UIManager : Singleton<UIManager>, IEventReceiver
             case Enumerations.GameMode.GamePlay:
                 LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
                 break;
-            case Enumerations.GameMode.Loading:
-                LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
-                break;
             case Enumerations.GameMode.Paused:
                 LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
                 break;
