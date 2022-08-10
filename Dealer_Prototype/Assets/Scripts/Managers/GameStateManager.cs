@@ -30,72 +30,53 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 
     protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if(scene != null && scene.name != null)
+        if(scene.name == SceneName.Environment_Safehouse)
         {
-            HandleEvent_OnSceneLoaded(scene.name);
+            ToGameplay();
         }
     }
 
-    private void HandleEvent_OnSceneLoaded(string sceneName)
-    {
-        //get scene name from somewhere
-        if (sceneName == SceneName.Environment_Safehouse)
-        {
-            ToggleGameMode(Enumerations.GameMode.GamePlay, true);
-        }
-    }
 
     public void HandleEvent(Enumerations.EventID eventID)
     {
     }
 
-    private void ToggleGameplayState(Enumerations.GamePlayState state)
-    {
-        Enumerations.GamePlayState previousState = _gameState.GetGameplayState();
-
-        if(previousState != state)
-        {
-            _gameState.SetGameplayState(state);
-
-            EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameplayStateChanged);
-
-            if (debug) Debug.Log("GamePlayState - " + previousState + " to " + state);
-        }
-        else
-        {
-           // if (debug) Debug.Log("ToggleGameplayState - Could not transition from " + previousState + " to " + state);
-        }
-    }
-
     private void ToggleGameMode(Enumerations.GameMode mode, bool enqueue)
     {
         Enumerations.GameMode previousMode = _gameState.GetActiveMode();
-
         bool success;
+
         if (enqueue)
         {
             success = _gameState.EnqueueGameMode(mode);
         }
         else
         {
-            success = _gameState.DequeueGameMode(mode);
+            success = _gameState.DequeueGameMode();
+           
         }
 
-        if (success)
+        if (success && previousMode != GetGameMode())
         {
-            EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameModeChanged);
+            EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameModeChanged, GetGameMode().ToString());
 
-            if (debug) Debug.Log("GameMode - " + previousMode + " to " + mode);
+            if (debug)
+            {
+                if (debug) Debug.Log("GameMode - " + previousMode + " to " + GetGameMode());
+            }
+        }
+        else if (debug)
+        {
+            Debug.Log("ToggleGameMode - Could not transition from " + previousMode + " to " + GetGameMode());
         }
 
-        if(debug) Debug.Log("ToggleGameMode - Could not transition from " + previousMode + " to " + mode);
+
     }
 
     //events
     public void ToSafehouse()
     {
-        ToGameplay();
-        ToggleGameplayState(Enumerations.GamePlayState.Safehouse);
+        SetEnvironment(Enumerations.Environment.Safehouse);
     }
 
     public void Loading_Start()
@@ -110,7 +91,7 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 
     public void TogglePause()
     {
-        if (_gameState.GetActiveMode() == Enumerations.GameMode.Paused)
+        if (GetGameMode() == Enumerations.GameMode.Paused)
         {
             ToggleGameMode(Enumerations.GameMode.Paused, false);
         }
@@ -131,7 +112,7 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 
         if (debug) Debug.Log("Player Money " + _gameState.GetPlayerData().Money);
 
-        EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameStateChanged);
+        EventManager.Instance.BroadcastEvent(Enumerations.EventID.GameStateChanged, "money - " + _gameState.GetPlayerData().Money);
     }
 
     //state
@@ -156,11 +137,14 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
         return _gameState.GetActiveMode();
     }
 
-    public Enumerations.GamePlayState GetGameplayState()
+    public GameState GetGameState() { return _gameState; }
+
+    public void SetEnvironment(Enumerations.Environment environment)
     {
-        return _gameState.GetGameplayState();
+        _gameState.SetEnvironment(environment);
+        EventManager.Instance.BroadcastEvent(Enumerations.EventID.EnvironmentChanged, environment.ToString());
     }
 
-    public GameState GetGameState() { return _gameState; }
+    public Enumerations.Environment GetEnvironment() { return _gameState.GetEnvironment(); }
 }
 

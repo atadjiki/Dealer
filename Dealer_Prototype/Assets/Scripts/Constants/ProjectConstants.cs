@@ -7,31 +7,26 @@ namespace Constants
         public enum EventID 
         { 
             GameModeChanged, 
-            GameplayStateChanged,
-            GameStateChanged, 
+            GameStateChanged,
+            EnvironmentChanged,
             GameSaved, 
-            SceneLoaded, 
-            SceneUnloaded, 
             None 
         };
+
+        public enum Environment
+        {
+            Safehouse,
+            None
+        }
 
         public enum GameMode 
         {
             Root, 
             GamePlay, 
-            Paused, 
-            Loading, 
+            Paused,
+            Loading,
             None
         };
-        public enum GamePlayState 
-        {
-            Safehouse, 
-            Map, 
-            Inventory,
-            Ledger,
-            Inactive,
-            None
-        }
 
         public enum SceneType
         {
@@ -89,16 +84,6 @@ namespace Constants
             else if (gameMode == Enumerations.GameMode.Paused)
             {
                 return UI_Pause;
-            }
-
-            return null;
-        }
-
-        public static string GetSceneNameFromGameplayState(Enumerations.GamePlayState gameplayState)
-        {
-            if (gameplayState == Enumerations.GamePlayState.Safehouse)
-            {
-                return Environment_Safehouse;
             }
 
             return null;

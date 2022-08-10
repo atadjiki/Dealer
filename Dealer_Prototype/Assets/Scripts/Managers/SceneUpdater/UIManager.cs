@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class UIManager : Singleton<UIManager>, IEventReceiver
 {
-    Enumerations.GameMode previous = Enumerations.GameMode.None;
+
+    Enumerations.GameMode previousGameMode = Enumerations.GameMode.None;
 
     protected override void Awake()
     {
@@ -27,7 +28,7 @@ public class UIManager : Singleton<UIManager>, IEventReceiver
 
     public void HandleEvent(Enumerations.EventID eventID)
     {
-        if(eventID == Enumerations.EventID.GameModeChanged)
+        if (eventID == Enumerations.EventID.GameModeChanged)
         {
             HandleModeCases();
         }
@@ -35,38 +36,23 @@ public class UIManager : Singleton<UIManager>, IEventReceiver
 
     private void HandleModeCases()
     {
-        Enumerations.GameMode current = GameStateManager.Instance.GetGameMode();
+        Enumerations.GameMode currentGameMode = GameStateManager.Instance.GetGameMode();
 
-        //cases for loading UI
-        if (current == Enumerations.GameMode.Loading)
-        {
-            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
-        }
-        else if (previous == Enumerations.GameMode.Loading)
-        {
-            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
-        }
+        LevelManager.Instance.UnregisterAll(Enumerations.SceneType.UI);
 
-        //cases for pause UI
-        if (current == Enumerations.GameMode.Paused)
+        switch (currentGameMode)
         {
-            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
-        }
-        else if (previous == Enumerations.GameMode.Paused)
-        {
-            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
+            case Enumerations.GameMode.GamePlay:
+                LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
+                break;
+            case Enumerations.GameMode.Loading:
+                LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Loading);
+                break;
+            case Enumerations.GameMode.Paused:
+                LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
+                break;
         }
 
-        //cases for gameplay UI
-        if (current == Enumerations.GameMode.GamePlay)
-        {
-            LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
-        }
-        else if (previous == Enumerations.GameMode.GamePlay)
-        {
-            LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.UI, SceneName.UI_GamePlay);
-        }
-
-        previous = current;
+        previousGameMode = currentGameMode;
     }
 }

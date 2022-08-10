@@ -72,7 +72,7 @@ public class GameState
 {
     private Stack<Enumerations.GameMode> modeQueue;
 
-    private Enumerations.GamePlayState gameplayState = Enumerations.GamePlayState.Inactive;
+    private Enumerations.Environment environment;
 
     private PlayerData playerData;
     private GameData gameData;
@@ -80,6 +80,8 @@ public class GameState
     public GameState()
     {
         modeQueue = new Stack<Enumerations.GameMode>();
+
+        environment = Enumerations.Environment.None;
 
         playerData = new PlayerData();
         gameData = new GameData();
@@ -106,7 +108,7 @@ public class GameState
         return true;
     }
 
-    public bool DequeueGameMode(Enumerations.GameMode mode)
+    public bool DequeueGameMode()
     {
         if (modeQueue.Count == 0) { return false; }
 
@@ -122,18 +124,18 @@ public class GameState
         return modeQueue.Peek();
     }
 
-    public void SetGameplayState(Enumerations.GamePlayState state)
-    {
-        gameplayState = state;
-    }
-
-    public Enumerations.GamePlayState GetGameplayState()
-    {
-        return gameplayState;
-    }
-
     public PlayerData GetPlayerData() { return playerData; }
     public GameData GetGameData() { return gameData; }
+
+    public void SetEnvironment(Enumerations.Environment _environment)
+    {
+        environment = _environment;
+    }
+
+    public Enumerations.Environment GetEnvironment()
+    {
+        return environment;
+    }
 
     private void PrintModeQueue()
     {

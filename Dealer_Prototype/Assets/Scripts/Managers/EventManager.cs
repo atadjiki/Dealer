@@ -24,9 +24,9 @@ public class EventManager : Singleton<EventManager>
         base.Start();
     }
 
-    public void BroadcastEvent(Enumerations.EventID eventID)
+    public void BroadcastEvent(Enumerations.EventID eventID, string info)
     {
-        if(debug) Debug.Log("Event Broadcast: " + eventID.ToString());
+        if(debug) Debug.Log("Event Broadcast: " + eventID.ToString() + " " + info);
 
         foreach (IEventReceiver eventReceiver in eventReceivers)
         {

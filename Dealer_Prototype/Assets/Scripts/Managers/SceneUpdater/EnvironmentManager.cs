@@ -5,7 +5,7 @@ using Constants;
 
 public class EnvironmentManager : Singleton<EnvironmentManager>, IEventReceiver
 {
-    Enumerations.GamePlayState previous = Enumerations.GamePlayState.None;
+    Enumerations.Environment previousEnvironment = Enumerations.Environment.None;
 
     protected override void Awake()
     {
@@ -26,26 +26,24 @@ public class EnvironmentManager : Singleton<EnvironmentManager>, IEventReceiver
 
     public void HandleEvent(Enumerations.EventID eventID)
     {
-        if(eventID == Enumerations.EventID.GameplayStateChanged)
+        if(eventID == Enumerations.EventID.EnvironmentChanged)
         {
-            HandleGameplayStateChanged();
+            HandleEnvironmentChanged();
         }
     }
 
-    private void HandleGameplayStateChanged()
+    private void HandleEnvironmentChanged()
     {
-        Enumerations.GamePlayState current = GameStateManager.Instance.GetGameplayState();
+        Enumerations.Environment currentEnvironment = GameStateManager.Instance.GetEnvironment();
 
         //for safehouse
-        if(current == Enumerations.GamePlayState.Safehouse)
+        if (currentEnvironment == Enumerations.Environment.Safehouse)
         {
             LevelManager.Instance.RegisterScene(Enumerations.SceneType.Environment, SceneName.Environment_Safehouse);
         }
-        else if(previous == Enumerations.GamePlayState.Safehouse)
+        else if (previousEnvironment == Enumerations.Environment.Safehouse)
         {
             LevelManager.Instance.UnRegisterScene(Enumerations.SceneType.Environment, SceneName.Environment_Safehouse);
         }
-
-        previous = current;
     }
 }

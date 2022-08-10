@@ -16,7 +16,7 @@ public class UIPanel_Gameplay : UIPanel
 
         GameState gameState = GameStateManager.Instance.GetGameState();
 
-        Text_GamePlayState.text = gameState.GetGameplayState().ToString();
+        Text_GamePlayState.text = gameState.GetEnvironment().ToString();
 
         PlayerData playerData = gameState.GetPlayerData();
 

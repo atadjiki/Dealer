@@ -54,11 +54,9 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     {
         string key = type.ToString();
 
-        if(Enumerations.RequiresLoadingScreen(type)) GameStateManager.Instance.Loading_Start();
-
-        _map[key].Add(name);
-
         yield return new WaitForSeconds(0.1f);
+
+        //display loading screen
 
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(name.ToString(), LoadSceneMode.Additive);
         asyncOperation.allowSceneActivation = allowSceneActivation;
@@ -67,17 +65,31 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         {
             if (asyncOperation.progress >= 0.9f)
             {
+                yield return new WaitForSeconds(0.1f);
+
                 asyncOperation.allowSceneActivation = true;
             }
 
             yield return null;
         }
 
-        if (Enumerations.RequiresLoadingScreen(type)) GameStateManager.Instance.Loading_End();
+        _map[key].Add(name);
 
-        if(debug) DumpSceneMap();
+        //remove loading screen
+
+        if (debug) DumpSceneMap();
 
         yield return null;
+    }
+
+    public void UnregisterAll(Enumerations.SceneType type)
+    {
+        string key = type.ToString();
+
+        foreach(string scene in _map[key])
+        {
+            UnRegisterScene(type, scene);
+        }
     }
 
     public bool UnRegisterScene(Enumerations.SceneType type, string name)
@@ -100,13 +112,11 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     {
         yield return new WaitForSeconds(0.1f);
 
-        SceneManager.UnloadSceneAsync(name);
-
         _map[key].Remove(name);
 
         if (debug) DumpSceneMap();
 
-        yield return null;
+        yield return SceneManager.UnloadSceneAsync(name);
     }
 
     public bool HasSceneRegistered(Enumerations.SceneType type, string name)
