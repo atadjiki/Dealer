@@ -1,6 +1,5 @@
 using Constants;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 {
@@ -19,23 +18,12 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
         base.Start();
 
         EventManager.Instance.RegisterReceiver(this);
-
-        SceneManager.sceneLoaded += Callback_OnSceneLoaded;
     }
 
     private void OnDestroy()
     {
         EventManager.Instance.UnregisterReceiver(this);
     }
-
-    protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if(scene.name == SceneName.Environment_Safehouse)
-        {
-            ToGameplay();
-        }
-    }
-
 
     public void HandleEvent(Enumerations.EventID eventID)
     {
