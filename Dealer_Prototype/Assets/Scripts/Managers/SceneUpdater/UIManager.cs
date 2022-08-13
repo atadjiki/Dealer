@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class UIManager : Singleton<UIManager>, IEventReceiver
 {
-
-    Enumerations.GameMode previousGameMode = Enumerations.GameMode.None;
-
     protected override void Awake()
     {
         base.Awake();
@@ -49,7 +46,5 @@ public class UIManager : Singleton<UIManager>, IEventReceiver
                 LevelManager.Instance.RegisterScene(Enumerations.SceneType.UI, SceneName.UI_Pause);
                 break;
         }
-
-        previousGameMode = currentGameMode;
     }
 }

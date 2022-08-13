@@ -6,9 +6,9 @@ public class EnvironmentComponent : MonoBehaviour
 {
     [SerializeField] private bool debug = false;
 
-    private void Awake()
+    private void Start()
     {
-        EnterActions();
+        StartCoroutine(Coroutine_EnterActionsStart());
     }
 
     private void OnDestroy()
@@ -16,13 +16,30 @@ public class EnvironmentComponent : MonoBehaviour
         ExitActions();
     }
 
-    protected virtual void EnterActions()
+    protected virtual IEnumerator Coroutine_EnterActionsStart()
     {
         if (debug) Debug.Log("Environment " + this.name + " - enter actions");
+
+        yield return Coroutine_PerformEnterActions();
+    }
+
+    protected virtual IEnumerator Coroutine_PerformEnterActions()
+    {
+        yield return Coroutine_EnterActionsCompleted();
+    }
+
+    protected virtual IEnumerator Coroutine_EnterActionsCompleted()
+    {
+        yield return null;
     }
 
     protected virtual void ExitActions()
     {
         if (debug) Debug.Log("Environment " + this.name + " - exit actions");
+    }
+
+    protected virtual void SpawnPlayer()
+    {
+
     }
 }

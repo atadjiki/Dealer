@@ -32,32 +32,54 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
 
     public void HandleEvent(Enumerations.EventID eventID)
     {
-        
+
     }
 
     protected void Callback_OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        StartCoroutine(Coroutine_HideLoadingScreen());
+    }
+
+    public IEnumerator Coroutine_ShowLoadingScreen()
+    {
+        bIsLoading = true;
+        yield return SceneManager.LoadSceneAsync(SceneName.UI_Loading, LoadSceneMode.Additive);
+
+    }
+
+    public IEnumerator Coroutine_HideLoadingScreen()
+    {
         if(bIsLoading)
         {
             bIsLoading = false;
-            SceneManager.UnloadSceneAsync(SceneName.UI_Loading);
+            yield return SceneManager.UnloadSceneAsync(SceneName.UI_Loading);
         }
     }
 
-    public bool RegisterScene(Enumerations.SceneType type, string name)
+    public bool RegisterScene(Enumerations.SceneType type, string sceneName)
     {
-        if(name == null) { return false; }
+        if (sceneName == null) return false;
 
         string key = type.ToString();
 
-        if (!_map[key].Contains(name))
+        if (!_map[key].Contains(sceneName))
         {
-            StartCoroutine(Coroutine_PerformLoad(type, name, Enumerations.AllowSceneActivation(type)));
-            return true;
+            _map[key].Add(name);
+
+            if (!IsSceneAlreadyLoaded(sceneName))
+            {
+                StartCoroutine(Coroutine_PerformLoad(type, sceneName, Enumerations.AllowSceneActivation(type)));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
         else
         {
-            if (debug) Debug.Log("Cant register " + name +  ", it is already registered for " + type);
+            if (debug) Debug.Log("Cant register " + sceneName + ", it is already registered for " + type);
             return false;
         }
     }
@@ -68,9 +90,7 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
 
         yield return new WaitForSeconds(0.1f);
 
-        bIsLoading = true;
-
-        yield return SceneManager.LoadSceneAsync(SceneName.UI_Loading, LoadSceneMode.Additive);
+        yield return Coroutine_ShowLoadingScreen();
 
         yield return new WaitForSeconds(0.1f);
 
@@ -89,8 +109,6 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
             yield return null;
         }
 
-        _map[key].Add(name);
-
         yield return new WaitForSeconds(0.1f);
 
         if (debug) DumpSceneMap();
@@ -102,7 +120,7 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     {
         string key = type.ToString();
 
-        foreach(string scene in _map[key])
+        foreach (string scene in _map[key])
         {
             UnRegisterScene(type, scene);
         }
@@ -135,16 +153,13 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         yield return SceneManager.UnloadSceneAsync(name);
     }
 
-    public bool HasSceneRegistered(Enumerations.SceneType type, string name)
+    public bool IsSceneAlreadyLoaded(string sceneName)
     {
-        string key = type.ToString();
+        Scene scene = SceneManager.GetSceneByName(sceneName);
 
-        if (_map.ContainsKey(key))
-        {
-            return _map[key].Contains(name);
-        }
+        if (scene == null) return false;
 
-        return false;
+        return scene.isLoaded;
     }
 
     //helpers
@@ -153,7 +168,7 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     {
         string output = "Scenes: \n";
 
-        foreach(string key in _map.Keys)
+        foreach (string key in _map.Keys)
         {
             output += "[ " + key + "] - ";
 
@@ -165,7 +180,7 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
             output += "\n";
         }
 
-        if(debug) Debug.Log(output);
+        if (debug) Debug.Log(output);
     }
 
     private void InitMap()
@@ -184,4 +199,3 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         };
     }
 }
-
