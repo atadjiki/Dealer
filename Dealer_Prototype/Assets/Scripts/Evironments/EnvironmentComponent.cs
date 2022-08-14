@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnvironmentComponent : MonoBehaviour
 {
     [SerializeField] private bool debug = false;
+    [SerializeField] private Constants.Enumerations.Environment environmentID;
 
     private void Start()
     {
@@ -25,6 +26,11 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual IEnumerator Coroutine_PerformEnterActions()
     {
+        LevelManager.Instance.RegisterScene(Constants.Enumerations.SceneType.Environment, Constants.Enumerations.GetSceneNameFromEnvironmentID(environmentID));
+        GameStateManager.Instance.SetEnvironment(environmentID);
+
+        GameStateManager.Instance.ToGameplay();
+
         yield return Coroutine_EnterActionsCompleted();
     }
 
@@ -35,6 +41,7 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual void ExitActions()
     {
+        GameStateManager.Instance.SetEnvironment(Constants.Enumerations.Environment.None);
         if (debug) Debug.Log("Environment " + this.name + " - exit actions");
     }
 

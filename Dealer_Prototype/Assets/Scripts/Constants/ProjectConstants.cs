@@ -36,6 +36,17 @@ namespace Constants
             None
         }
 
+        public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
+        {
+            switch(environment)
+            {
+                case Environment.Safehouse:
+                    return SceneName.Environment_Safehouse;
+                default:
+                    return null;
+            }
+        }
+
         public static bool AllowSceneActivation(Enumerations.SceneType type)
         {
             switch (type)
@@ -70,6 +81,8 @@ namespace Constants
         public const string UI_Pause = "Scene_UI_Pause";
         //environments
         public const string Environment_Safehouse = "Scene_Safehouse";
+        //debug
+        public const string UI_DebugMenu = "Scene_UI_DebugMenu";
 
         public static string GetSceneNameFromGameMode(Enumerations.GameMode gameMode)
         {

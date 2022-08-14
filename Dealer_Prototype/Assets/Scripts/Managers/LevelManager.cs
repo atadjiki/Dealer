@@ -40,6 +40,19 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         StartCoroutine(Coroutine_HideLoadingScreen());
     }
 
+
+    public void ToggleDebugMenu()
+    {
+        if (!IsSceneAlreadyLoaded(SceneName.UI_DebugMenu))
+        {
+            SceneManager.LoadSceneAsync(SceneName.UI_DebugMenu, LoadSceneMode.Additive);
+        }
+        else
+        {
+            SceneManager.UnloadSceneAsync(SceneName.UI_DebugMenu);
+        }
+    }
+
     public IEnumerator Coroutine_ShowLoadingScreen()
     {
         bIsLoading = true;
