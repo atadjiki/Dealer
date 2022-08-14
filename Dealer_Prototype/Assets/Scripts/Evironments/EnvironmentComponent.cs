@@ -63,8 +63,6 @@ public class EnvironmentComponent : MonoBehaviour
                 SpawnLocation spawnLocation = spawnLocations[Random.Range(0, spawnLocations.Count)];
 
                 GameObject characterObject = Instantiate<GameObject>(data.Prefab, spawnLocation.transform);
-
-                cameraRig.SetFollowTarget(characterObject.transform);
             }
         }
     }
