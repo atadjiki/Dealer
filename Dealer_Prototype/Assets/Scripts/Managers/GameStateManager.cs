@@ -124,5 +124,7 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
     }
 
     public Enumerations.Environment GetEnvironment() { return _gameState.GetEnvironment(); }
+
+    public PlayerPartyData GetPlayerParty() { return _gameState.GetPlayerPartyData(); }
 }
 

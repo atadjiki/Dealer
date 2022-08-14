@@ -4,6 +4,14 @@ namespace Constants
 {
     public class Enumerations
     {
+        public enum CharacterID
+        {
+            Player,
+            Goon_Ally,
+            Goon_Enemy,
+            None
+        }
+
         public enum EventID 
         { 
             GameModeChanged, 
@@ -110,5 +118,8 @@ namespace Constants
         public const string Player_Drugs = "Player_Drugs";
 
         public const string Game_Day = "Game_Day";
+
+        public const string Player_Party_Leader = "Player_Party_Leader";
+        public const string Player_Party_Muscle = "Player_Party_Muscle";
     }
 }

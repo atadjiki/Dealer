@@ -22,7 +22,7 @@ public class InputManager : Singleton<InputManager>, IEventReceiver
         if(Input.GetKeyDown(key_debugMenu))
         {
             if(debug) Debug.Log("ley press " + key_debugMenu);
-            LevelManager.Instance.ToggleDebugMenu();
+            LevelManager.Instance.ShowDebugMenu();
             
         }
     }

@@ -16,6 +16,38 @@ public class Data
     }
 }
 
+public class PartyData : Data
+{
+    public Enumerations.CharacterID Leader;
+    public Enumerations.CharacterID[] Muscle;
+}
+
+public class PlayerPartyData : PartyData
+{
+    public override void Load()
+    {
+        base.Load();
+
+        if (ES3.KeyExists(SaveKeys.Player_Party_Leader))
+        {
+            Leader = ES3.Load<Enumerations.CharacterID>(SaveKeys.Player_Party_Leader);
+        }
+        else
+        {
+            Leader = Enumerations.CharacterID.Player;
+        }
+
+        if(ES3.KeyExists(SaveKeys.Player_Party_Muscle))
+        {
+            Muscle = ES3.Load(SaveKeys.Player_Party_Muscle, new Enumerations.CharacterID[3]);
+        }
+        else
+        {
+            Muscle = new Enumerations.CharacterID[3];
+        }
+    }
+}
+
 public class PlayerData : Data
 {
     public string Name;
@@ -74,6 +106,7 @@ public class GameState
 
     private Enumerations.Environment environment;
 
+    private PlayerPartyData playerPartyData;
     private PlayerData playerData;
     private GameData gameData;
 
@@ -126,6 +159,8 @@ public class GameState
 
     public PlayerData GetPlayerData() { return playerData; }
     public GameData GetGameData() { return gameData; }
+
+    public PlayerPartyData GetPlayerPartyData() { return playerPartyData; }
 
     public void SetEnvironment(Enumerations.Environment _environment)
     {

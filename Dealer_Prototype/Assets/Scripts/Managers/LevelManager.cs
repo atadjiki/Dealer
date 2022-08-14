@@ -9,6 +9,8 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     private Dictionary<string, HashSet<string>> _map;
     private bool bIsLoading = false;
 
+    [SerializeField] private bool DebugMenuOnStart = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -23,6 +25,11 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         EventManager.Instance.RegisterReceiver(this);
 
         SceneManager.sceneLoaded += Callback_OnSceneLoaded;
+
+        if(DebugMenuOnStart)
+        {
+            ShowDebugMenu();
+        }
     }
 
     private void OnDestroy()
@@ -40,17 +47,17 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
         StartCoroutine(Coroutine_HideLoadingScreen());
     }
 
-
-    public void ToggleDebugMenu()
+    public void ShowDebugMenu()
     {
         if (!IsSceneAlreadyLoaded(SceneName.UI_DebugMenu))
         {
             SceneManager.LoadSceneAsync(SceneName.UI_DebugMenu, LoadSceneMode.Additive);
         }
-        else
-        {
-            SceneManager.UnloadSceneAsync(SceneName.UI_DebugMenu);
-        }
+    }
+
+    public void CloseDebugMenu()
+    {
+        SceneManager.UnloadSceneAsync(SceneName.UI_DebugMenu);
     }
 
     public IEnumerator Coroutine_ShowLoadingScreen()

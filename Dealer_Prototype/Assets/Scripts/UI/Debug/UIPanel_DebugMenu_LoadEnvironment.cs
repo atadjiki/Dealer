@@ -32,6 +32,8 @@ public class UIPanel_DebugMenu_LoadEnvironment : UIPanel
         Enumerations.Environment environmentID = (Enumerations.Environment) Enum.Parse(typeof(Enumerations.Environment), value);
 
         GameStateManager.Instance.SetEnvironment(environmentID);
+
+        LevelManager.Instance.CloseDebugMenu();
     }
 
     public override void PerformUpdate()

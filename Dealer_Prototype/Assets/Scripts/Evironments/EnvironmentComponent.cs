@@ -7,6 +7,8 @@ public class EnvironmentComponent : MonoBehaviour
     [SerializeField] private bool debug = false;
     [SerializeField] private Constants.Enumerations.Environment environmentID;
 
+    [SerializeField] private List<SpawnLocation> spawnLocations;
+
     private void Start()
     {
         StartCoroutine(Coroutine_EnterActionsStart());
@@ -30,6 +32,17 @@ public class EnvironmentComponent : MonoBehaviour
         GameStateManager.Instance.SetEnvironment(environmentID);
 
         GameStateManager.Instance.ToGameplay();
+
+        //gather the roster of characters who can dynamically spawn into this scene
+        //for now probably just the player
+        PlayerPartyData playerPartyData = GameStateManager.Instance.GetPlayerParty();
+
+        //playerPartyData.Leader;
+
+        //foreach(SpawnLocation spawnLocation in spawnLocations)
+        //{
+
+        //}
 
         yield return Coroutine_EnterActionsCompleted();
     }
