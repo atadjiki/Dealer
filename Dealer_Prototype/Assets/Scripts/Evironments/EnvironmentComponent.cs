@@ -9,6 +9,8 @@ public class EnvironmentComponent : MonoBehaviour
 
     [SerializeField] private List<SpawnLocation> spawnLocations;
 
+    [SerializeField] private CameraRig cameraRig;
+
     private void Start()
     {
         StartCoroutine(Coroutine_EnterActionsStart());
@@ -33,16 +35,7 @@ public class EnvironmentComponent : MonoBehaviour
 
         GameStateManager.Instance.ToGameplay();
 
-        //gather the roster of characters who can dynamically spawn into this scene
-        //for now probably just the player
-        PlayerPartyData playerPartyData = GameStateManager.Instance.GetPlayerParty();
-
-        //playerPartyData.Leader;
-
-        //foreach(SpawnLocation spawnLocation in spawnLocations)
-        //{
-
-        //}
+        SpawnPlayer();
 
         yield return Coroutine_EnterActionsCompleted();
     }
@@ -60,6 +53,19 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual void SpawnPlayer()
     {
+        if (spawnLocations.Count > 0)
+        {
+            bool success;
+            CharacterManager.CharacterData data = CharacterManager.Instance.GetCharacterData(Constants.Enumerations.CharacterID.Player, out success);
 
+            if(success)
+            {
+                SpawnLocation spawnLocation = spawnLocations[Random.Range(0, spawnLocations.Count)];
+
+                GameObject characterObject = Instantiate<GameObject>(data.Prefab, spawnLocation.transform);
+
+                cameraRig.SetFollowTarget(characterObject.transform);
+            }
+        }
     }
 }

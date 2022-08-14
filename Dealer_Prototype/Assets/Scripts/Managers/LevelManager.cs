@@ -9,7 +9,8 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
     private Dictionary<string, HashSet<string>> _map;
     private bool bIsLoading = false;
 
-    [SerializeField] private bool DebugMenuOnStart = false;
+    public enum StartOption { DebugMenu, CurrentEnvironment, Root };
+    public StartOption startOption = StartOption.Root;
 
     protected override void Awake()
     {
@@ -26,9 +27,22 @@ public class LevelManager : Singleton<LevelManager>, IEventReceiver
 
         SceneManager.sceneLoaded += Callback_OnSceneLoaded;
 
-        if(DebugMenuOnStart)
+        ResolveStartOption();
+    }
+
+    private void ResolveStartOption()
+    {
+        switch(startOption)
         {
-            ShowDebugMenu();
+            case StartOption.CurrentEnvironment:
+                EnvironmentManager.Instance.HandleEnvironmentChanged();
+                break;
+            case StartOption.DebugMenu:
+                ShowDebugMenu();
+                break;
+            case StartOption.Root:
+                break;
+
         }
     }
 

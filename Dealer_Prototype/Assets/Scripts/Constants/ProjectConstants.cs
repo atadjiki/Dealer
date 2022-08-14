@@ -116,10 +116,8 @@ namespace Constants
         public const string Player_Name = "Player_Name";
         public const string Player_Money = "Player_Money";
         public const string Player_Drugs = "Player_Drugs";
+        public const string Player_Environment = "Player_Environment";
 
         public const string Game_Day = "Game_Day";
-
-        public const string Player_Party_Leader = "Player_Party_Leader";
-        public const string Player_Party_Muscle = "Player_Party_Muscle";
     }
 }

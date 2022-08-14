@@ -61,12 +61,6 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
 
     }
 
-    //events
-    public void ToSafehouse()
-    {
-        SetEnvironment(Enumerations.Environment.Safehouse);
-    }
-
     public void TogglePause()
     {
         if (GetGameMode() == Enumerations.GameMode.Paused)
@@ -124,7 +118,5 @@ public class GameStateManager : Singleton<GameStateManager>, IEventReceiver
     }
 
     public Enumerations.Environment GetEnvironment() { return _gameState.GetEnvironment(); }
-
-    public PlayerPartyData GetPlayerParty() { return _gameState.GetPlayerPartyData(); }
 }
 
