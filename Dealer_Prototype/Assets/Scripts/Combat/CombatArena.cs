@@ -15,15 +15,15 @@ public class CombatArena : MonoBehaviour
 
     private void Start()
     {
-       foreach(CharacterMarker marker in Markers_Team_A)
-        {
-            marker.SetTeam(Team_A.Team);
-        }
+       
+    }
 
-        foreach (CharacterMarker marker in Markers_Team_B)
-        {
-            marker.SetTeam(Team_B.Team);
-        }
+    private void PopulateMarkersFromRoster(Roster roster)
+    {
+       foreach(CharacterInfo character in roster.Characters)
+       {
+
+       }
     }
 
 }

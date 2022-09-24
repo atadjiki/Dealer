@@ -7,6 +7,18 @@ namespace Constants
 
         public enum Team { Player, Enemy, Neutral };
 
+        public enum CharacterModelID
+        {
+            Male_1,
+            Male_2,
+            Male_3,
+            Male_4,
+
+            Female_1,
+            Female_2,
+            Female_3,
+            Female_4
+        }
 
         public enum CharacterID
         {
