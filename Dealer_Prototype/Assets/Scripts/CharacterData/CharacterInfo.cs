@@ -7,7 +7,6 @@ using UnityEngine;
 public class CharacterInfo
 {
     public Enumerations.WeaponID WeaponID;
-    public Enumerations.CharacterModelID ModelID;
-    public CharacterModel Model;
+    public Enumerations.PrefabID CharacterModelID;
 }
 

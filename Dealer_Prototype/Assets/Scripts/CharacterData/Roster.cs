@@ -6,5 +6,10 @@ using UnityEngine;
 public class Roster : MonoBehaviour
 {
     public Enumerations.Team Team;
-    public CharacterInfo[] Characters = new CharacterInfo[CombatConstants.RosterSize];
+    public CharacterInfo[] Characters;
+
+    public int GetRosterSize()
+    {
+        return Characters.Length;
+    }
 }

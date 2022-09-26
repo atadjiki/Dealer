@@ -15,17 +15,20 @@ namespace Constants
             None
         }
 
-        public enum CharacterModelID
+        public enum PrefabID
         {
-            Male_1,
-            Male_2,
-            Male_3,
-            Male_4,
+            //character model
+            CharacterModel_Male_1,
+            CharacterModel_Male_2,
+            CharacterModel_Male_3,
+            CharacterModel_Male_4,
+            CharacterModel_Female_1,
+            CharacterModel_Female_2,
+            CharacterModel_Female_3,
+            CharacterModel_Female_4,
 
-            Female_1,
-            Female_2,
-            Female_3,
-            Female_4
+            //marker group
+            MarkerGroup_5x5,
         }
 
         public enum CharacterID
@@ -143,23 +146,5 @@ namespace Constants
         public const string Player_Environment = "Player_Environment";
 
         public const string Game_Day = "Game_Day";
-    }
-
-    public class CombatConstants
-    {
-        public const int RosterSize = 5;
-        public static Vector3 GetRotationBySide(Enumerations.ArenaSide side)
-        {
-            if (side == Enumerations.ArenaSide.Left)
-            {
-                return new Vector3(0, 90, 0);
-            }
-            else if (side == Enumerations.ArenaSide.Right)
-            {
-                return new Vector3(0, -90, 0);
-            }
-
-            return Vector3.zero;
-        }
     }
 }

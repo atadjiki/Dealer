@@ -4,44 +4,62 @@ using Constants;
 using UnityEngine;
 
 [System.Serializable]
-public class MarkerGroup
+public struct SideInfo
 {
-    public Enumerations.ArenaSide Side;
-    public CharacterMarker[] Markers = new CharacterMarker[CombatConstants.RosterSize];
+    public Enumerations.ArenaSide side;
+    public AnchorPoint anchorPoint;
+    private Roster roster;
+
+    public void SetRoster(Roster _roster) { roster = _roster; }
+    public Roster GetRoster() { return roster; }
 }
 
 public class CombatArena : MonoBehaviour
 {
-    public MarkerGroup Markers_A;
-    public MarkerGroup Markers_B;
+    [SerializeField] private SideInfo sideA;
+    [SerializeField] private SideInfo sideB;
 
-    public void SpawnTeams(Roster Team_A, Roster Team_B)
+    public void SpawnTeams(Roster team_A, Roster team_B)
     {
-        PopulateMarkersFromRoster(Markers_A, Team_A);
-        PopulateMarkersFromRoster(Markers_B, Team_B);
+        sideA.SetRoster(team_A);
+        sideB.SetRoster(team_B);
+
+        PopulateMarkersFromRoster(sideA);
+        PopulateMarkersFromRoster(sideB);
     }
 
-    private void PopulateMarkersFromRoster(MarkerGroup MarkerGroup, Roster Roster)
+    private void PopulateMarkersFromRoster(SideInfo sideInfo)
     {
-        Debug.Log("processing team " + Roster.Team);
+        Roster roster = sideInfo.GetRoster();
+        AnchorPoint anchorPoint = sideInfo.anchorPoint;
 
-        for(int i = 0; i < CombatConstants.RosterSize; i++)
+        Debug.Log("processing team " + roster.Team);
+
+        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(roster.GetRosterSize()));
+        markerGroupPrefab.transform.position = anchorPoint.transform.position;
+
+        MarkerGroup markerGroup = markerGroupPrefab.GetComponent<MarkerGroup>();
+
+        for(int i = 0; i < roster.GetRosterSize(); i++)
         {
-            SpawnCharacterOnMarker(MarkerGroup, Roster, i);
+            SpawnCharacterOnMarker(markerGroup, roster, i);
         }
     }
 
-    private void SpawnCharacterOnMarker(MarkerGroup MarkerGroup, Roster Roster, int index)
+    private void SpawnCharacterOnMarker(MarkerGroup markerGroup, Roster roster, int index)
     {
-        if(index > (MarkerGroup.Markers.Length -1) || index > (Roster.Characters.Length -1)) { return; } 
+        if(index > (markerGroup.Markers.Length -1) || index > (roster.Characters.Length -1)) { return; } 
 
-        CharacterMarker marker = MarkerGroup.Markers[index];
-        marker.SetTeam(Roster.Team);
-        marker.SetSide(MarkerGroup.Side);
+        CharacterMarker marker = markerGroup.Markers[index];
+        marker.SetTeam(roster.Team);
+       
 
-        CharacterInfo info = Roster.Characters[index];
+        CharacterInfo info = roster.Characters[index];
 
-        GameObject spawnedCharacter = Instantiate(info.Model.gameObject, marker.transform);
+        GameObject characterModelPrefab = PrefabManager.Instance.GetCharacterModel(info.CharacterModelID);
+
+        GameObject spawnedCharacter = Instantiate(characterModelPrefab, marker.transform);
+
         CharacterModel model = spawnedCharacter.GetComponent<CharacterModel>();
         model.SetAnimationSet(info);
     }
