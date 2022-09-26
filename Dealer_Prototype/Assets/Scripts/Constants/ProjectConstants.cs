@@ -5,8 +5,6 @@ namespace Constants
 {
     public class Enumerations
     {
-        public enum ArenaSide { Left, Right };
-
         public enum Team { Player, Enemy, Neutral };
 
         public enum WeaponID

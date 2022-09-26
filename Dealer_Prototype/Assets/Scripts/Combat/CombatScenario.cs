@@ -6,12 +6,12 @@ using UnityEngine;
 [System.Serializable]
 public class CombatInfo
 {
-    public Roster Team_A;
-    public Roster Team_B;
+    public Roster Team_Defending;
+    public Roster Team_Opposing;
 
     public List<Roster> GetRosters()
     {
-        return new List<Roster>() { Team_A, Team_B };
+        return new List<Roster>() { Team_Defending, Team_Opposing };
     }
 
     public Roster GetRosterByTeam(Enumerations.Team team)
@@ -38,6 +38,7 @@ public class CombatScenario : MonoBehaviour
 
     private void Start()
     {
-        Arena.SpawnTeams(Info.Team_A, Info.Team_B);
+        Arena.SpawnDefendingTeam(Info.Team_Defending);
+        Arena.SpawnOpposingTeam(Info.Team_Opposing);
     }
 }

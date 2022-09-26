@@ -1,64 +1,69 @@
-using System.Collections;
-using System.Collections.Generic;
-using Constants;
 using UnityEngine;
 
 [System.Serializable]
-public struct SideInfo
+public struct RosterContext
 {
-    public Enumerations.ArenaSide side;
     public AnchorPoint anchorPoint;
+
     private Roster roster;
+    private MarkerGroup markerGroup;
 
     public void SetRoster(Roster _roster) { roster = _roster; }
     public Roster GetRoster() { return roster; }
+
+    public void SetMarkerGroup(MarkerGroup _group) { markerGroup = _group; }
+    public MarkerGroup GetMarkerGroup() { return markerGroup; }
 }
 
 public class CombatArena : MonoBehaviour
 {
-    [SerializeField] private SideInfo sideA;
-    [SerializeField] private SideInfo sideB;
+    [SerializeField] private RosterContext context_defending;
+    [SerializeField] private RosterContext context_opposing;
 
-    public void SpawnTeams(Roster team_A, Roster team_B)
+    public void SpawnDefendingTeam(Roster roster) { SpawnRoster(context_defending, roster); }
+    public void SpawnOpposingTeam(Roster roster) { SpawnRoster(context_opposing, roster); }
+
+    //spawn rosters
+    private void SpawnRoster(RosterContext rosterContext, Roster roster)
     {
-        sideA.SetRoster(team_A);
-        sideB.SetRoster(team_B);
-
-        PopulateMarkersFromRoster(sideA);
-        PopulateMarkersFromRoster(sideB);
+        rosterContext.SetRoster(roster);
+        PopulateMarkersFromRoster(rosterContext);
     }
 
-    private void PopulateMarkersFromRoster(SideInfo sideInfo)
+    private void PopulateMarkersFromRoster(RosterContext rosterContext)
     {
-        Roster roster = sideInfo.GetRoster();
-        AnchorPoint anchorPoint = sideInfo.anchorPoint;
+        Roster roster = rosterContext.GetRoster();
+        AnchorPoint anchorPoint = rosterContext.anchorPoint;
 
-        Debug.Log("processing team " + roster.Team);
-
+        //spawn the marker group that we will use to place our characters from the roster
         GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(roster.GetRosterSize()));
         markerGroupPrefab.transform.position = anchorPoint.transform.position;
+        markerGroupPrefab.transform.localEulerAngles = anchorPoint.transform.localEulerAngles;
 
-        MarkerGroup markerGroup = markerGroupPrefab.GetComponent<MarkerGroup>();
+        rosterContext.SetMarkerGroup(markerGroupPrefab.GetComponent<MarkerGroup>());
 
+        //spawn individual characters
         for(int i = 0; i < roster.GetRosterSize(); i++)
         {
-            SpawnCharacterOnMarker(markerGroup, roster, i);
+            SpawnCharacterOnMarker(rosterContext, i);
         }
     }
 
-    private void SpawnCharacterOnMarker(MarkerGroup markerGroup, Roster roster, int index)
+    private void SpawnCharacterOnMarker(RosterContext rosterContext, int index)
     {
+        Roster roster = rosterContext.GetRoster();
+        MarkerGroup markerGroup = rosterContext.GetMarkerGroup();
+
         if(index > (markerGroup.Markers.Length -1) || index > (roster.Characters.Length -1)) { return; } 
 
         CharacterMarker marker = markerGroup.Markers[index];
-        marker.SetTeam(roster.Team);
-       
 
         CharacterInfo info = roster.Characters[index];
 
         GameObject characterModelPrefab = PrefabManager.Instance.GetCharacterModel(info.CharacterModelID);
 
         GameObject spawnedCharacter = Instantiate(characterModelPrefab, marker.transform);
+        spawnedCharacter.transform.eulerAngles = marker.transform.eulerAngles;
 
         CharacterModel model = spawnedCharacter.GetComponent<CharacterModel>();
         model.SetAnimationSet(info);

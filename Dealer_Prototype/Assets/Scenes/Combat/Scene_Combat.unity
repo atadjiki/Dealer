@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -302,8 +302,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Info:
-    Team_A: {fileID: 5746516452600139437, guid: bbdc5e09c8dfff447a3a10225a2668af, type: 3}
-    Team_B: {fileID: 5470994205448850784, guid: 2685d37a216e55342b2f4bb74c45e496, type: 3}
+    Team_Defending: {fileID: 5746516452600139437, guid: bbdc5e09c8dfff447a3a10225a2668af, type: 3}
+    Team_Opposing: {fileID: 5470994205448850784, guid: 2685d37a216e55342b2f4bb74c45e496, type: 3}
   Arena: {fileID: 1504020560}
 --- !u!4 &738060902
 Transform:
@@ -423,13 +423,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394582634}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1571056486}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1394582636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,11 +487,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c44cf37fe58d84fb8b5c55e2ac7e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sideA:
-    side: 0
+  context_defending:
     anchorPoint: {fileID: 1394582636}
-  sideB:
-    side: 1
+  context_opposing:
     anchorPoint: {fileID: 2041399691}
 --- !u!1 &1571056485
 GameObject:
@@ -645,13 +643,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041399689}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1571056486}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &2041399691
 MonoBehaviour:
   m_ObjectHideFlags: 0
