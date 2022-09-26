@@ -27,11 +27,14 @@ public class PrefabManager : Singleton<PrefabManager>
     {
         switch(size)
         {
-            case 5:
-            return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_5x5);
+            case 1: return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_1);
+            case 2: return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_2);
+            case 3: return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_3);
+            case 4: return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_4);
+            case 5: return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_5);
 
             default:
-            return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_5x5);
+            return SearchPrefabArray(MarkerGroups, Enumerations.PrefabID.MarkerGroup_5);
         }
         
     }

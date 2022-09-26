@@ -26,7 +26,11 @@ namespace Constants
             CharacterModel_Female_4,
 
             //marker group
-            MarkerGroup_5x5,
+            MarkerGroup_1,
+            MarkerGroup_2,
+            MarkerGroup_3,
+            MarkerGroup_4,
+            MarkerGroup_5,
         }
 
         public enum CharacterID

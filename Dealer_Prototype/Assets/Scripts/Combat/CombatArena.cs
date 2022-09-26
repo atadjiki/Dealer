@@ -36,10 +36,12 @@ public class CombatArena : MonoBehaviour
         AnchorPoint anchorPoint = rosterContext.anchorPoint;
 
         //spawn the marker group that we will use to place our characters from the roster
-        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(roster.GetRosterSize()));
+        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(roster.GetRosterSize()), rosterContext.anchorPoint.transform);
         markerGroupPrefab.transform.position = anchorPoint.transform.position;
-        markerGroupPrefab.transform.localEulerAngles = anchorPoint.transform.localEulerAngles;
+        markerGroupPrefab.transform.eulerAngles = anchorPoint.transform.eulerAngles;
 
+        markerGroupPrefab.name = "MarkerGroup_Team_" + rosterContext.GetRoster().Team;
+    
         rosterContext.SetMarkerGroup(markerGroupPrefab.GetComponent<MarkerGroup>());
 
         //spawn individual characters
