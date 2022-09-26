@@ -1,11 +1,19 @@
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Constants
 {
     public class Enumerations
     {
+        public enum ArenaSide { Left, Right };
 
         public enum Team { Player, Enemy, Neutral };
+
+        public enum WeaponID
+        {
+            Pistol, 
+            None
+        }
 
         public enum CharacterModelID
         {
@@ -135,5 +143,23 @@ namespace Constants
         public const string Player_Environment = "Player_Environment";
 
         public const string Game_Day = "Game_Day";
+    }
+
+    public class CombatConstants
+    {
+        public const int RosterSize = 5;
+        public static Vector3 GetRotationBySide(Enumerations.ArenaSide side)
+        {
+            if (side == Enumerations.ArenaSide.Left)
+            {
+                return new Vector3(0, 90, 0);
+            }
+            else if (side == Enumerations.ArenaSide.Right)
+            {
+                return new Vector3(0, -90, 0);
+            }
+
+            return Vector3.zero;
+        }
     }
 }

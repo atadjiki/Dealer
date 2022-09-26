@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class CharacterModel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Animator _animator;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        _animator = GetComponent<Animator>();
+
+    }
+    public void SetAnimationSet(CharacterInfo info)
+    {
+        _animator.runtimeAnimatorController = AnimationManager.Instance.GetControllerByWeaponID(info.WeaponID);
     }
 }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-[System.Serializable]
-public class Roster
+public class Roster : MonoBehaviour
 {
     public Enumerations.Team Team;
-    public CharacterInfo[] Characters;
+    public CharacterInfo[] Characters = new CharacterInfo[CombatConstants.RosterSize];
 }

@@ -8,13 +8,18 @@ public class CharacterMarker : MonoBehaviour
 {
     [SerializeField] private MeshRenderer PlateMesh;
 
+    private void OnMouseDown()
+    {
+        Debug.Log("clicked " + this.name);
+    }
+
     public void SetTeam(Enumerations.Team team)
     {
         PlateMesh.material = MaterialManager.Instance.GetMaterialByTeam(team);
     }
 
-    private void OnMouseDown()
+    public void SetSide(Enumerations.ArenaSide side)
     {
-        Debug.Log("clicked " + this.name);
+        this.transform.localEulerAngles = CombatConstants.GetRotationBySide(side);
     }
 }
