@@ -7,6 +7,8 @@ namespace Constants
     {
         public enum ScenarioState { Null, Initialized, InProgress, Finished };
 
+        public enum ArenaSide { Defending, Opposing };
+
         public enum ControllerType { Human, CPU };
 
         public enum Team { Player, Enemy, Neutral };

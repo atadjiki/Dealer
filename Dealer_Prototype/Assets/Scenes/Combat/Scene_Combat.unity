@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -301,12 +301,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f5f1e16aca9d0040b57fcc94dffeb3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Info:
-    Controller_Defending: 0
-    Controller_Opposing: 0
-    Team_Defending: {fileID: 5746516452600139437, guid: bbdc5e09c8dfff447a3a10225a2668af, type: 3}
-    Team_Opposing: {fileID: 5470994205448850784, guid: 2685d37a216e55342b2f4bb74c45e496, type: 3}
-    Arena: {fileID: 1504020560}
+  Controller_Defending: 0
+  Controller_Opposing: 0
+  Roster_Defending: {fileID: 5746516452600139437, guid: bbdc5e09c8dfff447a3a10225a2668af, type: 3}
+  Roster_Opposing: {fileID: 5470994205448850784, guid: 2685d37a216e55342b2f4bb74c45e496, type: 3}
+  Arena: {fileID: 1504020560}
   State: 0
 --- !u!4 &738060902
 Transform:
@@ -490,9 +489,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c44cf37fe58d84fb8b5c55e2ac7e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  context_defending:
+  Layout_Defending:
     anchorPoint: {fileID: 1394582636}
-  context_opposing:
+  Layout_Opposing:
     anchorPoint: {fileID: 2041399691}
 --- !u!1 &1571056485
 GameObject:

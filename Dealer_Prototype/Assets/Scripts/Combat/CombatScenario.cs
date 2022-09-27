@@ -3,30 +3,35 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-[System.Serializable]
-public class CombatInfo
+public class CombatScenario : MonoBehaviour
 {
+    [Header("Data")]
     [Header("Controllers")]
     public Enumerations.ControllerType Controller_Defending;
     public Enumerations.ControllerType Controller_Opposing;
     [Header("Rosters")]
-    public Roster Team_Defending;
-    public Roster Team_Opposing;
+    public Roster Roster_Defending;
+    public Roster Roster_Opposing;
     [Header("Arena")]
-    public CombatArena Arena;
-}
-
-public class CombatScenario : MonoBehaviour
-{
-    [Header("Data")]
-    public CombatInfo Info;
+    public Arena Arena;
 
     [Header("State")]
     public Enumerations.ScenarioState State;
 
     private void Start()
     {
-        CombatManager.Instance.RegisterScenario(this);
+        Arena.Setup(Roster_Defending, Roster_Opposing);
+    }
+
+    //helper
+    public int GetDefendingCount()
+    {
+        return Roster_Defending.GetSize();
+    }
+
+    public int GetOpposingCount()
+    {
+        return Roster_Opposing.GetSize();
     }
 }
 
