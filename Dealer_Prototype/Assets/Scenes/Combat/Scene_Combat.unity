@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -302,9 +302,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Info:
+    Controller_Defending: 0
+    Controller_Opposing: 0
     Team_Defending: {fileID: 5746516452600139437, guid: bbdc5e09c8dfff447a3a10225a2668af, type: 3}
     Team_Opposing: {fileID: 5470994205448850784, guid: 2685d37a216e55342b2f4bb74c45e496, type: 3}
-  Arena: {fileID: 1504020560}
+    Arena: {fileID: 1504020560}
+  State: 0
 --- !u!4 &738060902
 Transform:
   m_ObjectHideFlags: 0

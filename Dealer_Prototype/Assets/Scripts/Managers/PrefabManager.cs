@@ -12,11 +12,19 @@ public struct PrefabInfo
 
 public class PrefabManager : Singleton<PrefabManager>
 {
+    [Header("UI Elements")]
+    public PrefabInfo[] UIElements;
+
     [Header("Character Models")]
     public PrefabInfo[] Models;
 
     [Header("MarkerGroup")]
     public PrefabInfo[] MarkerGroups;
+
+    public GameObject GetUIElement(Enumerations.PrefabID ID)
+    {
+        return SearchPrefabArray(UIElements, ID);
+    }
 
     public GameObject GetCharacterModel(Enumerations.PrefabID ID)
     {

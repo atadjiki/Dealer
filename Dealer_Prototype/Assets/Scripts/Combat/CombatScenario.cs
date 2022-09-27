@@ -6,39 +6,28 @@ using UnityEngine;
 [System.Serializable]
 public class CombatInfo
 {
+    [Header("Controllers")]
+    public Enumerations.ControllerType Controller_Defending;
+    public Enumerations.ControllerType Controller_Opposing;
+    [Header("Rosters")]
     public Roster Team_Defending;
     public Roster Team_Opposing;
-
-    public List<Roster> GetRosters()
-    {
-        return new List<Roster>() { Team_Defending, Team_Opposing };
-    }
-
-    public Roster GetRosterByTeam(Enumerations.Team team)
-    {
-        foreach (Roster roster in GetRosters())
-        {
-            if (roster.Team == team)
-            {
-                return roster;
-            }
-        }
-
-        return null;
-    }
-
+    [Header("Arena")]
+    public CombatArena Arena;
 }
 
 public class CombatScenario : MonoBehaviour
 {
     [Header("Data")]
     public CombatInfo Info;
-    [Header("Arena")]
-    public CombatArena Arena;
+
+    [Header("State")]
+    public Enumerations.ScenarioState State;
 
     private void Start()
     {
-        Arena.SpawnDefendingTeam(Info.Team_Defending);
-        Arena.SpawnOpposingTeam(Info.Team_Opposing);
+        CombatManager.Instance.RegisterScenario(this);
     }
 }
+
+

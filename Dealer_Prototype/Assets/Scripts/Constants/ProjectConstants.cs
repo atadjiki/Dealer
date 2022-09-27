@@ -5,6 +5,10 @@ namespace Constants
 {
     public class Enumerations
     {
+        public enum ScenarioState { Null, Initialized, InProgress, Finished };
+
+        public enum ControllerType { Human, CPU };
+
         public enum Team { Player, Enemy, Neutral };
 
         public enum WeaponID
@@ -15,6 +19,9 @@ namespace Constants
 
         public enum PrefabID
         {
+            //ui
+            CharacterCanvas,
+
             //character model
             CharacterModel_Male_1,
             CharacterModel_Male_2,

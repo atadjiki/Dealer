@@ -13,6 +13,10 @@ public struct RosterContext
 
     public void SetMarkerGroup(MarkerGroup _group) { markerGroup = _group; }
     public MarkerGroup GetMarkerGroup() { return markerGroup; }
+
+    public int GetRosterCount() { return roster.Characters.Length; }
+
+    public int GetMarkerCount() { return markerGroup.Markers.Length; }
 }
 
 public class CombatArena : MonoBehaviour
@@ -36,7 +40,7 @@ public class CombatArena : MonoBehaviour
         AnchorPoint anchorPoint = rosterContext.anchorPoint;
 
         //spawn the marker group that we will use to place our characters from the roster
-        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(roster.GetRosterSize()), rosterContext.anchorPoint.transform);
+        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(rosterContext.GetRosterCount()), rosterContext.anchorPoint.transform);
         markerGroupPrefab.transform.position = anchorPoint.transform.position;
         markerGroupPrefab.transform.eulerAngles = anchorPoint.transform.eulerAngles;
 
@@ -45,9 +49,12 @@ public class CombatArena : MonoBehaviour
         rosterContext.SetMarkerGroup(markerGroupPrefab.GetComponent<MarkerGroup>());
 
         //spawn individual characters
-        for(int i = 0; i < roster.GetRosterSize(); i++)
+        for(int i = 0; i < rosterContext.GetMarkerCount(); i++)
         {
-            SpawnCharacterOnMarker(rosterContext, i);
+            if(i < rosterContext.GetRosterCount())
+            {
+                SpawnCharacterOnMarker(rosterContext, i);
+            } 
         }
     }
 
@@ -56,19 +63,22 @@ public class CombatArena : MonoBehaviour
         Roster roster = rosterContext.GetRoster();
         MarkerGroup markerGroup = rosterContext.GetMarkerGroup();
 
-        if(index > (markerGroup.Markers.Length -1) || index > (roster.Characters.Length -1)) { return; } 
-
         CharacterMarker marker = markerGroup.Markers[index];
-
         CharacterInfo info = roster.Characters[index];
 
-        GameObject characterModelPrefab = PrefabManager.Instance.GetCharacterModel(info.CharacterModelID);
-
-        GameObject spawnedCharacter = Instantiate(characterModelPrefab, marker.transform);
+        GameObject spawnedCharacter = Instantiate(PrefabManager.Instance.GetCharacterModel(info.CharacterModelID), marker.transform);
         spawnedCharacter.transform.eulerAngles = marker.transform.eulerAngles;
 
         CharacterModel model = spawnedCharacter.GetComponent<CharacterModel>();
         model.SetAnimationSet(info);
+
+        GameObject characterCanvasPrefab = Instantiate(
+            PrefabManager.Instance.GetUIElement(Constants.Enumerations.PrefabID.CharacterCanvas), spawnedCharacter.transform);
+
+        characterCanvasPrefab.GetComponent<RectTransform>().localEulerAngles = marker.transform.eulerAngles * -1;
+
+        CharacterCanvas characterCanvas = characterCanvasPrefab.GetComponent<CharacterCanvas>();
+        characterCanvas.SetName(info.CharacterName);
     }
 }
 

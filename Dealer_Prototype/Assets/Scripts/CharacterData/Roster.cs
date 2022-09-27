@@ -7,9 +7,4 @@ public class Roster : MonoBehaviour
 {
     public Enumerations.Team Team;
     public CharacterInfo[] Characters;
-
-    public int GetRosterSize()
-    {
-        return Characters.Length;
-    }
 }
