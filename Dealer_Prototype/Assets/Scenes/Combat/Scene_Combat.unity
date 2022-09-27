@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 738060902}
   - component: {fileID: 738060901}
   m_Layer: 0
-  m_Name: CombatScenario
+  m_Name: Scenario
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -412,7 +412,7 @@ GameObject:
   - component: {fileID: 1394582635}
   - component: {fileID: 1394582636}
   m_Layer: 0
-  m_Name: AnchorPoint_MarkerGroup_Defending
+  m_Name: AnchorPoint_Defending
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 1504020559}
   - component: {fileID: 1504020560}
   m_Layer: 0
-  m_Name: CombatArena
+  m_Name: Arena
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -489,10 +489,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c44cf37fe58d84fb8b5c55e2ac7e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Layout_Defending:
-    anchorPoint: {fileID: 1394582636}
-  Layout_Opposing:
-    anchorPoint: {fileID: 2041399691}
+  Anchor_Defending: {fileID: 1394582636}
+  Anchor_Opposing: {fileID: 2041399691}
 --- !u!1 &1571056485
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +630,7 @@ GameObject:
   - component: {fileID: 2041399690}
   - component: {fileID: 2041399691}
   m_Layer: 0
-  m_Name: AnchorPoint_MarkerGroup_Opposing
+  m_Name: AnchorPoint_Opposing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

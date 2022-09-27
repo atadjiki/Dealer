@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5522732843200580915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5522732843200580916}
+  - component: {fileID: 5522732843200580917}
+  m_Layer: 0
+  m_Name: PrefabManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5522732843200580916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5522732843200580915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5522732843200580917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5522732843200580915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68a29e163b9764f5db9848a924daf7dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 0
+  UIElements:
+  - ID: 0
+    Prefab: {fileID: 3489286972973012636, guid: 43058961dc4ec4dbbb696e7c8b79b1d4, type: 3}
+  Weapons:
+  - ID: 1
+    Prefab: {fileID: 4730526452107358381, guid: 0de9a3999c0a6ef4db4416b1cfbed950, type: 3}
+  - ID: 2
+    Prefab: {fileID: 7976845956093439773, guid: 1b4f2991ccbc9d449bbd0fea7872d875, type: 3}
+  - ID: 3
+    Prefab: {fileID: 1129937303452443077, guid: e0b63ff34ea7ca141a3af2037262847d, type: 3}
+  - ID: 4
+    Prefab: {fileID: 8276573674116261803, guid: 78f6d3488a1d5d744bba602322948635, type: 3}
+  - ID: 5
+    Prefab: {fileID: 1396641197378719851, guid: b09b52c1abd40fd4690f6de16f773b74, type: 3}
+  - ID: 6
+    Prefab: {fileID: 4323422830282215898, guid: 4e5c36295dc25de4e8110c7e06ebdc1d, type: 3}
+  - ID: 7
+    Prefab: {fileID: 7377996160259796927, guid: 80159beaf54a114498029cad9111d697, type: 3}
+  - ID: 8
+    Prefab: {fileID: 1313477985982739181, guid: b41917226bf757541953ae46f7693bec, type: 3}
+  Characters:
+  - ID: 9
+    Prefab: {fileID: 2410132099250202001, guid: 309fdcd6aca9045a1bc3830d22a67c64, type: 3}
+  - ID: 10
+    Prefab: {fileID: 2488818345590943910, guid: e93bdba0e26174dcf89e5dba0dd5cce3, type: 3}
+  - ID: 11
+    Prefab: {fileID: 1788405488785926784, guid: 85f311b5376794bd79b04c26792c879c, type: 3}
+  - ID: 12
+    Prefab: {fileID: 73712411904066367, guid: 08e7b694047ef4cf5a8d2532b4c6199f, type: 3}
+  - ID: 13
+    Prefab: {fileID: 1499059799191853569, guid: e6ab27048be8148259c0a7852068ea71, type: 3}
+  - ID: 14
+    Prefab: {fileID: 4132739620467714956, guid: 3555efd44d7914fa589538a8e076a04a, type: 3}
+  - ID: 15
+    Prefab: {fileID: 7759327816776347335, guid: 8a8395aa9af704438bdf49c7c5854abd, type: 3}
+  - ID: 16
+    Prefab: {fileID: 254320485188220158, guid: e15445df8a10b4ca1a8b1b840df5c1e7, type: 3}
+  MarkerGroups:
+  - ID: 17
+    Prefab: {fileID: 6500683460334143350, guid: 144d70807267f3342a4192cd1ce0705e, type: 3}
+  - ID: 18
+    Prefab: {fileID: 4011886539662111437, guid: 34d2688ce4300be438aa13d5be08ae42, type: 3}
+  - ID: 19
+    Prefab: {fileID: 4391632952686268727, guid: 550f11db0134000488dba1a5adb10ac7, type: 3}
+  - ID: 20
+    Prefab: {fileID: 8056137726002097017, guid: a55a5247803c96945ac6eef86f37cee8, type: 3}
+  - ID: 21
+    Prefab: {fileID: 7821499811459024999, guid: bf9482d6698d94332a4752ef9787aa01, type: 3}

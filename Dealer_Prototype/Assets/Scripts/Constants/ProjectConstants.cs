@@ -13,33 +13,73 @@ namespace Constants
 
         public enum Team { Player, Enemy, Neutral };
 
+        public enum AssetID
+        {
+            CharacterCanvas,
+
+            AK,
+            Carbine,
+            Revolver,
+            Deagle,
+            Glock,
+            Shotgun,
+            MP5,
+            Uzi,
+
+            Male_1,
+            Male_2,
+            Male_3,
+            Male_4,
+            Female_1,
+            Female_2,
+            Female_3,
+            Female_4,
+
+            Group_1,
+            Group_2,
+            Group_3,
+            Group_4,
+            Group_5,
+        }
+
+
+        public enum UIID
+        {
+            CharacterCanvas,
+        }
+
         public enum WeaponID
         {
-            Pistol, 
+            AK,
+            Carbine,
+            Revolver,
+            Deagle,
+            Glock,
+            Shotgun,
+            MP5,
+            Uzi,
             None
         }
 
-        public enum PrefabID
+        public enum CharacterModelID
         {
-            //ui
-            CharacterCanvas,
+            Male_1,
+            Male_2,
+            Male_3,
+            Male_4,
+            Female_1,
+            Female_2,
+            Female_3,
+            Female_4,
+        }
 
-            //character model
-            CharacterModel_Male_1,
-            CharacterModel_Male_2,
-            CharacterModel_Male_3,
-            CharacterModel_Male_4,
-            CharacterModel_Female_1,
-            CharacterModel_Female_2,
-            CharacterModel_Female_3,
-            CharacterModel_Female_4,
-
-            //marker group
-            MarkerGroup_1,
-            MarkerGroup_2,
-            MarkerGroup_3,
-            MarkerGroup_4,
-            MarkerGroup_5,
+        public enum MarkerGroupID
+        {
+            Group_1,
+            Group_2,
+            Group_3,
+            Group_4,
+            Group_5,
         }
 
         public enum CharacterID
@@ -50,13 +90,13 @@ namespace Constants
             None
         }
 
-        public enum EventID 
-        { 
-            GameModeChanged, 
+        public enum EventID
+        {
+            GameModeChanged,
             GameStateChanged,
             EnvironmentChanged,
-            GameSaved, 
-            None 
+            GameSaved,
+            None
         };
 
         public enum Environment
@@ -65,10 +105,10 @@ namespace Constants
             None
         }
 
-        public enum GameMode 
+        public enum GameMode
         {
-            Root, 
-            GamePlay, 
+            Root,
+            GamePlay,
             Paused,
             Loading,
             None
@@ -84,7 +124,7 @@ namespace Constants
 
         public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
         {
-            switch(environment)
+            switch (environment)
             {
                 case Environment.Safehouse:
                     return SceneName.Environment_Safehouse;

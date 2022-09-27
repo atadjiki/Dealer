@@ -1,31 +1,21 @@
 using Constants;
 using UnityEngine;
 
-[System.Serializable]
-public class ArenaLayout
-{
-    public AnchorPoint anchorPoint;
-    private MarkerGroup markerGroup;
-    public void SetMarkerGroup(MarkerGroup group) { markerGroup = group; }
-    public MarkerGroup GetMarkerGroup() { return markerGroup; }
-}
-
 public class Arena : MonoBehaviour
 {
-    [SerializeField] private ArenaLayout Layout_Defending;
-    [SerializeField] private ArenaLayout Layout_Opposing;
+    [SerializeField] private AnchorPoint Anchor_Defending;
+    [SerializeField] private AnchorPoint Anchor_Opposing;
 
     public void Setup(Roster defending, Roster opposing)
     {
-        GenerateMarkers(Layout_Defending, defending.GetSize());
-        GenerateMarkers(Layout_Opposing, opposing.GetSize());
-
-        SpawnRoster(defending, GetDefendingMarkers());
-        SpawnRoster(opposing, GetOpposingMarkers());
+        SpawnRoster(defending, Anchor_Defending);
+        SpawnRoster(opposing, Anchor_Opposing);
     }
 
-    private void SpawnRoster(Roster roster, MarkerGroup markerGroup)
+    private void SpawnRoster(Roster roster, AnchorPoint anchorPoint)
     {
+        MarkerGroup markerGroup = GenerateMarkers(anchorPoint, roster.GetSize());
+
         for (int i = 0; i < markerGroup.GetSize(); i++)
         {
             CharacterMarker marker = markerGroup.Markers[i];
@@ -39,22 +29,13 @@ public class Arena : MonoBehaviour
         }
     }
 
-    private void GenerateMarkers(ArenaLayout layout, int size)
+    private MarkerGroup GenerateMarkers(AnchorPoint anchorPoint, int size)
     {
-        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(size), layout.anchorPoint.transform);
-        markerGroupPrefab.transform.position = layout.anchorPoint.transform.position;
-        markerGroupPrefab.transform.rotation = layout.anchorPoint.transform.rotation;
-        MarkerGroup markerGroup = markerGroupPrefab.GetComponent<MarkerGroup>();
+        GameObject markerGroupPrefab = Instantiate(PrefabManager.Instance.GetMarkerGroupBySize(size), anchorPoint.transform);
+        markerGroupPrefab.transform.position = anchorPoint.transform.position;
+        markerGroupPrefab.transform.rotation = anchorPoint.transform.rotation;
 
-        layout.SetMarkerGroup(markerGroup);
+        return markerGroupPrefab.GetComponent<MarkerGroup>();
     }
-
-    //helpers
-    public ArenaLayout GetDefendingLayout() { return Layout_Defending; }
-    public ArenaLayout GetOpposingLayout() { return Layout_Opposing; }
-
-    public MarkerGroup GetDefendingMarkers() { return Layout_Defending.GetMarkerGroup(); }
-    public MarkerGroup GetOpposingMarkers() { return Layout_Opposing.GetMarkerGroup(); }
-
 }
 
