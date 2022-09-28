@@ -21,11 +21,7 @@ public class Arena : MonoBehaviour
             CharacterMarker marker = markerGroup.Markers[i];
             CharacterInfo info = roster.Characters[i];
 
-            GameObject spawnedCharacter = Instantiate(PrefabManager.Instance.GetCharacterModel(info.CharacterModelID), marker.transform);
-            spawnedCharacter.transform.eulerAngles = marker.transform.eulerAngles;
-
-            CharacterModel model = spawnedCharacter.GetComponent<CharacterModel>();
-            model.Setup(info);
+            marker.Setup(info);
         }
     }
 
@@ -38,4 +34,3 @@ public class Arena : MonoBehaviour
         return markerGroupPrefab.GetComponent<MarkerGroup>();
     }
 }
-

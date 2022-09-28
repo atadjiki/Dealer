@@ -34,5 +34,3 @@ public class CombatScenario : MonoBehaviour
         return Roster_Opposing.GetSize();
     }
 }
-
-
