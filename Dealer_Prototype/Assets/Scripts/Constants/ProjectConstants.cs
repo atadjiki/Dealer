@@ -64,13 +64,13 @@ namespace Constants
         public enum CharacterModelID
         {
             Male_1,
-            Male_2,
-            Male_3,
-            Male_4,
-            Female_1,
-            Female_2,
-            Female_3,
-            Female_4,
+            //Male_2,
+            //Male_3,
+            //Male_4,
+            //Female_1,
+            //Female_2,
+            //Female_3,
+            //Female_4,
         }
 
         public enum MarkerGroupID
@@ -119,6 +119,58 @@ namespace Constants
             Root,
             Environment,
             UI,
+            None
+        }
+
+        public enum SkinColor
+        {
+            Dark,
+            Fair,
+            Pale,
+            Pink,
+            Tan,
+            None
+        }
+
+        public enum HairColor
+        {
+            Black,
+            Blonde,
+            Brunette,
+            Ginger,
+            None
+        }
+
+        public enum BasicColor
+        {
+            Black,
+            Blue,
+            Clear,
+            Cyan,
+            Green,
+            Grey,
+            Magenta,
+            Olive,
+            Red,
+            White,
+            Yellow,
+        }
+
+        public enum CharacterFeature
+        {
+            Hair, 
+            Clothing,
+            Skin,
+            None
+        }
+
+        public enum CharacterClothingType
+        {
+            Top,
+            Bottom,
+            Shoes,
+            Hat,
+            Accessories,
             None
         }
 
