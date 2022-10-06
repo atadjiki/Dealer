@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &475026279432431083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 475026279432431084}
+  - component: {fileID: 475026279432431085}
+  m_Layer: 0
+  m_Name: MaterialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &475026279432431084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475026279432431083}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &475026279432431085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475026279432431083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef16ae12b5f55246a928c7663f4edea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 0
+  Mat_Debug: {fileID: 2100000, guid: 9306b28bb92c74f9596b502cc9989c52, type: 2}
+  Mat_Team_Player: {fileID: 2100000, guid: 4e9a31fad89b7475ca863dcdff4f9a83, type: 2}
+  Mat_Team_Enemy: {fileID: 2100000, guid: e02a502aa3e20437d96c9aecae6dcd86, type: 2}
+  Mat_Team_Neutral: {fileID: 2100000, guid: 8f5e9518b69f83a44b532460fdbef1c4, type: 2}
+  Mat_Skin_Dark: {fileID: 2100000, guid: ee4fc99eb23474187bb3744dc67c74f4, type: 2}
+  Mat_Skin_Fair: {fileID: 2100000, guid: 33aa25ac170dd425fbacc61fe293badf, type: 2}
+  Mat_Skin_Pale: {fileID: 2100000, guid: aa9e71de5612848b5a30c81f80106b10, type: 2}
+  Mat_Skin_Pink: {fileID: 2100000, guid: 634399ca674554b31a9485c37629e62d, type: 2}
+  Mat_Skin_Tan: {fileID: 2100000, guid: 7fcd08cfd9e3a4c27a7fe9e778b1f70f, type: 2}
+  Mat_Hair_Black: {fileID: 2100000, guid: b2150da85cd8345a68e21e061a23890d, type: 2}
+  Mat_Hair_Blonde: {fileID: 2100000, guid: 1616ff425bfad45ef8d470c08fcf521b, type: 2}
+  Mat_Hair_Brunette: {fileID: 2100000, guid: 22958fbd1ed834164b549af760d95281, type: 2}
+  Mat_Hair_Ginger: {fileID: 2100000, guid: 167e90b4329b046428881cc01b51a2e1, type: 2}

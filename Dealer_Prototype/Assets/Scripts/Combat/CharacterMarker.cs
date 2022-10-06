@@ -24,7 +24,7 @@ public class CharacterMarker : MonoBehaviour
         spawnedCharacter.transform.eulerAngles = this.transform.eulerAngles;
 
         CharacterModel model = spawnedCharacter.GetComponent<CharacterModel>();
-        model.SetupWeapon(_info.WeaponID);
+        model.ApplyCharacterInfo(_info);
     }
 
     private void SetupCharacterCanvas()

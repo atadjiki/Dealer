@@ -15,8 +15,24 @@ public class CharacterModel : MonoBehaviour
         _weaponSocket = GetComponentInChildren<WeaponSocket>();
     }
 
-    public void SetupWeapon(Enumerations.WeaponID weaponID)
+    public void ApplyCharacterInfo(CharacterInfo characterInfo)
     {
+        SetupWeapon(characterInfo);
+        SetupMaterials(characterInfo);
+    }
+
+    private void SetupMaterials(CharacterInfo characterInfo)
+    {
+        foreach (CharacterMaterialSetter materialSetter in GetComponentsInChildren<CharacterMaterialSetter>())
+        {
+            materialSetter.ApplyCharacterInfo(characterInfo);
+        }
+    }
+
+    private void SetupWeapon(CharacterInfo characterInfo)
+    {
+        Enumerations.WeaponID weaponID = characterInfo.WeaponID;
+
         if(weaponID != Enumerations.WeaponID.None && _weaponSocket != null)
         {
             GameObject weaponPrefab = Instantiate(PrefabManager.Instance.GetWeaponModel(weaponID), _weaponSocket.transform);

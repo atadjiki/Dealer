@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
-public class CharacterMaterialSetter : MonoBehaviour
+[RequireComponent(typeof(SkinnedMeshRenderer))]
+public class CharacterMaterialSetter : MaterialSetter
 {
-    // Start is called before the first frame update
-    void Start()
+   protected SkinnedMeshRenderer _meshRenderer;
+
+    private void Awake()
     {
-        
+        _meshRenderer = GetComponent<SkinnedMeshRenderer>();    
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual void ApplyCharacterInfo(CharacterInfo characterInfo) 
     {
-        
     }
 }

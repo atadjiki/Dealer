@@ -9,4 +9,8 @@ public class Roster : MonoBehaviour
     public CharacterInfo[] Characters;
 
     public int GetSize() { return Characters.Length; }
+
+    private Enumerations.ArenaSide ArenaSide;
+    public Enumerations.ArenaSide GetSide() { return ArenaSide; }
+    public void SetSide(Enumerations.ArenaSide side) { ArenaSide = side; }
 }

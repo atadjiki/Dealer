@@ -122,7 +122,7 @@ namespace Constants
             None
         }
 
-        public enum SkinColor
+        public enum CharacterSkinColorType
         {
             Dark,
             Fair,
