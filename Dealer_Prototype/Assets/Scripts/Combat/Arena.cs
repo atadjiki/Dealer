@@ -8,8 +8,8 @@ public class Arena : MonoBehaviour
 
     public void Setup(Roster defending, Roster opposing)
     {
-        defending.SetSide(Enumerations.ArenaSide.Defending);
-        opposing.SetSide(Enumerations.ArenaSide.Opposing);
+        defending.ArenaSide = Enumerations.ArenaSide.Defending;
+        opposing.ArenaSide = Enumerations.ArenaSide.Opposing;
 
         SpawnRoster(defending, Anchor_Defending);
         SpawnRoster(opposing, Anchor_Opposing);
@@ -25,7 +25,7 @@ public class Arena : MonoBehaviour
         {
             CharacterMarker marker = markerGroup.Markers[i];
             CharacterInfo info = roster.Characters[i];
-            info.SetSide(roster.GetSide());
+            info.ArenaSide = roster.ArenaSide;
 
             marker.Setup(info);
         }

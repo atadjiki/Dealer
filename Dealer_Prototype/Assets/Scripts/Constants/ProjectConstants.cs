@@ -122,27 +122,28 @@ namespace Constants
             None
         }
 
-        public enum CharacterSkinColorType
+        public enum SkinColor
         {
+            None,
             Dark,
             Fair,
             Pale,
             Pink,
-            Tan,
-            None
+            Tan
         }
 
         public enum HairColor
         {
+            None,
             Black,
             Blonde,
             Brunette,
-            Ginger,
-            None
+            Ginger
         }
 
         public enum BasicColor
         {
+            None,
             Black,
             Blue,
             Clear,

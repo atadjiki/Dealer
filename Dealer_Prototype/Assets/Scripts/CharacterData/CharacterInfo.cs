@@ -10,8 +10,16 @@ public class CharacterInfo
     public Enumerations.WeaponID WeaponID;
     public Enumerations.CharacterModelID CharacterModelID;
 
-    private Enumerations.ArenaSide ArenaSide;
-    public Enumerations.ArenaSide GetSide() { return ArenaSide; }
-    public void SetSide(Enumerations.ArenaSide side) { ArenaSide = side; }
+    [Header("Material Settings")]
+    public Enumerations.HairColor HairColor;
+    public Enumerations.SkinColor SkinColor;
+
+    [Header("Clothing")]
+    public Color Clothing_TopColor;
+    public Color Clothing_BottomColor;
+    public Color Clothing_ShoeColor;
+
+    [HideInInspector]
+    public Enumerations.ArenaSide ArenaSide;
 }
 
