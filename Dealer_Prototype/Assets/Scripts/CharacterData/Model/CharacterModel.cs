@@ -27,6 +27,11 @@ public class CharacterModel : MonoBehaviour
         {
             materialSetter.ApplyCharacterInfo(characterInfo);
         }
+
+        foreach (ObjectMaterialSetter materialSetter in GetComponentsInChildren<ObjectMaterialSetter>())
+        {
+            materialSetter.ApplyCharacterInfo(characterInfo);
+        }
     }
 
     private void SetupWeapon(CharacterInfo characterInfo)
