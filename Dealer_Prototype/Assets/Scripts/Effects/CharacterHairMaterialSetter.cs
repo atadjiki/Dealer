@@ -9,6 +9,6 @@ public class CharacterHairMaterialSetter : CharacterMaterialSetter
     {
         base.ApplyCharacterInfo(characterInfo);
 
-        _meshRenderer.material.color = ColorManager.Instance.GetColor(characterInfo.HairColor);
+        _meshRenderer.material.color = characterInfo.HairColor;
     }
 }

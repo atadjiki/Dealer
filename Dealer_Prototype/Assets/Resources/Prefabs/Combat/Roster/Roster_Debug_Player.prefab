@@ -45,13 +45,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 0
   Characters:
-  - CharacterName: Dogbert
+  - CharacterName: John Doe
     WeaponID: 4
     CharacterModelID: 0
-    HairColor: 0
-    SkinColor: 5
-    Clothing_TopColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    Clothing_BottomColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    Clothing_ShoeColor: {r: 0, g: 0, b: 0, a: 0}
+    HairColor:
+      serializedVersion: 2
+      rgba: 4280821800
+    SkinColor:
+      serializedVersion: 2
+      rgba: 4284453080
+    TopColor:
+      serializedVersion: 2
+      rgba: 4286611584
+    BottomColor:
+      serializedVersion: 2
+      rgba: 4286611584
+    ShoeColor: {r: 0, g: 0, b: 0, a: 1}
     ArenaSide: 0
   ArenaSide: 0

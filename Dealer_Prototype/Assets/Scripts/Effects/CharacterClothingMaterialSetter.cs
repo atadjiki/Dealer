@@ -14,13 +14,13 @@ public class CharacterClothingMaterialSetter : CharacterMaterialSetter
         switch(ClothingType)
         {
             case Enumerations.CharacterClothingType.Top:
-                _meshRenderer.material.color = characterInfo.Clothing_TopColor;
+                _meshRenderer.material.color = characterInfo.TopColor;
                 break;
             case Enumerations.CharacterClothingType.Bottom:
-                _meshRenderer.material.color = characterInfo.Clothing_BottomColor;
+                _meshRenderer.material.color = characterInfo.BottomColor;
                 break;
             case Enumerations.CharacterClothingType.Shoes:
-                _meshRenderer.material.color = characterInfo.Clothing_ShoeColor;
+                _meshRenderer.material.color = characterInfo.ShoeColor;
                 break;
             
         }

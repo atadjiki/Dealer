@@ -122,49 +122,6 @@ namespace Constants
             None
         }
 
-        public enum SkinColor
-        {
-            None,
-            Dark,
-            Fair,
-            Pale,
-            Pink,
-            Tan
-        }
-
-        public enum HairColor
-        {
-            None,
-            Black,
-            Blonde,
-            Brunette,
-            Ginger
-        }
-
-        public enum BasicColor
-        {
-            None,
-            Black,
-            Blue,
-            Clear,
-            Cyan,
-            Green,
-            Grey,
-            Magenta,
-            Olive,
-            Red,
-            White,
-            Yellow,
-        }
-
-        public enum CharacterFeature
-        {
-            Hair, 
-            Clothing,
-            Skin,
-            None
-        }
-
         public enum CharacterClothingType
         {
             Top,

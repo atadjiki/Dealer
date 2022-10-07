@@ -53,40 +53,4 @@ public class ColorManager : Singleton<ColorManager>
                 return Debug;
         }
     }
-
-    public Color GetColor(Enumerations.SkinColor color)
-    {
-        switch (color)
-        {
-            case Enumerations.SkinColor.Dark:
-                return Skin_Dark;
-            case Enumerations.SkinColor.Fair:
-                return Skin_Fair;
-            case Enumerations.SkinColor.Pale:
-                return Skin_Pale;
-            case Enumerations.SkinColor.Pink:
-                return Skin_Pink;
-            case Enumerations.SkinColor.Tan:
-                return Skin_Tan;
-        }
-
-        return Debug;
-    }
-
-    public Color GetColor(Enumerations.HairColor color)
-    {
-        switch (color)
-        {
-            case Enumerations.HairColor.Black:
-                return Hair_Black;
-            case Enumerations.HairColor.Blonde:
-                return Hair_Blonde;
-            case Enumerations.HairColor.Brunette:
-                return Hair_Brunette;
-            case Enumerations.HairColor.Ginger:
-                return Hair_Ginger;
-        }
-
-        return Debug;
-    }
 }
