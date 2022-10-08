@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class Roster : MonoBehaviour
+[System.Serializable]
+public class Roster 
 {
     public Enumerations.Team Team;
     public CharacterInfo[] Characters;

@@ -32,7 +32,7 @@ public class CharacterMarker : MonoBehaviour
         GameObject characterCanvasPrefab = Instantiate(
     PrefabManager.Instance.GetUIElement(Enumerations.UIID.CharacterCanvas), this.transform);
 
-        characterCanvasPrefab.GetComponent<RectTransform>().localEulerAngles = this.transform.eulerAngles * -1;
+        characterCanvasPrefab.GetComponentInChildren<RectTransform>().localEulerAngles = this.transform.eulerAngles * -1;
 
         _canvas = characterCanvasPrefab.GetComponent<CharacterCanvas>();
         _canvas.SetName(_info.CharacterName); 
