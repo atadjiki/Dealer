@@ -9,6 +9,6 @@ public class CharacterOutlineMaterialSetter : CharacterMaterialSetter
     {
         base.ApplyCharacterInfo(characterInfo);
 
-        _meshRenderer.material.SetColor("OutlineColor", ColorManager.Instance.GetColor(characterInfo.ArenaSide));
+     //   _meshRenderer.material.SetColor("OutlineColor", ColorManager.Instance.GetColor(characterInfo.ArenaSide));
     }
 }

@@ -4,7 +4,7 @@ using Constants;
 using UnityEngine;
 
 [System.Serializable]
-public class CharacterInfo 
+public class CharacterInfo : MonoBehaviour
 {
     [Header("General Data")]
     public string CharacterName;

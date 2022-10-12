@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class CombatScenario : MonoBehaviour
+public class Scenario : MonoBehaviour
 {
     [Header("Data")]
     [Header("Controllers")]
@@ -12,16 +12,11 @@ public class CombatScenario : MonoBehaviour
     [Header("Rosters")]
     public Roster Roster_Defending;
     public Roster Roster_Opposing;
-    [Header("Arena")]
-    public Arena Arena;
 
-    [Header("State")]
-    public Enumerations.ScenarioState State;
-
-    private void Start()
-    {
-        Arena.Setup(Roster_Defending, Roster_Opposing);
-    }
+    //private void Start()
+    //{
+    //    Arena.Setup(Roster_Defending, Roster_Opposing);
+    //}
 
     //helper
     public int GetDefendingCount()
