@@ -15,9 +15,6 @@ public class AnimationManager : Singleton<AnimationManager>
         switch(weaponID)
         {
             case Enumerations.WeaponID.Glock:
-            case Enumerations.WeaponID.Deagle:
-            case Enumerations.WeaponID.Revolver:
-            case Enumerations.WeaponID.Uzi:
                 return CombatController_Pistol;
             default:
                 return DefaultController;

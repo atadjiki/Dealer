@@ -9,6 +9,6 @@ public class CharacterSkinMaterialSetter : CharacterMaterialSetter
     {
         base.ApplyCharacterInfo(characterInfo);
 
-        _meshRenderer.material.color = characterInfo.SkinColor;
+        _meshRenderer.material.color = ColorManager.Instance.GetColor(characterInfo.ArenaSide);
     }
 }

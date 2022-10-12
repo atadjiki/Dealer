@@ -11,16 +11,18 @@ public class CharacterClothingMaterialSetter : CharacterMaterialSetter
     {
         base.ApplyCharacterInfo(characterInfo);
 
-        switch(ClothingType)
+        Color color = ColorManager.Instance.GetColor(characterInfo.ArenaSide);
+
+        switch (ClothingType)
         {
             case Enumerations.CharacterClothingType.Top:
-                _meshRenderer.material.color = characterInfo.TopColor;
+                _meshRenderer.material.color = color;
                 break;
             case Enumerations.CharacterClothingType.Bottom:
-                _meshRenderer.material.color = characterInfo.BottomColor;
+                _meshRenderer.material.color = color;
                 break;
             case Enumerations.CharacterClothingType.Shoes:
-                _meshRenderer.material.color = characterInfo.ShoeColor;
+                _meshRenderer.material.color = color;
                 break;
             
         }

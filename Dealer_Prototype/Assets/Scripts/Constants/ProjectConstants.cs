@@ -50,15 +50,16 @@ namespace Constants
 
         public enum WeaponID
         {
-            AK,
-            Carbine,
-            Revolver,
-            Deagle,
             Glock,
-            Shotgun,
-            MP5,
-            Uzi,
-            None
+            None,
+
+            //AK,
+            //Carbine,
+            //Revolver,
+            //Deagle,
+            //Shotgun,
+            //MP5,
+            //Uzi,
         }
 
         public enum CharacterModelID

@@ -8,6 +8,7 @@ public class WeaponMaterialSetter : ObjectMaterialSetter
     {
         base.ApplyCharacterInfo(characterInfo);
 
+        _meshRenderer.material.color = ColorManager.Instance.GetColor(characterInfo.ArenaSide);
         _meshRenderer.material.SetColor("OutlineColor", ColorManager.Instance.GetColor(characterInfo.ArenaSide));
     }
 }
