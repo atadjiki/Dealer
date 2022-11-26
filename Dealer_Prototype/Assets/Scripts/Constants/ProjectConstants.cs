@@ -64,7 +64,7 @@ namespace Constants
 
         public enum CharacterModelID
         {
-            Male_1,
+            Model_Male1,
             //Male_2,
             //Male_3,
             //Male_4,
