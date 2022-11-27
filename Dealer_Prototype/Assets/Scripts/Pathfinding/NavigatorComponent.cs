@@ -3,15 +3,66 @@ using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
 
+public enum NavigatorTaskID { GoToRandomLocation, PerformIdle };
+public enum NavigatorTaskState { ToDo, InProgress, Complete };
+
+[System.Serializable]
+public struct NavigatorTask
+{
+    private NavigatorTaskID ID;
+    private NavigatorTaskState State;
+    private float Lifetime;
+
+    public NavigatorTask(NavigatorTaskID _ID)
+    {
+        ID = _ID;
+        State = NavigatorTaskState.InProgress;
+        Lifetime = 0;
+    }
+
+    public NavigatorTaskID GetID() { return ID; }
+    public NavigatorTaskState GetState() { return State; }
+
+    public NavigatorTaskState AdvanceState()
+    {
+        Lifetime = Time.time - Lifetime;
+
+        if(State == NavigatorTaskState.ToDo) { State = NavigatorTaskState.InProgress; }
+        else if (State == NavigatorTaskState.InProgress) { State = NavigatorTaskState.Complete; }
+
+        return State;
+    }
+
+    public static NavigatorTask ChooseRandomTask()
+    {
+        NavigatorTaskID[] Tasks = (NavigatorTaskID[]) System.Enum.GetValues(typeof(NavigatorTaskID));
+
+        NavigatorTaskID ChosenTask = Tasks[ Random.Range(0, Tasks.Length) ];
+
+        Debug.Log("New navigator task -" + ChosenTask.ToString());
+
+        return new NavigatorTask(ChosenTask);
+    }
+
+    public void PrintDebug()
+    {
+        Debug.Log("Task: " + ID.ToString() + " - State: " + State.ToString() + " - Duration: " + (Lifetime) + "s");
+    }
+}
+
+
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(AIPath))]
 public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
 {
+    //pathfinding AI
     private Seeker _seeker;
     private AIPath _AI;
-
-    private float radius = 5;
-
+    //
+    //tasks
+    //
+    private NavigatorTask _task;
+    //
     private bool _initialized = false;
 
     public bool HasInitialized()
@@ -39,26 +90,67 @@ public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
 
     //navigator stuff
 
-    Vector3 PickRandomPoint()
+    public void Launch()
     {
-        var point = Random.insideUnitSphere * radius;
+        if (_task.GetState() == NavigatorTaskState.InProgress)
+        {
+            return;
+        }
 
-        point.y = 0;
-        point += _AI.position;
-        return point;
+        _task = NavigatorTask.ChooseRandomTask();
+
+        switch (_task.GetID())
+        {
+            case NavigatorTaskID.GoToRandomLocation:
+                StartCoroutine(Task_GoToRandomDestination());
+                break;
+            case NavigatorTaskID.PerformIdle:
+                StartCoroutine(Task_PerformIdle());
+                break;
+        }
     }
 
-    void Update()
+    private IEnumerator Task_GoToRandomDestination()
     {
-        if (!_initialized) return;
+        _task.PrintDebug();
+        _task.AdvanceState();
 
-        // Update the destination of the AI if
-        // the AI is not already calculating a path and
-        // the ai has reached the end of the path or it has no path at all
-        if (!_AI.pathPending && (_AI.reachedEndOfPath || !_AI.hasPath))
+        int radius = Random.Range(5, 10);
+
+        Vector3 point = Random.insideUnitSphere * radius;
+        point.y = 0;
+        point += _AI.position;
+
+        _AI.destination = point;
+        _AI.SearchPath();
+
+        Debug.Log("Going to point " + point.ToString());
+        yield return new WaitForSeconds(0.1f);
+
+        while (!_AI.isStopped && _AI.remainingDistance < 0.1f)
         {
-            _AI.destination = PickRandomPoint();
-            _AI.SearchPath();
+            yield return new WaitForEndOfFrame();
         }
+
+        _task.PrintDebug();
+        _task.AdvanceState();
+
+        Launch();
+    }
+
+    private IEnumerator Task_PerformIdle()
+    {
+        float waitTime = 2.0f;
+
+        _task.PrintDebug();
+        _task.AdvanceState();
+
+        Debug.Log("Idling for " + waitTime);
+        yield return new WaitForSeconds(waitTime);
+
+        _task.PrintDebug();
+        _task.AdvanceState();
+
+        Launch();
     }
 }

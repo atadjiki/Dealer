@@ -27,5 +27,11 @@ public class NPCComponent : CharacterComponent
             model = spawnedCharacter.GetComponent<CharacterModel>();
             yield return new WaitUntil(() => model != null);
         }
+
+        _initialized = true;
+
+        navigator.Launch();
+
+        yield return null;
     }
 }
