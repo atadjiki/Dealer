@@ -5,7 +5,10 @@ namespace Constants
 {
     public static class PrefabLibrary
     {
+        private static string Prefix_Debug = "Debug/";
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
+
+        //character models
 
         private static string GetResourcePath(Enumerations.CharacterModelID ID)
         {
@@ -26,5 +29,11 @@ namespace Constants
             return Resources.Load<GameObject>(ModelPath);
         }
 
+        //debug
+
+        public static GameObject GetDirectionalMarker()
+        {
+            return Resources.Load<GameObject>(Prefix_Debug + "DirectionalMarker");
+        }
     }
 }

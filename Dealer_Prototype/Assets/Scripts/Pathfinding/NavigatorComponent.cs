@@ -5,12 +5,26 @@ using UnityEngine;
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(AIPath))]
-public class NavigatorComponent : RunTimeComponent
+public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
 {
     private Seeker _seeker;
     private AIPath _AI;
 
-    protected override IEnumerator PerformInitialize()
+    private float radius = 5;
+
+    private bool _initialized = false;
+
+    public bool HasInitialized()
+    {
+        return _initialized;
+    }
+
+    public void Initialize()
+    {
+        StartCoroutine(PerformInitialize());
+    }
+
+    public IEnumerator PerformInitialize()
     {
         _seeker = GetComponent<Seeker>();
 
@@ -20,6 +34,31 @@ public class NavigatorComponent : RunTimeComponent
 
         yield return new WaitUntil(() => _AI != null);
 
-        yield return base.PerformInitialize();
+        _initialized = true;
+    }
+
+    //navigator stuff
+
+    Vector3 PickRandomPoint()
+    {
+        var point = Random.insideUnitSphere * radius;
+
+        point.y = 0;
+        point += _AI.position;
+        return point;
+    }
+
+    void Update()
+    {
+        if (!_initialized) return;
+
+        // Update the destination of the AI if
+        // the AI is not already calculating a path and
+        // the ai has reached the end of the path or it has no path at all
+        if (!_AI.pathPending && (_AI.reachedEndOfPath || !_AI.hasPath))
+        {
+            _AI.destination = PickRandomPoint();
+            _AI.SearchPath();
+        }
     }
 }

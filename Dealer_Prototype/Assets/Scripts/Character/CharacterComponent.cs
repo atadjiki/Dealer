@@ -9,38 +9,77 @@ public struct CharacterComponentData
     public Enumerations.CharacterModelID ModelID;
 }
 
-public class CharacterComponent : RunTimeComponent
+[ExecuteAlways]
+public class CharacterComponent : MonoBehaviour, IGameplayInitializer
 {
-    [SerializeField] private CharacterComponentData data;
+    [SerializeField] protected CharacterComponentData data;
 
-    [SerializeField] private CharacterModel model;
-    [SerializeField] private NavigatorComponent navigator;
+    [SerializeField] protected CharacterModel model;
+
+    protected bool _initialized = false;
 
     private void Awake()
     {
         Initialize();
     }
 
-    protected override IEnumerator PerformInitialize()
+    public void Initialize()
     {
-        //create a navigator to move the model
-        if(navigator == null)
+        if (Application.isPlaying)
         {
-            GameObject navigatorObject = new GameObject("Navigator");
-            navigatorObject.transform.parent = transform;
-            navigator = navigatorObject.AddComponent<NavigatorComponent>();
-            navigator.Initialize();
-            yield return new WaitUntil(() => navigator.HasInitialized());
+            StartCoroutine(PerformInitialize());
+        }
+    }
+
+    public virtual IEnumerator PerformInitialize()
+    {
+
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
 
-        if(model == null)
+        if (model == null)
         {
             //load our associated model
-            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), navigator.transform);
+            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), this.transform);
+
             model = spawnedCharacter.GetComponent<CharacterModel>();
             yield return new WaitUntil(() => model != null);
         }
 
-        yield return base.PerformInitialize();
+        _initialized = true;
+
+        yield return null;
+    }
+
+    public bool HasInitialized()
+    {
+        return _initialized;
+    }
+
+    ////DEBUG
+    ///
+    private void OnEnable()
+    {
+        ClearMarker();
+
+        if(Application.isEditor && Application.isPlaying == false)
+        {
+            Instantiate(PrefabLibrary.GetDirectionalMarker(), this.transform);
+        }
+    }
+
+    private void ClearMarker()
+    {
+        foreach (DirectionalMarker marker in GetComponentsInChildren<DirectionalMarker>())
+        {
+            DestroyImmediate(marker.gameObject, true);
+        }
+    }
+
+    private void OnDisable()
+    {
+        ClearMarker();
     }
 }
