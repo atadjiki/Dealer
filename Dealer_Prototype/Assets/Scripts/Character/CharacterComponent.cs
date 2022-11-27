@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,7 +15,7 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
 {
     [SerializeField] protected CharacterComponentData data;
 
-    [SerializeField] protected CharacterModel model;
+    protected CharacterModel model;
 
     protected bool _initialized = false;
 
@@ -58,28 +59,15 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
         return _initialized;
     }
 
-    ////DEBUG
-    ///
-    private void OnEnable()
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
     {
-        ClearMarker();
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(this.transform.position, 0.1f);
+        Gizmos.DrawRay(new Ray(this.transform.position, this.transform.forward));
 
-        if(Application.isEditor && Application.isPlaying == false)
-        {
-            Instantiate(PrefabLibrary.GetDirectionalMarker(), this.transform);
-        }
+        Handles.Label(this.transform.position + new Vector3(-0.5f,-0.5f,0), data.ModelID.ToString());
     }
-
-    private void ClearMarker()
-    {
-        foreach (DirectionalMarker marker in GetComponentsInChildren<DirectionalMarker>())
-        {
-            DestroyImmediate(marker.gameObject, true);
-        }
-    }
-
-    private void OnDisable()
-    {
-        ClearMarker();
-    }
+#endif
 }
+

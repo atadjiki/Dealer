@@ -46,4 +46,14 @@ public class CharacterModel : MonoBehaviour
             _animator.runtimeAnimatorController = AnimationManager.Instance.GetControllerByWeaponID(weaponID);
         }
     }
+
+    public void ToIdle()
+    {
+        _animator.Play("Idle_Male");
+    }
+
+    public void ToWalking()
+    {
+        _animator.Play("Walking_Male");
+    }
 }
