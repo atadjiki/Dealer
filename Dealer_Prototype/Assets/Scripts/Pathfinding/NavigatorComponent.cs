@@ -43,6 +43,46 @@ public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
         _AI.SearchPath();
     }
 
+    public Vector3 GetDestination()
+    {
+        return _AI.destination;
+    }
+
+    public float GetDistanceToDestination()
+    {
+        return _AI.remainingDistance;
+    }
+
+    public Vector3 GetStartOfPath()
+    {
+        if(_AI.hasPath)
+        {
+            Path path = _seeker.GetCurrentPath();
+
+            if(path.vectorPath.Count > 0)
+            {
+                return path.vectorPath[0];
+            }
+        }
+
+        return this.transform.position;
+    }
+
+    public Vector3 GetNextPointInPath()
+    {
+        if (_AI.hasPath)
+        {
+            Path path = _seeker.GetCurrentPath();
+
+            if (path.vectorPath.Count > 1)
+            {
+                return path.vectorPath[1];
+            }
+        }
+
+        return GetStartOfPath();
+    }
+
     public void ToggleMovement(bool flag)
     {
         _AI.canMove = flag;

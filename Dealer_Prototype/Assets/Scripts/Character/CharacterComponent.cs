@@ -8,6 +8,8 @@ using UnityEngine;
 public struct CharacterComponentData
 {
     public Enumerations.CharacterModelID ModelID;
+
+    public List<NPCTaskID> AllowedTasks;
 }
 
 [ExecuteAlways]
@@ -18,6 +20,11 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
     protected CharacterModel model;
 
     protected bool _initialized = false;
+
+    public void SetData(CharacterComponentData _data)
+    {
+        data = _data;
+    }
 
     public void Initialize()
     {

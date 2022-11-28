@@ -18,8 +18,9 @@ public class NPCSpawner : MonoBehaviour
             GameObject npcObject = new GameObject("NPC " + data.ModelID);
             npcObject.transform.parent = this.transform;
             npcObject.transform.position = spawnLocation;
-
+            npcObject.transform.rotation = this.transform.rotation;
             NPCComponent npcComponent = npcObject.AddComponent<NPCComponent>();
+            npcComponent.SetData(data);
             npcComponent.Initialize();
         }
     }
@@ -37,4 +38,5 @@ public class NPCSpawner : MonoBehaviour
     }
 #endif
 }
+
 
