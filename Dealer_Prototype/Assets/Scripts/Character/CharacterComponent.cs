@@ -19,11 +19,6 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
 
     protected bool _initialized = false;
 
-    private void Awake()
-    {
-        Initialize();
-    }
-
     public void Initialize()
     {
         if (Application.isPlaying)
@@ -58,16 +53,5 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
     {
         return _initialized;
     }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(this.transform.position, 0.1f);
-        Gizmos.DrawRay(new Ray(this.transform.position, this.transform.forward));
-
-        Handles.Label(this.transform.position + new Vector3(-0.5f,-0.5f,0), data.ModelID.ToString());
-    }
-#endif
 }
 

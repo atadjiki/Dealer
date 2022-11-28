@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Constants;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum NPCTaskID { GoToRandomLocation, PerformIdle };
 public enum NPCTaskState { ToDo, InProgress, Complete };
@@ -97,13 +98,9 @@ public class NPCComponent : CharacterComponent
     {
         _task.State = NPCTaskState.InProgress;
 
-        int radius = Random.Range(5, 10);
+        Vector3 destination = NavigationHelper.GetRandomPointOnGraph(model.transform.position);
 
-        Vector3 point = Random.insideUnitSphere * radius;
-        point.y = 0;
-        point += model.transform.position;
-
-        navigator.SetDestination(point);
+        navigator.SetDestination(destination);
 
         yield return new WaitForSeconds(0.2f);
 
@@ -113,11 +110,15 @@ public class NPCComponent : CharacterComponent
         while (navigator.IsMoving())
         {
             _task.Lifetime += Time.fixedDeltaTime;
+
+            Debug.DrawLine(navigator.transform.position, destination, Color.green, Time.fixedDeltaTime);
+
             yield return new WaitForFixedUpdate();
         }
 
         navigator.ToggleMovement(false);
         model.ToIdle();
+        
 
         _task.State = NPCTaskState.Complete;
     }
@@ -142,7 +143,7 @@ public class NPCComponent : CharacterComponent
 
     private void OnDrawGizmos()
     {
-        if(Application.isPlaying)
+        if(Application.isPlaying && _initialized)
         {
             GUIStyle style = new GUIStyle();
             style.normal.textColor = Color.green;
@@ -156,7 +157,6 @@ public class NPCComponent : CharacterComponent
                 Handles.Label(model.transform.position + new Vector3(-0.5f, -1.75f, 0), _task.Lifetime.ToString());
             }
         }
-
     }
 #endif
 }
