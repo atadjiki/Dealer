@@ -40,29 +40,35 @@ public class NPCComponent : CharacterComponent
         yield return null;
     }
 
+    private IEnumerator TaskCompleted()
+    {
+        Destroy(npcTask.gameObject);
+        npcTask = null;
+
+        yield return new WaitForSeconds(1.0f);
+
+        yield return SelectNewTask();
+    }
+
     private IEnumerator SelectNewTask()
     {
-        while (true)
+
+        npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
+
+        if (npcTask != null)
         {
-            npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
-
-            yield return new WaitForSeconds(0.5f);
-
-            if (npcTask != null)
+            switch (npcTask.ID)
             {
-                switch (npcTask.ID)
-                {
-                    case NPC.TaskID.GoToRandomLocation:
-                        yield return StartCoroutine(Task_GoToRandomDestination(npcTask));
-                        break;
-                    case NPC.TaskID.PerformIdle:
-                        yield return StartCoroutine(Task_PerformIdle(npcTask));
-                        break;
-                }
+                case NPC.TaskID.GoToRandomLocation:
+                    yield return StartCoroutine(Task_GoToRandomDestination(npcTask));
+                    break;
+                case NPC.TaskID.PerformIdle:
+                    yield return StartCoroutine(Task_PerformIdle(npcTask));
+                    break;
             }
-
-            yield return new WaitForSeconds(1.0f);
         }
+
+        yield return TaskCompleted();
     }
 
 
