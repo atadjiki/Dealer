@@ -9,7 +9,7 @@ public struct CharacterComponentData
 {
     public Enumerations.CharacterModelID ModelID;
 
-    public List<NPCTaskID> AllowedTasks;
+    public List<NPC.TaskID> AllowedTasks;
 }
 
 [ExecuteAlways]

@@ -5,51 +5,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public enum NPCTaskID { GoToRandomLocation, PerformIdle };
-public enum NPCTaskState { ToDo, InProgress, Complete };
-
-public enum NPCState { HasTask, NoTask };
-
-[System.Serializable]
-public struct NPCTask
-{
-    public NPCTaskID ID;
-    public NPCTaskState TaskState;
-    public NPCState State;
-    public float Lifetime;
-
-    public NPCTask(NPCTaskID _ID)
-    {
-        ID = _ID;
-        State = NPCState.HasTask;
-        TaskState = NPCTaskState.ToDo;
-        Lifetime = 0;
-    }
-
-    public void ChooseNextTask(List<NPCTaskID> AllowedTasks)
-    { 
-        if(AllowedTasks != null && AllowedTasks.Count > 0)
-        {
-            NPCTaskID ChosenTask = AllowedTasks[Random.Range(0, AllowedTasks.Count)];
-
-            this = new NPCTask(ChosenTask);
-
-            return;
-        }
-
-        this.State = NPCState.NoTask;
-    }
-}
-
 public class NPCComponent : CharacterComponent
 {
     protected NavigatorComponent navigator;
 
-    //
-    //tasks
-    //
-    private NPCTask _task;
-    //
+    private NPCTask npcTask = null;
 
     public override IEnumerator PerformInitialize()
     {
@@ -80,25 +40,23 @@ public class NPCComponent : CharacterComponent
         yield return null;
     }
 
-    //tasks
-
     private IEnumerator SelectNewTask()
     {
         while (true)
         {
+            npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
+
             yield return new WaitForSeconds(0.5f);
 
-            _task.ChooseNextTask(data.AllowedTasks);
-
-            if(_task.State == NPCState.HasTask)
+            if (npcTask != null)
             {
-                switch (_task.ID)
+                switch (npcTask.ID)
                 {
-                    case NPCTaskID.GoToRandomLocation:
-                        yield return StartCoroutine(Task_GoToRandomDestination());
+                    case NPC.TaskID.GoToRandomLocation:
+                        yield return StartCoroutine(Task_GoToRandomDestination(npcTask));
                         break;
-                    case NPCTaskID.PerformIdle:
-                        yield return StartCoroutine(Task_PerformIdle());
+                    case NPC.TaskID.PerformIdle:
+                        yield return StartCoroutine(Task_PerformIdle(npcTask));
                         break;
                 }
             }
@@ -107,9 +65,10 @@ public class NPCComponent : CharacterComponent
         }
     }
 
-    private IEnumerator Task_GoToRandomDestination()
+
+    private IEnumerator Task_GoToRandomDestination(NPCTask npcTask)
     {
-        _task.TaskState = NPCTaskState.InProgress;
+        npcTask.State = NPC.TaskState.InProgress;
 
         Vector3 destination = NavigationHelper.GetRandomPointOnGraph(model.transform.position);
 
@@ -122,7 +81,7 @@ public class NPCComponent : CharacterComponent
 
         while (navigator.IsMoving() && navigator.GetDistanceToDestination() > 0.1f)
         {
-            _task.Lifetime += Time.fixedDeltaTime;
+            npcTask.Lifetime += Time.fixedDeltaTime;
 
             Debug.DrawLine(navigator.GetStartOfPath(), navigator.GetNextPointInPath(), Color.blue, Time.fixedDeltaTime);
 
@@ -133,45 +92,45 @@ public class NPCComponent : CharacterComponent
 
         navigator.ToggleMovement(false);
         model.ToIdle();
-        
 
-        _task.TaskState = NPCTaskState.Complete;
+
+        npcTask.State = NPC.TaskState.Complete;
     }
 
-    private IEnumerator Task_PerformIdle()
+    private IEnumerator Task_PerformIdle(NPCTask npcTask)
     {
-        _task.TaskState = NPCTaskState.InProgress;
+        npcTask.State = NPC.TaskState.InProgress;
 
         navigator.ToggleMovement(false);
         model.ToIdle();
 
-        while ((_task.Lifetime += Time.fixedDeltaTime) < 1.0f)
+        while ((npcTask.Lifetime += Time.fixedDeltaTime) < 1.0f)
         {
-            _task.Lifetime += Time.fixedDeltaTime;
+            npcTask.Lifetime += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
 
-        _task.TaskState = NPCTaskState.Complete;
+        npcTask.State = NPC.TaskState.Complete;
     }
 
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
     {
-        if(Application.isPlaying && _initialized)
+        if (Application.isPlaying && _initialized)
         {
             GUIStyle style = new GUIStyle();
             style.normal.textColor = Color.green;
 
-            if(_task.State == NPCState.HasTask)
+            if (npcTask != null)
             {
                 Handles.Label(model.transform.position + new Vector3(-0.5f, -0.1f, 0), "Task:");
-                Handles.Label(model.transform.position + new Vector3(-0.5f, -0.75f, 0), _task.ID.ToString(), style);
-                Handles.Label(model.transform.position + new Vector3(-0.5f, -1.25f, 0), _task.TaskState.ToString());
+                Handles.Label(model.transform.position + new Vector3(-0.5f, -0.75f, 0), npcTask.ID.ToString(), style);
+                Handles.Label(model.transform.position + new Vector3(-0.5f, -1.25f, 0), npcTask.State.ToString());
 
-                if (_task.TaskState == NPCTaskState.InProgress)
+                if (npcTask.State == NPC.TaskState.InProgress)
                 {
-                    Handles.Label(model.transform.position + new Vector3(-0.5f, -1.75f, 0), _task.Lifetime.ToString());
+                    Handles.Label(model.transform.position + new Vector3(-0.5f, -1.75f, 0), npcTask.Lifetime.ToString());
                 }
             }
             else

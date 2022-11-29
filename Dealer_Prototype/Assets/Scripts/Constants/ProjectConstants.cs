@@ -132,7 +132,7 @@ namespace Constants
             Accessories,
             None
         }
-
+   
         public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
         {
             switch (environment)
@@ -208,5 +208,11 @@ namespace Constants
         public const string Player_Environment = "Player_Environment";
 
         public const string Game_Day = "Game_Day";
+    }
+
+    public class NPC
+    {
+        public enum TaskID { GoToRandomLocation, PerformIdle };
+        public enum TaskState { ToDo, InProgress, Complete };
     }
 }
