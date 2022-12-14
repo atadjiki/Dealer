@@ -15,6 +15,8 @@ namespace Constants
             switch(ID)
             {
                 case Enumerations.CharacterModelID.Model_Male1:
+                case Enumerations.CharacterModelID.Model_Male_Player:
+                case Enumerations.CharacterModelID.Model_Male_Police:
                     return Prefix_CharacterModels + ID.ToString();
             }
 
