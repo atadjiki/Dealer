@@ -3,18 +3,31 @@ using System.Collections.Generic;
 using Constants;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class NPCComponent : CharacterComponent
 {
+    private List<NPC.TaskID> _allowedTasks;
+
     protected NavigatorComponent navigator;
 
     private NPCTask npcTask = null;
 
+    public override void ProcessSpawnData(object _data)
+    {
+        NPCSpawnData npcData = (NPCSpawnData) _data;
+
+        _modelID = npcData.ModelID;
+
+        _allowedTasks = npcData.AllowedTasks;
+    }
+
     public override IEnumerator PerformInitialize()
     {
+
+        yield return base.PerformInitialize();
+
         //create a navigator to move the model
-        if (navigator == null && data.AllowNavigation)
+        if (navigator == null)
         {
             GameObject navigatorObject = new GameObject("Navigator");
             navigatorObject.transform.parent = this.transform;
@@ -25,29 +38,17 @@ public class NPCComponent : CharacterComponent
             navigator.Initialize();
             yield return new WaitUntil(() => navigator.HasInitialized());
 
-            if (model == null)
-            {
-                //load our associated model
-                GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), navigator.transform);
 
-                model = spawnedCharacter.GetComponent<CharacterModel>();
-                yield return new WaitUntil(() => model != null);
-            }
+            model.transform.parent = navigatorObject.transform;
+
         }
-        else if(model == null)
-            {
-            //load our associated model
-            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), this.transform);
-
-            model = spawnedCharacter.GetComponent<CharacterModel>();
-            yield return new WaitUntil(() => model != null);
-        }
-
-        _initialized = true;
-
-        StartCoroutine(SelectNewTask());
 
         yield return null;
+    }
+
+    public void StartNPC()
+    {
+        StartCoroutine(SelectNewTask());
     }
 
     private IEnumerator TaskCompleted()
@@ -65,9 +66,9 @@ public class NPCComponent : CharacterComponent
 
     private IEnumerator SelectNewTask()
     {
-        if(data.AllowedTasks.Count > 0)
+        if(_allowedTasks.Count > 0)
         {
-            npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
+            npcTask = NPCTask.GenerateRandomTask(this.transform, _allowedTasks);
 
             if (npcTask != null)
             {
@@ -140,7 +141,7 @@ public class NPCComponent : CharacterComponent
 
     private void OnDrawGizmos()
     {
-        if (Application.isPlaying && _initialized)
+        if (Application.isPlaying)
         {
             GUIStyle style = new GUIStyle();
             style.normal.textColor = Color.green;

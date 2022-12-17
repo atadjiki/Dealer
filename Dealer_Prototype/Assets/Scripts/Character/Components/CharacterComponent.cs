@@ -1,33 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
-using UnityEditor;
 using UnityEngine;
 
-[System.Serializable]
-public struct CharacterSpawnData
-{
-    public Enumerations.CharacterModelID ModelID;
-
-    public List<NPC.TaskID> AllowedTasks;
-
-    public bool AllowNavigation;
-
-    public bool SpawnOnClosestPoint;
-}
-
 [ExecuteAlways]
-public class CharacterComponent : MonoBehaviour, IGameplayInitializer
+public class CharacterComponent : MonoBehaviour
 {
-    [SerializeField] protected CharacterSpawnData data;
+    protected Enumerations.CharacterModelID _modelID = Enumerations.CharacterModelID.Model_Male1;
 
     protected CharacterModel model;
 
-    protected bool _initialized = false;
-
-    public void SetData(CharacterSpawnData _data)
+    public virtual void ProcessSpawnData(object _data)
     {
-        data = _data;
+        _modelID = ((CharacterSpawnData)_data).ModelID;
     }
 
     public void Initialize()
@@ -49,19 +34,12 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
         if (model == null)
         {
             //load our associated model
-            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), this.transform);
+            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(_modelID), this.transform);
             model = spawnedCharacter.GetComponent<CharacterModel>();
             yield return new WaitUntil(() => model != null);
         }
 
-        _initialized = true;
-
         yield return null;
-    }
-
-    public bool HasInitialized()
-    {
-        return _initialized;
     }
 }
 

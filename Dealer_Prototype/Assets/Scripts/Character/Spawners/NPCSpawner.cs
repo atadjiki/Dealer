@@ -1,16 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using Pathfinding;
-using UnityEditor;
 using UnityEngine;
 
-public class NPCSpawner : MonoBehaviour
+public class NPCSpawner : Spawner
 {
-    [SerializeField] private CharacterSpawnData data;
+    [SerializeField] protected NPCSpawnData data;
 
     private void Start()
     {
-        if(data.SpawnOnClosestPoint)
+        if(SpawnOnClosestPoint)
         {
             bool success;
 
@@ -18,8 +14,6 @@ public class NPCSpawner : MonoBehaviour
             if (success)
             {
                 this.transform.position = spawnLocation;
-
-
             }
         }
 
@@ -29,20 +23,14 @@ public class NPCSpawner : MonoBehaviour
         npcObject.transform.rotation = this.transform.rotation;
 
         NPCComponent npcComponent = npcObject.GetComponent<NPCComponent>();
-        npcComponent.SetData(data);
+
+        npcComponent.ProcessSpawnData(data);
         npcComponent.Initialize();
+       // npcComponent.StartNPC();
     }
 
-
-#if UNITY_EDITOR
-
-    private void OnDrawGizmos()
+    public override string GetSpawning()
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(this.transform.position, 0.1f);
-        Gizmos.DrawRay(new Ray(this.transform.position, this.transform.forward));
-
-        Handles.Label(this.transform.position + new Vector3(-0.5f, -0.5f, 0), data.ModelID.ToString());
+        return data.ModelID.ToString();
     }
-#endif
 }
