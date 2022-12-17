@@ -14,20 +14,30 @@ public class NPCComponent : CharacterComponent
     public override IEnumerator PerformInitialize()
     {
         //create a navigator to move the model
-        if (navigator == null)
+        if (navigator == null && data.AllowNavigation)
         {
             GameObject navigatorObject = new GameObject("Navigator");
-            navigatorObject.transform.parent = transform;
-            navigatorObject.transform.rotation = transform.rotation;
+            navigatorObject.transform.parent = this.transform;
+            navigatorObject.transform.position = this.transform.position;
+            navigatorObject.transform.rotation = this.transform.rotation;
+            navigatorObject.transform.localScale = this.transform.localScale;
             navigator = navigatorObject.AddComponent<NavigatorComponent>();
             navigator.Initialize();
             yield return new WaitUntil(() => navigator.HasInitialized());
-        }
 
-        if (model == null)
-        {
+            if (model == null)
+            {
+                //load our associated model
+                GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), navigator.transform);
+
+                model = spawnedCharacter.GetComponent<CharacterModel>();
+                yield return new WaitUntil(() => model != null);
+            }
+        }
+        else if(model == null)
+            {
             //load our associated model
-            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), navigator.transform);
+            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), this.transform);
 
             model = spawnedCharacter.GetComponent<CharacterModel>();
             yield return new WaitUntil(() => model != null);
@@ -42,8 +52,11 @@ public class NPCComponent : CharacterComponent
 
     private IEnumerator TaskCompleted()
     {
-        Destroy(npcTask.gameObject);
-        npcTask = null;
+        if(npcTask != null)
+        {
+            Destroy(npcTask.gameObject);
+            npcTask = null;
+        }
 
         yield return new WaitForSeconds(1.0f);
 
@@ -52,23 +65,27 @@ public class NPCComponent : CharacterComponent
 
     private IEnumerator SelectNewTask()
     {
-
-        npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
-
-        if (npcTask != null)
+        if(data.AllowedTasks.Count > 0)
         {
-            switch (npcTask.ID)
+            npcTask = NPCTask.GenerateRandomTask(this.transform, data.AllowedTasks);
+
+            if (npcTask != null)
             {
-                case NPC.TaskID.GoToRandomLocation:
-                    yield return StartCoroutine(Task_GoToRandomDestination(npcTask));
-                    break;
-                case NPC.TaskID.PerformIdle:
-                    yield return StartCoroutine(Task_PerformIdle(npcTask));
-                    break;
+                switch (npcTask.ID)
+                {
+                    case NPC.TaskID.GoToRandomLocation:
+                        yield return StartCoroutine(Task_GoToRandomDestination(npcTask));
+                        break;
+                    case NPC.TaskID.PerformIdle:
+                        yield return StartCoroutine(Task_PerformIdle(npcTask));
+                        break;
+                }
             }
+
+            yield return TaskCompleted();
         }
 
-        yield return TaskCompleted();
+        yield return null;
     }
 
 
@@ -107,7 +124,7 @@ public class NPCComponent : CharacterComponent
     {
         npcTask.State = NPC.TaskState.InProgress;
 
-        navigator.ToggleMovement(false);
+        if(navigator != null) navigator.ToggleMovement(false);
         model.ToIdle();
 
         while ((npcTask.Lifetime += Time.fixedDeltaTime) < 1.0f)

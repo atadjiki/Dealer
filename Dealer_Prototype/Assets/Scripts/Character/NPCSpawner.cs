@@ -6,23 +6,31 @@ using UnityEngine;
 
 public class NPCSpawner : MonoBehaviour
 {
-    [SerializeField] private CharacterComponentData data;
+    [SerializeField] private CharacterSpawnData data;
 
     private void Start()
     {
-        bool success;
-
-        Vector3 spawnLocation = NavigationHelper.GetClosestPointOnGraph(transform.position, out success);
-        if (success)
+        if(data.SpawnOnClosestPoint)
         {
-            GameObject npcObject = new GameObject("NPC " + data.ModelID);
-            npcObject.transform.parent = this.transform;
-            npcObject.transform.position = spawnLocation;
-            npcObject.transform.rotation = this.transform.rotation;
-            NPCComponent npcComponent = npcObject.AddComponent<NPCComponent>();
-            npcComponent.SetData(data);
-            npcComponent.Initialize();
+            bool success;
+
+            Vector3 spawnLocation = NavigationHelper.GetClosestPointOnGraph(this.transform.position, out success);
+            if (success)
+            {
+                this.transform.position = spawnLocation;
+
+
+            }
         }
+
+        GameObject npcObject = new GameObject("NPC " + data.ModelID, new System.Type[] { typeof(NPCComponent) });
+        npcObject.transform.parent = this.transform;
+        npcObject.transform.position = this.transform.position;
+        npcObject.transform.rotation = this.transform.rotation;
+
+        NPCComponent npcComponent = npcObject.GetComponent<NPCComponent>();
+        npcComponent.SetData(data);
+        npcComponent.Initialize();
     }
 
 
@@ -38,5 +46,3 @@ public class NPCSpawner : MonoBehaviour
     }
 #endif
 }
-
-

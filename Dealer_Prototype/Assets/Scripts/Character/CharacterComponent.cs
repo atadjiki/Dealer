@@ -5,23 +5,27 @@ using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
-public struct CharacterComponentData
+public struct CharacterSpawnData
 {
     public Enumerations.CharacterModelID ModelID;
 
     public List<NPC.TaskID> AllowedTasks;
+
+    public bool AllowNavigation;
+
+    public bool SpawnOnClosestPoint;
 }
 
 [ExecuteAlways]
 public class CharacterComponent : MonoBehaviour, IGameplayInitializer
 {
-    [SerializeField] protected CharacterComponentData data;
+    [SerializeField] protected CharacterSpawnData data;
 
     protected CharacterModel model;
 
     protected bool _initialized = false;
 
-    public void SetData(CharacterComponentData _data)
+    public void SetData(CharacterSpawnData _data)
     {
         data = _data;
     }
@@ -46,7 +50,6 @@ public class CharacterComponent : MonoBehaviour, IGameplayInitializer
         {
             //load our associated model
             GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(data.ModelID), this.transform);
-
             model = spawnedCharacter.GetComponent<CharacterModel>();
             yield return new WaitUntil(() => model != null);
         }
