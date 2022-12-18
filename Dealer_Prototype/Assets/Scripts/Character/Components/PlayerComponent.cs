@@ -13,6 +13,16 @@ public class PlayerComponent : NPCComponent
 
     public override IEnumerator PerformInitialize()
     {
-        return base.PerformInitialize();
+        yield return base.PerformInitialize();
+    }
+
+    protected override void Highlight()
+    {
+        MaterialHelper.SetPlayerOutline(model);
+    }
+
+    protected override void Unhighlight()
+    {
+        base.Unhighlight();
     }
 }

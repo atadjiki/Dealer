@@ -10,6 +10,8 @@ public class CharacterComponent : MonoBehaviour
 
     protected CharacterModel model;
 
+    protected CapsuleCollider inputCollider;
+
     public virtual void ProcessSpawnData(object _data)
     {
         _modelID = ((CharacterSpawnData)_data).ModelID;
@@ -39,7 +41,35 @@ public class CharacterComponent : MonoBehaviour
             yield return new WaitUntil(() => model != null);
         }
 
+        //attempt to add a collider
+        inputCollider = this.gameObject.AddComponent<CapsuleCollider>();
+        inputCollider.isTrigger = true;
+        inputCollider.height = 1.75f;
+        inputCollider.radius = 0.5f;
+        inputCollider.center = new Vector3(0, 0.75f);
+
         yield return null;
     }
-}
 
+    protected virtual void Highlight()
+    {
+        MaterialHelper.SetNeutralOutline(model);
+    }
+
+    protected virtual void Unhighlight()
+    {
+        MaterialHelper.ResetCharacterOutline(model);
+    }
+
+    private void OnMouseEnter()
+    {
+        Debug.Log("mouse over " + _modelID.ToString());
+
+        Highlight();
+    }
+
+    private void OnMouseExit()
+    {
+        Unhighlight();
+    }
+}
