@@ -61,10 +61,13 @@ public class CharacterComponent : MonoBehaviour
         MaterialHelper.ResetCharacterOutline(model);
     }
 
+    private void OnMouseDown()
+    {
+        Debug.Log("mouse click on " + _modelID.ToString());
+    }
+
     private void OnMouseEnter()
     {
-        Debug.Log("mouse over " + _modelID.ToString());
-
         Highlight();
     }
 

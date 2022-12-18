@@ -4,7 +4,13 @@ using UnityEngine;
 
 public static class MaterialHelper
 {
-    public static void SetCharacterOutline(CharacterModel model, Color color)
+    private static Color playerColor = Color.green;
+
+    private static Color neutralColor = new Color(0.9f, 0.9f, 0.9f);
+
+    private static Color enemyColor = new Color(0.52f, 0, 0);
+
+    private static void SetCharacterOutline(CharacterModel model, Color color)
     {
         OutlineMaterialComponent[] outlineMaterials = model.GetComponentsInChildren<OutlineMaterialComponent>();
 
@@ -21,12 +27,17 @@ public static class MaterialHelper
 
     public static void SetPlayerOutline(CharacterModel model)
     {
-        SetCharacterOutline(model, Color.green);
+        SetCharacterOutline(model, playerColor);
     }
 
     public static void SetNeutralOutline(CharacterModel model)
     {
-        SetCharacterOutline(model, Color.white);
+        SetCharacterOutline(model, neutralColor);
+    }
+
+    public static void SetEnemyOutline(CharacterModel model)
+    {
+        SetCharacterOutline(model, enemyColor);
     }
 
     public static void ResetCharacterOutline(CharacterModel model)

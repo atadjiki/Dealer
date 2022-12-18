@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerComponent : NPCComponent
 {
+    public delegate void OnPlayerSpawned(Transform transform);
+    public static OnPlayerSpawned OnPlayerSpawnedDelegate;
+
     public override void ProcessSpawnData(object _data)
     {
         PlayerSpawnData playerData = (PlayerSpawnData)_data;
@@ -14,6 +17,8 @@ public class PlayerComponent : NPCComponent
     public override IEnumerator PerformInitialize()
     {
         yield return base.PerformInitialize();
+
+        OnPlayerSpawnedDelegate.Invoke(model.transform);
     }
 
     protected override void Highlight()
