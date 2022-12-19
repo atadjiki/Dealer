@@ -12,6 +12,8 @@ public class CharacterComponent : MonoBehaviour
 
     protected CapsuleCollider inputCollider;
 
+    protected CharacterGroundDecal groundDecal;
+
     public virtual void ProcessSpawnData(object _data)
     {
         _modelID = ((CharacterSpawnData)_data).ModelID;
@@ -48,7 +50,22 @@ public class CharacterComponent : MonoBehaviour
         inputCollider.radius = 0.5f;
         inputCollider.center = new Vector3(0, 0.75f);
 
+        //add a ground decal
+        GameObject groundDecalObject = Instantiate(PrefabLibrary.GetCharacterGroundDecal(), model.gameObject.transform);
+        groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
+        ShowGroundDecal();
+
         yield return null;
+    }
+
+    protected virtual void ShowGroundDecal()
+    {
+        MaterialHelper.SetNeutralGroundDecal(groundDecal);
+    }
+
+    protected virtual void HideGroundDecal()
+    {
+        MaterialHelper.HideGroundDecal(groundDecal);
     }
 
     protected virtual void Highlight()

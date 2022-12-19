@@ -21,13 +21,13 @@ public class PlayerComponent : NPCComponent
         OnPlayerSpawnedDelegate.Invoke(model.transform);
     }
 
+    protected override void ShowGroundDecal()
+    {
+        MaterialHelper.SetPlayerGroundDecal(groundDecal);
+    }
+
     protected override void Highlight()
     {
         MaterialHelper.SetPlayerOutline(model);
-    }
-
-    protected override void Unhighlight()
-    {
-        base.Unhighlight();
     }
 }

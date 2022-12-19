@@ -7,6 +7,7 @@ namespace Constants
     {
         private static string Prefix_Debug = "Debug/";
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
+        private static string Prefix_Gameplay = "Prefabs/Gameplay/";
 
         //character models
 
@@ -36,6 +37,11 @@ namespace Constants
         public static GameObject GetDirectionalMarker()
         {
             return Resources.Load<GameObject>(Prefix_Debug + "DirectionalMarker");
+        }
+
+        public static GameObject GetCharacterGroundDecal()
+        {
+            return Resources.Load<GameObject>(Prefix_Gameplay + "CharacterGroundDecal");
         }
     }
 }
