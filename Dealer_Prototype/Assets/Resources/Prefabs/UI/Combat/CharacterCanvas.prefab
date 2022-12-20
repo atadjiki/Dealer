@@ -708,7 +708,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4534533982752946644}
   - component: {fileID: 4534533982752946645}
-  - component: {fileID: 759489223903933373}
+  - component: {fileID: 5343623775412091708}
   m_Layer: 0
   m_Name: CharacterCanvas
   m_TagString: Untagged
@@ -725,7 +725,7 @@ Transform:
   m_GameObject: {fileID: 4534533982752946646}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.2, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 3346070171283740789}
   m_Father: {fileID: 0}
@@ -744,7 +744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Text_Name: {fileID: 6685643783892314002}
---- !u!114 &759489223903933373
+  Text_Level: {fileID: 4835058146882109223}
+  Group_Healthbar: {fileID: 1245289462366511532}
+--- !u!114 &5343623775412091708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -753,11 +755,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4534533982752946646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d71de85a21cf54470b1b82152689a294, type: 3}
+  m_Script: {fileID: 11500000, guid: 700e2ada27019450e97cc42ea41031f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotateAround: {x: 0, y: 1, z: 0}
-  Degrees: 90
 --- !u!1 &5753140066371377443
 GameObject:
   m_ObjectHideFlags: 0

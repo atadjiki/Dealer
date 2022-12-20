@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
+using Pathfinding.RVO;
 using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(AIPath))]
+
 public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
 {
     //pathfinding AI
@@ -33,6 +35,8 @@ public class NavigatorComponent : MonoBehaviour, IGameplayInitializer
         _AI = GetComponent<AIPath>();
 
         yield return new WaitUntil(() => _AI != null);
+
+        AstarPath.active.ScanAsync();
 
         _initialized = true;
     }

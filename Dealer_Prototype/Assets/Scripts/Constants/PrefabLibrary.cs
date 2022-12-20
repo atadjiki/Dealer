@@ -8,6 +8,7 @@ namespace Constants
         private static string Prefix_Debug = "Debug/";
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
         private static string Prefix_Gameplay = "Prefabs/Gameplay/";
+        private static string Prefix_UI_Combat = "Prefabs/UI/Combat/";
 
         //character models
 
@@ -42,6 +43,11 @@ namespace Constants
         public static GameObject GetCharacterGroundDecal()
         {
             return Resources.Load<GameObject>(Prefix_Gameplay + "CharacterGroundDecal");
+        }
+
+        public static GameObject GetCharacterCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Combat + "CharacterCanvas");
         }
     }
 }

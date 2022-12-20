@@ -14,6 +14,8 @@ public class CharacterComponent : MonoBehaviour
 
     protected CharacterGroundDecal groundDecal;
 
+    protected CharacterCanvas characterCanvas;
+
     public virtual void ProcessSpawnData(object _data)
     {
         _modelID = ((CharacterSpawnData)_data).ModelID;
@@ -54,6 +56,12 @@ public class CharacterComponent : MonoBehaviour
         GameObject groundDecalObject = Instantiate(PrefabLibrary.GetCharacterGroundDecal(), model.gameObject.transform);
         groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
         ShowGroundDecal();
+
+        //add a character canvas
+        GameObject canvasObject = Instantiate(PrefabLibrary.GetCharacterCanvas(), model.gameObject.transform);
+        characterCanvas = canvasObject.GetComponent<CharacterCanvas>();
+        characterCanvas.Toggle(false);
+
 
         yield return null;
     }
