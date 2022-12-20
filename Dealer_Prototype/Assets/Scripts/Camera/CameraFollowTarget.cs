@@ -9,10 +9,10 @@ public class CameraFollowTarget : MonoBehaviour
 
     private bool _attached = false;
 
-    private static float _wanderSpeed = 0.15f; //wandering away from the origin
-    private static float _returnSpeed = 0.015f; //when the camera slingshots back
+    //private static float _wanderSpeed = 0.15f; //wandering away from the origin
+    //private static float _returnSpeed = 0.015f; //when the camera slingshots back
 
-    private static float _radius = 5;
+    //private static float _radius = 5;
 
     private void Start()
     {

@@ -17,6 +17,8 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
         PlayerSpawnData playerData = (PlayerSpawnData)_data;
 
         _modelID = playerData.ModelID;
+
+        _team = Enumerations.Team.Player;
     }
 
     public override IEnumerator PerformInitialize()
@@ -27,20 +29,9 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
         Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
 
-        characterCanvas.Toggle(true);
-        characterCanvas.SetName(_modelID.ToString());
+        OnToggleCanvasDelegate.Invoke(true);
 
         _initialized = true;
-    }
-
-    protected override void ShowGroundDecal()
-    {
-        MaterialHelper.SetPlayerGroundDecal(groundDecal);
-    }
-
-    public override void Highlight()
-    {
-        MaterialHelper.SetPlayerOutline(model);
     }
 
     void Update()

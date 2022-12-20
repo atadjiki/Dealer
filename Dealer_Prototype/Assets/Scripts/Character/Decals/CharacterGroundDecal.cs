@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEngine;
 
 public class CharacterGroundDecal : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Show(Enumerations.Team team)
     {
-        
+        switch(team)
+        {
+            case Enumerations.Team.Player:
+                MaterialHelper.SetPlayerGroundDecal(this);
+                break;
+            case Enumerations.Team.Neutral:
+                MaterialHelper.SetNeutralGroundDecal(this);
+                break;
+            case Enumerations.Team.Enemy:
+                MaterialHelper.SetEnemyGroundDecal(this);
+                break;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Hide()
     {
-        
+        MaterialHelper.HideGroundDecal(this);
     }
 }

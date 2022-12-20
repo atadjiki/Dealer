@@ -30,7 +30,7 @@ namespace Constants
         public static GameObject GetCharacterModelByID(Enumerations.CharacterModelID ID)
         {
             string ModelPath = GetResourcePath(ID);
-            Debug.Log(ModelPath);
+        //    Debug.Log(ModelPath);
             return Resources.Load<GameObject>(ModelPath);
         }
 

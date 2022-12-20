@@ -138,6 +138,13 @@ namespace Constants
             Pickup,
             None
         }
+
+        public enum Teams
+        {
+            Player,
+            Neutral,
+            Enemy
+        }
    
         public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
         {

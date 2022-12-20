@@ -6,15 +6,19 @@ using UnityEngine;
 [ExecuteAlways]
 public class CharacterComponent : MonoBehaviour
 {
+    public delegate void OnShowDecal(Enumerations.Team team);
+    public OnShowDecal OnShowDecalDelegate;
+
+    public delegate void OnHideDecal();
+    public OnHideDecal OnHideDecalDelegate;
+
+    public delegate void OnToggleCharacterCanvas(bool flag);
+    public OnToggleCharacterCanvas OnToggleCanvasDelegate;
+
     protected Enumerations.CharacterModelID _modelID = Enumerations.CharacterModelID.Model_Male1;
+    protected Enumerations.Team _team = Enumerations.Team.Neutral;
 
     protected CharacterModel model;
-
-    protected CapsuleCollider inputCollider;
-
-    protected CharacterGroundDecal groundDecal;
-
-    protected CharacterCanvas characterCanvas;
 
     public virtual void ProcessSpawnData(object _data)
     {
@@ -37,16 +41,19 @@ public class CharacterComponent : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        if (model == null)
-        {
-            //load our associated model
-            GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(_modelID), this.transform);
-            model = spawnedCharacter.GetComponent<CharacterModel>();
-            yield return new WaitUntil(() => model != null);
-        }
+
+        //load our associated model
+        GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(_modelID), this.transform);
+        model = spawnedCharacter.GetComponent<CharacterModel>();
+        model.SetTeam(_team);
+
+        model.OnModelClickedDelegate += OnCharacterClicked;
+
+
+        yield return new WaitUntil(() => model != null);
 
         //attempt to add a collider
-        inputCollider = this.gameObject.AddComponent<CapsuleCollider>();
+        CapsuleCollider inputCollider = model.gameObject.AddComponent<CapsuleCollider>();
         inputCollider.isTrigger = true;
         inputCollider.height = 1.75f;
         inputCollider.radius = 0.5f;
@@ -54,50 +61,34 @@ public class CharacterComponent : MonoBehaviour
 
         //add a ground decal
         GameObject groundDecalObject = Instantiate(PrefabLibrary.GetCharacterGroundDecal(), model.gameObject.transform);
-        groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
-        ShowGroundDecal();
+        CharacterGroundDecal groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
+        OnShowDecalDelegate += groundDecal.Show;
+        OnHideDecalDelegate += groundDecal.Hide;
+
+        OnShowDecalDelegate.Invoke(_team);
 
         //add a character canvas
         GameObject canvasObject = Instantiate(PrefabLibrary.GetCharacterCanvas(), model.gameObject.transform);
-        characterCanvas = canvasObject.GetComponent<CharacterCanvas>();
-        characterCanvas.Toggle(false);
-
+        CharacterCanvas characterCanvas = canvasObject.GetComponent<CharacterCanvas>();
+        characterCanvas.SetName(_modelID.ToString());
+        OnToggleCanvasDelegate += characterCanvas.Toggle;
+        OnToggleCanvasDelegate.Invoke(false);
 
         yield return null;
     }
 
     protected virtual void ShowGroundDecal()
     {
-        MaterialHelper.SetNeutralGroundDecal(groundDecal);
+        OnShowDecalDelegate.Invoke(_team);
     }
 
     protected virtual void HideGroundDecal()
     {
-        MaterialHelper.HideGroundDecal(groundDecal);
+        OnHideDecalDelegate.Invoke();
     }
 
-    public virtual void Highlight()
+    protected virtual void OnCharacterClicked()
     {
-        MaterialHelper.SetNeutralOutline(model);
-    }
-
-    public virtual void Unhighlight()
-    {
-        MaterialHelper.ResetCharacterOutline(model);
-    }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("mouse click on " + _modelID.ToString());
-    }
-
-    private void OnMouseEnter()
-    {
-        Highlight();
-    }
-
-    private void OnMouseExit()
-    {
-        Unhighlight();
+        Debug.Log(_modelID.ToString() + " clicked");
     }
 }
