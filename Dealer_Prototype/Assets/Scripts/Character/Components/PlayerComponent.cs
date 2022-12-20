@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using Constants;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerComponent : NPCComponent, IGameplayInitializer
 {
@@ -12,8 +9,8 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     public delegate void OnPlayerSpawned(Transform transform);
     public static OnPlayerSpawned OnPlayerSpawnedDelegate;
 
-    public delegate void OnPlayerCursorContextChanged(PlayerCanvas.CursorContext context);
-    public static OnPlayerCursorContextChanged OnPlayerCursorContextChangedDelegate;
+    public delegate void OnPendingActionChanged(Enumerations.CharacterAction action);
+    public static OnPendingActionChanged OnPendingActionChangedDelegate;
 
     public override void ProcessSpawnData(object _data)
     {
@@ -27,11 +24,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
         yield return base.PerformInitialize();
 
         OnPlayerSpawnedDelegate.Invoke(model.transform);
-        OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.None);
 
-        yield return new WaitForSeconds(0.25f);
-
-        //add player canvas
         Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
 
         characterCanvas.Toggle(true);
@@ -52,11 +45,26 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
     void Update()
     {
-        if (!_initialized) return;
+        if (_initialized == false) return;
 
-        if(Camera.main != null)
+        ProcessPendingAction();
+        ProcessMouseEvents();
+        ProcessKeyEvents();
+    }
+
+    private void ProcessKeyEvents()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (Input.GetMouseButtonDown(0))
+            Stop();
+        }
+    }
+
+    private void ProcessMouseEvents()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            if (Camera.main != null)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
@@ -68,37 +76,59 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
                     if (character != null)
                     {
-                        Debug.Log("hit character");
-
                         float distance = Vector3.Distance(model.transform.position, hit.point);
 
-                        if(distance < 2.5f)
+                        if (distance < 2.5f)
                         {
-                            Debug.Log("interact with character");
-                            OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Interact);
+                            Debug.Log("TODO - interact");
                         }
                         else
                         {
+                            //TODO - characters should have a location in front of them that is approachable
                             GoTo(hit.point);
-                            OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Move);
                         }
                     }
-                    else if(hit.collider.tag == "Ground")
+                    else if (hit.collider.tag == "Ground")
                     {
                         GoTo(hit.point);
-                        OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Move);
                     }
                 }
             }
-            else
-            {
-                OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.None);
-            }
         }
+    }
 
-        if(Input.GetKeyDown(KeyCode.Space))
+    private void ProcessPendingAction()
+    {
+        if (Camera.main != null)
         {
-            Stop();
+            Enumerations.CharacterAction pendingAction = Enumerations.CharacterAction.None;
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                //process the object we hit
+                CharacterComponent character = hit.collider.GetComponent<CharacterComponent>();
+
+                if (character != null && character.GetType() != typeof(PlayerComponent))
+                {
+                    float distance = Vector3.Distance(model.transform.position, hit.point);
+
+                    if (distance < 2.5f)
+                    {
+                        pendingAction = Enumerations.CharacterAction.Interact;
+                    }
+                    else
+                    {
+                        pendingAction = Enumerations.CharacterAction.Approach;
+                    }
+                }
+                else if (hit.collider.tag == "Ground")
+                {
+                    pendingAction = Enumerations.CharacterAction.Move;
+                }
+            }
+
+            OnPendingActionChangedDelegate.Invoke(pendingAction);
         }
     }
 

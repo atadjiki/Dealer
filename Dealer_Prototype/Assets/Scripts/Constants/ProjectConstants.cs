@@ -129,6 +129,15 @@ namespace Constants
             Accessories,
             None
         }
+
+        public enum CharacterAction
+        {
+            Move,
+            Interact,
+            Approach,
+            Pickup,
+            None
+        }
    
         public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
         {

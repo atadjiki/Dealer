@@ -1,34 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 using TMPro;
 
 public class PlayerCanvas : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI Text_CursorContext;
 
-    public enum CursorContext { Move, Interact, None };
-
     private void Start()
     {
-        SetCursorContext(CursorContext.None);
-
-        PlayerComponent.OnPlayerCursorContextChangedDelegate += SetCursorContext;
+         PlayerComponent.OnPendingActionChangedDelegate += SetPlayerActionContext;
     }
 
-    public void SetCursorContext(CursorContext context)
+    private void OnDestroy()
     {
-        switch (context)
-        {
-            case CursorContext.Interact:
-            case CursorContext.Move:
-                Text_CursorContext.text = context.ToString();
-                break;
+        PlayerComponent.OnPendingActionChangedDelegate -= SetPlayerActionContext;
+    }
 
-            case CursorContext.None:
+    public void SetPlayerActionContext(Enumerations.CharacterAction action)
+    {
+        switch (action)
+        {
+            case Enumerations.CharacterAction.None:
                 Text_CursorContext.text = string.Empty;
                 break;
-
+            default:
+                Text_CursorContext.text = action.ToString();
+                break;
         }
     }
 }
