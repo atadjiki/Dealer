@@ -25,12 +25,8 @@ public class NPCComponent : CharacterComponent
         //create a navigator to move the model
         if (navigator == null)
         {
-            GameObject navigatorObject = new GameObject("Navigator");
-            navigatorObject.transform.parent = this.transform;
-            navigatorObject.transform.position = this.transform.position;
-            navigatorObject.transform.rotation = this.transform.rotation;
-            navigatorObject.transform.localScale = this.transform.localScale;
-            navigator = navigatorObject.AddComponent<NavigatorComponent>();
+            GameObject navigatorObject = Instantiate<GameObject>(PrefabLibrary.GetNavigatorComponent(), this.transform);
+            navigator = navigatorObject.GetComponent<NavigatorComponent>();
             navigator.Initialize();
             yield return new WaitUntil(() => navigator.HasInitialized());
 
@@ -64,7 +60,7 @@ public class NPCComponent : CharacterComponent
 
         yield return new WaitForSeconds(0.2f);
 
-        while (navigator.IsMoving() && navigator.GetDistanceToDestination() > 0.1f)
+        while (navigator.IsMoving() && navigator.GetDistanceToDestination() > 1.5f)
         {
             Debug.DrawLine(navigator.GetStartOfPath(), navigator.GetNextPointInPath(), Color.blue, Time.fixedDeltaTime);
 

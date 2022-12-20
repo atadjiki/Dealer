@@ -13,7 +13,6 @@ public class PlayerSpawnData : CharacterSpawnData
 [System.Serializable]
 public class NPCSpawnData : CharacterSpawnData
 {
-    public List<NPC.TaskID> AllowedTasks;
 }
 
 [System.Serializable]

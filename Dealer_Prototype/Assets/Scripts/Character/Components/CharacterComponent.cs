@@ -76,12 +76,12 @@ public class CharacterComponent : MonoBehaviour
         MaterialHelper.HideGroundDecal(groundDecal);
     }
 
-    protected virtual void Highlight()
+    public virtual void Highlight()
     {
         MaterialHelper.SetNeutralOutline(model);
     }
 
-    protected virtual void Unhighlight()
+    public virtual void Unhighlight()
     {
         MaterialHelper.ResetCharacterOutline(model);
     }

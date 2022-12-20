@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerComponent : NPCComponent
+public class PlayerComponent : NPCComponent, IGameplayInitializer
 {
+    bool _initialized = false;
+
     public delegate void OnPlayerSpawned(Transform transform);
     public static OnPlayerSpawned OnPlayerSpawnedDelegate;
+
+    public delegate void OnPlayerCursorContextChanged(PlayerCanvas.CursorContext context);
+    public static OnPlayerCursorContextChanged OnPlayerCursorContextChangedDelegate;
 
     public override void ProcessSpawnData(object _data)
     {
@@ -20,9 +27,17 @@ public class PlayerComponent : NPCComponent
         yield return base.PerformInitialize();
 
         OnPlayerSpawnedDelegate.Invoke(model.transform);
+        OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.None);
+
+        yield return new WaitForSeconds(0.25f);
+
+        //add player canvas
+        Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
 
         characterCanvas.Toggle(true);
         characterCanvas.SetName(_modelID.ToString());
+
+        _initialized = true;
     }
 
     protected override void ShowGroundDecal()
@@ -30,13 +45,15 @@ public class PlayerComponent : NPCComponent
         MaterialHelper.SetPlayerGroundDecal(groundDecal);
     }
 
-    protected override void Highlight()
+    public override void Highlight()
     {
         MaterialHelper.SetPlayerOutline(model);
     }
 
     void Update()
     {
+        if (!_initialized) return;
+
         if(Camera.main != null)
         {
             if (Input.GetMouseButtonDown(0))
@@ -47,27 +64,35 @@ public class PlayerComponent : NPCComponent
                     Debug.DrawLine(model.transform.position, hit.point, Color.green, 1.0f);
 
                     //process the object we hit
-                    if (hit.collider.GetComponent<CharacterComponent>() != null)
+                    CharacterComponent character = hit.collider.GetComponent<CharacterComponent>();
+
+                    if (character != null)
                     {
                         Debug.Log("hit character");
 
                         float distance = Vector3.Distance(model.transform.position, hit.point);
 
-                        if(distance < 1.5f)
+                        if(distance < 2.5f)
                         {
                             Debug.Log("interact with character");
+                            OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Interact);
                         }
                         else
                         {
                             GoTo(hit.point);
+                            OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Move);
                         }
                     }
                     else if(hit.collider.tag == "Ground")
                     {
-                        Debug.Log("hit ground");
                         GoTo(hit.point);
+                        OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.Move);
                     }
                 }
+            }
+            else
+            {
+                OnPlayerCursorContextChangedDelegate.Invoke(PlayerCanvas.CursorContext.None);
             }
         }
 
@@ -75,5 +100,10 @@ public class PlayerComponent : NPCComponent
         {
             Stop();
         }
+    }
+
+    public bool HasInitialized()
+    {
+        return _initialized;
     }
 }
