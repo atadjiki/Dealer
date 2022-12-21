@@ -50,7 +50,7 @@ MonoBehaviour:
   drawGizmos: 1
   detailedGizmos: 0
   startEndModifier:
-    addPoints: 1
+    addPoints: 0
     exactStartPoint: 3
     exactEndPoint: 3
     useRaycasting: 0
@@ -97,13 +97,13 @@ MonoBehaviour:
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
   rotationSpeed: 32400
-  slowdownDistance: 0.6
-  pickNextWaypointDist: 2
-  endReachedDistance: 0.2
+  slowdownDistance: 1.5
+  pickNextWaypointDist: 1
+  endReachedDistance: 0.75
   alwaysDrawGizmos: 0
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
-  constrainInsideGraph: 0
+  constrainInsideGraph: 1
 --- !u!114 &1329664716292324826
 MonoBehaviour:
   m_ObjectHideFlags: 0

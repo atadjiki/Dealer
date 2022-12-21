@@ -59,7 +59,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
                     Debug.DrawLine(model.transform.position, hit.point, Color.green, 1.0f);
 
                     //process the object we hit
-                    CharacterComponent character = hit.collider.GetComponent<CharacterComponent>();
+                    CharacterModel character = hit.collider.GetComponent<CharacterModel>();
 
                     if (character != null)
                     {
@@ -88,7 +88,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         if (Camera.main != null)
         {
-            Enumerations.CharacterAction pendingAction = Enumerations.CharacterAction.None;
+            Enumerations.CharacterCommand command = Enumerations.CharacterCommand.None;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -102,20 +102,20 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
                     if (distance < 2.5f)
                     {
-                        pendingAction = Enumerations.CharacterAction.Interact;
+                        command = Enumerations.CharacterCommand.Interact;
                     }
                     else
                     {
-                        pendingAction = Enumerations.CharacterAction.Approach;
+                        command = Enumerations.CharacterCommand.Approach;
                     }
                 }
                 else if (hit.collider.tag == "Ground")
                 {
-                    pendingAction = Enumerations.CharacterAction.Move;
+                    command = Enumerations.CharacterCommand.Move;
                 }
             }
 
-            Global.OnPendingActionChanged.Invoke(pendingAction);
+            Global.OnPendingCommandChanged.Invoke(command);
         }
     }
 
@@ -123,4 +123,5 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         return _initialized;
     }
+
 }

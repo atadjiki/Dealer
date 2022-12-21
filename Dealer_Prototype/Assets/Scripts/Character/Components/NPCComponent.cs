@@ -9,8 +9,9 @@ public class NPCComponent : CharacterComponent
 {
     protected Coroutine currentCoroutine;
 
-    public NewDestination OnNewDestinationDelegate;
-    public NewAction OnNewActionDelegate;
+    public NewDestination OnNewDestination;
+    public MovementStateChanged OnMovementStateChanged;
+    public NewCommand OnNewCommand;
 
     public override void ProcessSpawnData(object _data)
     {
@@ -26,30 +27,33 @@ public class NPCComponent : CharacterComponent
         GameObject navigatorObject = Instantiate<GameObject>(PrefabLibrary.GetNavigatorComponent(), this.transform);
         NavigatorComponent navigator = navigatorObject.GetComponent<NavigatorComponent>();
         navigator.OnDestinationReachedDelegate += Stop;
-        OnNewActionDelegate += navigator.HandleCharacterAction;
+        OnMovementStateChanged += navigator.HandleMovementState;
+        OnNewDestination += navigator.SetDestination;
         navigator.Initialize(this);
 
         model.transform.parent = navigatorObject.transform;
-        OnNewActionDelegate += model.HandleCharacterAction;
+        OnNewCommand += model.HandleCharacterAction;
 
         yield return null;
     }
 
     public void BeginMovement()
     {
-        OnNewActionDelegate.Invoke(Enumerations.CharacterAction.Move);
+        OnNewCommand.Invoke(Enumerations.CharacterCommand.Move);
+        OnMovementStateChanged.Invoke(Enumerations.MovementState.Moving);
     }
 
     public void Stop()
     {
-        OnNewActionDelegate.Invoke(Enumerations.CharacterAction.None);
+        OnNewCommand.Invoke(Enumerations.CharacterCommand.None);
+        OnMovementStateChanged.Invoke(Enumerations.MovementState.Stopped);
     }
 
     public void GoTo(Vector3 location)
     {
         StopAllCoroutines();
 
-        OnNewDestinationDelegate.Invoke(location);
+        OnNewDestination.Invoke(location);
 
         BeginMovement();
     }

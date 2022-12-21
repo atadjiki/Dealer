@@ -15,6 +15,7 @@ public class NavigatorComponent : MonoBehaviour
     //delegates
     public DestinationReached OnDestinationReachedDelegate;
 
+    private Enumerations.MovementState _movementState = Enumerations.MovementState.None;
 
     //pathfinding AI
     private Seeker _seeker;
@@ -29,7 +30,7 @@ public class NavigatorComponent : MonoBehaviour
 
     public void Initialize(NPCComponent character)
     {
-        character.OnNewDestinationDelegate += SetDestination;
+        character.OnNewDestination += SetDestination;
 
         StartCoroutine(PerformInitialize());
     }
@@ -101,9 +102,15 @@ public class NavigatorComponent : MonoBehaviour
         return !_AI.isStopped && !_AI.reachedEndOfPath;
     }
 
-    public void HandleCharacterAction(Enumerations.CharacterAction action)
+    public void HandleMovementState(Enumerations.MovementState state)
     {
-        if(action == Enumerations.CharacterAction.None)
+        _movementState = state;
+
+        if(state == Enumerations.MovementState.Moving)
+        {
+            _AI.canMove = true;
+        }
+        else
         {
             _AI.canMove = false;
         }
@@ -129,4 +136,15 @@ public class NavigatorComponent : MonoBehaviour
 
         OnDestinationReachedDelegate.Invoke();
     }
+
+#if UNITY_EDITOR
+
+    private void OnDrawGizmos()
+    {
+        if(_movementState != Enumerations.MovementState.None)
+        {
+            Handles.Label(this.transform.position, _movementState.ToString());
+        }
+    }
+#endif
 }

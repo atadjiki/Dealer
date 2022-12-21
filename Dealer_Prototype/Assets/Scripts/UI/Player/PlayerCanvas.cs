@@ -11,19 +11,19 @@ public class PlayerCanvas : MonoBehaviour
 
     private void Start()
     {
-         Global.OnPendingActionChanged += SetPlayerActionContext;
+         Global.OnPendingCommandChanged += SetPlayerActionContext;
     }
 
     private void OnDestroy()
     {
-        Global.OnPendingActionChanged -= SetPlayerActionContext;
+        Global.OnPendingCommandChanged -= SetPlayerActionContext;
     }
 
-    public void SetPlayerActionContext(Enumerations.CharacterAction action)
+    public void SetPlayerActionContext(Enumerations.CharacterCommand action)
     {
         switch (action)
         {
-            case Enumerations.CharacterAction.None:
+            case Enumerations.CharacterCommand.None:
                 Text_CursorContext.text = string.Empty;
                 break;
             default:

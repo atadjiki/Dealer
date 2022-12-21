@@ -130,12 +130,19 @@ namespace Constants
             None
         }
 
-        public enum CharacterAction
+        public enum CharacterCommand
         {
             Move,
             Interact,
             Approach,
             Pickup,
+            None
+        }
+
+        public enum MovementState
+        {
+            Moving,
+            Stopped,
             None
         }
 

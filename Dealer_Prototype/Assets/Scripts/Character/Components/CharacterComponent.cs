@@ -69,22 +69,7 @@ public class CharacterComponent : MonoBehaviour
         OnToggleCanvas += characterCanvas.Toggle;
         OnToggleCanvas.Invoke(false);
 
-        if(Global.OnCharacterSpawned != null)
-        {
-            Global.OnCharacterSpawned.Invoke(this);
-        }
-
         yield return null;
-    }
-
-    private void ShowGroundDecal()
-    {
-        OnShowDecal.Invoke(_team);
-    }
-
-    private void HideGroundDecal()
-    {
-        OnHideDecal.Invoke();
     }
 
     protected virtual void OnCharacterClicked()

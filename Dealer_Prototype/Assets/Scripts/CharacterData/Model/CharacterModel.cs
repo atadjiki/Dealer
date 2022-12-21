@@ -90,12 +90,12 @@ public class CharacterModel : MonoBehaviour
         MaterialHelper.ResetCharacterOutline(this);
     }
 
-    public void HandleCharacterAction(Enumerations.CharacterAction action)
+    public void HandleCharacterAction(Enumerations.CharacterCommand action)
     {
         switch(action)
         {
-            case Enumerations.CharacterAction.Move:
-            case Enumerations.CharacterAction.Approach:
+            case Enumerations.CharacterCommand.Move:
+            case Enumerations.CharacterCommand.Approach:
                 ToWalking();
                 break;
             default:

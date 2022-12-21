@@ -6,17 +6,6 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    private void Start()
-    {
-        Global.OnCharacterSpawned += OnCharacterSpawned;
-
-    }
-
-    public void OnCharacterSpawned(CharacterComponent character)
-    {
-        Debug.Log("Character Spawned " + character.name);
-    }
-
     public bool SpawnOnClosestPoint;
 
     public virtual string GetSpawning()
