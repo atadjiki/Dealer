@@ -4,6 +4,7 @@ using Pathfinding;
 using Pathfinding.RVO;
 using UnityEditor;
 using Constants;
+using GameDelegates;
 using UnityEngine;
 
 [RequireComponent(typeof(Seeker))]
@@ -12,8 +13,7 @@ using UnityEngine;
 public class NavigatorComponent : MonoBehaviour
 {
     //delegates
-    public delegate void OnDestinationReached();
-    public OnDestinationReached OnDestinationReachedDelegate;
+    public DestinationReached OnDestinationReachedDelegate;
 
 
     //pathfinding AI

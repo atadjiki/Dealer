@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using GameDelegates;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -10,8 +11,7 @@ public class CharacterModel : MonoBehaviour
     private WeaponSocket _weaponSocket;
     private Enumerations.Team _team;
 
-    public delegate void OnModelClicked();
-    public OnModelClicked OnModelClickedDelegate;
+    public ModelClicked OnModelClickedDelegate;
 
     private void Awake()
     {
@@ -61,6 +61,11 @@ public class CharacterModel : MonoBehaviour
     private void OnMouseExit()
     {
         RemoveHighlight();
+    }
+
+    private void OnMouseDown()
+    {
+        OnModelClickedDelegate.Invoke();
     }
 
     //delegate functions

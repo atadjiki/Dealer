@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Constants;
 using UnityEditor;
+using GameDelegates;
 using UnityEngine;
 
 public class NPCComponent : CharacterComponent
 {
     protected Coroutine currentCoroutine;
 
-    public delegate void OnNewDestination(Vector3 destination);
-    public OnNewDestination OnNewDestinationDelegate;
-
-    public delegate void OnNewCharacterAction(Enumerations.CharacterAction action);
-    public OnNewCharacterAction OnNewActionDelegate;
+    public NewDestination OnNewDestinationDelegate;
+    public NewAction OnNewActionDelegate;
 
     public override void ProcessSpawnData(object _data)
     {

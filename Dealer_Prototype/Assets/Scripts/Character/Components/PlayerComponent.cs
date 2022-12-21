@@ -1,16 +1,11 @@
 using System.Collections;
 using Constants;
+using GameDelegates;
 using UnityEngine;
 
 public class PlayerComponent : NPCComponent, IGameplayInitializer
 {
     bool _initialized = false;
-
-    public delegate void OnPlayerSpawned(Transform transform);
-    public static OnPlayerSpawned OnPlayerSpawnedDelegate;
-
-    public delegate void OnPendingActionChanged(Enumerations.CharacterAction action);
-    public static OnPendingActionChanged OnPendingActionChangedDelegate;
 
     public override void ProcessSpawnData(object _data)
     {
@@ -25,11 +20,12 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         yield return base.PerformInitialize();
 
-        OnPlayerSpawnedDelegate.Invoke(model.transform);
-
         Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
 
-        OnToggleCanvasDelegate.Invoke(true);
+        OnUpdateCanvas.Invoke("Player");
+        OnToggleCanvas.Invoke(true);
+
+        Global.OnNewCameraTarget.Invoke(model.transform);
 
         _initialized = true;
     }
@@ -119,7 +115,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
                 }
             }
 
-            OnPendingActionChangedDelegate.Invoke(pendingAction);
+            Global.OnPendingActionChanged.Invoke(pendingAction);
         }
     }
 

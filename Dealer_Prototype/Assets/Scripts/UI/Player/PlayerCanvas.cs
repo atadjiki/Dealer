@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Constants;
+using GameDelegates;
 using TMPro;
 
 public class PlayerCanvas : MonoBehaviour
@@ -10,12 +11,12 @@ public class PlayerCanvas : MonoBehaviour
 
     private void Start()
     {
-         PlayerComponent.OnPendingActionChangedDelegate += SetPlayerActionContext;
+         Global.OnPendingActionChanged += SetPlayerActionContext;
     }
 
     private void OnDestroy()
     {
-        PlayerComponent.OnPendingActionChangedDelegate -= SetPlayerActionContext;
+        Global.OnPendingActionChanged -= SetPlayerActionContext;
     }
 
     public void SetPlayerActionContext(Enumerations.CharacterAction action)
