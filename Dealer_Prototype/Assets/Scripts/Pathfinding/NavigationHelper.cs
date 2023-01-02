@@ -31,5 +31,20 @@ public static class NavigationHelper
 
         return randomNode.RandomPointOnSurface();
     }
+
+    public static bool IsDestinationValid(Vector3 origin, Vector3 destination)
+    {
+        GraphNode originNode = AstarPath.active.GetNearest(origin).node;
+        GraphNode destinationNode = AstarPath.active.GetNearest(destination).node;
+
+        if(originNode != null && destinationNode != null)
+        {
+            return PathUtilities.IsPathPossible(originNode, destinationNode);
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 

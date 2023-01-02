@@ -11,13 +11,25 @@ public class CharacterNavDecal : CharacterGroundDecal
     {
         _navigator = navigator;
         _navigator.OnDestinationReachedDelegate += PathComplete;
+        _navigator.OnNewDestinationDelegate += NewDestination;
 
         this.transform.position = location;     
     }
 
+    private void NewDestination(Vector3 destination)
+    {
+        PathComplete();
+    }
+
     private void PathComplete()
     {
-        _navigator.OnDestinationReachedDelegate -= PathComplete;
-        Destroy(this.gameObject);
+        if(this.gameObject != null)
+        {
+            _navigator.OnNewDestinationDelegate -= NewDestination;
+            _navigator.OnDestinationReachedDelegate -= PathComplete;
+            Destroy(this.gameObject);
+
+        }
+
     }
 }

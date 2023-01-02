@@ -51,10 +51,17 @@ public class NPCComponent : CharacterComponent
 
     public void GoTo(Vector3 location)
     {
-        StopAllCoroutines();
+        if(NavigationHelper.IsDestinationValid(model.transform.position, location))
+        {
+            StopAllCoroutines();
 
-        OnNewDestination.Invoke(location);
+            OnNewDestination.Invoke(location);
 
-        BeginMovement();
+            BeginMovement();
+        }
+        else
+        {
+            Debug.Log("path not possible!");
+        }
     }
 }

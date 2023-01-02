@@ -13,6 +13,7 @@ using UnityEngine;
 public class NavigatorComponent : MonoBehaviour
 {
     //delegates
+    public NewDestination OnNewDestinationDelegate;
     public DestinationReached OnDestinationReachedDelegate;
 
     private Enumerations.MovementState _movementState = Enumerations.MovementState.None;
@@ -21,10 +22,8 @@ public class NavigatorComponent : MonoBehaviour
     private Seeker _seeker;
     private RichAI _AI;
 
-    //vars
-    private float _remainingDistance;
-    private float _checkTime;
-    private float _maxCheckTime = 0.35f;
+    private float _velocityCheckTime = 0;
+    private const float _velocityCheckInterval = 0.5f;
 
     private bool _initialized = false;
 
@@ -43,7 +42,6 @@ public class NavigatorComponent : MonoBehaviour
     public IEnumerator PerformInitialize()
     {
         _seeker = GetComponent<Seeker>();
-        _seeker.pathCallback += OnPathComplete;
 
         yield return new WaitUntil(() => _seeker != null);
 
@@ -58,12 +56,18 @@ public class NavigatorComponent : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
+        if (OnNewDestinationDelegate != null)
+        {
+            OnNewDestinationDelegate.Invoke(destination);
+        }
+
         _AI.destination = destination;
+        _seeker.pathCallback += OnPathComplete;
 
         GameObject navDecal = Instantiate<GameObject>(PrefabLibrary.GetCharacterNavDecal(), null);
         CharacterNavDecal decalComponent = navDecal.GetComponent<CharacterNavDecal>();
         decalComponent.Setup(this, destination);
-
+        
         decalComponent.Show(Enumerations.Team.Player);
 
         StartCoroutine(PerformMove());
@@ -81,11 +85,11 @@ public class NavigatorComponent : MonoBehaviour
 
     public Vector3 GetStartOfPath()
     {
-        if(_AI.hasPath)
+        if (_AI.hasPath)
         {
             Path path = _seeker.GetCurrentPath();
 
-            if(path.vectorPath.Count > 0)
+            if (path.vectorPath.Count > 0)
             {
                 return path.vectorPath[0];
             }
@@ -116,14 +120,14 @@ public class NavigatorComponent : MonoBehaviour
 
     public bool CanMove()
     {
-        return _AI.canMove && _AI.hasPath;
+        return _AI.canMove;
     }
 
     public void HandleMovementState(Enumerations.MovementState state)
     {
         _movementState = state;
 
-        if(state == Enumerations.MovementState.Moving)
+        if (state == Enumerations.MovementState.Moving)
         {
             _AI.canMove = true;
         }
@@ -138,48 +142,54 @@ public class NavigatorComponent : MonoBehaviour
         _AI.canMove = true;
         _AI.SearchPath();
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForFixedUpdate();
 
         while (IsMoving() && GetDistanceToDestination() > _AI.radius && CanMove())
         {
-
-            if (_checkTime > _maxCheckTime)
+            if (_velocityCheckTime >= _velocityCheckInterval)
             {
-               if(_remainingDistance == _AI.remainingDistance)
+                if (_AI.velocity.magnitude < 0.1f)
                 {
-                    Debug.Log("Stuck! Cancelling path");
+                    Debug.Log("stuck!");
                     break;
                 }
 
-                _checkTime = 0;
+                _velocityCheckTime = 0;
             }
+
 
             Debug.DrawLine(GetStartOfPath(), GetNextPointInPath(), Color.blue, Time.fixedDeltaTime);
 
             Debug.DrawLine(transform.position, GetDestination(), Color.green, Time.fixedDeltaTime);
 
-
-            _remainingDistance = _AI.remainingDistance;
-            _checkTime += Time.fixedDeltaTime;
-
             yield return new WaitForFixedUpdate();
+
+            _velocityCheckTime += Time.fixedDeltaTime;
         }
 
         _AI.canMove = false;
 
         OnDestinationReachedDelegate.Invoke();
+
+        _seeker.pathCallback -= OnPathComplete;
     }
 
     private void OnPathComplete(Path path)
     {
-
+        if (path.CompleteState == PathCompleteState.Error)
+        {
+            if (_AI.pathPending == false)
+            {
+                _AI.canMove = false;
+            }
+        }
     }
 
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
     {
-        if(_movementState != Enumerations.MovementState.None)
+        if (_movementState != Enumerations.MovementState.None)
         {
             Handles.Label(this.transform.position, _movementState.ToString());
         }
