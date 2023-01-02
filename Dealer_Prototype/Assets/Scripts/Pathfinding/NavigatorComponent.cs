@@ -8,7 +8,7 @@ using GameDelegates;
 using UnityEngine;
 
 [RequireComponent(typeof(Seeker))]
-[RequireComponent(typeof(AIPath))]
+[RequireComponent(typeof(RichAI))]
 
 public class NavigatorComponent : MonoBehaviour
 {
@@ -19,7 +19,12 @@ public class NavigatorComponent : MonoBehaviour
 
     //pathfinding AI
     private Seeker _seeker;
-    private AIPath _AI;
+    private RichAI _AI;
+
+    //vars
+    private float _remainingDistance;
+    private float _checkTime;
+    private float _maxCheckTime = 0.35f;
 
     private bool _initialized = false;
 
@@ -38,10 +43,11 @@ public class NavigatorComponent : MonoBehaviour
     public IEnumerator PerformInitialize()
     {
         _seeker = GetComponent<Seeker>();
+        _seeker.pathCallback += OnPathComplete;
 
         yield return new WaitUntil(() => _seeker != null);
 
-        _AI = GetComponent<AIPath>();
+        _AI = GetComponent<RichAI>();
 
         yield return new WaitUntil(() => _AI != null);
 
@@ -53,6 +59,12 @@ public class NavigatorComponent : MonoBehaviour
     public void SetDestination(Vector3 destination)
     {
         _AI.destination = destination;
+
+        GameObject navDecal = Instantiate<GameObject>(PrefabLibrary.GetCharacterNavDecal(), null);
+        CharacterNavDecal decalComponent = navDecal.GetComponent<CharacterNavDecal>();
+        decalComponent.Setup(this, destination);
+
+        decalComponent.Show(Enumerations.Team.Player);
 
         StartCoroutine(PerformMove());
     }
@@ -102,6 +114,11 @@ public class NavigatorComponent : MonoBehaviour
         return !_AI.isStopped && !_AI.reachedEndOfPath;
     }
 
+    public bool CanMove()
+    {
+        return _AI.canMove && _AI.hasPath;
+    }
+
     public void HandleMovementState(Enumerations.MovementState state)
     {
         _movementState = state;
@@ -123,11 +140,27 @@ public class NavigatorComponent : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
 
-        while (IsMoving() && GetDistanceToDestination() > 0.15f)
+        while (IsMoving() && GetDistanceToDestination() > _AI.radius && CanMove())
         {
+
+            if (_checkTime > _maxCheckTime)
+            {
+               if(_remainingDistance == _AI.remainingDistance)
+                {
+                    Debug.Log("Stuck! Cancelling path");
+                    break;
+                }
+
+                _checkTime = 0;
+            }
+
             Debug.DrawLine(GetStartOfPath(), GetNextPointInPath(), Color.blue, Time.fixedDeltaTime);
 
             Debug.DrawLine(transform.position, GetDestination(), Color.green, Time.fixedDeltaTime);
+
+
+            _remainingDistance = _AI.remainingDistance;
+            _checkTime += Time.fixedDeltaTime;
 
             yield return new WaitForFixedUpdate();
         }
@@ -135,6 +168,11 @@ public class NavigatorComponent : MonoBehaviour
         _AI.canMove = false;
 
         OnDestinationReachedDelegate.Invoke();
+    }
+
+    private void OnPathComplete(Path path)
+    {
+
     }
 
 #if UNITY_EDITOR

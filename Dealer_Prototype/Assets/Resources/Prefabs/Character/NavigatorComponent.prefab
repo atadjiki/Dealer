@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1599648931700088720}
   - component: {fileID: 5008583268222736567}
-  - component: {fileID: 3214908269950374293}
-  - component: {fileID: 1329664716292324826}
+  - component: {fileID: 3737721682183893685}
   - component: {fileID: 8517815993679322548}
+  - component: {fileID: 1329664716292324826}
   m_Layer: 0
   m_Name: NavigatorComponent
   m_TagString: Untagged
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  drawGizmos: 1
+  drawGizmos: 0
   detailedGizmos: 0
   startEndModifier:
     addPoints: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!114 &3214908269950374293
+--- !u!114 &3737721682183893685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8213125230115908590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Script: {fileID: 11500000, guid: ce11ea984e202491d9271f53021d8b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
@@ -89,33 +89,21 @@ MonoBehaviour:
   orientation: 0
   enableRotation: 1
   autoRepath:
-    mode: 0
-    interval: NaN
+    mode: 2
+    interval: 0.5
     sensitivity: 10
     maximumInterval: 2
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
-  maxAcceleration: -2.5
-  rotationSpeed: 32400
-  slowdownDistance: 1.5
-  pickNextWaypointDist: 1
-  endReachedDistance: 0.75
-  alwaysDrawGizmos: 0
+  acceleration: 5
+  rotationSpeed: 360
+  slowdownTime: 0.5
+  endReachedDistance: 0.01
+  wallForce: 3
+  wallDist: 1
+  funnelSimplification: 0
   slowWhenNotFacingTarget: 1
-  whenCloseToDestination: 0
-  constrainInsideGraph: 1
---- !u!114 &1329664716292324826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8213125230115908590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb43067f3cd14411ab914ff5a99f298c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  animCompatibility: {fileID: 0}
 --- !u!114 &8517815993679322548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,4 +130,16 @@ MonoBehaviour:
   wallAvoidForce: 1
   wallAvoidFalloff: 1
   priority: 0.5
-  debug: 0
+  debug: 1
+--- !u!114 &1329664716292324826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213125230115908590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb43067f3cd14411ab914ff5a99f298c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

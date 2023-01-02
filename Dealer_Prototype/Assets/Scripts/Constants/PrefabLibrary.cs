@@ -46,6 +46,11 @@ namespace Constants
             return Resources.Load<GameObject>(Prefix_Gameplay + "CharacterGroundDecal");
         }
 
+        public static GameObject GetCharacterNavDecal()
+        {
+            return Resources.Load<GameObject>(Prefix_Gameplay + "CharacterNavDecal");
+        }
+
         public static GameObject GetCharacterCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI_Character + "CharacterCanvas");

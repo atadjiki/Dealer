@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CharacterGroundDecal : MonoBehaviour
 {
-    public void Show(Enumerations.Team team)
+    public virtual void Show(Enumerations.Team team)
     {
         switch(team)
         {
@@ -21,7 +21,7 @@ public class CharacterGroundDecal : MonoBehaviour
         }
     }
 
-    public void Hide()
+    public virtual void Hide()
     {
         MaterialHelper.HideGroundDecal(this);
     }
