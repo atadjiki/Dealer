@@ -62,6 +62,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
                     //process the object we hit
                     CharacterModel character = hit.collider.GetComponent<CharacterModel>();
+                    PlayerStation station = hit.collider.GetComponent<PlayerStation>();
 
                     if (character != null)
                     {
@@ -77,10 +78,16 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
                             GoTo(hit.point);
                         }
                     }
+                    else if (station != null)
+                    {
+                        Debug.Log("Visiting station");
+                        GoTo(station.GetEntryTransform().position);
+                    }
                     else if (hit.collider.tag == "Ground")
                     {
                         GoTo(hit.point);
                     }
+
                 }
             }
         }
