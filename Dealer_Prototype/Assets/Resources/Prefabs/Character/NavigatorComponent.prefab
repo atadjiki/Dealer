@@ -50,9 +50,9 @@ MonoBehaviour:
   drawGizmos: 0
   detailedGizmos: 0
   startEndModifier:
-    addPoints: 0
+    addPoints: 1
     exactStartPoint: 3
-    exactEndPoint: 3
+    exactEndPoint: 0
     useRaycasting: 0
     mask:
       serializedVersion: 2
@@ -89,9 +89,9 @@ MonoBehaviour:
   orientation: 0
   enableRotation: 1
   autoRepath:
-    mode: 0
+    mode: 2
     interval: NaN
-    sensitivity: 10
+    sensitivity: 20
     maximumInterval: 2
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
@@ -99,8 +99,8 @@ MonoBehaviour:
   rotationSpeed: 360
   slowdownTime: 0.5
   endReachedDistance: 0.01
-  wallForce: 3
-  wallDist: 1
+  wallForce: 10
+  wallDist: 1.75
   funnelSimplification: 0
   slowWhenNotFacingTarget: 1
   animCompatibility: {fileID: 0}
@@ -125,7 +125,7 @@ MonoBehaviour:
   agentTimeHorizon: 2
   obstacleTimeHorizon: 2
   maxNeighbours: 10
-  layer: 1
+  layer: 3
   collidesWith: -1
   wallAvoidForce: 1
   wallAvoidFalloff: 1

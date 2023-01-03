@@ -27,6 +27,8 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
         Global.OnNewCameraTarget.Invoke(model.transform);
 
+        model.tag = "Player";
+
         _initialized = true;
     }
 

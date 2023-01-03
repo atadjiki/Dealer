@@ -142,7 +142,7 @@ public class NavigatorComponent : MonoBehaviour
         _AI.canMove = true;
         _AI.SearchPath();
 
-        yield return new WaitForFixedUpdate();
+        yield return new WaitForSeconds(_velocityCheckInterval);
 
         while (IsMoving() && GetDistanceToDestination() > _AI.radius && CanMove())
         {
