@@ -34,6 +34,8 @@ public class NPCComponent : CharacterComponent
         model.transform.parent = navigatorObject.transform;
         OnNewCommand += model.HandleCharacterAction;
 
+        model.tag = "NPC";
+
         yield return null;
     }
 
