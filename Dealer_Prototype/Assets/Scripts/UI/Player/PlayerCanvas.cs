@@ -19,11 +19,11 @@ public class PlayerCanvas : MonoBehaviour
         Global.OnPendingCommandChanged -= SetPlayerActionContext;
     }
 
-    public void SetPlayerActionContext(Enumerations.CharacterCommand action)
+    public void SetPlayerActionContext(Enumerations.CommandType action)
     {
         switch (action)
         {
-            case Enumerations.CharacterCommand.None:
+            case Enumerations.CommandType.None:
                 Text_CursorContext.text = string.Empty;
                 break;
             default:

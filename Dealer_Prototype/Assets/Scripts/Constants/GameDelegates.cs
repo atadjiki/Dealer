@@ -14,14 +14,14 @@ namespace GameDelegates
 
     public delegate void NewCameraFollowTarget(Transform transform);
 
-    public delegate void PendingCommandChanged(Enumerations.CharacterCommand command);
+    public delegate void PendingCommandChanged(Enumerations.CommandType command);
     public delegate void MovementStateChanged(Enumerations.MovementState state);
 
     public delegate void ModelClicked();
 
     //npc
     public delegate void NewDestination(Vector3 destination);
-    public delegate void NewCommand(Enumerations.CharacterCommand command);
+    public delegate void NewCommand(Enumerations.CommandType command);
 
     public delegate void DestinationReached();
 

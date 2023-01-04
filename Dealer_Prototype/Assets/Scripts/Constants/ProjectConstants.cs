@@ -130,12 +130,16 @@ namespace Constants
             None
         }
 
-        public enum CharacterCommand
+        public enum CommandType
         {
             Move,
             Interact,
             Approach,
             Pickup,
+            Save,
+            Phone,
+            Stash,
+            Door,
             None
         }
 

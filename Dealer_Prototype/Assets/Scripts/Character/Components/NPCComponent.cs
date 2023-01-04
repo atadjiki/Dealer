@@ -41,29 +41,22 @@ public class NPCComponent : CharacterComponent
 
     public void BeginMovement()
     {
-        OnNewCommand.Invoke(Enumerations.CharacterCommand.Move);
+        OnNewCommand.Invoke(Enumerations.CommandType.Move);
         OnMovementStateChanged.Invoke(Enumerations.MovementState.Moving);
     }
 
     public void Stop()
     {
-        OnNewCommand.Invoke(Enumerations.CharacterCommand.None);
+        OnNewCommand.Invoke(Enumerations.CommandType.None);
         OnMovementStateChanged.Invoke(Enumerations.MovementState.Stopped);
     }
 
     public void GoTo(Vector3 location)
     {
-        if(NavigationHelper.IsDestinationValid(model.transform.position, location))
-        {
-            StopAllCoroutines();
+        StopAllCoroutines();
 
-            OnNewDestination.Invoke(location);
+        OnNewDestination.Invoke(location);
 
-            BeginMovement();
-        }
-        else
-        {
-            Debug.Log("path not possible!");
-        }
+        BeginMovement();
     }
 }

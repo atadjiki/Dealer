@@ -32,19 +32,9 @@ public static class NavigationHelper
         return randomNode.RandomPointOnSurface();
     }
 
-    public static bool IsDestinationValid(Vector3 origin, Vector3 destination)
+    public static bool IsPointValid(Vector3 point)
     {
-        GraphNode originNode = AstarPath.active.GetNearest(origin).node;
-        GraphNode destinationNode = AstarPath.active.GetNearest(destination).node;
-
-        if(originNode != null && destinationNode != null)
-        {
-            return PathUtilities.IsPathPossible(originNode, destinationNode);
-        }
-        else
-        {
-            return false;
-        }
+        return AstarPath.active.data.recastGraph.PointOnNavmesh(point, NNConstraint.None) != null; 
     }
 }
 

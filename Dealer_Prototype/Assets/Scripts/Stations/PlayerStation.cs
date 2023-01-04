@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+[RequireComponent(typeof(InteractionComponent))]
 [RequireComponent(typeof(BoxCollider))]
 public class PlayerStation : MonoBehaviour
 {
@@ -22,7 +23,12 @@ public class PlayerStation : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Handles.Label(GetEntryTransform().position, this.gameObject.name);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(GetEntryTransform().position, 0.1f);
+        Gizmos.DrawRay(new Ray(GetEntryTransform().position, GetEntryTransform().forward));
+
+
+        Handles.Label(GetEntryTransform().position + new Vector3(-0.5f,0,-0.25f), this.gameObject.name);
     }
 #endif
 }

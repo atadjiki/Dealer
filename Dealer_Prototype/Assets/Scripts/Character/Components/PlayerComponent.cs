@@ -51,7 +51,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
     private void ProcessMouseEvents()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             if (Camera.main != null)
             {
@@ -85,9 +85,15 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
                     }
                     else if (hit.collider.tag == "Ground")
                     {
-                        GoTo(hit.point);
+                        if (NavigationHelper.IsPointValid( hit.point))
+                        {
+                            GoTo(hit.point);
+                        }
+                        else
+                        {
+                            Debug.Log("Path is not possible!");
+                        }
                     }
-
                 }
             }
         }
@@ -97,13 +103,14 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         if (Camera.main != null)
         {
-            Enumerations.CharacterCommand command = Enumerations.CharacterCommand.None;
+            Enumerations.CommandType command = Enumerations.CommandType.None;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 //process the object we hit
                 CharacterComponent character = hit.collider.GetComponent<CharacterComponent>();
+                PlayerStation station = hit.collider.GetComponent<PlayerStation>();
 
                 if (character != null && character.GetType() != typeof(PlayerComponent))
                 {
@@ -111,16 +118,23 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
                     if (distance < 2.5f)
                     {
-                        command = Enumerations.CharacterCommand.Interact;
+                        command = Enumerations.CommandType.Interact;
                     }
                     else
                     {
-                        command = Enumerations.CharacterCommand.Approach;
+                        command = Enumerations.CommandType.Approach;
                     }
+                }
+                else if(station != null)
+                {
+                    command = Enumerations.CommandType.Save;
                 }
                 else if (hit.collider.tag == "Ground")
                 {
-                    command = Enumerations.CharacterCommand.Move;
+                    if (NavigationHelper.IsPointValid(hit.point))
+                    {
+                        command = Enumerations.CommandType.Move;
+                    }
                 }
             }
 
@@ -132,5 +146,4 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         return _initialized;
     }
-
 }
