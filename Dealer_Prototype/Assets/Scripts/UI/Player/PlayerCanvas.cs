@@ -22,17 +22,6 @@ public class PlayerCanvas : MonoBehaviour
 
     public void SetPlayerActionContext(Enumerations.MouseContext mouseContext)
     {
-        switch (mouseContext)
-        {
-            case Enumerations.MouseContext.None:
-                Text_CursorContext.text = string.Empty;
-                break;
-            case Enumerations.MouseContext.Door:
-                Text_CursorContext.text = "Exit";
-                break;
-            default:
-                Text_CursorContext.text = mouseContext.ToString();
-                break;
-        }
+        Text_CursorContext.text = DisplayText.Get(mouseContext);
     }
 }
