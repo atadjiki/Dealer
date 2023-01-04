@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using UnityEditor;
 using UnityEngine;
 
-[RequireComponent(typeof(InteractionComponent))]
 [RequireComponent(typeof(BoxCollider))]
 public class PlayerStation : MonoBehaviour
 {
     [SerializeField] private Transform _entryTransform;
+    [SerializeField] private Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
 
     public Transform GetEntryTransform()
     {
         return _entryTransform;
+    }
+
+    public Enumerations.MouseContext GetMouseContext()
+    {
+        return mouseContext;
     }
 
     private void OnMouseDown()

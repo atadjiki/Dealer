@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &35511710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35511711}
+  m_Layer: 0
+  m_Name: EntranceScene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35511711
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35511710}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1832104510}
+  m_Father: {fileID: 7635236226158686940}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &53935062
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +273,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 643565952}
+  - component: {fileID: 643565953}
   m_Layer: 0
   m_Name: CameraRig
   m_TagString: Untagged
@@ -265,6 +297,19 @@ Transform:
   m_Father: {fileID: 7635236226158686940}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &643565953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643565951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7436b12de7c804060add58960652dfb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CM_Main: {fileID: 325958377}
 --- !u!1 &675227248
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,6 +749,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1780405511}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1832104509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832104510}
+  m_Layer: 0
+  m_Name: Entrance_WalkTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1832104510
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832104509}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.03, y: 0, z: 10.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 35511711}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2044589422
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,7 +1029,6 @@ GameObject:
   - component: {fileID: 5330189989615179367}
   - component: {fileID: 75730411042332637}
   - component: {fileID: 75730411042332636}
-  - component: {fileID: 75730411042332638}
   m_Layer: 0
   m_Name: Station_Door
   m_TagString: Station
@@ -975,6 +1049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entryTransform: {fileID: 1012356315}
+  mouseContext: 7
 --- !u!65 &75730411042332637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -988,19 +1063,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.2392597, y: 2.4739883, z: 0.887516}
   m_Center: {x: -0, y: 1.1314386, z: 0}
---- !u!114 &75730411042332638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 75730411042332635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed66eb5b0059b4da34539f8a0b7a04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CommandType: 7
 --- !u!23 &83252316621857916
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3637,7 +3699,6 @@ GameObject:
   - component: {fileID: 2815692583267662797}
   - component: {fileID: 5565294495345966736}
   - component: {fileID: 3195455465906413944}
-  - component: {fileID: 3195455465906413945}
   m_Layer: 0
   m_Name: Station_Save
   m_TagString: Station
@@ -3658,19 +3719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entryTransform: {fileID: 872483528}
---- !u!114 &3195455465906413945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3195455465906413943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed66eb5b0059b4da34539f8a0b7a04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CommandType: 4
+  mouseContext: 4
 --- !u!23 &3227710945234121454
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3737,7 +3786,6 @@ GameObject:
   - component: {fileID: 1341058567330993386}
   - component: {fileID: 5711308444019622827}
   - component: {fileID: 3279488426377458257}
-  - component: {fileID: 3279488426377458258}
   m_Layer: 0
   m_Name: Station_Stash
   m_TagString: Station
@@ -3758,19 +3806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entryTransform: {fileID: 675227249}
---- !u!114 &3279488426377458258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3279488426377458256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed66eb5b0059b4da34539f8a0b7a04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CommandType: 6
+  mouseContext: 6
 --- !u!1 &3279631463468804019
 GameObject:
   m_ObjectHideFlags: 0
@@ -6987,6 +7023,7 @@ Transform:
   - {fileID: 2909695678636952475}
   - {fileID: 1725137756}
   - {fileID: 643565952}
+  - {fileID: 35511711}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6999,6 +7036,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7635236226158686940}
+  - component: {fileID: 7635236226158686944}
   m_Layer: 0
   m_Name: Safehouse
   m_TagString: Untagged
@@ -7006,6 +7044,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7635236226158686944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7635236226158686943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97ac35ba46f6e48209a6efe9c8a6bdc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 0
+  playerSpawner: {fileID: 1343207376}
+  cameraRig: {fileID: 643565953}
+  entrace_WalkTo_Location: {fileID: 1832104510}
 --- !u!1 &7703928316167296971
 GameObject:
   m_ObjectHideFlags: 0
@@ -7834,7 +7888,6 @@ GameObject:
   - component: {fileID: 612358653374165106}
   - component: {fileID: 3674572563914257424}
   - component: {fileID: 8962971428427590024}
-  - component: {fileID: 8962971428427590025}
   m_Layer: 0
   m_Name: Station_Phone
   m_TagString: Station
@@ -7855,19 +7908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entryTransform: {fileID: 1431882897}
---- !u!114 &8962971428427590025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8962971428427590023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed66eb5b0059b4da34539f8a0b7a04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CommandType: 5
+  mouseContext: 5
 --- !u!1 &8968710507992250194
 GameObject:
   m_ObjectHideFlags: 0

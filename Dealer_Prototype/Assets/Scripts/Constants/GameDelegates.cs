@@ -14,7 +14,7 @@ namespace GameDelegates
 
     public delegate void NewCameraFollowTarget(Transform transform);
 
-    public delegate void PendingCommandChanged(Enumerations.CommandType command);
+    public delegate void MouseContextChanged(Enumerations.MouseContext mouseContext);
     public delegate void MovementStateChanged(Enumerations.MovementState state);
 
     public delegate void ModelClicked();
@@ -23,13 +23,17 @@ namespace GameDelegates
     public delegate void NewDestination(Vector3 destination);
     public delegate void NewCommand(Enumerations.CommandType command);
 
+    public delegate void PlayerSpawned(PlayerComponent playerComponent);
+
     public delegate void DestinationReached();
 
     public class Global
     {
         public static NewCameraFollowTarget OnNewCameraTarget;
 
-        public static PendingCommandChanged OnPendingCommandChanged;
+        public static MouseContextChanged OnMouseContextChanged;
+
+        public static PlayerSpawned OnPlayerSpawned;
 
     }
 }

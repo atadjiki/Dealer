@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameDelegates;
 using UnityEngine;
 
 public class EnvironmentComponent : MonoBehaviour
 {
-    [SerializeField] private bool debug = false;
-    [SerializeField] private Constants.Enumerations.Environment environmentID;
+    [SerializeField] protected bool debug = false;
 
-    [SerializeField] private List<SpawnLocation> spawnLocations;
+    [SerializeField] protected PlayerSpawner playerSpawner;
 
-    [SerializeField] private CameraRig cameraRig;
+    [SerializeField] protected CameraRig cameraRig;
 
     private void Start()
     {
+        Global.OnPlayerSpawned += OnPlayerSpanwed;
         StartCoroutine(Coroutine_EnterActionsStart());
     }
 
@@ -30,11 +31,6 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual IEnumerator Coroutine_PerformEnterActions()
     {
-        LevelManager.Instance.RegisterScene(Constants.Enumerations.SceneType.Environment, Constants.Enumerations.GetSceneNameFromEnvironmentID(environmentID));
-        GameStateManager.Instance.SetEnvironment(environmentID);
-
-        GameStateManager.Instance.ToGameplay();
-
         SpawnPlayer();
 
         yield return Coroutine_EnterActionsCompleted();
@@ -47,24 +43,19 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual void ExitActions()
     {
-        GameStateManager.Instance.SetEnvironment(Constants.Enumerations.Environment.None);
         if (debug) Debug.Log("Environment " + this.name + " - exit actions");
     }
 
     protected virtual void SpawnPlayer()
     {
-        if (spawnLocations.Count > 0)
+        if (playerSpawner != null)
         {
-            bool success;
-            CharacterManager.CharacterData data = CharacterManager.Instance.GetCharacterData(Constants.Enumerations.CharacterID.Player, out success);
-
-            if(success)
-            {
-                SpawnLocation spawnLocation = spawnLocations[Random.Range(0, spawnLocations.Count)];
-
-                GameObject characterObject = Instantiate<GameObject>(data.Prefab, spawnLocation.transform);
-            }
+            playerSpawner.PerformSpawn();
         }
+    }
+
+    protected virtual void OnPlayerSpanwed(PlayerComponent playerComponent)
+    {
     }
 }
 

@@ -11,23 +11,26 @@ public class PlayerCanvas : MonoBehaviour
 
     private void Start()
     {
-         Global.OnPendingCommandChanged += SetPlayerActionContext;
+         Global.OnMouseContextChanged += SetPlayerActionContext;
     }
 
     private void OnDestroy()
     {
-        Global.OnPendingCommandChanged -= SetPlayerActionContext;
+        Global.OnMouseContextChanged -= SetPlayerActionContext;
     }
 
-    public void SetPlayerActionContext(Enumerations.CommandType action)
+    public void SetPlayerActionContext(Enumerations.MouseContext mouseContext)
     {
-        switch (action)
+        switch (mouseContext)
         {
-            case Enumerations.CommandType.None:
+            case Enumerations.MouseContext.None:
                 Text_CursorContext.text = string.Empty;
                 break;
+            case Enumerations.MouseContext.Door:
+                Text_CursorContext.text = "Exit";
+                break;
             default:
-                Text_CursorContext.text = action.ToString();
+                Text_CursorContext.text = mouseContext.ToString();
                 break;
         }
     }

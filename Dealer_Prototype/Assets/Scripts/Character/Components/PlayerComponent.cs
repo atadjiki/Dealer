@@ -36,9 +36,9 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         if (_initialized == false) return;
 
-        ProcessPendingAction();
-        ProcessMouseEvents();
-        ProcessKeyEvents();
+     //   ProcessPendingAction();
+      //  ProcessMouseEvents();
+     //   ProcessKeyEvents();
     }
 
     private void ProcessKeyEvents()
@@ -103,7 +103,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         if (Camera.main != null)
         {
-            Enumerations.CommandType command = Enumerations.CommandType.None;
+            Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -118,27 +118,23 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
                     if (distance < 2.5f)
                     {
-                        command = Enumerations.CommandType.Interact;
+                        mouseContext = Enumerations.MouseContext.Interact;
                     }
                     else
                     {
-                        command = Enumerations.CommandType.Approach;
+                        mouseContext = Enumerations.MouseContext.Move;
                     }
-                }
-                else if(station != null)
-                {
-                    command = Enumerations.CommandType.Save;
                 }
                 else if (hit.collider.tag == "Ground")
                 {
                     if (NavigationHelper.IsPointValid(hit.point))
                     {
-                        command = Enumerations.CommandType.Move;
+                        mouseContext = Enumerations.MouseContext.Move;
                     }
                 }
             }
 
-            Global.OnPendingCommandChanged.Invoke(command);
+            Global.OnMouseContextChanged.Invoke(mouseContext);
         }
     }
 

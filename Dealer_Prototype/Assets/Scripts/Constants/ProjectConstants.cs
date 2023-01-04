@@ -136,6 +136,15 @@ namespace Constants
             Interact,
             Approach,
             Pickup,
+            None
+        }
+
+        public enum MouseContext
+        {
+            Move,
+            Interact,
+            Approach,
+            Pickup,
             Save,
             Phone,
             Stash,

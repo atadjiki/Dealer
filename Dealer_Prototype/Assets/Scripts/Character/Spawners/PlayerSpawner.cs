@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameDelegates;
 using UnityEngine;
 
 public class PlayerSpawner : Spawner
 {
     [SerializeField] protected PlayerSpawnData data;
 
-    private void Start()
+    public void PerformSpawn()
     {
         if (SpawnOnClosestPoint)
         {
@@ -27,6 +28,8 @@ public class PlayerSpawner : Spawner
         PlayerComponent playerComponent = playerObject.GetComponent<PlayerComponent>();
         playerComponent.ProcessSpawnData(data);
         playerComponent.Initialize();
+
+        Global.OnPlayerSpawned.Invoke(playerComponent);
     }
 
     public override string GetSpawning()
