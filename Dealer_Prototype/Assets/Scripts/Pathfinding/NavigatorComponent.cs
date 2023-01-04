@@ -27,6 +27,8 @@ public class NavigatorComponent : MonoBehaviour
 
     private bool _initialized = false;
 
+    private bool showDecals = false;
+
     public bool HasInitialized()
     {
         return _initialized;
@@ -35,6 +37,8 @@ public class NavigatorComponent : MonoBehaviour
     public void Initialize(NPCComponent character)
     {
         character.OnNewDestination += SetDestination;
+
+        showDecals = character.DoesShowNavDecals();
 
         StartCoroutine(PerformInitialize());
     }
@@ -64,11 +68,14 @@ public class NavigatorComponent : MonoBehaviour
         _AI.destination = destination;
         _seeker.pathCallback += OnPathComplete;
 
-        GameObject navDecal = Instantiate<GameObject>(PrefabLibrary.GetCharacterNavDecal(), null);
-        CharacterNavDecal decalComponent = navDecal.GetComponent<CharacterNavDecal>();
-        decalComponent.Setup(this, destination);
-        
-        decalComponent.Show(Enumerations.Team.Player);
+        if(showDecals)
+        {
+            GameObject navDecal = Instantiate<GameObject>(PrefabLibrary.GetCharacterNavDecal(), null);
+            CharacterNavDecal decalComponent = navDecal.GetComponent<CharacterNavDecal>();
+            decalComponent.Setup(this, destination);
+
+            decalComponent.Show(Enumerations.Team.Player);
+        }
 
         StartCoroutine(PerformMove());
     }

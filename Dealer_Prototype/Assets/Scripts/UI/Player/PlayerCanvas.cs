@@ -11,7 +11,8 @@ public class PlayerCanvas : MonoBehaviour
 
     private void Start()
     {
-         Global.OnMouseContextChanged += SetPlayerActionContext;
+        Text_CursorContext.text = string.Empty;
+        Global.OnMouseContextChanged += SetPlayerActionContext;
     }
 
     private void OnDestroy()

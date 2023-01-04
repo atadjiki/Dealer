@@ -13,11 +13,11 @@ public class NPCComponent : CharacterComponent
     public MovementStateChanged OnMovementStateChanged;
     public NewCommand OnNewCommand;
 
-    public override void ProcessSpawnData(object _data)
+    public override void ProcessSpawnData(CharacterSpawnData _data)
     {
-        NPCSpawnData npcData = (NPCSpawnData) _data;
+        base.ProcessSpawnData(_data);
 
-        _modelID = npcData.ModelID;
+        spawnData.Team = Enumerations.Team.Neutral;
     }
 
     public override IEnumerator PerformInitialize()
@@ -58,5 +58,10 @@ public class NPCComponent : CharacterComponent
         OnNewDestination.Invoke(location);
 
         BeginMovement();
+    }
+
+    public bool DoesShowNavDecals()
+    {
+        return spawnData.ShowNavDecals;
     }
 }

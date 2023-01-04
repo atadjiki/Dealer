@@ -7,13 +7,12 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 {
     bool _initialized = false;
 
-    public override void ProcessSpawnData(object _data)
+    public override void ProcessSpawnData(CharacterSpawnData _data)
     {
-        PlayerSpawnData playerData = (PlayerSpawnData)_data;
+        base.ProcessSpawnData(_data);
 
-        _modelID = playerData.ModelID;
-
-        _team = Enumerations.Team.Player;
+        spawnData.ModelID = Enumerations.CharacterModelID.Model_Male_Player;
+        spawnData.Team = Enumerations.Team.Player;
     }
 
     public override IEnumerator PerformInitialize()
@@ -22,8 +21,11 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
 
         Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
 
-        OnUpdateCanvas.Invoke("Player");
-        OnToggleCanvas.Invoke(true);
+        if (spawnData.ShowCanvas)
+        {
+            OnUpdateCanvas.Invoke("Player");
+            OnToggleCanvas.Invoke(true);
+        }
 
         Global.OnNewCameraTarget.Invoke(model.transform);
 

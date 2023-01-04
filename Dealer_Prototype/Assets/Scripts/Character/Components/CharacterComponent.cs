@@ -12,14 +12,13 @@ public class CharacterComponent : MonoBehaviour
     public ToggleCharacterCanvas OnToggleCanvas;
     public UpdateCharacterCanvas OnUpdateCanvas;
 
-    protected Enumerations.CharacterModelID _modelID = Enumerations.CharacterModelID.Model_Male1;
-    protected Enumerations.Team _team = Enumerations.Team.Neutral;
+    protected CharacterSpawnData spawnData;
 
     protected CharacterModel model;
 
-    public virtual void ProcessSpawnData(object _data)
+    public virtual void ProcessSpawnData(CharacterSpawnData _data)
     {
-        _modelID = ((CharacterSpawnData)_data).ModelID;
+        spawnData = _data;
     }
 
     public void Initialize()
@@ -39,9 +38,9 @@ public class CharacterComponent : MonoBehaviour
         }
 
         //load our associated model
-        GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(_modelID), this.transform);
+        GameObject spawnedCharacter = Instantiate(PrefabLibrary.GetCharacterModelByID(spawnData.ModelID), this.transform);
         model = spawnedCharacter.GetComponent<CharacterModel>();
-        model.SetTeam(_team);
+        model.SetTeam(spawnData.Team);
 
         model.OnModelClickedDelegate += OnCharacterClicked;
 
@@ -54,26 +53,32 @@ public class CharacterComponent : MonoBehaviour
         inputCollider.radius = 0.5f;
         inputCollider.center = new Vector3(0, 0.75f);
 
-        //add a ground decal
-        GameObject groundDecalObject = Instantiate(PrefabLibrary.GetCharacterGroundDecal(), model.gameObject.transform);
-        CharacterGroundDecal groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
-        OnShowDecal += groundDecal.Show;
-        OnHideDecal += groundDecal.Hide;
+        if(spawnData.ShowModelDecal)
+        {
+            //add a ground decal
+            GameObject groundDecalObject = Instantiate(PrefabLibrary.GetCharacterGroundDecal(), model.gameObject.transform);
+            CharacterGroundDecal groundDecal = groundDecalObject.GetComponent<CharacterGroundDecal>();
+            OnShowDecal += groundDecal.Show;
+            OnHideDecal += groundDecal.Hide;
 
-        OnShowDecal.Invoke(_team);
+            OnShowDecal.Invoke(spawnData.Team);
+        }
 
-        //add a character canvas
-        GameObject canvasObject = Instantiate(PrefabLibrary.GetCharacterCanvas(), model.gameObject.transform);
-        CharacterCanvas characterCanvas = canvasObject.GetComponent<CharacterCanvas>();
-        OnUpdateCanvas += characterCanvas.SetName;
-        OnToggleCanvas += characterCanvas.Toggle;
-        OnToggleCanvas.Invoke(false);
+        if(spawnData.ShowCanvas)
+        {
+            //add a character canvas
+            GameObject canvasObject = Instantiate(PrefabLibrary.GetCharacterCanvas(), model.gameObject.transform);
+            CharacterCanvas characterCanvas = canvasObject.GetComponent<CharacterCanvas>();
+            OnUpdateCanvas += characterCanvas.SetName;
+            OnToggleCanvas += characterCanvas.Toggle;
+            OnToggleCanvas.Invoke(false);
+        }
 
         yield return null;
     }
 
     protected virtual void OnCharacterClicked()
     {
-        Debug.Log(_modelID.ToString() + " clicked");
+        Debug.Log(spawnData.ModelID + " clicked");
     }
 }

@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class NPCSpawner : Spawner
 {
-    [SerializeField] protected NPCSpawnData data;
-
     private void Start()
     {
         if(SpawnOnClosestPoint)
@@ -17,20 +15,20 @@ public class NPCSpawner : Spawner
             }
         }
 
-        GameObject npcObject = new GameObject("NPC " + data.ModelID, new System.Type[] { typeof(NPCComponent) });
+        GameObject npcObject = new GameObject("NPC " + spawnData.ModelID, new System.Type[] { typeof(NPCComponent) });
         npcObject.transform.parent = this.transform;
         npcObject.transform.position = this.transform.position;
         npcObject.transform.rotation = this.transform.rotation;
 
         NPCComponent npcComponent = npcObject.GetComponent<NPCComponent>();
 
-        npcComponent.ProcessSpawnData(data);
+        npcComponent.ProcessSpawnData(spawnData);
         npcComponent.Initialize();
        // npcComponent.StartNPC();
     }
 
     public override string GetSpawning()
     {
-        return data.ModelID.ToString();
+        return spawnData.ModelID.ToString();
     }
 }

@@ -479,9 +479,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32cef73ee59614a8499994ab047b9333, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnOnClosestPoint: 0
-  data:
+  spawnData:
     ModelID: 0
+    Team: 0
+    ShowNavDecals: 1
+    ShowModelDecal: 0
+    ShowCanvas: 0
+  SpawnOnClosestPoint: 0
 --- !u!1 &1012356314
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,9 +593,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aac591e9d1db1413bbef3d6abf9ce36b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnData:
+    ModelID: 0
+    Team: 0
+    ShowNavDecals: 0
+    ShowModelDecal: 0
+    ShowCanvas: 0
   SpawnOnClosestPoint: 0
-  data:
-    ModelID: 1
 --- !u!4 &1343207377
 Transform:
   m_ObjectHideFlags: 0

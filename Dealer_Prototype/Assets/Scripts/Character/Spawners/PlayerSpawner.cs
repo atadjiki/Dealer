@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerSpawner : Spawner
 {
-    [SerializeField] protected PlayerSpawnData data;
-
     public void PerformSpawn()
     {
         if (SpawnOnClosestPoint)
@@ -20,13 +18,13 @@ public class PlayerSpawner : Spawner
             }
         }
 
-        GameObject playerObject = new GameObject("Player " + data.ModelID, new System.Type[] { typeof(PlayerComponent) });
+        GameObject playerObject = new GameObject("Player " + spawnData.ModelID, new System.Type[] { typeof(PlayerComponent) });
         playerObject.transform.parent = this.transform;
         playerObject.transform.position = this.transform.position;
         playerObject.transform.rotation = this.transform.rotation;
 
         PlayerComponent playerComponent = playerObject.GetComponent<PlayerComponent>();
-        playerComponent.ProcessSpawnData(data);
+        playerComponent.ProcessSpawnData(spawnData);
         playerComponent.Initialize();
 
         Global.OnPlayerSpawned.Invoke(playerComponent);
@@ -34,6 +32,6 @@ public class PlayerSpawner : Spawner
 
     public override string GetSpawning()
     {
-        return data.ModelID.ToString();
+        return spawnData.ModelID.ToString();
     }
 }
