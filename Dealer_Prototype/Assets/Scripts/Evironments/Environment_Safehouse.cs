@@ -12,6 +12,8 @@ public class Environment_Safehouse : EnvironmentComponent
 
     [SerializeField] Transform entrace_WalkTo_Location;
 
+    [SerializeField] private List<PlayerStation> _stations;
+
     protected override void OnPlayerSpanwed(PlayerComponent playerComponent)
     {
         base.OnPlayerSpanwed(playerComponent);
@@ -42,35 +44,31 @@ public class Environment_Safehouse : EnvironmentComponent
         _player.GoTo(entrace_WalkTo_Location.position);
     }
 
-    private void OnStationSelected(Enumerations.SafehouseStation station)
+    private void OnStationSelected(Enumerations.SafehouseStation stationID)
     {
-        Debug.Log("station selected " + station.ToString());
+        Debug.Log("station selected " + stationID.ToString());
+
+        foreach (PlayerStation station in _stations)
+        {
+            if (station.GetStationID() == stationID)
+            {
+                StartCoroutine(PerformPlayerTeleport(station.GetEntryTransform()));
+            }
+        }
     }
 
-    //private void FixedUpdate()
-    //{
-    //    if (!_allowInput) return;
+    private IEnumerator PerformPlayerTeleport(Transform location)
+    {
+        _safehouseCanvas.gameObject.SetActive(false);
+        transitionPanel.Toggle(true, 0.25f);
 
-    //    if (_player != null && Global.OnMouseContextChanged != null)
-    //    {
-    //        if (Camera.main != null)
-    //        {
-    //            Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
+        yield return new WaitForSeconds(0.25f);
 
-    //            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //            if (Physics.Raycast(ray, out RaycastHit hit))
-    //            {
-    //                PlayerStation station = hit.collider.GetComponent<PlayerStation>();
+        _player.Teleport(location);
 
-    //                if (station != null)
-    //                {
-    //                    mouseContext = station.GetMouseContext();
-    //                }
-    //            }
+        transitionPanel.Toggle(false, 1);
+        _safehouseCanvas.gameObject.SetActive(true);
 
-    //            Global.OnMouseContextChanged.Invoke(mouseContext);           
-    //        }
-    //    }
-
-    //}
+        yield return null;
+    }
 }

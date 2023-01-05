@@ -81,4 +81,10 @@ public class CharacterComponent : MonoBehaviour
     {
         Debug.Log(spawnData.ModelID + " clicked");
     }
+
+    public void Teleport(Transform location)
+    {
+        model.transform.position = location.position;
+        model.transform.rotation = location.rotation;
+    }
 }

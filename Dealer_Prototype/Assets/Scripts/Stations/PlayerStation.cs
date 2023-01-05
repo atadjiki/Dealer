@@ -9,6 +9,7 @@ public class PlayerStation : MonoBehaviour
 {
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
+    [SerializeField] private Enumerations.SafehouseStation stationID = Enumerations.SafehouseStation.None;
 
     public Transform GetEntryTransform()
     {
@@ -23,6 +24,11 @@ public class PlayerStation : MonoBehaviour
     private void OnMouseDown()
     {
         Debug.Log("Clicked on " + this.name);
+    }
+
+    public Enumerations.SafehouseStation GetStationID()
+    {
+        return stationID;
     }
 
 #if UNITY_EDITOR
