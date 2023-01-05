@@ -42,30 +42,30 @@ public class Environment_Safehouse : EnvironmentComponent
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (!_allowInput) return;
+    //private void FixedUpdate()
+    //{
+    //    if (!_allowInput) return;
 
-        if (_player != null && Global.OnMouseContextChanged != null)
-        {
-            if (Camera.main != null)
-            {
-                Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
+    //    if (_player != null && Global.OnMouseContextChanged != null)
+    //    {
+    //        if (Camera.main != null)
+    //        {
+    //            Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
 
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    PlayerStation station = hit.collider.GetComponent<PlayerStation>();
+    //            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //            if (Physics.Raycast(ray, out RaycastHit hit))
+    //            {
+    //                PlayerStation station = hit.collider.GetComponent<PlayerStation>();
 
-                    if (station != null)
-                    {
-                        mouseContext = station.GetMouseContext();
-                    }
-                }
+    //                if (station != null)
+    //                {
+    //                    mouseContext = station.GetMouseContext();
+    //                }
+    //            }
 
-                Global.OnMouseContextChanged.Invoke(mouseContext);           
-            }
-        }
+    //            Global.OnMouseContextChanged.Invoke(mouseContext);           
+    //        }
+    //    }
 
-    }
+    //}
 }
