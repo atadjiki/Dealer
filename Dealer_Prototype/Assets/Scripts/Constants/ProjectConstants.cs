@@ -174,7 +174,20 @@ namespace Constants
             Neutral,
             Enemy
         }
-   
+
+        public enum DistrictName
+        { 
+            Downtown, 
+            None 
+        };
+        public enum Level 
+        { 
+            Low, 
+            Medium, 
+            High, 
+            None 
+        };
+
         public static string GetSceneNameFromEnvironmentID(Enumerations.Environment environment)
         {
             switch (environment)

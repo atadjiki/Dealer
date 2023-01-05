@@ -53,6 +53,12 @@ public class Environment_Safehouse : EnvironmentComponent
             if (station.GetStationID() == stationID)
             {
                 StartCoroutine(PerformPlayerTeleport(station.GetEntryTransform()));
+
+                if(stationID == Enumerations.SafehouseStation.Door)
+                {
+
+                    _safehouseCanvas.gameObject.SetActive(false);
+                }
             }
         }
     }
