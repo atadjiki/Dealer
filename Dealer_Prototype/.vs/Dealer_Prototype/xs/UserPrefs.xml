@@ -1,11 +1,10 @@
 ﻿<Properties StartupConfiguration="{2AA29506-95F3-D309-9058-ABBE89690FC2}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UI/Player/PlayerCanvas.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Evironments/Environment_Safehouse.cs">
     <Files>
-      <File FileName="Assets/Scripts/Character/Components/NPCComponent.cs" Line="65" Column="40" />
-      <File FileName="Assets/Scripts/Pathfinding/NavigatorComponent.cs" Line="85" Column="32" />
-      <File FileName="Assets/Scripts/Constants/DisplayText.cs" Line="17" Column="54" />
-      <File FileName="Assets/Scripts/Constants/ProjectConstants.cs" Line="234" Column="6" />
-      <File FileName="Assets/Scripts/UI/Player/PlayerCanvas.cs" Line="24" Column="6" />
+      <File FileName="Assets/Scripts/Character/Components/NPCComponent.cs" Line="54" Column="10" />
+      <File FileName="Assets/Scripts/Evironments/Environment_Safehouse.cs" Line="27" Column="30" />
+      <File FileName="Assets/Scripts/UI/Environment/SafehouseCanvas.cs" Line="18" Column="25" />
+      <File FileName="Assets/Scripts/Constants/GameDelegates.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -13,15 +12,21 @@
           <Node name="Dealer_Prototype" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
-                <Node name="Character" expanded="True" />
+                <Node name="Character" expanded="True">
+                  <Node name="Components" expanded="True" />
+                </Node>
+                <Node name="Constants" expanded="True" />
+                <Node name="Evironments" expanded="True">
+                  <Node name="CameraRig" expanded="True" />
+                  <Node name="Environment_Safehouse.cs" selected="True" />
+                </Node>
                 <Node name="Pathfinding" expanded="True" />
                 <Node name="RunTime" expanded="True" />
                 <Node name="State" expanded="True" />
                 <Node name="Stations" expanded="True" />
                 <Node name="UI" expanded="True">
-                  <Node name="Player" expanded="True">
-                    <Node name="PlayerCanvas.cs" selected="True" />
-                  </Node>
+                  <Node name="Environment" expanded="True" />
+                  <Node name="Player" expanded="True" />
                 </Node>
               </Node>
             </Node>
@@ -33,7 +38,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.AstarPathfindingProjectEditor PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="44cadb0c-ef7d-4da3-960c-0df28441770d" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="004a64af-72d2-48ca-8629-2d5202db44dd" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

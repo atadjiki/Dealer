@@ -11,10 +11,16 @@ public class TransitionPanel : MonoBehaviour
 
     [SerializeField] private float transitionTime = 2f;
 
-    private void Awake()
+    public void SetInitialState(bool flag)
     {
-        image.color = Color.black;
-        Toggle(panelState);
+        if (flag)
+        {
+            image.color = Color.black;
+        }
+        else
+        {
+            image.color = new Color(0, 0, 0, 0);
+        }
     }
 
     public void Toggle(bool flag)

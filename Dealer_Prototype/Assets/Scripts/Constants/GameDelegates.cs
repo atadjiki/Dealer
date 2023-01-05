@@ -27,6 +27,10 @@ namespace GameDelegates
 
     public delegate void DestinationReached();
 
+    //ui
+
+    public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
+
     public class Global
     {
         public static NewCameraFollowTarget OnNewCameraTarget;

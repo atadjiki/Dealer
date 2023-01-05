@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Constants;
 using GameDelegates;
 using UnityEngine;
 
@@ -10,6 +11,15 @@ public class EnvironmentComponent : MonoBehaviour
     [SerializeField] protected PlayerSpawner playerSpawner;
 
     [SerializeField] protected CameraRig cameraRig;
+
+    protected TransitionPanel transitionPanel;
+
+    private void Awake()
+    {
+        GameObject transitionScreen = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), this.transform);
+        transitionPanel = transitionScreen.GetComponent<TransitionPanel>();
+        transitionPanel.SetInitialState(true);
+    }
 
     private void Start()
     {
@@ -25,6 +35,8 @@ public class EnvironmentComponent : MonoBehaviour
     protected virtual IEnumerator Coroutine_EnterActionsStart()
     {
         if (debug) Debug.Log("Environment " + this.name + " - enter actions");
+
+        transitionPanel.Toggle(false);
 
         yield return Coroutine_PerformEnterActions();
     }

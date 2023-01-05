@@ -8,7 +8,7 @@ public class Environment_Safehouse : EnvironmentComponent
 {
     private PlayerComponent _player;
 
-    private bool _allowInput = false;
+    private SafehouseCanvas _safehouseCanvas;
 
     [SerializeField] Transform entrace_WalkTo_Location;
 
@@ -22,24 +22,29 @@ public class Environment_Safehouse : EnvironmentComponent
 
     }
 
+    public void OnPlayerDestinationReached()
+    {
+        if(_safehouseCanvas == null)
+        {
+            //kick off the safehouse UI
+            GameObject safehouseCanvasObject = Instantiate<GameObject>(PrefabLibrary.GetSafehouseCanvas(), this.transform);
+            _safehouseCanvas = safehouseCanvasObject.GetComponent<SafehouseCanvas>();
+            SafehouseCanvas.OnStationSelected += OnStationSelected;
+        }
+    }
+
     private IEnumerator PerformEntranceScene()
     {
         yield return new WaitUntil( () => _player.HasInitialized());
 
-        _player.OnMovementStateChanged += OnMovementStateChanged;
-
-        yield return new WaitForSeconds(1f);
+        _player.OnDestinationReached += OnPlayerDestinationReached;
 
         _player.GoTo(entrace_WalkTo_Location.position);
     }
 
-    private void OnMovementStateChanged(Enumerations.MovementState state)
+    private void OnStationSelected(Enumerations.SafehouseStation station)
     {
-        if(state == Enumerations.MovementState.Stopped)
-        {
-            _player.OnMovementStateChanged -= OnMovementStateChanged;
-            _allowInput = true;
-        }
+        Debug.Log("station selected " + station.ToString());
     }
 
     //private void FixedUpdate()

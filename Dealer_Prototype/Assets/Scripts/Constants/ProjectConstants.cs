@@ -139,6 +139,15 @@ namespace Constants
             None
         }
 
+        public enum SafehouseStation
+        {
+            Save,
+            Phone,
+            Stash,
+            Door,
+            None
+        }
+
         public enum MouseContext
         {
             Move,

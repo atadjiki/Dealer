@@ -9,6 +9,7 @@ public class NPCComponent : CharacterComponent
 {
     protected Coroutine currentCoroutine;
 
+    public DestinationReached OnDestinationReached;
     public NewDestination OnNewDestination;
     public MovementStateChanged OnMovementStateChanged;
     public NewCommand OnNewCommand;
@@ -47,6 +48,11 @@ public class NPCComponent : CharacterComponent
 
     public void Stop()
     {
+        if(OnDestinationReached != null)
+        {
+            OnDestinationReached.Invoke();
+        }
+
         OnNewCommand.Invoke(Enumerations.CommandType.None);
         OnMovementStateChanged.Invoke(Enumerations.MovementState.Stopped);
     }

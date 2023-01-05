@@ -9,7 +9,10 @@ namespace Constants
         private static string Prefix_Character = "Prefabs/Character/";
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
         private static string Prefix_Gameplay = "Prefabs/Gameplay/";
+        private static string Prefix_UI = "Prefabs/UI/";
         private static string Prefix_UI_Character = "Prefabs/UI/Character/";
+        private static string Prefix_UI_Dialogue = "Prefabs/UI/Dialogue/";
+        private static string Prefix_UI_Safehouse = "Prefabs/UI/Safehouse/";
 
         //character models
 
@@ -64,6 +67,21 @@ namespace Constants
         public static GameObject GetNavigatorComponent()
         {
             return Resources.Load<GameObject>(Prefix_Character + "NavigatorComponent");
+        }
+
+        public static GameObject GetDialogueCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Dialogue + "DialogueCanvas");
+        }
+
+        public static GameObject GetSafehouseCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Safehouse + "SafehouseCanvas");
+        }
+
+        public static GameObject GetTransitionCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI + "TransitionCanvas");
         }
     }
 }
