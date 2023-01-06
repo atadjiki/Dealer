@@ -44,5 +44,7 @@ namespace GameDelegates
         public static MouseContextChanged OnMouseContextChanged;
 
         public static PlayerSpawned OnPlayerSpawned;
+
+        public static SafehouseStationSelected OnStationSelected;
     }
 }

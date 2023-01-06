@@ -12,6 +12,11 @@ public class Environment_Safehouse : EnvironmentComponent
 
     [SerializeField] private List<PlayerStation> _stations;
 
+    private void Start()
+    {
+        Global.OnStationSelected += OnStationSelected;
+    }
+
     protected override void OnPlayerSpanwed(PlayerComponent playerComponent)
     {
         base.OnPlayerSpanwed(playerComponent);
@@ -24,7 +29,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     public void OnPlayerDestinationReached()
     {
-        //TODO:: tell stations to show their canvases and buttons if they have them
+        ToggleStationUI(true);
     }
 
     private IEnumerator PerformEntranceScene()
@@ -51,7 +56,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
-        //TODO:: tell stations to hide canvases
+        ToggleStationUI(false);
         transitionPanel.Toggle(true, 0.25f);
 
         yield return new WaitForSeconds(0.25f);
@@ -60,14 +65,14 @@ public class Environment_Safehouse : EnvironmentComponent
 
         if (station == Enumerations.SafehouseStation.Door)
         {
-            //TODO:: tell stations to hide canvases
+            ToggleStationUI(false);
             GameObject cityMapObject = Instantiate<GameObject>(PrefabLibrary.GetCityMapCanvas(), this.transform);
             CityMapCanvas cityMapCanvas = cityMapObject.GetComponent<CityMapCanvas>();
             cityMapCanvas.OnBackButtonPressed += OnBackButtonPressed;
         }
         else
         {
-            //TODO:: tell stations to show canvases
+            ToggleStationUI(true);
         }
 
         transitionPanel.Toggle(false, 1);
@@ -78,5 +83,13 @@ public class Environment_Safehouse : EnvironmentComponent
     private void OnBackButtonPressed()
     {
         StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, entrace_WalkTo_Location));
+    }
+
+    public void ToggleStationUI(bool flag)
+    {
+        foreach(PlayerStation station in _stations)
+        {
+            station.ToggleUI(flag);
+        }
     }
 }

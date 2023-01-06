@@ -3,33 +3,43 @@ using System.Collections.Generic;
 using Constants;
 using UnityEditor;
 using UnityEngine;
+using Cinemachine;
 
 [RequireComponent(typeof(BoxCollider))]
 public class PlayerStation : MonoBehaviour
 {
+    [SerializeField] private CinemachineVirtualCamera _camera;
     [SerializeField] private Transform _entryTransform;
-    [SerializeField] private Enumerations.MouseContext mouseContext = Enumerations.MouseContext.None;
     [SerializeField] private Enumerations.SafehouseStation stationID = Enumerations.SafehouseStation.None;
+
+    private StationCanvas _stationCanvas;
 
     public Transform GetEntryTransform()
     {
         return _entryTransform;
     }
 
-    public Enumerations.MouseContext GetMouseContext()
-    {
-        return mouseContext;
-    }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("Clicked on " + this.name);
-    }
-
     public Enumerations.SafehouseStation GetStationID()
     {
         return stationID;
     }
+
+    private void Awake()
+    {
+        GameObject stationCanvasObject = Instantiate<GameObject>(PrefabLibrary.GetStationCanvas(), _entryTransform);
+        _stationCanvas = stationCanvasObject.GetComponent<StationCanvas>();
+        _stationCanvas.Setup(stationID);
+    }
+
+    public void ToggleUI(bool flag)
+    {
+        if(_stationCanvas != null)
+        {
+            _stationCanvas.gameObject.SetActive(flag);
+        }
+    }
+
+
 
 #if UNITY_EDITOR
 

@@ -16,14 +16,12 @@ public class EnvironmentComponent : MonoBehaviour
 
     private void Awake()
     {
+        Global.OnPlayerSpawned += OnPlayerSpanwed;
+
         GameObject transitionScreen = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), this.transform);
         transitionPanel = transitionScreen.GetComponent<TransitionPanel>();
         transitionPanel.SetInitialState(true);
-    }
 
-    private void Start()
-    {
-        Global.OnPlayerSpawned += OnPlayerSpanwed;
         StartCoroutine(Coroutine_EnterActionsStart());
     }
 

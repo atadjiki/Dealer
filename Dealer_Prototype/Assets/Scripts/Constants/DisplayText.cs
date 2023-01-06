@@ -27,5 +27,23 @@ namespace Constants
                     return string.Empty;
             }
         }
+
+        public static string Get(Enumerations.SafehouseStation station)
+        {
+            switch (station)
+            {
+                case Enumerations.SafehouseStation.Door:
+                    return "Exit";
+                case Enumerations.SafehouseStation.Phone:
+                    return "Phone";
+                case Enumerations.SafehouseStation.Save:
+                    return "Save";
+                case Enumerations.SafehouseStation.Stash:
+                    return "Stash";
+
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }
