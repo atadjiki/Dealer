@@ -85,6 +85,6 @@ public class CharacterComponent : MonoBehaviour
     public void Teleport(Transform location)
     {
         model.transform.position = location.position;
-        model.transform.rotation = location.rotation;
+        model.transform.localRotation = location.localRotation;
     }
 }

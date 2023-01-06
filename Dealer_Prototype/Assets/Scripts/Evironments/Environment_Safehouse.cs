@@ -52,18 +52,12 @@ public class Environment_Safehouse : EnvironmentComponent
         {
             if (station.GetStationID() == stationID)
             {
-                StartCoroutine(PerformPlayerTeleport(station.GetEntryTransform()));
-
-                if(stationID == Enumerations.SafehouseStation.Door)
-                {
-
-                    _safehouseCanvas.gameObject.SetActive(false);
-                }
+                StartCoroutine(PerformStationSelect(stationID, station.GetEntryTransform()));
             }
         }
     }
 
-    private IEnumerator PerformPlayerTeleport(Transform location)
+    private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
         _safehouseCanvas.gameObject.SetActive(false);
         transitionPanel.Toggle(true, 0.25f);
@@ -72,9 +66,25 @@ public class Environment_Safehouse : EnvironmentComponent
 
         _player.Teleport(location);
 
+        if (station == Enumerations.SafehouseStation.Door)
+        {
+            _safehouseCanvas.gameObject.SetActive(false);
+            GameObject cityMapObject = Instantiate<GameObject>(PrefabLibrary.GetCityMapCanvas(), this.transform);
+            CityMapCanvas cityMapCanvas = cityMapObject.GetComponent<CityMapCanvas>();
+            cityMapCanvas.OnBackButtonPressed += OnBackButtonPressed;
+        }
+        else
+        {
+            _safehouseCanvas.gameObject.SetActive(true);
+        }
+
         transitionPanel.Toggle(false, 1);
-        _safehouseCanvas.gameObject.SetActive(true);
 
         yield return null;
+    }
+
+    private void OnBackButtonPressed()
+    {
+        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, entrace_WalkTo_Location));
     }
 }

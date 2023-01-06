@@ -10,6 +10,7 @@ namespace Constants
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
         private static string Prefix_Gameplay = "Prefabs/Gameplay/";
         private static string Prefix_UI = "Prefabs/UI/";
+        private static string Prefix_UI_CityMap = "Prefabs/UI/CityMap/";
         private static string Prefix_UI_Character = "Prefabs/UI/Character/";
         private static string Prefix_UI_Dialogue = "Prefabs/UI/Dialogue/";
         private static string Prefix_UI_Safehouse = "Prefabs/UI/Safehouse/";
@@ -33,12 +34,10 @@ namespace Constants
         public static GameObject GetCharacterModelByID(Enumerations.CharacterModelID ID)
         {
             string ModelPath = GetResourcePath(ID);
-        //    Debug.Log(ModelPath);
             return Resources.Load<GameObject>(ModelPath);
         }
 
         //debug
-
         public static GameObject GetDirectionalMarker()
         {
             return Resources.Load<GameObject>(Prefix_Debug + "DirectionalMarker");
@@ -82,6 +81,11 @@ namespace Constants
         public static GameObject GetTransitionCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI + "TransitionCanvas");
+        }
+
+        public static GameObject GetCityMapCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_CityMap + "CityMapCanvas");
         }
     }
 }

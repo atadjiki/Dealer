@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using Constants;
+using GameDelegates;
 
 public class CityMapCanvas : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class CityMapCanvas : MonoBehaviour
     [SerializeField] private Button Button_Visit;
 
     [SerializeField] private Button Button_Downtown;
+
+    public BackButtonPressed OnBackButtonPressed;
 
     private void Awake()
     {
@@ -31,6 +34,12 @@ public class CityMapCanvas : MonoBehaviour
 
     private void OnBackClicked()
     {
+        if(OnBackButtonPressed != null)
+        {
+            OnBackButtonPressed.Invoke();
+        }
+
         Destroy(this.gameObject);
     }
 }
+

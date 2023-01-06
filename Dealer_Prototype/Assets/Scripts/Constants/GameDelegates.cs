@@ -31,6 +31,8 @@ namespace GameDelegates
 
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
+    public delegate void BackButtonPressed();
+
     public class Global
     {
         public static NewCameraFollowTarget OnNewCameraTarget;
