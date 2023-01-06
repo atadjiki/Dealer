@@ -35,6 +35,8 @@ namespace GameDelegates
     public delegate void CancelButtonPressed();
     public delegate void OKButtonPressed();
 
+    public delegate void PlayAudioClip(AudioClip clip);
+
     public class Global
     {
         public static NewCameraFollowTarget OnNewCameraTarget;
@@ -42,6 +44,5 @@ namespace GameDelegates
         public static MouseContextChanged OnMouseContextChanged;
 
         public static PlayerSpawned OnPlayerSpawned;
-
     }
 }

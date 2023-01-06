@@ -13,6 +13,8 @@ public class SafehouseCanvas : MonoBehaviour
     [SerializeField] private Button Button_Stash;
     [SerializeField] private Button Button_Door;
 
+    [SerializeField] private AudioClip _audioClip;
+
     public static SafehouseStationSelected OnStationSelected;
 
     private void Awake()
@@ -26,7 +28,9 @@ public class SafehouseCanvas : MonoBehaviour
 
     public void OnClicked(Enumerations.SafehouseStation station)
     {
-        if(OnStationSelected != null)
+        AudioSource.PlayClipAtPoint(_audioClip, Camera.main.transform.position, 0.5f) ;
+
+        if (OnStationSelected != null)
         {
             OnStationSelected.Invoke(station);
         }
