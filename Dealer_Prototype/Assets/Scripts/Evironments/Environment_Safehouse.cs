@@ -8,8 +8,6 @@ public class Environment_Safehouse : EnvironmentComponent
 {
     private PlayerComponent _player;
 
-    private SafehouseCanvas _safehouseCanvas;
-
     [SerializeField] Transform entrace_WalkTo_Location;
 
     [SerializeField] private List<PlayerStation> _stations;
@@ -26,13 +24,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     public void OnPlayerDestinationReached()
     {
-        if(_safehouseCanvas == null)
-        {
-            //kick off the safehouse UI
-            GameObject safehouseCanvasObject = Instantiate<GameObject>(PrefabLibrary.GetSafehouseCanvas(), this.transform);
-            _safehouseCanvas = safehouseCanvasObject.GetComponent<SafehouseCanvas>();
-            SafehouseCanvas.OnStationSelected += OnStationSelected;
-        }
+        //TODO:: tell stations to show their canvases and buttons if they have them
     }
 
     private IEnumerator PerformEntranceScene()
@@ -59,7 +51,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
-        _safehouseCanvas.gameObject.SetActive(false);
+        //TODO:: tell stations to hide canvases
         transitionPanel.Toggle(true, 0.25f);
 
         yield return new WaitForSeconds(0.25f);
@@ -68,14 +60,14 @@ public class Environment_Safehouse : EnvironmentComponent
 
         if (station == Enumerations.SafehouseStation.Door)
         {
-            _safehouseCanvas.gameObject.SetActive(false);
+            //TODO:: tell stations to hide canvases
             GameObject cityMapObject = Instantiate<GameObject>(PrefabLibrary.GetCityMapCanvas(), this.transform);
             CityMapCanvas cityMapCanvas = cityMapObject.GetComponent<CityMapCanvas>();
             cityMapCanvas.OnBackButtonPressed += OnBackButtonPressed;
         }
         else
         {
-            _safehouseCanvas.gameObject.SetActive(true);
+            //TODO:: tell stations to show canvases
         }
 
         transitionPanel.Toggle(false, 1);
