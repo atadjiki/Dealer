@@ -32,6 +32,8 @@ namespace GameDelegates
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
     public delegate void BackButtonPressed();
+    public delegate void CancelButtonPressed();
+    public delegate void OKButtonPressed();
 
     public class Global
     {

@@ -83,6 +83,12 @@ namespace Constants
             return Resources.Load<GameObject>(Prefix_UI + "TransitionCanvas");
         }
 
+        public static GameObject GetOKCancelCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI + "OkCancelDialogCanvas");
+        }
+        
+
         public static GameObject GetCityMapCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI_CityMap + "CityMapCanvas");

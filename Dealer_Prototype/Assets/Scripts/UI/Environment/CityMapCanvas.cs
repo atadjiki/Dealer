@@ -22,6 +22,7 @@ public class CityMapCanvas : MonoBehaviour
 
         Button_Downtown.onClick.AddListener(delegate () { OnDistrictClicked(Enumerations.DistrictName.Downtown); });
         Button_Back.onClick.AddListener(delegate () { OnBackClicked(); });
+        Button_Visit.onClick.AddListener(delegate () { OnVisitClicked();  });
     }
 
     private void OnDistrictClicked(Enumerations.DistrictName district)
@@ -40,6 +41,28 @@ public class CityMapCanvas : MonoBehaviour
         }
 
         Destroy(this.gameObject);
+    }
+
+    private void OnVisitClicked()
+    {
+        GameObject dialogObject = Instantiate<GameObject>(PrefabLibrary.GetOKCancelCanvas(), null);
+        DialogPanel dialogPanel = dialogObject.GetComponent<DialogPanel>();
+
+        dialogPanel.OnOKPressed += () => OnOKPressed(dialogPanel);
+        dialogPanel.OnCancelPressed += () => OnCancelPressed(dialogPanel);
+
+        dialogPanel.Setup("Head Outside?", "");
+    }
+
+   private void OnOKPressed(DialogPanel dialogPanel)
+   {
+        Destroy(dialogPanel.gameObject);
+        Debug.Log("loading dealer level");
+    }
+
+    private void OnCancelPressed(DialogPanel dialogPanel)
+    {
+        Destroy(dialogPanel.gameObject);
     }
 }
 
