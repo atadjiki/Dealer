@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using Constants;
 using GameDelegates;
+using System;
 
 public class CityMapCanvas : MonoBehaviour
 {
@@ -54,25 +55,22 @@ public class CityMapCanvas : MonoBehaviour
         GameObject dialogObject = Instantiate<GameObject>(PrefabLibrary.GetOKCancelCanvas(), null);
         DialogPanel dialogPanel = dialogObject.GetComponent<DialogPanel>();
 
-        dialogPanel.OnOKPressed += () => OnOKPressed(dialogPanel);
-        dialogPanel.OnCancelPressed += () => OnCancelPressed(dialogPanel);
+        Action okAction = new Action(OnOKPressed);
+        Action cancelAction = new Action(OnCancelPressed);
 
-        dialogPanel.Setup("Head Outside?", "");
+        dialogPanel.Setup("Head Outside?", "", new Action(OnOKPressed), OnCancelPressed);
     }
 
-   private void OnOKPressed(DialogPanel dialogPanel)
+   private void OnOKPressed()
    {
         AudioUtility.ButtonClick();
 
-        Destroy(dialogPanel.gameObject);
-        Debug.Log("loading dealer level");
+        LevelUtility.GoToLoading(LevelUtility.PlayerLocation.City);
     }
 
-    private void OnCancelPressed(DialogPanel dialogPanel)
+    private void OnCancelPressed()
     {
         AudioUtility.ButtonClick();
-
-        Destroy(dialogPanel.gameObject);
     }
 }
 

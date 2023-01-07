@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class CharacterCanvas : UIPanel
+public class CharacterCanvas : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI Text_Name;
     [SerializeField] private TextMeshProUGUI Text_Level;

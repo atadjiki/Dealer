@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameDelegates;
 using UnityEngine;
+using static LevelUtility;
 
 public class GameState : MonoBehaviour
 {
     private static string Key_SaveData = "SaveData";
+    public static PlayerLocation location = PlayerLocation.Safehouse; 
 
     [SerializeField] private SaveData _saveData;
 
@@ -24,6 +27,11 @@ public class GameState : MonoBehaviour
     public void Save()
     {
         ES3.Save<SaveData>(Key_SaveData, _saveData);
+
+        if(Global.OnGameStateChanged != null)
+        {
+            Global.OnGameStateChanged.Invoke(_saveData);
+        }
     }
 
     public void Load()

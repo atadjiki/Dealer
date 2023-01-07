@@ -28,4 +28,9 @@ public class UIUtility : MonoBehaviour
 
         panel.ToggleAndDestroy(false, transitionTime);
     }
+
+    public static void RequestLoadingScreen()
+    {
+        GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetLoadingScreen(), null);
+    }
 }

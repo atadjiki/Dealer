@@ -4,6 +4,7 @@ using Constants;
 using UnityEditor;
 using UnityEngine;
 using Cinemachine;
+using GameDelegates;
 
 [RequireComponent(typeof(BoxCollider))]
 public class PlayerStation : MonoBehaviour
@@ -24,6 +25,11 @@ public class PlayerStation : MonoBehaviour
         return stationID;
     }
 
+    private void Awake()
+    {
+        Global.OnToggleUI += ToggleUI;
+    }
+
     private void Start()
     {
         if(_stationCanvas != null)
@@ -33,7 +39,7 @@ public class PlayerStation : MonoBehaviour
 
     }
 
-    public void ToggleUI(bool flag)
+    private void ToggleUI(bool flag)
     {
         if(_stationCanvas != null)
         {

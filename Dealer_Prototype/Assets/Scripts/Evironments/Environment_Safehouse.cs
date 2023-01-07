@@ -32,7 +32,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     public void OnPlayerDestinationReached()
     {
-        ToggleStationUI(true);
+        Global.OnToggleUI(true);
     }
 
     private IEnumerator PerformEntranceScene()
@@ -50,8 +50,6 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void OnStationSelected(Enumerations.SafehouseStation stationID)
     {
-        Debug.Log("station selected " + stationID.ToString());
-
         foreach (PlayerStation station in _stations)
         {
             if (station.GetStationID() == stationID)
@@ -63,8 +61,9 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
-        ToggleStationUI(false);
+        Global.OnToggleUI(false);
         TransitionPanel transitionPanel = UIUtility.RequestFadeToBlack(0.25f);
+        Global.OnToggleUI(false);
 
         yield return new WaitForSeconds(0.25f);
 
@@ -72,14 +71,13 @@ public class Environment_Safehouse : EnvironmentComponent
 
         if (station == Enumerations.SafehouseStation.Door)
         {
-            ToggleStationUI(false);
             GameObject cityMapObject = Instantiate<GameObject>(PrefabLibrary.GetCityMapCanvas(), this.transform);
             CityMapCanvas cityMapCanvas = cityMapObject.GetComponent<CityMapCanvas>();
             cityMapCanvas.OnBackButtonPressed += OnBackButtonPressed;
         }
         else
         {
-            ToggleStationUI(true);
+            Global.OnToggleUI(true);
         }
 
         transitionPanel.ToggleAndDestroy(false, 1);
@@ -90,13 +88,5 @@ public class Environment_Safehouse : EnvironmentComponent
     private void OnBackButtonPressed()
     {
         StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, entrace_WalkTo_Location));
-    }
-
-    public void ToggleStationUI(bool flag)
-    {
-        foreach(PlayerStation station in _stations)
-        {
-            station.ToggleUI(flag);
-        }
     }
 }

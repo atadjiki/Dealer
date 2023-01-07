@@ -32,10 +32,16 @@ namespace GameDelegates
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
     public delegate void BackButtonPressed();
-    public delegate void CancelButtonPressed();
-    public delegate void OKButtonPressed();
 
     public delegate void PlayAudioClip(AudioClip clip);
+
+    public delegate void GameStateChanged(SaveData _data);
+
+    public delegate void ToggleUI(bool flag);
+
+    public delegate void LevelLoading();
+
+    public delegate void LevelHasLoaded();
 
     public class Global
     {
@@ -46,5 +52,13 @@ namespace GameDelegates
         public static PlayerSpawned OnPlayerSpawned;
 
         public static SafehouseStationSelected OnStationSelected;
+
+        public static GameStateChanged OnGameStateChanged;
+
+        public static ToggleUI OnToggleUI;
+
+        public static LevelLoading OnLevelLoading;
+
+        public static LevelHasLoaded OnLevelHasLoaded;
     }
 }

@@ -9,11 +9,14 @@ namespace Constants
         private static string Prefix_Character = "Prefabs/Character/";
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
         private static string Prefix_Gameplay = "Prefabs/Gameplay/";
+
         private static string Prefix_UI = "Prefabs/UI/";
         private static string Prefix_UI_CityMap = "Prefabs/UI/CityMap/";
         private static string Prefix_UI_Character = "Prefabs/UI/Character/";
         private static string Prefix_UI_Dialogue = "Prefabs/UI/Dialogue/";
+        private static string Prefix_UI_GameMode = "Prefabs/UI/GameMode/";
         private static string Prefix_UI_Safehouse = "Prefabs/UI/Safehouse/";
+        private static string Prefix_UI_Utility = "Prefabs/UI/Utility/";
 
         //character models
 
@@ -80,18 +83,22 @@ namespace Constants
 
         public static GameObject GetTransitionCanvas()
         {
-            return Resources.Load<GameObject>(Prefix_UI + "TransitionCanvas");
+            return Resources.Load<GameObject>(Prefix_UI_Utility + "TransitionCanvas");
         }
 
         public static GameObject GetOKCancelCanvas()
         {
-            return Resources.Load<GameObject>(Prefix_UI + "OkCancelDialogCanvas");
+            return Resources.Load<GameObject>(Prefix_UI_Utility + "OkCancelDialogCanvas");
         }
         
-
         public static GameObject GetCityMapCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI_CityMap + "CityMapCanvas");
+        }
+
+        public static GameObject GetLoadingScreen()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_GameMode + "UI_Panel_Loading");
         }
     }
 }
