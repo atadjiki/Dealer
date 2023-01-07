@@ -8,8 +8,6 @@ public class Spawner : MonoBehaviour
 {
     [SerializeField] protected CharacterSpawnData spawnData;
 
-    public bool SpawnOnClosestPoint;
-
     public virtual string GetSpawning()
     {
         return null;

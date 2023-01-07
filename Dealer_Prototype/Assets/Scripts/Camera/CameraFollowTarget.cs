@@ -8,8 +8,6 @@ public class CameraFollowTarget : MonoBehaviour
 {
     private Transform initialParent;
 
-    private bool _attached = false;
-
     private void Start()
     {
         initialParent = transform.parent;
@@ -21,12 +19,10 @@ public class CameraFollowTarget : MonoBehaviour
     {
         transform.parent = newParent;
         transform.localPosition = Vector3.zero;
-        _attached = true;
     }
 
     public void ResetFollowTarget()
     {
         transform.parent = initialParent;
-        _attached = false;
     }
 }

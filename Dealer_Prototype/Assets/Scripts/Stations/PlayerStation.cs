@@ -12,7 +12,7 @@ public class PlayerStation : MonoBehaviour
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Enumerations.SafehouseStation stationID = Enumerations.SafehouseStation.None;
 
-    private StationCanvas _stationCanvas;
+    [SerializeField] private StationCanvas _stationCanvas;
 
     public Transform GetEntryTransform()
     {
@@ -24,11 +24,13 @@ public class PlayerStation : MonoBehaviour
         return stationID;
     }
 
-    private void Awake()
+    private void Start()
     {
-        GameObject stationCanvasObject = Instantiate<GameObject>(PrefabLibrary.GetStationCanvas(), _entryTransform);
-        _stationCanvas = stationCanvasObject.GetComponent<StationCanvas>();
-        _stationCanvas.Setup(stationID);
+        if(_stationCanvas != null)
+        {
+            _stationCanvas.Setup(stationID);
+        }
+
     }
 
     public void ToggleUI(bool flag)

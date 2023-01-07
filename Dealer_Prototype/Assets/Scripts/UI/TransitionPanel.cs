@@ -7,8 +7,6 @@ public class TransitionPanel : MonoBehaviour
 {
     [SerializeField] private Image image;
 
-    [SerializeField] private bool panelState = false;
-
     [SerializeField] private float transitionTime = 2f;
 
     public void SetInitialState(bool flag)

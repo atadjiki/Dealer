@@ -33,11 +33,11 @@ namespace Constants
             switch (station)
             {
                 case Enumerations.SafehouseStation.Door:
-                    return "Exit";
+                    return "Leave";
                 case Enumerations.SafehouseStation.Phone:
                     return "Phone";
                 case Enumerations.SafehouseStation.Save:
-                    return "Save";
+                    return "Rest";
                 case Enumerations.SafehouseStation.Stash:
                     return "Stash";
 

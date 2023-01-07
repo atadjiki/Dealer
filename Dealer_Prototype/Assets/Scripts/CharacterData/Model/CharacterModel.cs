@@ -13,6 +13,8 @@ public class CharacterModel : MonoBehaviour
 
     public ModelClicked OnModelClickedDelegate;
 
+    public bool allowHighlight = false;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -34,7 +36,7 @@ public class CharacterModel : MonoBehaviour
     {
         Enumerations.WeaponID weaponID = characterInfo.WeaponID;
 
-        if(weaponID != Enumerations.WeaponID.None && _weaponSocket != null)
+        if (weaponID != Enumerations.WeaponID.None && _weaponSocket != null)
         {
             GameObject weaponPrefab = Instantiate(PrefabManager.Instance.GetWeaponModel(weaponID), _weaponSocket.transform);
             weaponPrefab.transform.localScale = Vector3.one;
@@ -55,12 +57,20 @@ public class CharacterModel : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        HandleHightlight(_team);
+        if (allowHighlight)
+        {
+            HandleHightlight(_team);
+        }
+
     }
 
     private void OnMouseExit()
     {
-        RemoveHighlight();
+        if (allowHighlight)
+        {
+            RemoveHighlight();
+        }
+
     }
 
     private void OnMouseDown()
@@ -71,7 +81,7 @@ public class CharacterModel : MonoBehaviour
     //delegate functions
     public void HandleHightlight(Enumerations.Team team)
     {
-       switch(team)
+        switch (team)
         {
             case Enumerations.Team.Player:
                 MaterialHelper.SetPlayerOutline(this);
@@ -92,7 +102,7 @@ public class CharacterModel : MonoBehaviour
 
     public void HandleCharacterAction(Enumerations.CommandType action)
     {
-        switch(action)
+        switch (action)
         {
             case Enumerations.CommandType.Move:
             case Enumerations.CommandType.Approach:

@@ -7,7 +7,7 @@ public class PlayerSpawner : Spawner
 {
     public void PerformSpawn()
     {
-        if (SpawnOnClosestPoint)
+        if (spawnData.SpawnOnClosestPoint)
         {
             bool success;
 

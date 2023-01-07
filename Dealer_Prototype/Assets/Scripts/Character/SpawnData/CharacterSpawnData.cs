@@ -9,4 +9,7 @@ public class CharacterSpawnData
     public bool ShowNavDecals = true;
     public bool ShowModelDecal = false;
     public bool ShowCanvas = false;
+    public bool AllowHighlight = false;
+    public bool SpawnOnClosestPoint;
+
 }

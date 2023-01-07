@@ -4,7 +4,7 @@ public class NPCSpawner : Spawner
 {
     private void Start()
     {
-        if(SpawnOnClosestPoint)
+        if(spawnData.SpawnOnClosestPoint)
         {
             bool success;
 

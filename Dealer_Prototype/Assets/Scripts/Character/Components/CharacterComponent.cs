@@ -42,6 +42,8 @@ public class CharacterComponent : MonoBehaviour
         model = spawnedCharacter.GetComponent<CharacterModel>();
         model.SetTeam(spawnData.Team);
 
+        model.allowHighlight = spawnData.AllowHighlight;
+
         model.OnModelClickedDelegate += OnCharacterClicked;
 
         yield return new WaitUntil(() => model != null);
