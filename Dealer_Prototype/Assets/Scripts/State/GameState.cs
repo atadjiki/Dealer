@@ -1,163 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
 using UnityEngine;
 
-public class Data
+public class GameState : MonoBehaviour
 {
-    public virtual void Load()
+    // Start is called before the first frame update
+    void Start()
     {
-        if (GameStateManager.Instance.debug) Debug.Log("Loading " + this.GetType().Name);
+        
     }
 
-    public virtual void Save()
+    // Update is called once per frame
+    void Update()
     {
-        if (GameStateManager.Instance.debug) Debug.Log("Saving " + this.GetType().Name);
-    }
-}
-
-public class PlayerData : Data
-{
-    public string Name;
-    public int Money;
-    public int Drugs;
-    public Enumerations.Environment Environment;
-
-
-    public override void Load()
-    {
-        base.Load();
-
-        if (ES3.KeyExists(SaveKeys.Player_Name))
-        {
-            Name = ES3.Load<string>(SaveKeys.Player_Name);
-        }
-        else
-        {
-            Name = "Default_Player_Name";
-        }
-
-        if(ES3.KeyExists(SaveKeys.Player_Environment))
-        {
-            Environment = ES3.Load<Enumerations.Environment>(SaveKeys.Player_Environment);
-        }
-        else
-        {
-            Environment = Enumerations.Environment.Safehouse;
-        }
-
-        Money = ES3.Load<int>(SaveKeys.Player_Money, 0);
-        Drugs = ES3.Load<int>(SaveKeys.Player_Drugs, 0);
-    }
-
-    public override void Save()
-    {
-        base.Save();
-
-        ES3.Save(SaveKeys.Player_Name, Name);
-        ES3.Save(SaveKeys.Player_Money, Money);
-        ES3.Save(SaveKeys.Player_Drugs, Drugs);
-        ES3.Save(SaveKeys.Player_Environment, Environment);
-    }
-}
-
-public class GameData : Data
-{
-    public int Day;
-
-    public override void Load()
-    {
-        base.Load();
-
-        Day = ES3.Load<int>(SaveKeys.Game_Day, 0);
-    }
-
-    public override void Save()
-    {
-        base.Save();
-
-        ES3.Save(SaveKeys.Game_Day, Day);
-    }
-}
-
-public class GameState
-{
-    private Stack<Enumerations.GameMode> modeQueue;
-
-    private PlayerData playerData;
-    private GameData gameData;
-
-    public GameState()
-    {
-        modeQueue = new Stack<Enumerations.GameMode>();
-
-        playerData = new PlayerData();
-        gameData = new GameData();
-    }
-
-    public void SaveState()
-    {
-        playerData.Save();
-        gameData.Save();
-    }
-
-    public void LoadState()
-    {
-        playerData.Load();
-        gameData.Load();
-    }
-
-    public bool EnqueueGameMode(Enumerations.GameMode mode)
-    {
-        if (modeQueue.Contains(mode)) return false;
-
-        modeQueue.Push(mode);
-        PrintModeQueue();
-        return true;
-    }
-
-    public bool DequeueGameMode()
-    {
-        if (modeQueue.Count == 0) { return false; }
-
-        modeQueue.Pop();
-        PrintModeQueue();
-        return true;
-    }
-
-    public Enumerations.GameMode GetActiveMode()
-    {
-        if (modeQueue.Count == 0) { return Enumerations.GameMode.Root; }
-
-        return modeQueue.Peek();
-    }
-
-    public PlayerData GetPlayerData() { return playerData; }
-    public GameData GetGameData() { return gameData; }
-
-    public void SetEnvironment(Enumerations.Environment environment)
-    {
-        playerData.Environment = environment;
-    }
-
-    public Enumerations.Environment GetEnvironment()
-    {
-        return playerData.Environment;
-    }
-
-    private void PrintModeQueue()
-    {
-        if (GameStateManager.Instance.debug)
-        {
-            string output = "Mode Queue: ";
-
-            foreach (Enumerations.GameMode mode in modeQueue)
-            {
-                output += mode.ToString();
-                output += ", ";
-            }
-
-            Debug.Log(output);
-        }
+        
     }
 }

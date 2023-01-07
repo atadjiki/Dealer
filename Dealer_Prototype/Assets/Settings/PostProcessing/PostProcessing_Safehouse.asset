@@ -22,15 +22,15 @@ MonoBehaviour:
     showEyeDropper: 1
   center:
     m_OverrideState: 1
-    m_Value: {x: 0.26, y: 0.5}
+    m_Value: {x: 0.5, y: 0.22}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.275
     min: 0
     max: 1
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.1
+    m_Value: 1
     min: 0.01
     max: 1
   rounded:
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   type:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 7
   intensity:
     m_OverrideState: 1
     m_Value: 0.25
@@ -82,8 +82,25 @@ MonoBehaviour:
   - {fileID: -7889009079158935223}
   - {fileID: -99391850964677878}
   - {fileID: 5905416166971998345}
-  - {fileID: 6701195194349483010}
   - {fileID: 8939860800651569959}
+  - {fileID: 170802517683907034}
+--- !u!114 &170802517683907034
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
+  m_Name: Tonemapping
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  mode:
+    m_OverrideState: 1
+    m_Value: 2
 --- !u!114 &5905416166971998345
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -100,47 +117,9 @@ MonoBehaviour:
   m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.1
+    m_Value: 0.15
     min: 0
     max: 1
---- !u!114 &6701195194349483010
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
-  m_Name: ColorAdjustments
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  postExposure:
-    m_OverrideState: 1
-    m_Value: 0.5
-  contrast:
-    m_OverrideState: 1
-    m_Value: 3
-    min: -100
-    max: 100
-  colorFilter:
-    m_OverrideState: 0
-    m_Value: {r: 2.1333334, g: 2.4627452, b: 2.101961, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  hueShift:
-    m_OverrideState: 1
-    m_Value: -0
-    min: -180
-    max: 180
-  saturation:
-    m_OverrideState: 1
-    m_Value: -28
-    min: -100
-    max: 100
 --- !u!114 &8939860800651569959
 MonoBehaviour:
   m_ObjectHideFlags: 3
