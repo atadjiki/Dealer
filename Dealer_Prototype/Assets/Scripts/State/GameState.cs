@@ -1,18 +1,107 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static string Key_SaveData = "SaveData";
+
+    [SerializeField] private SaveData _saveData;
+
+    private void Awake()
     {
-        
+        if(_saveData == null)
+        {
+            Load();
+        }
+        else
+        {
+            Save();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Save()
     {
-        
+        ES3.Save<SaveData>(Key_SaveData, _saveData);
     }
+
+    public void Load()
+    {
+        if(ES3.KeyExists(Key_SaveData))
+        {
+            _saveData = ES3.Load<SaveData>(Key_SaveData);
+            Debug.Log(_saveData.ToString());
+        }
+        else
+        {
+            _saveData = this.gameObject.AddComponent<SaveData>();
+        }
+
+    }
+
+    public int GetDay()
+    {
+        return _saveData.Day;
+    }
+
+    public int GetMoney()
+    {
+        return _saveData.Money;
+    }
+
+    public int GetDrugs()
+    {
+        return _saveData.Drugs;
+    }
+
+    public int IncrementDay()
+    {
+        _saveData.Day += 1;
+
+        Save();
+
+        return _saveData.Day;
+    }
+
+    public int AddMoney(int amount)
+    {
+        _saveData.Money += amount;
+
+        Save();
+
+        return _saveData.Money;
+    }
+
+    public int RemoveMoney(int amount)
+    {
+        _saveData.Money -= amount;
+
+        Save();
+
+        return _saveData.Money;
+    }
+
+    public int AddDrugs(int amount)
+    {
+        _saveData.Drugs += amount;
+
+        Save();
+
+        return _saveData.Drugs;
+    }
+
+    public int RemoveDrugs(int amount)
+    {
+        _saveData.Drugs -= amount;
+
+        Save();
+
+        return _saveData.Drugs;
+    }
+
+    //what phone calls correspond to today
+    //what NPC visits correspond to today
+    //what customers appear today
+    //what is the danger/demand for each district today
 }
