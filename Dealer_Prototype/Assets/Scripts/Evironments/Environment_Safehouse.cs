@@ -12,9 +12,13 @@ public class Environment_Safehouse : EnvironmentComponent
 
     [SerializeField] private List<PlayerStation> _stations;
 
+    [SerializeField] private AudioSource _musicSource;
+
     private void Start()
     {
         Global.OnStationSelected += OnStationSelected;
+
+        AudioUtility.DoorOpen();
     }
 
     protected override void OnPlayerSpanwed(PlayerComponent playerComponent)
@@ -24,7 +28,6 @@ public class Environment_Safehouse : EnvironmentComponent
         _player = playerComponent;
 
         StartCoroutine(PerformEntranceScene());
-
     }
 
     public void OnPlayerDestinationReached()
@@ -39,6 +42,10 @@ public class Environment_Safehouse : EnvironmentComponent
         _player.OnDestinationReached += OnPlayerDestinationReached;
 
         _player.GoTo(entrace_WalkTo_Location.position);
+
+        yield return new WaitForSeconds(0.5f);
+
+        _musicSource.Play();
     }
 
     private void OnStationSelected(Enumerations.SafehouseStation stationID)
@@ -57,7 +64,7 @@ public class Environment_Safehouse : EnvironmentComponent
     private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
         ToggleStationUI(false);
-        transitionPanel.Toggle(true, 0.25f);
+        TransitionPanel transitionPanel = UIUtility.RequestFadeToBlack(0.25f);
 
         yield return new WaitForSeconds(0.25f);
 
@@ -75,7 +82,7 @@ public class Environment_Safehouse : EnvironmentComponent
             ToggleStationUI(true);
         }
 
-        transitionPanel.Toggle(false, 1);
+        transitionPanel.ToggleAndDestroy(false, 1);
 
         yield return null;
     }

@@ -12,15 +12,11 @@ public class EnvironmentComponent : MonoBehaviour
 
     [SerializeField] protected CameraRig cameraRig;
 
-    protected TransitionPanel transitionPanel;
-
     private void Awake()
     {
         Global.OnPlayerSpawned += OnPlayerSpanwed;
 
-        GameObject transitionScreen = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), this.transform);
-        transitionPanel = transitionScreen.GetComponent<TransitionPanel>();
-        transitionPanel.SetInitialState(true);
+        UIUtility.RequestFadeFromBlack(1.0f);
 
         StartCoroutine(Coroutine_EnterActionsStart());
     }
@@ -33,8 +29,6 @@ public class EnvironmentComponent : MonoBehaviour
     protected virtual IEnumerator Coroutine_EnterActionsStart()
     {
         if (debug) Debug.Log("Environment " + this.name + " - enter actions");
-
-        transitionPanel.Toggle(false);
 
         yield return Coroutine_PerformEnterActions();
     }

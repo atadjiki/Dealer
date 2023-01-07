@@ -862,7 +862,7 @@ GameObject:
   - component: {fileID: 1864530731}
   - component: {fileID: 1864530730}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: MusicSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -879,7 +879,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e327796e005aa4b198fe4dbba1ae0ea3, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.85
   m_Pitch: 1
   Loop: 1
@@ -971,12 +971,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1864530729}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 7635236226158686940}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2010609340
 GameObject:
@@ -7389,6 +7389,7 @@ Transform:
   - {fileID: 1725137756}
   - {fileID: 643565952}
   - {fileID: 35511711}
+  - {fileID: 1864530731}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7430,6 +7431,7 @@ MonoBehaviour:
   - {fileID: 3279488426377458257}
   - {fileID: 3195455465906413944}
   - {fileID: 75730411042332636}
+  _musicSource: {fileID: 1864530730}
 --- !u!1 &7703928316167296971
 GameObject:
   m_ObjectHideFlags: 0

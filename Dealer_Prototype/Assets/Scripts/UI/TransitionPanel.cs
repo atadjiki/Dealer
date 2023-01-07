@@ -9,6 +9,8 @@ public class TransitionPanel : MonoBehaviour
 
     [SerializeField] private float transitionTime = 2f;
 
+    private bool destroyOnComplete = false;
+
     public void SetInitialState(bool flag)
     {
         if (flag)
@@ -45,6 +47,20 @@ public class TransitionPanel : MonoBehaviour
         }
     }
 
+    public void ToggleAndDestroy(bool flag, float time)
+    {
+        destroyOnComplete = true;
+
+        if (flag)
+        {
+            StartCoroutine(LerpOpacity(1, time));
+        }
+        else
+        {
+            StartCoroutine(LerpOpacity(0, time));
+        }
+    }
+
     private IEnumerator LerpOpacity(float finalOpacity)
     {
         float initialOpacity = image.color.a;
@@ -64,6 +80,8 @@ public class TransitionPanel : MonoBehaviour
         }
 
         image.color = new Color(initialColor.r, initialColor.g, initialColor.b, finalOpacity);
+
+        if (destroyOnComplete) Destroy(this.gameObject);
     }
 
     private IEnumerator LerpOpacity(float finalOpacity, float time)
@@ -85,5 +103,7 @@ public class TransitionPanel : MonoBehaviour
         }
 
         image.color = new Color(initialColor.r, initialColor.g, initialColor.b, finalOpacity);
+
+        if (destroyOnComplete) Destroy(this.gameObject);
     }
 }

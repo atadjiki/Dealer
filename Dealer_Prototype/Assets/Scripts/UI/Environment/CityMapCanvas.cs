@@ -27,6 +27,8 @@ public class CityMapCanvas : MonoBehaviour
 
     private void OnDistrictClicked(Enumerations.DistrictName district)
     {
+        AudioUtility.ButtonClick();
+
         descriptionPanel.Populate(district);
         descriptionPanel.gameObject.SetActive(true);
 
@@ -35,7 +37,9 @@ public class CityMapCanvas : MonoBehaviour
 
     private void OnBackClicked()
     {
-        if(OnBackButtonPressed != null)
+        AudioUtility.ButtonClick();
+
+        if (OnBackButtonPressed != null)
         {
             OnBackButtonPressed.Invoke();
         }
@@ -45,6 +49,8 @@ public class CityMapCanvas : MonoBehaviour
 
     private void OnVisitClicked()
     {
+        AudioUtility.ButtonClick();
+
         GameObject dialogObject = Instantiate<GameObject>(PrefabLibrary.GetOKCancelCanvas(), null);
         DialogPanel dialogPanel = dialogObject.GetComponent<DialogPanel>();
 
@@ -56,12 +62,16 @@ public class CityMapCanvas : MonoBehaviour
 
    private void OnOKPressed(DialogPanel dialogPanel)
    {
+        AudioUtility.ButtonClick();
+
         Destroy(dialogPanel.gameObject);
         Debug.Log("loading dealer level");
     }
 
     private void OnCancelPressed(DialogPanel dialogPanel)
     {
+        AudioUtility.ButtonClick();
+
         Destroy(dialogPanel.gameObject);
     }
 }
