@@ -15,6 +15,11 @@ public class CameraFollowTarget : MonoBehaviour
         Global.OnNewCameraTarget += AttachFollowTarget;
     }
 
+    private void OnDestroy()
+    {
+        Global.OnNewCameraTarget -= AttachFollowTarget;
+    }
+
     public void AttachFollowTarget(Transform newParent)
     {
         transform.parent = newParent;

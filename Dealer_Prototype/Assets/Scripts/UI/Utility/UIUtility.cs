@@ -33,4 +33,9 @@ public class UIUtility : MonoBehaviour
     {
         GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetLoadingScreen(), null);
     }
+
+    public static void RefreshUI
+    {
+
+    }
 }

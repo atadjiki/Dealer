@@ -14,7 +14,7 @@ public class EnvironmentComponent : MonoBehaviour
 
     private void Awake()
     {
-        Global.OnPlayerSpawned += OnPlayerSpanwed;
+        Global.OnPlayerSpawned += OnPlayerSpawned;
 
         UIUtility.RequestFadeFromBlack(1.0f);
 
@@ -48,6 +48,9 @@ public class EnvironmentComponent : MonoBehaviour
     protected virtual void ExitActions()
     {
         if (debug) Debug.Log("Environment " + this.name + " - exit actions");
+
+        Global.OnPlayerSpawned -= OnPlayerSpawned;
+
     }
 
     protected virtual void SpawnPlayer()
@@ -58,7 +61,7 @@ public class EnvironmentComponent : MonoBehaviour
         }
     }
 
-    protected virtual void OnPlayerSpanwed(PlayerComponent playerComponent)
+    protected virtual void OnPlayerSpawned(PlayerComponent playerComponent)
     {
     }
 }

@@ -13,11 +13,21 @@ public class PlayerStateCanvas : MonoBehaviour
 
     private void Awake()
     {
-       Global.OnGameStateChanged += OnGameStateChanged;
+       Global.OnGameStateChanged += Refresh;
        Global.OnToggleUI += OnToggleUI;
+
+        SaveData saveData = GameState.Load();
+
+        Refresh(saveData);
     }
 
-    private void OnGameStateChanged(SaveData _data)
+    private void OnDestroy()
+    {
+        Global.OnGameStateChanged -= Refresh;
+        Global.OnToggleUI -= OnToggleUI;
+    }
+
+    private void Refresh(SaveData _data)
     {
         Text_Money.text = "$" + _data.Money.ToString();
         Text_Drugs.text = _data.Drugs.ToString();

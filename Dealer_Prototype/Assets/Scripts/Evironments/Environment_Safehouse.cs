@@ -21,9 +21,9 @@ public class Environment_Safehouse : EnvironmentComponent
         AudioUtility.DoorOpen();
     }
 
-    protected override void OnPlayerSpanwed(PlayerComponent playerComponent)
+    protected override void OnPlayerSpawned(PlayerComponent playerComponent)
     {
-        base.OnPlayerSpanwed(playerComponent);
+        base.OnPlayerSpawned(playerComponent);
 
         _player = playerComponent;
 
@@ -46,6 +46,13 @@ public class Environment_Safehouse : EnvironmentComponent
         yield return new WaitForSeconds(0.5f);
 
         _musicSource.Play();
+    }
+
+    protected override void ExitActions()
+    {
+        base.ExitActions();
+
+        Global.OnStationSelected -= OnStationSelected;
     }
 
     private void OnStationSelected(Enumerations.SafehouseStation stationID)

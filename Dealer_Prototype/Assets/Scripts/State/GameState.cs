@@ -10,21 +10,7 @@ public class GameState : MonoBehaviour
     private static string Key_SaveData = "SaveData";
     public static PlayerLocation location = PlayerLocation.Safehouse; 
 
-    [SerializeField] private SaveData _saveData;
-
-    private void Awake()
-    {
-        if(_saveData == null)
-        {
-            Load();
-        }
-        else
-        {
-            Save();
-        }
-    }
-
-    public void Save()
+    public static void Save(SaveData _saveData)
     {
         ES3.Save<SaveData>(Key_SaveData, _saveData);
 
@@ -34,76 +20,89 @@ public class GameState : MonoBehaviour
         }
     }
 
-    public void Load()
+    public static SaveData Load()
     {
+        SaveData _saveData;
+
         if(ES3.KeyExists(Key_SaveData))
         {
             _saveData = ES3.Load<SaveData>(Key_SaveData);
             Debug.Log(_saveData.ToString());
+            return _saveData;
         }
         else
         {
-            _saveData = this.gameObject.AddComponent<SaveData>();
+            return null;
         }
 
     }
 
-    public int GetDay()
+    public static int GetDay()
     {
-        return _saveData.Day;
+        return Load().Day;
     }
 
-    public int GetMoney()
+    public static int GetMoney()
     {
-        return _saveData.Money;
+        return Load().Money;
     }
 
-    public int GetDrugs()
+    public static int GetDrugs()
     {
-        return _saveData.Drugs;
+        return Load().Drugs;
     }
 
-    public int IncrementDay()
+    public static int IncrementDay()
     {
+        SaveData _saveData = Load();
+
         _saveData.Day += 1;
 
-        Save();
+        Save(_saveData);
 
         return _saveData.Day;
     }
 
-    public int AddMoney(int amount)
+    public static int AddMoney(int amount)
     {
+        SaveData _saveData = Load();
+
         _saveData.Money += amount;
 
-        Save();
+        Save(_saveData);
 
         return _saveData.Money;
     }
 
-    public int RemoveMoney(int amount)
+    public static int RemoveMoney(int amount)
     {
+        SaveData _saveData = Load();
+
         _saveData.Money -= amount;
 
-        Save();
+        Save(_saveData);
 
         return _saveData.Money;
     }
 
-    public int AddDrugs(int amount)
+    public static int AddDrugs(int amount)
     {
+        SaveData _saveData = Load();
+
         _saveData.Drugs += amount;
 
-        Save();
+        Save(_saveData);
 
         return _saveData.Drugs;
     }
 
-    public int RemoveDrugs(int amount)
+    public static int RemoveDrugs(int amount)
     {
+        SaveData _saveData = Load();
+
         _saveData.Drugs -= amount;
 
-        Save();
+        Save(_saveData);
 
         return _saveData.Drugs;
     }

@@ -39,6 +39,8 @@ namespace GameDelegates
 
     public delegate void ToggleUI(bool flag);
 
+    public delegate void RefreshUI();
+
     public delegate void LevelLoading();
 
     public delegate void LevelHasLoaded();
