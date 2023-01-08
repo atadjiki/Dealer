@@ -10,7 +10,7 @@ namespace Constants
         private static string Prefix_CharacterModels = "Prefabs/CharacterModels/";
         private static string Prefix_Gameplay = "Prefabs/Gameplay/";
 
-        private static string Prefix_UI = "Prefabs/UI/";
+        //private static string Prefix_UI = "Prefabs/UI/";
         private static string Prefix_UI_CityMap = "Prefabs/UI/CityMap/";
         private static string Prefix_UI_Character = "Prefabs/UI/Character/";
         private static string Prefix_UI_Dialogue = "Prefabs/UI/Dialogue/";
@@ -27,6 +27,7 @@ namespace Constants
                 case Enumerations.CharacterModelID.Model_Male1:
                 case Enumerations.CharacterModelID.Model_Male_Player:
                 case Enumerations.CharacterModelID.Model_Male_Police:
+                case Enumerations.CharacterModelID.Model_Male_Customer:
                     return Prefix_CharacterModels + ID.ToString();
             }
 

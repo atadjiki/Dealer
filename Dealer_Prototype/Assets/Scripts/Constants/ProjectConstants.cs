@@ -47,14 +47,6 @@ namespace Constants
         {
             Glock,
             None,
-
-            //AK,
-            //Carbine,
-            //Revolver,
-            //Deagle,
-            //Shotgun,
-            //MP5,
-            //Uzi,
         }
 
         public enum CharacterModelID
@@ -62,13 +54,7 @@ namespace Constants
             Model_Male1,
             Model_Male_Player,
             Model_Male_Police,
-            //Male_2,
-            //Male_3,
-            //Male_4,
-            //Female_1,
-            //Female_2,
-            //Female_3,
-            //Female_4,
+            Model_Male_Customer,
         }
 
         public enum MarkerGroupID

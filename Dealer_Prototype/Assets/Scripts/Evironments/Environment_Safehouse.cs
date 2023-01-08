@@ -6,13 +6,7 @@ using UnityEngine;
 
 public class Environment_Safehouse : EnvironmentComponent
 {
-    private PlayerComponent _player;
-
-    [SerializeField] Transform entrace_WalkTo_Location;
-
     [SerializeField] private List<PlayerStation> _stations;
-
-    [SerializeField] private AudioSource _musicSource;
 
     private void Start()
     {

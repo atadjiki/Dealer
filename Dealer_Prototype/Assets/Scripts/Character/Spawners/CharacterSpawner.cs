@@ -12,7 +12,7 @@ public class CharacterSpawner : Spawner
         return data.ModelID.ToString();
     }
 
-    private void Start()
+    public void PerformSpawn()
     {
         if (spawnData.SpawnOnClosestPoint)
         {

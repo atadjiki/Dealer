@@ -12,11 +12,11 @@ public class LevelUtility : MonoBehaviour
     public static void GoToLoading(PlayerLocation location)
     {
         GameState.location = location;
-        SceneManager.LoadScene(Name_Loading, LoadSceneMode.Single);
+        SceneManager.LoadSceneAsync(Name_Loading, LoadSceneMode.Single);
     }
 
-    public static void GoToLocation(PlayerLocation location)
+    public static AsyncOperation GoToLocation(PlayerLocation location)
     {
-        SceneManager.LoadScene(location.ToString(), LoadSceneMode.Single);
+        return SceneManager.LoadSceneAsync(location.ToString(), LoadSceneMode.Single);
     }
 }

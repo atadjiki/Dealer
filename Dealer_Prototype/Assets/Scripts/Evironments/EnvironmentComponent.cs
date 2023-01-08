@@ -8,9 +8,14 @@ public class EnvironmentComponent : MonoBehaviour
 {
     [SerializeField] protected bool debug = false;
 
+    protected PlayerComponent _player;
     [SerializeField] protected PlayerSpawner playerSpawner;
 
     [SerializeField] protected CameraRig cameraRig;
+
+    [SerializeField] protected Transform entrace_WalkTo_Location;
+
+    [SerializeField] protected AudioSource _musicSource;
 
     private void Awake()
     {

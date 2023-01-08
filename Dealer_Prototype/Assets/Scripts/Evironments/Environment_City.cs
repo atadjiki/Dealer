@@ -5,11 +5,7 @@ using UnityEngine;
 
 public class Environment_City : EnvironmentComponent
 {
-    private PlayerComponent _player;
-
-    [SerializeField] Transform entrace_WalkTo_Location;
-
-    [SerializeField] private AudioSource _musicSource;
+    [SerializeField] private CharacterSpawner _characterSpawner;
 
     protected override void OnPlayerSpawned(PlayerComponent playerComponent)
     {

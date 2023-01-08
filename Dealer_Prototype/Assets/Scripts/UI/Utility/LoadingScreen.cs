@@ -17,9 +17,9 @@ public class LoadingScreen : MonoBehaviour
     {
         PlayerLocation location = GameState.location;
 
-        yield return new WaitForSeconds(2.0f);
+        AsyncOperation asyncOperation = GoToLocation(location);
 
-        LevelUtility.GoToLocation(location);
+        yield return new WaitWhile( () => !asyncOperation.isDone );
     }
 
     private void OnLevelHasLoaded()
