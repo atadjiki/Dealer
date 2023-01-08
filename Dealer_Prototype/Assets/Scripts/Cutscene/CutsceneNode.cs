@@ -5,7 +5,9 @@ using UnityEngine;
 public class CutsceneNode : MonoBehaviour
 {
     //a collection of cutscene actions
-    [SerializeField] private DialogueAction _dialogueAction;
+    [SerializeField] private List<CutsceneAction> _actions;
+
+    private int _completed;
 
     private bool _readyToAdvance = false;
 
@@ -13,18 +15,28 @@ public class CutsceneNode : MonoBehaviour
 
     private void Awake()
     {
-        _dialogueAction.OnActionComplete += OnDialogueComplete;
+        foreach(CutsceneAction action in _actions)
+        {
+            action.OnActionComplete += OnActionComplete;
+        }
     }
 
     public void ProcessActions()
     {
-        _dialogueAction.PerformAction();
+        foreach (CutsceneAction action in _actions)
+        {
+            action.PerformAction();
+        }
     }
 
-    public void OnDialogueComplete()
+    public void OnActionComplete()
     {
-        Debug.Log("ready to advance");
-        _readyToAdvance = true;
+        _completed += 1;
+
+        if(_completed >= _actions.Count)
+        {
+            _readyToAdvance = true;
+        }
     }
 
     public bool ReadyToAdvance()
