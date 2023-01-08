@@ -45,6 +45,8 @@ namespace GameDelegates
 
     public delegate void LevelHasLoaded();
 
+    public delegate void CutsceneActionComplete();
+
     public class Global
     {
         public static NewCameraFollowTarget OnNewCameraTarget;
