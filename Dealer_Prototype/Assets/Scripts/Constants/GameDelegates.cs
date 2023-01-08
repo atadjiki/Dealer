@@ -33,15 +33,9 @@ namespace GameDelegates
 
     public delegate void BackButtonPressed();
 
-    public delegate void PlayAudioClip(AudioClip clip);
-
     public delegate void GameStateChanged(SaveData _data);
 
     public delegate void ToggleUI(bool flag);
-
-    public delegate void RefreshUI();
-
-    public delegate void LevelLoading();
 
     public delegate void LevelHasLoaded();
 
@@ -60,8 +54,6 @@ namespace GameDelegates
         public static GameStateChanged OnGameStateChanged;
 
         public static ToggleUI OnToggleUI;
-
-        public static LevelLoading OnLevelLoading;
 
         public static LevelHasLoaded OnLevelHasLoaded;
     }
