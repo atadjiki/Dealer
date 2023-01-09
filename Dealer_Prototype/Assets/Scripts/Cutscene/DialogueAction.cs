@@ -7,6 +7,8 @@ using Constants;
 public class DialogueData
 {
     public Enumerations.CharacterID CharacterID;
+
+    [TextArea(15, 20)]
     public string Line;
 }
 
@@ -19,7 +21,7 @@ public class DialogueAction : CutsceneAction
     {
         GameObject canvasObject = Instantiate<GameObject>(PrefabLibrary.GetDialogueCanvas());
         DialogueCanvas dialogueCanvas = canvasObject.GetComponent<DialogueCanvas>();
-        dialogueCanvas.Setup(_data.CharacterID.ToString(), _data.Line, OnDialogAdvanced);
+        dialogueCanvas.Setup(_data.CharacterID, _data.Line, OnDialogAdvanced);
 
         return base.Coroutine_PerformAction();
     }

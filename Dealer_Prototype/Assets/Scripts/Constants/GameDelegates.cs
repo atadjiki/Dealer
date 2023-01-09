@@ -28,7 +28,6 @@ namespace GameDelegates
     public delegate void DestinationReached();
 
     //ui
-
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
     public delegate void GameStateChanged(SaveData _data);
@@ -38,6 +37,9 @@ namespace GameDelegates
     public delegate void LevelHasLoaded();
 
     public delegate void CutsceneActionComplete();
+
+    public delegate void ChoiceSelected(int index);
+
 
     public class Global
     {

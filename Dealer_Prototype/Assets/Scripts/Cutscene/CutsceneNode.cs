@@ -5,13 +5,13 @@ using UnityEngine;
 public class CutsceneNode : MonoBehaviour
 {
     //a collection of cutscene actions
-    [SerializeField] private List<CutsceneAction> _actions;
+    [SerializeField] protected List<CutsceneAction> _actions;
 
     private int _completed;
 
     private bool _readyToAdvance = false;
 
-    [SerializeField] private CutsceneNode _next;
+    [SerializeField] protected CutsceneNode _next;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class CutsceneNode : MonoBehaviour
         }
     }
 
-    public void OnActionComplete()
+    public virtual void OnActionComplete()
     {
         _completed += 1;
 

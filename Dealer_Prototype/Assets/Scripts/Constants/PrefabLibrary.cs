@@ -77,6 +77,11 @@ namespace Constants
             return Resources.Load<GameObject>(Prefix_UI_Dialogue + "DialogueCanvas");
         }
 
+        public static GameObject GetChoiceCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Dialogue + "ChoiceCanvas");
+        }
+
         public static GameObject GetStationCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI_Safehouse + "StationCanvas");

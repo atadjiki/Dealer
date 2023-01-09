@@ -69,8 +69,8 @@ namespace Constants
         public enum CharacterID
         {
             Player,
-            Goon_Ally,
-            Goon_Enemy,
+            Stranger,
+            Customer,
             None
         }
 

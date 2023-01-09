@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using Constants;
 using System;
 
 public class DialogueCanvas : MonoBehaviour
@@ -21,9 +22,17 @@ public class DialogueCanvas : MonoBehaviour
         });
     }
 
-    public void Setup(string Speaking, string Dialogue, Action OnAdvance)
+    public void Setup(Enumerations.CharacterID Speaking, string Dialogue, Action OnAdvance)
     {
-        Text_Speaking.text = Speaking;
+        if(Speaking == Enumerations.CharacterID.None)
+        {
+            Text_Speaking.gameObject.SetActive(false);
+        }
+        else
+        {
+            Text_Speaking.text = Speaking.ToString();
+        }
+
         Text_Dialogue.text = Dialogue;
 
         _advanceCallback = OnAdvance;
