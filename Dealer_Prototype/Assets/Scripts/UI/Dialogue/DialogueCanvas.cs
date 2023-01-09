@@ -29,6 +29,11 @@ public class DialogueCanvas : MonoBehaviour
         _advanceCallback = OnAdvance;
     }
 
+    private void OnDestroy()
+    {
+        _advanceCallback = null;
+    }
+
     private void OnAdvancePressed()
     {
         _advanceCallback.Invoke();

@@ -6,16 +6,18 @@ using UnityEngine;
 
 public class EnvironmentComponent : MonoBehaviour
 {
+    [Header("Environment")]
     [SerializeField] protected bool debug = false;
 
-    protected PlayerComponent _player;
     [SerializeField] protected PlayerSpawner playerSpawner;
 
     [SerializeField] protected CameraRig cameraRig;
 
-    [SerializeField] protected Transform entrace_WalkTo_Location;
+    [SerializeField] protected Transform walkToLocation;
 
-    [SerializeField] protected AudioSource _musicSource;
+    [SerializeField] protected AudioSource musicSource;
+
+    protected PlayerComponent _player;
 
     private void Awake()
     {
@@ -29,6 +31,14 @@ public class EnvironmentComponent : MonoBehaviour
     private void OnDestroy()
     {
         ExitActions();
+    }
+
+    protected virtual void ExitActions()
+    {
+        if (debug) Debug.Log("Environment " + this.name + " - exit actions");
+
+        Global.OnPlayerSpawned -= OnPlayerSpawned;
+
     }
 
     protected virtual IEnumerator Coroutine_EnterActionsStart()
@@ -50,14 +60,6 @@ public class EnvironmentComponent : MonoBehaviour
         yield return null;
     }
 
-    protected virtual void ExitActions()
-    {
-        if (debug) Debug.Log("Environment " + this.name + " - exit actions");
-
-        Global.OnPlayerSpawned -= OnPlayerSpawned;
-
-    }
-
     protected virtual void SpawnPlayer()
     {
         if (playerSpawner != null)
@@ -68,6 +70,27 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual void OnPlayerSpawned(PlayerComponent playerComponent)
     {
+        _player = playerComponent;
+
+        StartCoroutine(PerformEntranceScene());
+    }
+
+    protected virtual void OnPlayerDestinationReached()
+    {
+        Global.OnToggleUI(true);
+    }
+
+    protected virtual IEnumerator PerformEntranceScene()
+    {
+        yield return new WaitUntil(() => _player.HasInitialized());
+
+        _player.OnDestinationReached += OnPlayerDestinationReached;
+
+        _player.GoTo(walkToLocation.position);
+
+        yield return new WaitForSeconds(0.5f);
+
+        musicSource.Play();
     }
 }
 

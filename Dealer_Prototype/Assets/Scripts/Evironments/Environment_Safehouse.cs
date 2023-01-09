@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Environment_Safehouse : EnvironmentComponent
 {
+    [Header("Safehouse")]
     [SerializeField] private List<PlayerStation> _stations;
 
     private void Start()
@@ -13,33 +14,6 @@ public class Environment_Safehouse : EnvironmentComponent
         Global.OnStationSelected += OnStationSelected;
 
         AudioUtility.DoorOpen();
-    }
-
-    protected override void OnPlayerSpawned(PlayerComponent playerComponent)
-    {
-        base.OnPlayerSpawned(playerComponent);
-
-        _player = playerComponent;
-
-        StartCoroutine(PerformEntranceScene());
-    }
-
-    public void OnPlayerDestinationReached()
-    {
-        Global.OnToggleUI(true);
-    }
-
-    private IEnumerator PerformEntranceScene()
-    {
-        yield return new WaitUntil( () => _player.HasInitialized());
-
-        _player.OnDestinationReached += OnPlayerDestinationReached;
-
-        _player.GoTo(entrace_WalkTo_Location.position);
-
-        yield return new WaitForSeconds(0.5f);
-
-        _musicSource.Play();
     }
 
     protected override void ExitActions()
@@ -74,7 +48,7 @@ public class Environment_Safehouse : EnvironmentComponent
         {
             GameObject cityMapObject = Instantiate<GameObject>(PrefabLibrary.GetCityMapCanvas(), this.transform);
             CityMapCanvas cityMapCanvas = cityMapObject.GetComponent<CityMapCanvas>();
-            cityMapCanvas.OnBackButtonPressed += OnBackButtonPressed;
+            cityMapCanvas.Setup(OnBackButtonPressed);
         }
         else
         {
@@ -88,6 +62,6 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void OnBackButtonPressed()
     {
-        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, entrace_WalkTo_Location));
+        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, walkToLocation));
     }
 }

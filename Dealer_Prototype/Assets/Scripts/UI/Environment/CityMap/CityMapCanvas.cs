@@ -14,7 +14,7 @@ public class CityMapCanvas : MonoBehaviour
 
     [SerializeField] private Button Button_Downtown;
 
-    public BackButtonPressed OnBackButtonPressed;
+    private System.Action _backButtonCallback;
 
     private void Awake()
     {
@@ -24,6 +24,19 @@ public class CityMapCanvas : MonoBehaviour
         Button_Downtown.onClick.AddListener(delegate () { OnDistrictClicked(Enumerations.DistrictName.Downtown); });
         Button_Back.onClick.AddListener(delegate () { OnBackClicked(); });
         Button_Visit.onClick.AddListener(delegate () { OnVisitClicked();  });
+    }
+
+    private void OnDestroy()
+    {
+        Button_Downtown.onClick.RemoveAllListeners();
+        Button_Back.onClick.RemoveAllListeners();
+        Button_Visit.onClick.RemoveAllListeners();
+        _backButtonCallback = null;
+    }
+
+    public void Setup(System.Action backButtonCallback)
+    {
+        _backButtonCallback = backButtonCallback;
     }
 
     private void OnDistrictClicked(Enumerations.DistrictName district)
@@ -40,10 +53,7 @@ public class CityMapCanvas : MonoBehaviour
     {
         AudioUtility.ButtonClick();
 
-        if (OnBackButtonPressed != null)
-        {
-            OnBackButtonPressed.Invoke();
-        }
+        _backButtonCallback.Invoke();
 
         Destroy(this.gameObject);
     }
@@ -53,7 +63,7 @@ public class CityMapCanvas : MonoBehaviour
         AudioUtility.ButtonClick();
 
         GameObject dialogObject = Instantiate<GameObject>(PrefabLibrary.GetOKCancelCanvas(), null);
-        DialogPanel dialogPanel = dialogObject.GetComponent<DialogPanel>();
+        OkCancelDialog dialogPanel = dialogObject.GetComponent<OkCancelDialog>();
 
         Action okAction = new Action(OnOKPressed);
         Action cancelAction = new Action(OnCancelPressed);

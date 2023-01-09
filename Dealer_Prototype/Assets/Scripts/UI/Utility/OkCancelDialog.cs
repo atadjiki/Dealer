@@ -6,7 +6,7 @@ using GameDelegates;
 using UnityEngine;
 using System;
 
-public class DialogPanel : MonoBehaviour
+public class OkCancelDialog : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI DialogTitle;
     [SerializeField] private TextMeshProUGUI DialogBlurb;

@@ -19,7 +19,7 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
     {
         yield return base.PerformInitialize();
 
-        Instantiate<GameObject>(PrefabLibrary.GetPlayerCanvas(), this.transform);
+        Instantiate<GameObject>(PrefabLibrary.GetMouseContextCanvas(), this.transform);
 
         if (spawnData.ShowCanvas)
         {

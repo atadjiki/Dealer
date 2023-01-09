@@ -62,9 +62,9 @@ namespace Constants
             return Resources.Load<GameObject>(Prefix_UI_Character + "CharacterCanvas");
         }
 
-        public static GameObject GetPlayerCanvas()
+        public static GameObject GetMouseContextCanvas()
         {
-            return Resources.Load<GameObject>(Prefix_UI_Character + "PlayerCanvas");
+            return Resources.Load<GameObject>(Prefix_UI_Character + "MouseContextCanvas");
         }
 
         public static GameObject GetNavigatorComponent()

@@ -31,8 +31,6 @@ namespace GameDelegates
 
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
-    public delegate void BackButtonPressed();
-
     public delegate void GameStateChanged(SaveData _data);
 
     public delegate void ToggleUI(bool flag);
