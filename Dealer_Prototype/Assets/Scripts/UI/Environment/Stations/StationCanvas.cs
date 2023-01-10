@@ -6,26 +6,9 @@ using Constants;
 using GameDelegates;
 using UnityEngine.EventSystems;
 
-public class StationCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class StationCanvas : MonoBehaviour
 {
-    [SerializeField] private GameObject Text_Tooltip;
-
     [SerializeField] private Button Button_Station;
-
-    private void Awake()
-    {
-        Text_Tooltip.SetActive(false);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Text_Tooltip.SetActive(true);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Text_Tooltip.SetActive(false);
-    }
 
     public void Setup(Enumerations.SafehouseStation station)
     {
