@@ -30,7 +30,7 @@ public class ChoiceCanvas : MonoBehaviour
     private void SetupButton(Button button, string text, int index)
     {
         button.GetComponentInChildren<TextMeshProUGUI>().text = text;
-        button.enabled = (text != null);
+        button.interactable = text.Length > 0;
         button.onClick.AddListener(() => OnButtonPressed(index) );
     }
 

@@ -72,6 +72,11 @@ namespace Constants
             return Resources.Load<GameObject>(Prefix_Character + "NavigatorComponent");
         }
 
+        public static GameObject GetActionCanvas()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Dialogue + "ActionCanvas");
+        }
+
         public static GameObject GetDialogueCanvas()
         {
             return Resources.Load<GameObject>(Prefix_UI_Dialogue + "DialogueCanvas");
