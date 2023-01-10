@@ -20,6 +20,8 @@ public class DialogueCanvas : MonoBehaviour
         {
             OnAdvancePressed();
         });
+
+        Button_Advance.Select();
     }
 
     public void Setup(Enumerations.CharacterID Speaking, string Dialogue, Action OnAdvance)

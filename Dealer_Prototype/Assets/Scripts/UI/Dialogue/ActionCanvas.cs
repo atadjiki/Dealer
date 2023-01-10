@@ -18,6 +18,8 @@ public class ActionCanvas : MonoBehaviour
         {
             OnAdvancePressed();
         });
+
+        Button_Advance.Select();
     }
 
     public void Setup(string Action, Action OnAdvance)
