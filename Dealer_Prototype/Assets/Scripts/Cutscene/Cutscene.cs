@@ -12,22 +12,26 @@ public class Cutscene : MonoBehaviour
     {
         _currentNode = _root;
 
-        StartCoroutine(ProcessCurrentNode());
+        ProcessCurrentNode();
     }
 
-    public IEnumerator ProcessCurrentNode()
+   private void ProcessCurrentNode()
     {
-        while (_currentNode != null)
+        if (_currentNode != null)
         {
-            _currentNode.ProcessActions();
-
-            yield return new WaitUntil(() => _currentNode.ReadyToAdvance());
-
-            Debug.Log("next node");
-
-            _currentNode = _currentNode.GetNext();
+            _currentNode.Setup(OnNodeComplete);
         }
+        else
+        {
+            Debug.Log("cutscene finished");
+        }
+    }
 
-        Debug.Log("cutscene finished");
+    private void OnNodeComplete()
+    {
+        Debug.Log("next node");
+        _currentNode = _currentNode.GetNext();
+
+        ProcessCurrentNode();
     }
 }

@@ -17,14 +17,14 @@ public class ChoiceCanvas : MonoBehaviour
 
     public ChoiceSelected onChoiceSelected;
 
-    public void Setup(string prompt, string A, string B, string C, string D)
+    public void Setup(ChoiceActionData Data)
     {
-        Text_Prompt.text = prompt;
+        Text_Prompt.text = Data.Prompt;
 
-        SetupButton(Button_A, A, 0);
-        SetupButton(Button_B, B, 1);
-        SetupButton(Button_C, C, 2);
-        SetupButton(Button_D, D, 3);
+        SetupButton(Button_A, Data.Text_A, 0);
+        SetupButton(Button_B, Data.Text_B, 1);
+        SetupButton(Button_C, Data.Text_C, 2);
+        SetupButton(Button_D, Data.Text_D, 3);
     }
 
     private void SetupButton(Button button, string text, int index)

@@ -4,48 +4,17 @@ using UnityEngine;
 
 public class CutsceneNode : MonoBehaviour
 {
-    //a collection of cutscene actions
-    [SerializeField] protected List<CutsceneAction> _actions;
+    protected System.Action _OnCompleteAction;
 
-    private int _completed;
-
-    private bool _readyToAdvance = false;
-
-    [SerializeField] protected CutsceneNode _next;
-
-    private void Awake()
+    public virtual void Setup(System.Action OnComplete) 
     {
-        foreach(CutsceneAction action in _actions)
-        {
-            action.OnActionComplete += OnActionComplete;
-        }
+        _OnCompleteAction = OnComplete;
     }
 
-    public void ProcessActions()
+    protected virtual void CompleteNode()
     {
-        foreach (CutsceneAction action in _actions)
-        {
-            action.PerformAction();
-        }
+        _OnCompleteAction.Invoke();
     }
 
-    public virtual void OnActionComplete()
-    {
-        _completed += 1;
-
-        if(_completed >= _actions.Count)
-        {
-            _readyToAdvance = true;
-        }
-    }
-
-    public bool ReadyToAdvance()
-    {
-        return _readyToAdvance;
-    }
-
-    public CutsceneNode GetNext()
-    {
-        return _next;
-    }
+    public virtual CutsceneNode GetNext(){ return null; }
 }
