@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -153,13 +153,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data:
-    Prompt: how do you respond?
-    Text_A: sell drugs
-    Text_B: rob
+    Prompt: '"hey, you selling"'
+    Text_A: '[Sell] "how much do you need?"'
+    Text_B: '[Decline] "you''ve got the wrong guy"'
     Text_C: 
     Text_D: 
   Choice_A: {fileID: 1699776207}
-  Choice_B: {fileID: 1994268835}
+  Choice_B: {fileID: 1402937401}
   Choice_C: {fileID: 0}
   Choice_D: {fileID: 0}
 --- !u!4 &909401776
@@ -174,7 +174,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1699776206}
-  - {fileID: 1994268834}
+  - {fileID: 1402937402}
   m_Father: {fileID: 1412115729}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 1140768550}
   - component: {fileID: 1140768551}
   m_Layer: 0
-  m_Name: Node_4
+  m_Name: Node_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,7 +205,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1994268834}
   m_Father: {fileID: 1699776206}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -222,9 +223,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    CharacterID: 1
-    Line: thanks!
-  _next: {fileID: 0}
+    CharacterID: 0
+    Line: absolutely. got the money?
+  _next: {fileID: 1994268835}
 --- !u!1 &1290577441
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,6 +256,52 @@ Transform:
   - {fileID: 2132101656}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1402937400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1402937402}
+  - component: {fileID: 1402937401}
+  m_Layer: 0
+  m_Name: Node_5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1402937401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402937400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aedad460202f67740815da71e21a3b47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Text: '*the customer walks away*'
+  _next: {fileID: 0}
+--- !u!4 &1402937402
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402937400}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 909401776}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1412115727
 GameObject:
@@ -347,8 +394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    CharacterID: 0
-    Line: here, buy some drugs
+    CharacterID: 2
+    Line: can i get two vials?
   _next: {fileID: 1140768551}
 --- !u!1 &1779799438
 GameObject:
@@ -510,7 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Text: a stranger approaches...<sprite index= 0>
+    Text: '*a customer approaches*'
   _next: {fileID: 909401775}
 --- !u!1 &1994268833
 GameObject:
@@ -523,7 +570,7 @@ GameObject:
   - component: {fileID: 1994268834}
   - component: {fileID: 1994268835}
   m_Layer: 0
-  m_Name: Node_3
+  m_Name: Node_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -540,8 +587,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 909401776}
-  m_RootOrder: 1
+  m_Father: {fileID: 1140768550}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1994268835
 MonoBehaviour:
@@ -556,8 +603,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    CharacterID: 0
-    Line: i'm robbing you!
+    CharacterID: 2
+    Line: "here you go boss. much appreciated \n\n[+ $200]"
   _next: {fileID: 0}
 --- !u!1 &2132101655
 GameObject:
