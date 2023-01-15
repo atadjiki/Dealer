@@ -1,7 +1,5 @@
 using Constants;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,8 +10,10 @@ public class DialogueData : CutsceneNodeData
 
 public class DialogueNode : CutsceneNode
 {
+    [Space]
     [SerializeField] private DialogueData _data;
 
+    [Space]
     [SerializeField] private CutsceneNode _next;
 
     public override void Setup(Action OnComplete)

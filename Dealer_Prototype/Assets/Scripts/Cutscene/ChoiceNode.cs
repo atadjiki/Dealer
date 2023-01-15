@@ -18,6 +18,7 @@ public class ChoiceActionData : CutsceneNodeData
 
 public class ChoiceNode : CutsceneNode
 {
+    [Space]
     [SerializeField] private ChoiceActionData Data;
 
     private int _selectedIndex = -1;

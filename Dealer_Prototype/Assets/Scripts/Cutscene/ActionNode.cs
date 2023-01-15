@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class ActionNode : CutsceneNode
 {
+    [Space]
     [SerializeField] private CutsceneNodeData _data;
 
     [Space]

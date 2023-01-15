@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameDelegates;
+using Constants;
 using UnityEngine;
 
 public class Cutscene : MonoBehaviour
@@ -10,12 +12,19 @@ public class Cutscene : MonoBehaviour
 
     private void Awake()
     {
+        Global.OnGameEvent += OnGameEvent;
+
         _currentNode = _root;
 
         ProcessCurrentNode();
     }
 
-   private void ProcessCurrentNode()
+    private void OnDestroy()
+    {
+        Global.OnGameEvent -= OnGameEvent;
+    }
+
+    private void ProcessCurrentNode()
     {
         if (_currentNode != null)
         {
@@ -33,5 +42,13 @@ public class Cutscene : MonoBehaviour
         _currentNode = _currentNode.GetNext();
 
         ProcessCurrentNode();
+    }
+
+    private void OnGameEvent(Enumerations.GameEvent gameEvent)
+    {
+        if(gameEvent != Enumerations.GameEvent.None)
+        {
+            Debug.Log("game event! " + gameEvent.ToString());
+        }
     }
 }
