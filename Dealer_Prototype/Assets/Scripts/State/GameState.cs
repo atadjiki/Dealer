@@ -23,18 +23,16 @@ public class GameState : MonoBehaviour
     public static SaveData Load()
     {
         SaveData _saveData;
+        _saveData = ES3.Load<SaveData>(Key_SaveData, SaveData.GetDefault(), ES3Settings.defaultSettings);
+        Debug.Log(_saveData.ToString());
+        return _saveData;
+    }
 
-        if(ES3.KeyExists(Key_SaveData))
-        {
-            _saveData = ES3.Load<SaveData>(Key_SaveData);
-            Debug.Log(_saveData.ToString());
-            return _saveData;
-        }
-        else
-        {
-            return null;
-        }
+    public static void Reset()
+    {
+        SaveData _data = new SaveData();
 
+        Save(_data);
     }
 
     public static int GetDay()
@@ -68,13 +66,10 @@ public class GameState : MonoBehaviour
         SaveData _saveData = Load();
 
         _saveData.Drugs -= Quantity;
+        _saveData.Drugs = Mathf.Clamp(_saveData.Drugs, 0, _saveData.Drugs);
+
         _saveData.Money += Quantity * 100; //TODO: in the future prices will fluctuate
 
         Save(_saveData);
     }
-
-    //what phone calls correspond to today
-    //what NPC visits correspond to today
-    //what customers appear today
-    //what is the danger/demand for each district today
 }

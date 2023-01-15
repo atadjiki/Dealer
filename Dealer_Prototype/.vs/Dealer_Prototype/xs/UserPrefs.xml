@@ -1,10 +1,13 @@
 ﻿<Properties StartupConfiguration="{2AA29506-95F3-D309-9058-ABBE89690FC2}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Character/Spawners/NPCSpawner.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/State/GameState.cs">
     <Files>
       <File FileName="Assets/Scripts/Cutscene/CutscenePlayer.cs" Line="15" Column="52" />
-      <File FileName="Assets/Scripts/Evironments/Environment_City.cs" Line="25" Column="73" />
+      <File FileName="Assets/Scripts/Evironments/Environment_City.cs" Line="25" Column="34" />
       <File FileName="Assets/Scripts/Evironments/EnvironmentComponent.cs" Line="7" Column="14" />
-      <File FileName="Assets/Scripts/Character/Spawners/NPCSpawner.cs" Line="6" Column="6" />
+      <File FileName="Assets/Scripts/Character/Spawners/NPCSpawner.cs" Line="10" Column="10" />
+      <File FileName="Assets/Scripts/Cutscene/Events/CutsceneHelper.cs" Line="14" Column="38" />
+      <File FileName="Assets/Scripts/State/GameState.cs" Line="27" Column="2" />
+      <File FileName="Assets/Scripts/Evironments/Environment_Safehouse.cs" Line="7" Column="47" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -14,9 +17,7 @@
               <Node name="Scripts" expanded="True">
                 <Node name="Character" expanded="True">
                   <Node name="Components" expanded="True" />
-                  <Node name="Spawners" expanded="True">
-                    <Node name="NPCSpawner.cs" selected="True" />
-                  </Node>
+                  <Node name="Spawners" expanded="True" />
                 </Node>
                 <Node name="CharacterData" expanded="True">
                   <Node name="Model" expanded="True" />
@@ -29,11 +30,14 @@
                 <Node name="Effects" expanded="True" />
                 <Node name="Evironments" expanded="True" />
                 <Node name="Pathfinding" expanded="True" />
-                <Node name="State" expanded="True" />
+                <Node name="State" expanded="True">
+                  <Node name="GameState.cs" selected="True" />
+                </Node>
                 <Node name="UI" expanded="True">
                   <Node name="Dialogue" expanded="True" />
                   <Node name="Environment" expanded="True">
                     <Node name="CityMap" expanded="True" />
+                    <Node name="PlayerState" expanded="True" />
                   </Node>
                 </Node>
               </Node>

@@ -22,6 +22,7 @@ public class Environment_City : EnvironmentComponent
 
     private void OnAllScenesFinished()
     {
+        GameState.IncrementDay();
         LevelUtility.GoToLoading(LevelUtility.PlayerLocation.Safehouse);
     }
 }
