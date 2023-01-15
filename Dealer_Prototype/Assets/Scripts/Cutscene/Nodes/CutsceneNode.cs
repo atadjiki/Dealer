@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Constants;
-using GameDelegates;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,7 +12,13 @@ public class CutsceneNode : MonoBehaviour
 {
     protected System.Action _OnCompleteAction;
 
-    [SerializeField] protected List<CutsceneEvent> _Events;
+    [SerializeField] protected List<CutsceneEvent> _PreEvents;
+
+    [SerializeField] protected List<CutsceneEvent> _PostEvents;
+
+    [SerializeField] protected bool _FadeIn;
+
+    [SerializeField] protected bool FadeOut;
 
     public virtual void Setup(System.Action OnComplete) 
     {
@@ -24,12 +27,17 @@ public class CutsceneNode : MonoBehaviour
 
     protected virtual void CompleteNode()
     {
-        foreach(CutsceneEvent cutsceneEvent in _Events)
-        {
-            CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
-        }
-
         _OnCompleteAction.Invoke();
+    }
+
+    public List<CutsceneEvent> GetPreEvents()
+    {
+        return _PreEvents;
+    }
+
+    public List<CutsceneEvent> GetPostEvents()
+    {
+        return _PostEvents;
     }
 
     public virtual CutsceneNode GetNext(){ return null; }

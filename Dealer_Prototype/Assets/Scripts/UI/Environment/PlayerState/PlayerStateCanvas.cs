@@ -16,9 +16,7 @@ public class PlayerStateCanvas : MonoBehaviour
        Global.OnGameStateChanged += Refresh;
        Global.OnToggleUI += OnToggleUI;
 
-        SaveData saveData = GameState.Load();
-
-        Refresh(saveData);
+        Refresh();
     }
 
     private void OnDestroy()
@@ -27,11 +25,11 @@ public class PlayerStateCanvas : MonoBehaviour
         Global.OnToggleUI -= OnToggleUI;
     }
 
-    private void Refresh(SaveData _data)
+    private void Refresh()
     {
-        Text_Money.text = "$" + _data.Money.ToString();
-        Text_Drugs.text = _data.Drugs.ToString();
-        Text_Day.text = "Day " + _data.Day.ToString();
+        Text_Money.text = "$" + GameState.GetMoney();
+        Text_Drugs.text = "" + GameState.GetDrugs();
+        Text_Day.text = "Day " + GameState.GetDay();
     }
 
     private void OnToggleUI(bool flag)
@@ -39,3 +37,4 @@ public class PlayerStateCanvas : MonoBehaviour
         this.gameObject.SetActive(flag);
     }
 }
+

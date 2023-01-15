@@ -30,7 +30,7 @@ namespace GameDelegates
     //ui
     public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
-    public delegate void GameStateChanged(SaveData _data);
+    public delegate void GameStateChanged();
 
     public delegate void ToggleUI(bool flag);
 

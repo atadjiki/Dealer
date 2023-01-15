@@ -17,16 +17,28 @@ public class CutscenePlayer : MonoBehaviour
 
     public void ProcessNext()
     {
+        StartCoroutine(Coroutine_ProcessNext());
+    }
+
+    private IEnumerator Coroutine_ProcessNext()
+    {
         if (_currentIndex < _cutscenes.Count)
         {
             Cutscene cutscene = _cutscenes[_currentIndex];
+
+            yield return new WaitWhile(() => cutscene == null);
+
+            yield return new WaitUntil(() => cutscene.gameObject.activeSelf);
+
             cutscene.Begin(OnCutsceneFinished);
         }
         else
         {
             Debug.Log("finished with all cutscenes for today");
-            if(OnAllScenesFinished != null) OnAllScenesFinished.Invoke();
+            if (OnAllScenesFinished != null) OnAllScenesFinished.Invoke();
         }
+
+        yield return null;
     }
 
     private void OnCutsceneFinished()

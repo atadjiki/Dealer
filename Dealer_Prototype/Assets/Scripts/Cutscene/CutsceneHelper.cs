@@ -1,11 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
-using GameDelegates;
 using UnityEngine;
 
-public class CutsceneHelper 
+public class CutsceneHelper : MonoBehaviour
 {
-    public static void ProcessCutsceneEvent(CutsceneEvent cutsceneEvent)
+    public static IEnumerator ProcessCutsceneEvent(CutsceneEvent cutsceneEvent)
     {
         if(cutsceneEvent is TransactionEvent)
         {
@@ -13,5 +11,7 @@ public class CutsceneHelper
 
             GameState.HandleTransaction(transactionEvent.Quantity);
         }
+
+        yield return null; ;
     }
 }

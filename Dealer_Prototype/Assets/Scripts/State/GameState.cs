@@ -7,69 +7,79 @@ using static LevelUtility;
 
 public class GameState : MonoBehaviour
 {
-    private static string Key_SaveData = "SaveData";
-    public static PlayerLocation location = PlayerLocation.Safehouse; 
+    private static string Key_Day = "Day";
+    private static string Key_Money = "Money";
+    private static string Key_Drugs = "Drugs";
 
-    public static void Save(SaveData _saveData)
+    public static PlayerLocation location = PlayerLocation.Safehouse;
+
+    public void StateChange()
     {
-        ES3.Save<SaveData>(Key_SaveData, _saveData);
-
-        if(Global.OnGameStateChanged != null)
+        if (Global.OnGameStateChanged != null)
         {
-            Global.OnGameStateChanged.Invoke(_saveData);
+            Global.OnGameStateChanged.Invoke();
         }
     }
 
-    public static SaveData Load()
-    {
-        SaveData _saveData;
-        _saveData = ES3.Load<SaveData>(Key_SaveData, SaveData.GetDefault(), ES3Settings.defaultSettings);
-        Debug.Log(_saveData.ToString());
-        return _saveData;
-    }
-
-    public static void Reset()
-    {
-        SaveData _data = new SaveData();
-
-        Save(_data);
-    }
-
-    public static int GetDay()
-    {
-        return Load().Day;
-    }
-
-    public static int GetMoney()
-    {
-        return Load().Money;
-    }
-
-    public static int GetDrugs()
-    {
-        return Load().Drugs;
-    }
 
     public static int IncrementDay()
     {
-        SaveData _saveData = Load();
+        int value = GetDay();
 
-        _saveData.Day += 1;
+        value++;
 
-        Save(_saveData);
+        SetValue(Key_Day, value);
 
-        return _saveData.Day;
+        return value;
     }
 
     public static void HandleTransaction(int Quantity)
     {
-        SaveData _saveData = Load();
+        AdjustDrugs(-1* Quantity);
 
-        _saveData.Drugs -= Quantity;
-        _saveData.Drugs = Mathf.Clamp(_saveData.Drugs, 0, _saveData.Drugs);
+        AdjustMoney(Quantity * 100);
+    }
 
-        _saveData.Money += Quantity * 100; //TODO: in the future prices will fluctuate
+    public static int GetDay()
+    {
+        return GetValue(Key_Day);
+    }
 
-        Save(_saveData);
+    public static int GetMoney()
+    {
+        return GetValue(Key_Money);
+    }
+
+    public static int GetDrugs()
+    {
+        return GetValue(Key_Drugs);
+    }
+
+    private static void AdjustDrugs(int amount)
+    {
+        AdjustValue(Key_Drugs, amount);
+    }
+
+    private static void AdjustMoney(int amount)
+    {
+        AdjustValue(Key_Money, amount);
+    }
+
+    private static void AdjustValue(string key, int amount)
+    {
+        int value = GetValue(key);
+        value += amount;
+        value = Mathf.Clamp(value, 0, value);
+        SetValue(key, value);
+    }
+
+    private static int GetValue(string key)
+    {
+        return ES3.Load<int>(key, 0);
+    }
+
+    private static void SetValue(string key, int value)
+    {
+        ES3.Save<int>(key, value);
     }
 }
