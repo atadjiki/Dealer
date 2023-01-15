@@ -176,7 +176,7 @@ public class NavigatorComponent : MonoBehaviour
 
         _AI.canMove = false;
 
-        OnDestinationReachedDelegate.Invoke();
+        if(OnDestinationReachedDelegate != null) OnDestinationReachedDelegate.Invoke();
 
         _seeker.pathCallback -= OnPathComplete;
     }

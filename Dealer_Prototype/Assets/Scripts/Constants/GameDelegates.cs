@@ -40,7 +40,9 @@ namespace GameDelegates
 
     public delegate void ChoiceSelected(int index);
 
-    public delegate void GameEventTriggered(Enumerations.GameEvent gameEvent);
+    public delegate void CutsceneEventOccured(CutsceneEvent cutsceneEvent);
+
+    public delegate void TransactionOccured(int quantity);
 
 
     public class Global
@@ -59,6 +61,8 @@ namespace GameDelegates
 
         public static LevelHasLoaded OnLevelHasLoaded;
 
-        public static GameEventTriggered OnGameEvent;
+        public static TransactionOccured OnTransaction;
+
+        public static CutsceneEventOccured OnCutsceneEvent;
     }
 }

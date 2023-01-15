@@ -15,7 +15,7 @@ public class CutsceneNode : MonoBehaviour
 {
     protected System.Action _OnCompleteAction;
 
-    [SerializeField] private Enumerations.GameEvent _OnCompleteEvent = Enumerations.GameEvent.None;
+    [SerializeField] protected List<CutsceneEvent> _Events;
 
     public virtual void Setup(System.Action OnComplete) 
     {
@@ -24,7 +24,11 @@ public class CutsceneNode : MonoBehaviour
 
     protected virtual void CompleteNode()
     {
-        if(Global.OnGameEvent != null) Global.OnGameEvent(_OnCompleteEvent);
+        foreach(CutsceneEvent cutsceneEvent in _Events)
+        {
+            CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
+        }
+
         _OnCompleteAction.Invoke();
     }
 

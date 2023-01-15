@@ -63,48 +63,14 @@ public class GameState : MonoBehaviour
         return _saveData.Day;
     }
 
-    public static int AddMoney(int amount)
+    public static void HandleTransaction(int Quantity)
     {
         SaveData _saveData = Load();
 
-        _saveData.Money += amount;
+        _saveData.Drugs -= Quantity;
+        _saveData.Money += Quantity * 100; //TODO: in the future prices will fluctuate
 
         Save(_saveData);
-
-        return _saveData.Money;
-    }
-
-    public static int RemoveMoney(int amount)
-    {
-        SaveData _saveData = Load();
-
-        _saveData.Money -= amount;
-
-        Save(_saveData);
-
-        return _saveData.Money;
-    }
-
-    public static int AddDrugs(int amount)
-    {
-        SaveData _saveData = Load();
-
-        _saveData.Drugs += amount;
-
-        Save(_saveData);
-
-        return _saveData.Drugs;
-    }
-
-    public static int RemoveDrugs(int amount)
-    {
-        SaveData _saveData = Load();
-
-        _saveData.Drugs -= amount;
-
-        Save(_saveData);
-
-        return _saveData.Drugs;
     }
 
     //what phone calls correspond to today

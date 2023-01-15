@@ -1,11 +1,13 @@
 ﻿<Properties StartupConfiguration="{2AA29506-95F3-D309-9058-ABBE89690FC2}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Cutscene/Cutscene.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Constants/ProjectConstants.cs">
     <Files>
-      <File FileName="Assets/Scripts/Cutscene/CutsceneNode.cs" Line="18" Column="1" />
-      <File FileName="Assets/Scripts/Cutscene/ChoiceNode.cs" Line="21" Column="11" />
-      <File FileName="Assets/Scripts/Cutscene/ActionNode.cs" Line="9" Column="12" />
-      <File FileName="Assets/Scripts/Cutscene/DialogueNode.cs" Line="2" Column="14" />
-      <File FileName="Assets/Scripts/Cutscene/Cutscene.cs" Line="38" Column="20" />
+      <File FileName="Assets/Scripts/Evironments/Environment_City.cs" Line="32" Column="75" />
+      <File FileName="Assets/Scripts/Evironments/EnvironmentComponent.cs" Line="7" Column="14" />
+      <File FileName="Assets/Scripts/Cutscene/Cutscene.cs" Line="29" Column="41" />
+      <File FileName="Assets/Scripts/Evironments/Environment_Safehouse.cs" Line="50" Column="20" />
+      <File FileName="Assets/Scripts/UI/Environment/CityMap/CityMapCanvas.cs" Line="78" Column="9" />
+      <File FileName="Assets/Scripts/Constants/PrefabLibrary.cs" Line="29" Column="67" />
+      <File FileName="Assets/Scripts/Constants/ProjectConstants.cs" Line="28" Column="33" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -13,17 +15,28 @@
           <Node name="Dealer_Prototype" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
+                <Node name="Character" expanded="True">
+                  <Node name="Components" expanded="True" />
+                </Node>
                 <Node name="CharacterData" expanded="True">
                   <Node name="Model" expanded="True" />
                 </Node>
-                <Node name="Constants" expanded="True" />
+                <Node name="Constants" expanded="True">
+                  <Node name="ProjectConstants.cs" selected="True" />
+                </Node>
                 <Node name="Cutscene" expanded="True">
-                  <Node name="Cutscene.cs" selected="True" />
+                  <Node name="Events" expanded="True" />
+                  <Node name="Nodes" expanded="True" />
                 </Node>
                 <Node name="Effects" expanded="True" />
+                <Node name="Evironments" expanded="True" />
+                <Node name="Pathfinding" expanded="True" />
                 <Node name="State" expanded="True" />
                 <Node name="UI" expanded="True">
                   <Node name="Dialogue" expanded="True" />
+                  <Node name="Environment" expanded="True">
+                    <Node name="CityMap" expanded="True" />
+                  </Node>
                 </Node>
               </Node>
             </Node>

@@ -96,12 +96,6 @@ namespace Constants
             Medium, 
             High, 
         };
-
-        public enum GameEvent
-        {
-            None,
-            DrugsSold,
-        }
     }
 
     public class NPC
