@@ -14,6 +14,7 @@ namespace Constants
         private static string Prefix_UI_CityMap = "Prefabs/UI/CityMap/";
         private static string Prefix_UI_Character = "Prefabs/UI/Character/";
         private static string Prefix_UI_Dialogue = "Prefabs/UI/Dialogue/";
+        private static string Prefix_UI_Dialogue_Choice = "Prefabs/UI/Dialogue/Choice/";
         private static string Prefix_UI_GameMode = "Prefabs/UI/GameMode/";
         private static string Prefix_UI_Safehouse = "Prefabs/UI/Safehouse/";
         private static string Prefix_UI_Utility = "Prefabs/UI/Utility/";
@@ -84,7 +85,12 @@ namespace Constants
 
         public static GameObject GetChoiceCanvas()
         {
-            return Resources.Load<GameObject>(Prefix_UI_Dialogue + "ChoiceCanvas");
+            return Resources.Load<GameObject>(Prefix_UI_Dialogue_Choice + "ChoiceCanvas");
+        }
+
+        public static GameObject GetChoiceButton()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Dialogue_Choice + "Button_Choice");
         }
 
         public static GameObject GetStationCanvas()

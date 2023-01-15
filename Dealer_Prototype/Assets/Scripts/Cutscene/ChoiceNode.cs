@@ -4,24 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ChoiceActionData
+public struct ChoicePair
 {
-    public string Prompt;
+    public string Text;
+    public CutsceneNode Next;
+}
 
-    public string Text_A;
-    public string Text_B;
-    public string Text_C;
-    public string Text_D;
+[System.Serializable]
+public class ChoiceActionData : CutsceneNodeData
+{
+    public List<ChoicePair> Choices = new List<ChoicePair>();
 }
 
 public class ChoiceNode : CutsceneNode
 {
     [SerializeField] private ChoiceActionData Data;
-
-    [SerializeField] private CutsceneNode Choice_A;
-    [SerializeField] private CutsceneNode Choice_B;
-    [SerializeField] private CutsceneNode Choice_C;
-    [SerializeField] private CutsceneNode Choice_D;
 
     private int _selectedIndex = -1;
 
@@ -35,6 +32,11 @@ public class ChoiceNode : CutsceneNode
         choiceCanvas.onChoiceSelected += OnChoiceSelected;
     }
 
+    protected override void CompleteNode()
+    {
+        base.CompleteNode();
+    }
+
     public void OnChoiceSelected(int index)
     {
         Debug.Log("choice selected");
@@ -44,18 +46,11 @@ public class ChoiceNode : CutsceneNode
 
     public override CutsceneNode GetNext()
     {
-        switch(_selectedIndex)
+        if(Data.Choices.Count > _selectedIndex)
         {
-            case 0:
-                return Choice_A;
-            case 1:
-                return Choice_B;
-            case 2:
-                return Choice_C;
-            case 3:
-                return Choice_D;
-            default:
-                return null;
+            return Data.Choices[_selectedIndex].Next;
         }
+
+        return null;
     }
 }

@@ -4,17 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class ActionNodeData
-{
-    [TextArea(5, 10)]
-    public string Text;
-}
-
 public class ActionNode : CutsceneNode
 {
-    [SerializeField] private ActionNodeData _data;
+    [SerializeField] private CutsceneNodeData _data;
 
+    [Space]
     [SerializeField] private CutsceneNode _next;
 
     public override void Setup(Action OnComplete)
@@ -23,7 +17,7 @@ public class ActionNode : CutsceneNode
 
         GameObject canvasObject = Instantiate<GameObject>(PrefabLibrary.GetActionCanvas());
         ActionCanvas actionCanvas = canvasObject.GetComponent<ActionCanvas>();
-        actionCanvas.Setup(_data.Text, CompleteNode);
+        actionCanvas.Setup(_data.MainText, CompleteNode);
     }
 
     public override CutsceneNode GetNext()

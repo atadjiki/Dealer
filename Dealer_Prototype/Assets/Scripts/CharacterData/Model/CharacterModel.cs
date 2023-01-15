@@ -8,7 +8,6 @@ using UnityEngine;
 public class CharacterModel : MonoBehaviour
 {
     private Animator _animator;
-    private WeaponSocket _weaponSocket;
     private Enumerations.Team _team;
 
     public ModelClicked OnModelClickedDelegate;
@@ -18,31 +17,12 @@ public class CharacterModel : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _weaponSocket = GetComponentInChildren<WeaponSocket>();
         _team = Enumerations.Team.Neutral;
-    }
-
-    public void ApplyCharacterInfo(CharacterInfo characterInfo)
-    {
-        SetupWeapon(characterInfo);
     }
 
     public void SetTeam(Enumerations.Team team)
     {
         _team = team;
-    }
-
-    private void SetupWeapon(CharacterInfo characterInfo)
-    {
-        Enumerations.WeaponID weaponID = characterInfo.WeaponID;
-
-        if (weaponID != Enumerations.WeaponID.None && _weaponSocket != null)
-        {
-            GameObject weaponPrefab = Instantiate(PrefabManager.Instance.GetWeaponModel(weaponID), _weaponSocket.transform);
-            weaponPrefab.transform.localScale = Vector3.one;
-
-            _animator.runtimeAnimatorController = AnimationManager.Instance.GetControllerByWeaponID(weaponID);
-        }
     }
 
     private void ToIdle()

@@ -40,6 +40,8 @@ namespace GameDelegates
 
     public delegate void ChoiceSelected(int index);
 
+    public delegate void GameEventTriggered(Enumerations.GameEvent gameEvent);
+
 
     public class Global
     {
@@ -56,5 +58,7 @@ namespace GameDelegates
         public static ToggleUI OnToggleUI;
 
         public static LevelHasLoaded OnLevelHasLoaded;
+
+        public static GameEventTriggered OnGameEvent;
     }
 }

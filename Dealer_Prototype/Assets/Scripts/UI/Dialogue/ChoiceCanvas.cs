@@ -8,30 +8,33 @@ using Constants;
 
 public class ChoiceCanvas : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI Text_Prompt;
+    [SerializeField] private TextMeshProUGUI Text_Prompt;
 
-    [SerializeField] Button Button_A;
-    [SerializeField] Button Button_B;
-    [SerializeField] Button Button_C;
-    [SerializeField] Button Button_D;
+    [SerializeField] private GameObject Choices_Panel;
 
     public ChoiceSelected onChoiceSelected;
 
     public void Setup(ChoiceActionData Data)
     {
-        Text_Prompt.text = Data.Prompt;
+        Text_Prompt.text = Data.MainText;
 
-        SetupButton(Button_A, Data.Text_A, 0);
-        SetupButton(Button_B, Data.Text_B, 1);
-        SetupButton(Button_C, Data.Text_C, 2);
-        SetupButton(Button_D, Data.Text_D, 3);
+        for(int i = 0; i < Data.Choices.Count; i++)
+        {
+            SetupButton(Data.Choices[i].Text, i);
+        }
     }
 
-    private void SetupButton(Button button, string text, int index)
+    private void SetupButton(string text, int index)
     {
-        button.GetComponentInChildren<TextMeshProUGUI>().text = text;
-        button.interactable = text.Length > 0;
-        button.onClick.AddListener(() => OnButtonPressed(index) );
+        if (text != null)
+        {
+            GameObject buttonObject = Instantiate<GameObject>(PrefabLibrary.GetChoiceButton(), Choices_Panel.transform);
+            Button button = buttonObject.GetComponent<Button>();
+            button.GetComponentInChildren<TextMeshProUGUI>().text = text;
+            button.interactable = text.Length > 0;
+
+            button.onClick.AddListener(() => OnButtonPressed(index));
+        }
     }
 
     private void OnButtonPressed(int index)
