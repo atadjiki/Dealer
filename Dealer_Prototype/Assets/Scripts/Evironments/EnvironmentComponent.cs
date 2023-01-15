@@ -17,6 +17,8 @@ public class EnvironmentComponent : MonoBehaviour
 
     [SerializeField] protected AudioSource musicSource;
 
+    [SerializeField] protected CutscenePlayer cutscenePlayer;
+
     protected PlayerComponent _player;
 
     private void Awake()

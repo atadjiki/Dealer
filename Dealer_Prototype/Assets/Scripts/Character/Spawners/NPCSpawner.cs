@@ -4,6 +4,8 @@ public class NPCSpawner : Spawner
 {
     private void Start()
     {
+        if(spawnData.ModelID == Constants.Enumerations.CharacterModelID.None) { return; }
+
         if(spawnData.SpawnOnClosestPoint)
         {
             bool success;
