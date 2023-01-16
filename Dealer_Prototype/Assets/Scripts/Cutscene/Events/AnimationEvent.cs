@@ -6,7 +6,7 @@ using Constants;
 [System.Serializable]
 public struct AnimEventPair
 {
-    public CharacterModel Model;
+    public Enumerations.CharacterID CharacterID;
     public Animations.ID Anim;
 }
 

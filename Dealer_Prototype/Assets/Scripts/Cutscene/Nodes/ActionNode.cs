@@ -10,9 +10,9 @@ public class ActionNode : CutsceneNode
     [Space]
     [SerializeField] private CutsceneNode _next;
 
-    public override void Setup(Action OnComplete)
+    public override void Setup(Cutscene cutscene, Action OnComplete)
     {
-        base.Setup(OnComplete);
+        base.Setup(cutscene, OnComplete);
 
         GameObject canvasObject = Instantiate<GameObject>(PrefabLibrary.GetActionCanvas());
         ActionCanvas actionCanvas = canvasObject.GetComponent<ActionCanvas>();

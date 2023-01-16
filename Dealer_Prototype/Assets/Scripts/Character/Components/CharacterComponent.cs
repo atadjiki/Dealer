@@ -89,4 +89,9 @@ public class CharacterComponent : MonoBehaviour
         model.transform.position = location.position;
         model.transform.rotation = location.rotation;
     }
+
+    public void PlayAnim(Animations.ID Anim)
+    {
+        model.PlayAnim(Anim);
+    }
 }

@@ -43,6 +43,13 @@ public class NavigatorComponent : MonoBehaviour
         StartCoroutine(PerformInitialize());
     }
 
+    public void Initialize(CutsceneCharacterComponent character)
+    {
+        character.OnNewDestination += SetDestination;
+
+        StartCoroutine(PerformInitialize());
+    }
+
     public IEnumerator PerformInitialize()
     {
         _seeker = GetComponent<Seeker>();
@@ -53,7 +60,7 @@ public class NavigatorComponent : MonoBehaviour
 
         yield return new WaitUntil(() => _AI != null);
 
-        AstarPath.active.ScanAsync();
+        if(AstarPath.active != null) AstarPath.active.ScanAsync();
 
         _initialized = true;
     }

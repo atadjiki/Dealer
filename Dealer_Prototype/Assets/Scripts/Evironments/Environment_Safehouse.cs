@@ -8,7 +8,7 @@ public class Environment_Safehouse : EnvironmentComponent
 {
     [Header("Player Spawn")]
     [SerializeField] protected PlayerSpawner playerSpawner;
-    [SerializeField] protected Transform walkToLocation;
+    [SerializeField] protected Transform playerDefaultLocation;
     protected PlayerComponent _player;
 
     [Space]
@@ -20,14 +20,15 @@ public class Environment_Safehouse : EnvironmentComponent
         Global.OnStationSelected += OnStationSelected;
         Global.OnPlayerSpawned += OnPlayerSpawned;
 
-        AudioUtility.DoorOpen();
+        //AudioUtility.DoorOpen();
     }
 
     protected override IEnumerator Coroutine_PerformEnterActions()
     {
         yield return base.Coroutine_PerformEnterActions();
 
-        SpawnPlayer();
+        // SpawnPlayer();
+        cutscenePlayer.ProcessNext();
 
     }
 
@@ -78,7 +79,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void OnBackButtonPressed()
     {
-        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, walkToLocation));
+        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, playerDefaultLocation));
     }
 
     private void SpawnPlayer()
@@ -92,25 +93,5 @@ public class Environment_Safehouse : EnvironmentComponent
     private void OnPlayerSpawned(PlayerComponent playerComponent)
     {
         _player = playerComponent;
-
-        StartCoroutine(PerformEntranceScene());
-    }
-
-    private void OnPlayerDestinationReached()
-    {
-        Global.OnToggleUI(true);
-    }
-
-    private IEnumerator PerformEntranceScene()
-    {
-        yield return new WaitUntil(() => _player.HasInitialized());
-
-        _player.OnDestinationReached += OnPlayerDestinationReached;
-
-        _player.GoTo(walkToLocation.position);
-
-        yield return new WaitForSeconds(0.5f);
-
-        musicSource.Play();
     }
 }

@@ -23,9 +23,9 @@ public class ChoiceNode : CutsceneNode
 
     private int _selectedIndex = -1;
 
-    public override void Setup(System.Action CompleteAction)
+    public override void Setup(Cutscene cutscene, System.Action CompleteAction)
     {
-        base.Setup(CompleteAction);
+        base.Setup(cutscene, CompleteAction);
 
         GameObject canvasObject = Instantiate<GameObject>(PrefabLibrary.GetChoiceCanvas());
         ChoiceCanvas choiceCanvas = canvasObject.GetComponent<ChoiceCanvas>();

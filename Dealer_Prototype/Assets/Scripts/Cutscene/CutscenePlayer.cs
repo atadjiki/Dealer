@@ -6,9 +6,19 @@ public class CutscenePlayer : MonoBehaviour
 {
     [SerializeField] private List<Cutscene> _cutscenes;
 
+    [SerializeField] private bool PlayOnAwake;
+
     private System.Action OnAllScenesFinished;
 
     private int _currentIndex = 0;
+
+    private void Awake()
+    {
+        if(PlayOnAwake)
+        {
+            ProcessNext();
+        }
+    }
 
     public void Setup(System.Action _OnAllScenesFinished)
     {
@@ -24,12 +34,9 @@ public class CutscenePlayer : MonoBehaviour
 
             cutscene.Begin(OnCutsceneFinished);
         }
-        else
+        else if (OnAllScenesFinished != null)
         {
-            if (OnAllScenesFinished != null)
-            {
-                OnAllScenesFinished.Invoke();
-            }
+            OnAllScenesFinished.Invoke();
         }
     }
 

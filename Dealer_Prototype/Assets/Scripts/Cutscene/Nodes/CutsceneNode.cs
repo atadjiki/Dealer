@@ -14,6 +14,7 @@ public class NodeEvents
     public AnimationEvent AnimEvent;
     public CameraEvent CamEvent;
     public TransactionEvent TransactionEvent;
+    public CharacterVisiblityEvent VisiblityEvent;
 
     public List<CutsceneEvent> ToList()
     {
@@ -21,7 +22,8 @@ public class NodeEvents
         {
             AnimEvent,
             CamEvent,
-            TransactionEvent
+            TransactionEvent,
+            VisiblityEvent,
         };
     }
 }
@@ -38,7 +40,7 @@ public class CutsceneNode : MonoBehaviour
 
     [SerializeField] protected float _FadeOut;
 
-    public virtual void Setup(System.Action OnComplete){ _OnCompleteAction = OnComplete; }
+    public virtual void Setup(Cutscene cutscene, System.Action OnComplete){ _OnCompleteAction = OnComplete; }
 
     protected virtual void CompleteNode(){ _OnCompleteAction.Invoke(); }
 
