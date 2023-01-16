@@ -11,18 +11,18 @@ class CutsceneNodeEditor : Editor
 
         base.OnInspectorGUI();
 
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Builder");
+        //EditorGUILayout.Space();
+        //EditorGUILayout.LabelField("Builder");
        
-        if (GUILayout.Button("Action"))
-        {
-        }
-        if (GUILayout.Button("Dialogue"))
-        {
-        }
-        if (GUILayout.Button("Choice"))
-        {
-        }
+        //if (GUILayout.Button("Action"))
+        //{
+        //}
+        //if (GUILayout.Button("Dialogue"))
+        //{
+        //}
+        //if (GUILayout.Button("Choice"))
+        //{
+        //}
     }
 }
 

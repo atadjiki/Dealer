@@ -9,8 +9,6 @@ public class Cutscene : MonoBehaviour
 
     private System.Action OnCutsceneFinished;
 
-    private const float _fadeTime = 2.5f;
-
     public void Begin(System.Action _OnCutsceneFinished)
     {
 
@@ -32,11 +30,11 @@ public class Cutscene : MonoBehaviour
         {
             if(_currentNode.DoFadeIn())
             {
-                UIUtility.RequestFadeFromBlack(_fadeTime);
-                yield return new WaitForSeconds(_fadeTime);
+                UIUtility.RequestFadeFromBlack(_currentNode.GetFadeIn());
+                yield return new WaitForSeconds(_currentNode.GetFadeIn());
             }
 
-            foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents())
+            foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
             }
@@ -61,11 +59,11 @@ public class Cutscene : MonoBehaviour
         {
             if (_currentNode.DoFadeOut())
             {
-                UIUtility.RequestFadeToBlack(_fadeTime);
-                yield return new WaitForSeconds(_fadeTime);
+                UIUtility.RequestFadeToBlack(_currentNode.GetFadeOut());
+                yield return new WaitForSeconds(_currentNode.GetFadeOut());
             }
 
-            foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents())
+            foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
             }

@@ -1,18 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
-public class CameraEvent : MonoBehaviour
+[System.Serializable]
+public class CameraEvent : CutsceneEvent
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public CinemachineVirtualCamera VirtualCamera; 
 }

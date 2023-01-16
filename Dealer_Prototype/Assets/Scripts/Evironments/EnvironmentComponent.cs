@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Constants;
 using GameDelegates;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class EnvironmentComponent : MonoBehaviour
 
     private void OnDestroy()
     {
+        CinemachineBrain.SoloCamera = null;
         ExitActions();
     }
 

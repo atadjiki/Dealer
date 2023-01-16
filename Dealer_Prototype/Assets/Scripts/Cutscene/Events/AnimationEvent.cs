@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
-public class AnimationEvent : MonoBehaviour
+[System.Serializable]
+public struct AnimEventPair
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public CharacterModel Model;
+    public Animations.ID Anim;
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+[System.Serializable]
+public class AnimationEvent : CutsceneEvent
+{
+    public List<AnimEventPair> Data;
 }

@@ -8,29 +8,51 @@ public class CutsceneNodeData
     public string MainText;
 }
 
+[System.Serializable]
+public class NodeEvents
+{
+    public AnimationEvent AnimEvent;
+    public CameraEvent CamEvent;
+    public TransactionEvent TransactionEvent;
+
+    public List<CutsceneEvent> ToList()
+    {
+        return new List<CutsceneEvent>()
+        {
+            AnimEvent,
+            CamEvent,
+            TransactionEvent
+        };
+    }
+}
+
 public class CutsceneNode : MonoBehaviour
 {
     protected System.Action _OnCompleteAction;
 
-    [SerializeField] protected List<CutsceneEvent> _PreEvents;
+    [SerializeField] protected NodeEvents _PreEvents;
 
-    [SerializeField] protected List<CutsceneEvent> _PostEvents;
+    [SerializeField] protected NodeEvents _PostEvents;
 
-    [SerializeField] protected bool _FadeIn;
+    [SerializeField] protected float _FadeIn;
 
-    [SerializeField] protected bool _FadeOut;
+    [SerializeField] protected float _FadeOut;
 
     public virtual void Setup(System.Action OnComplete){ _OnCompleteAction = OnComplete; }
 
     protected virtual void CompleteNode(){ _OnCompleteAction.Invoke(); }
 
-    public List<CutsceneEvent> GetPreEvents(){ return _PreEvents; }
+    public NodeEvents GetPreEvents(){ return _PreEvents; }
 
-    public List<CutsceneEvent> GetPostEvents(){ return _PostEvents; }
+    public NodeEvents GetPostEvents(){ return _PostEvents; }
 
     public virtual CutsceneNode GetNext(){ return null; }
 
-    public bool DoFadeIn() { return _FadeIn; }
+    public bool DoFadeIn() { return _FadeIn > 0; }
 
-    public bool DoFadeOut() { return _FadeOut; }
+    public bool DoFadeOut() { return _FadeOut > 0; }
+
+    public float GetFadeIn() { return _FadeIn; }
+
+    public float GetFadeOut() { return _FadeOut; }
 }

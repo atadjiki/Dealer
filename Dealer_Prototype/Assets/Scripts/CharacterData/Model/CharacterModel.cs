@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Constants;
 using GameDelegates;
 using UnityEngine;
@@ -27,12 +25,17 @@ public class CharacterModel : MonoBehaviour
 
     private void ToIdle()
     {
-        _animator.Play("Idle_Male");
+        PlayAnim(Animations.ID.Idle_Male);
     }
 
     private void ToWalking()
     {
-        _animator.Play("Walking_Male");
+        PlayAnim(Animations.ID.Walking_Male);
+    }
+
+    public void PlayAnim(Animations.ID anim)
+    {
+        _animator.Play(anim.ToString());
     }
 
     private void OnMouseEnter()
@@ -41,7 +44,6 @@ public class CharacterModel : MonoBehaviour
         {
             HandleHightlight(_team);
         }
-
     }
 
     private void OnMouseExit()
