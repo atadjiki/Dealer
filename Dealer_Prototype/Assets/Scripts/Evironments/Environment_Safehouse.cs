@@ -6,14 +6,29 @@ using UnityEngine;
 
 public class Environment_Safehouse : EnvironmentComponent
 {
+    [Header("Player Spawn")]
+    [SerializeField] protected PlayerSpawner playerSpawner;
+    [SerializeField] protected Transform walkToLocation;
+    protected PlayerComponent _player;
+
+    [Space]
     [Header("Safehouse")]
     [SerializeField] private List<PlayerStation> _stations;
 
     private void Start()
     {
         Global.OnStationSelected += OnStationSelected;
+        Global.OnPlayerSpawned += OnPlayerSpawned;
 
         AudioUtility.DoorOpen();
+    }
+
+    protected override IEnumerator Coroutine_PerformEnterActions()
+    {
+        yield return base.Coroutine_PerformEnterActions();
+
+        SpawnPlayer();
+
     }
 
     protected override void ExitActions()
@@ -21,6 +36,7 @@ public class Environment_Safehouse : EnvironmentComponent
         base.ExitActions();
 
         Global.OnStationSelected -= OnStationSelected;
+        Global.OnPlayerSpawned -= OnPlayerSpawned;
     }
 
     private void OnStationSelected(Enumerations.SafehouseStation stationID)
@@ -63,5 +79,38 @@ public class Environment_Safehouse : EnvironmentComponent
     private void OnBackButtonPressed()
     {
         StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, walkToLocation));
+    }
+
+    private void SpawnPlayer()
+    {
+        if (playerSpawner != null)
+        {
+            playerSpawner.PerformSpawn();
+        }
+    }
+
+    private void OnPlayerSpawned(PlayerComponent playerComponent)
+    {
+        _player = playerComponent;
+
+        StartCoroutine(PerformEntranceScene());
+    }
+
+    private void OnPlayerDestinationReached()
+    {
+        Global.OnToggleUI(true);
+    }
+
+    private IEnumerator PerformEntranceScene()
+    {
+        yield return new WaitUntil(() => _player.HasInitialized());
+
+        _player.OnDestinationReached += OnPlayerDestinationReached;
+
+        _player.GoTo(walkToLocation.position);
+
+        yield return new WaitForSeconds(0.5f);
+
+        musicSource.Play();
     }
 }

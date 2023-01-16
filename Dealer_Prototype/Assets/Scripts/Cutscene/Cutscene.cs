@@ -9,8 +9,11 @@ public class Cutscene : MonoBehaviour
 
     private System.Action OnCutsceneFinished;
 
+    private const float _fadeTime = 2.5f;
+
     public void Begin(System.Action _OnCutsceneFinished)
     {
+
         OnCutsceneFinished = _OnCutsceneFinished;
 
         _currentNode = _root;
@@ -18,7 +21,7 @@ public class Cutscene : MonoBehaviour
         ProcessCurrentNode();
     }
 
-    private void ProcessCurrentNode()
+    public void ProcessCurrentNode()
     {
         StartCoroutine(Coroutine_ProcessCurrentNode());
     }
@@ -27,9 +30,15 @@ public class Cutscene : MonoBehaviour
     {
         if (_currentNode != null)
         {
-            foreach(CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents())
+            if(_currentNode.DoFadeIn())
             {
-                yield return CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
+                UIUtility.RequestFadeFromBlack(_fadeTime);
+                yield return new WaitForSeconds(_fadeTime);
+            }
+
+            foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents())
+            {
+                CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
             }
 
             _currentNode.Setup(OnNodeComplete);
@@ -37,9 +46,8 @@ public class Cutscene : MonoBehaviour
         else
         {
             OnCutsceneFinished.Invoke();
+            Destroy(this.gameObject);
         }
-
-        yield return null;
     }
 
     private void OnNodeComplete()
@@ -49,18 +57,22 @@ public class Cutscene : MonoBehaviour
 
     private IEnumerator Coroutine_OnNodeComplete()
     {
-        if(_currentNode != null)
+        if (_currentNode != null)
         {
+            if (_currentNode.DoFadeOut())
+            {
+                UIUtility.RequestFadeToBlack(_fadeTime);
+                yield return new WaitForSeconds(_fadeTime);
+            }
+
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents())
             {
-                yield return CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
+                CutsceneHelper.ProcessCutsceneEvent(cutsceneEvent);
             }
         }
 
         _currentNode = _currentNode.GetNext();
 
         ProcessCurrentNode();
-
-        yield return null;
     }
 }

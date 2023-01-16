@@ -40,7 +40,6 @@ public class ChoiceNode : CutsceneNode
 
     public void OnChoiceSelected(int index)
     {
-        Debug.Log("choice selected");
         _selectedIndex = index;
         CompleteNode();
     }

@@ -9,22 +9,14 @@ public class EnvironmentComponent : MonoBehaviour
     [Header("Environment")]
     [SerializeField] protected bool debug = false;
 
-    [SerializeField] protected PlayerSpawner playerSpawner;
-
     [SerializeField] protected CameraRig cameraRig;
-
-    [SerializeField] protected Transform walkToLocation;
 
     [SerializeField] protected AudioSource musicSource;
 
     [SerializeField] protected CutscenePlayer cutscenePlayer;
 
-    protected PlayerComponent _player;
-
     private void Awake()
     {
-        Global.OnPlayerSpawned += OnPlayerSpawned;
-
         UIUtility.RequestFadeFromBlack(1.0f);
 
         StartCoroutine(Coroutine_EnterActionsStart());
@@ -39,8 +31,6 @@ public class EnvironmentComponent : MonoBehaviour
     {
         if (debug) Debug.Log("Environment " + this.name + " - exit actions");
 
-        Global.OnPlayerSpawned -= OnPlayerSpawned;
-
     }
 
     protected virtual IEnumerator Coroutine_EnterActionsStart()
@@ -52,8 +42,6 @@ public class EnvironmentComponent : MonoBehaviour
 
     protected virtual IEnumerator Coroutine_PerformEnterActions()
     {
-        SpawnPlayer();
-
         yield return Coroutine_EnterActionsCompleted();
     }
 
@@ -61,38 +49,4 @@ public class EnvironmentComponent : MonoBehaviour
     {
         yield return null;
     }
-
-    protected virtual void SpawnPlayer()
-    {
-        if (playerSpawner != null)
-        {
-            playerSpawner.PerformSpawn();
-        }
-    }
-
-    protected virtual void OnPlayerSpawned(PlayerComponent playerComponent)
-    {
-        _player = playerComponent;
-
-        StartCoroutine(PerformEntranceScene());
-    }
-
-    protected virtual void OnPlayerDestinationReached()
-    {
-        Global.OnToggleUI(true);
-    }
-
-    protected virtual IEnumerator PerformEntranceScene()
-    {
-        yield return new WaitUntil(() => _player.HasInitialized());
-
-        _player.OnDestinationReached += OnPlayerDestinationReached;
-
-        _player.GoTo(walkToLocation.position);
-
-        yield return new WaitForSeconds(0.5f);
-
-        musicSource.Play();
-    }
 }
-

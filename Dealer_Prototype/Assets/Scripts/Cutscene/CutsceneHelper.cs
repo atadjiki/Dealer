@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CutsceneHelper : MonoBehaviour
 {
-    public static IEnumerator ProcessCutsceneEvent(CutsceneEvent cutsceneEvent)
+    public static void ProcessCutsceneEvent(CutsceneEvent cutsceneEvent)
     {
         if(cutsceneEvent is TransactionEvent)
         {
@@ -11,7 +11,5 @@ public class CutsceneHelper : MonoBehaviour
 
             GameState.HandleTransaction(transactionEvent.Quantity);
         }
-
-        yield return null; ;
     }
 }

@@ -18,27 +18,19 @@ public class CutsceneNode : MonoBehaviour
 
     [SerializeField] protected bool _FadeIn;
 
-    [SerializeField] protected bool FadeOut;
+    [SerializeField] protected bool _FadeOut;
 
-    public virtual void Setup(System.Action OnComplete) 
-    {
-        _OnCompleteAction = OnComplete;
-    }
+    public virtual void Setup(System.Action OnComplete){ _OnCompleteAction = OnComplete; }
 
-    protected virtual void CompleteNode()
-    {
-        _OnCompleteAction.Invoke();
-    }
+    protected virtual void CompleteNode(){ _OnCompleteAction.Invoke(); }
 
-    public List<CutsceneEvent> GetPreEvents()
-    {
-        return _PreEvents;
-    }
+    public List<CutsceneEvent> GetPreEvents(){ return _PreEvents; }
 
-    public List<CutsceneEvent> GetPostEvents()
-    {
-        return _PostEvents;
-    }
+    public List<CutsceneEvent> GetPostEvents(){ return _PostEvents; }
 
     public virtual CutsceneNode GetNext(){ return null; }
+
+    public bool DoFadeIn() { return _FadeIn; }
+
+    public bool DoFadeOut() { return _FadeOut; }
 }
