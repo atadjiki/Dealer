@@ -18,8 +18,6 @@ public class EnvironmentComponent : MonoBehaviour
 
     private void Awake()
     {
-        UIUtility.RequestFadeFromBlack(1.0f);
-
         StartCoroutine(Coroutine_EnterActionsStart());
     }
 

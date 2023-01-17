@@ -65,7 +65,6 @@ public class Environment_Safehouse : EnvironmentComponent
     {
         Global.OnToggleUI(false);
         Cursor.visible = false;
-        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(true);
         Global.OnToggleUI(false);
 
         yield return new WaitForSeconds(0.25f);
@@ -83,7 +82,6 @@ public class Environment_Safehouse : EnvironmentComponent
             Global.OnToggleUI(true);
         }
 
-        transitionPanel.ToggleAndDestroy(false, 1.5f);
         Cursor.visible = true;
 
         yield return null;
@@ -106,7 +104,15 @@ public class Environment_Safehouse : EnvironmentComponent
     {
         _player = playerComponent;
 
+        StartCoroutine(Coroutine_OnPlayerSpawned());
+    }
+
+    private IEnumerator Coroutine_OnPlayerSpawned()
+    {
+        yield return new WaitForSeconds(1.0f);
+        UIUtility.FadeToTransparent(2.0f);
         Global.OnToggleUI(true);
         Cursor.visible = true;
     }
 }
+

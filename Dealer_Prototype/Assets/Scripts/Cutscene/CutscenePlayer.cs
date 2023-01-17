@@ -29,7 +29,14 @@ public class CutscenePlayer : MonoBehaviour
     {
         GameObject cutsceneInstance = Instantiate(prefab);
         Cutscene cutscene = cutsceneInstance.GetComponent<Cutscene>();
-       
+
+        StartCoroutine(Coroutine_PlayCutscene(cutscene, Callback));
+    }
+
+    private IEnumerator Coroutine_PlayCutscene(Cutscene cutscene, System.Action Callback)
+    {
+        UIUtility.FadeToBlack(0);
+        yield return new WaitForSeconds(1.0f);
         cutscene.Begin(Callback);
     }
 
@@ -37,13 +44,10 @@ public class CutscenePlayer : MonoBehaviour
     {
         if (_currentIndex < _cutscenes.Count)
         {
-            GameObject cutsceneObject = Instantiate(_cutscenes[_currentIndex].gameObject);
-            Cutscene cutscene = cutsceneObject.GetComponent<Cutscene>();
-
-            cutscene.Begin(OnCutsceneFinished);
+            PlayCutscene(_cutscenes[_currentIndex].gameObject, OnCutsceneFinished);
         }
         else if (OnAllScenesFinished != null)
-        {
+        { 
             OnAllScenesFinished.Invoke();
         }
     }

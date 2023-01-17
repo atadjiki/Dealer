@@ -23,21 +23,19 @@ public class Cutscene : MonoBehaviour
 
     private System.Action OnCutsceneFinished;
 
-    private TransitionPanel transitionPanel;
-
     public void Begin(System.Action _OnCutsceneFinished)
     {
         OnCutsceneFinished = _OnCutsceneFinished;
 
         _currentNode = _root;
 
-        transitionPanel = UIUtility.RequestTransitionScreen(true);
-
         StartCoroutine(Coroutine_Begin());
     }
 
     private IEnumerator Coroutine_Begin()
     {
+        yield return new WaitForEndOfFrame();
+
         foreach (CutsceneCharacterData data in CharacterData)
         {
             CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
@@ -50,10 +48,10 @@ public class Cutscene : MonoBehaviour
             }
 
             yield return new WaitForSeconds(1f);
-
-            transitionPanel.Toggle(false);
         }
 
+        UIUtility.FadeToTransparent(1.5f);
+        yield return new WaitForSeconds(1);
         ProcessCurrentNode();
     }
 
@@ -69,19 +67,14 @@ public class Cutscene : MonoBehaviour
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(this, cutsceneEvent);
-            }
-
-            if (_currentNode.DoFadeIn())
-            {
-                transitionPanel.Toggle(true, _currentNode.GetFadeIn());
-                yield return new WaitForSeconds(_currentNode.GetFadeIn());
+                yield return new WaitForEndOfFrame();
             }
 
             _currentNode.Setup(this, OnNodeComplete);
         }
         else
         {
-            transitionPanel.ToggleAndDestroy(false, 1.0f);
+            UIUtility.FadeToBlack(0);
             OnCutsceneFinished.Invoke();
             Destroy(this.gameObject);
         }
@@ -96,21 +89,17 @@ public class Cutscene : MonoBehaviour
     {
         if (_currentNode != null)
         {
-            if (_currentNode.DoFadeOut())
-            {
-                transitionPanel.Toggle(true, _currentNode.GetFadeOut());
-                yield return new WaitForSeconds(_currentNode.GetFadeOut());
-            }
-
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(this, cutsceneEvent);
+                yield return new WaitForEndOfFrame();
             }
         }
 
         _currentNode = _currentNode.GetNext();
 
         ProcessCurrentNode();
+
     }
 
     public List<CutsceneCharacterComponent> GetCharacters()

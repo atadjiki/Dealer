@@ -7,36 +7,43 @@ using Constants;
 
 public class UIUtility : MonoBehaviour
 {
-    public static TransitionPanel RequestTransitionScreen(bool state)
+    private static TransitionPanel _transitionPanel;
+
+    private static void InitTransitionPanel()
     {
         GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), null);
 
-        TransitionPanel panel = gameObject.GetComponent<TransitionPanel>();
+        _transitionPanel = gameObject.GetComponent<TransitionPanel>();
 
-        panel.SetInitialState(state);
+        _transitionPanel.SetInitialState(false);
 
-        return panel;
     }
 
-    public static TransitionPanel RequestFadeToBlack(float transitionTime)
+    public static void FadeToBlack(float time)
     {
-        GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), null);
+        if(_transitionPanel == null)
+        {
+            InitTransitionPanel();
+        }
 
-        TransitionPanel panel = gameObject.GetComponent<TransitionPanel>();
+        _transitionPanel.SetInitialState(false);
 
-        panel.ToggleAndDestroy(true, transitionTime);
+        _transitionPanel.Toggle(true, time);
 
-        return panel;
+        Debug.Log("Fade To Black " + time + "s");
     }
 
-    public static void RequestFadeFromBlack(float transitionTime)
+    public static void FadeToTransparent(float time)
     {
-        GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), null);
+        if (_transitionPanel == null)
+        {
+            InitTransitionPanel();
+        }
 
-        TransitionPanel panel = gameObject.GetComponent<TransitionPanel>();
+        _transitionPanel.SetInitialState(true);
 
-        panel.Toggle(true, 0);
+        _transitionPanel.Toggle(false, time);
 
-        panel.ToggleAndDestroy(false, transitionTime);
+        Debug.Log("Fade To Transparent " + time + "s");
     }
 }

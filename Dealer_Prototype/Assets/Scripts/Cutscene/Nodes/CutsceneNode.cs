@@ -36,10 +36,6 @@ public class CutsceneNode : MonoBehaviour
 
     [SerializeField] protected NodeEvents _PostEvents;
 
-    [SerializeField] protected float _FadeIn;
-
-    [SerializeField] protected float _FadeOut;
-
     public virtual void Setup(Cutscene cutscene, System.Action OnComplete){ _OnCompleteAction = OnComplete; }
 
     protected virtual void CompleteNode(){ _OnCompleteAction.Invoke(); }
@@ -49,12 +45,4 @@ public class CutsceneNode : MonoBehaviour
     public NodeEvents GetPostEvents(){ return _PostEvents; }
 
     public virtual CutsceneNode GetNext(){ return null; }
-
-    public bool DoFadeIn() { return _FadeIn > 0; }
-
-    public bool DoFadeOut() { return _FadeOut > 0; }
-
-    public float GetFadeIn() { return _FadeIn; }
-
-    public float GetFadeOut() { return _FadeOut; }
 }
