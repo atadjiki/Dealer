@@ -35,8 +35,6 @@ public class CutsceneCharacterComponent : CharacterComponent
 
         model.transform.parent = navigatorObject.transform;
         OnNewCommand += model.HandleCharacterAction;
-
-        yield return null;
     }
 
     public void BeginMovement()

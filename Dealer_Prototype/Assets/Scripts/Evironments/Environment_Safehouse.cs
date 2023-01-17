@@ -8,28 +8,35 @@ public class Environment_Safehouse : EnvironmentComponent
 {
     [Header("Player Spawn")]
     [SerializeField] protected PlayerSpawner playerSpawner;
-    [SerializeField] protected Transform playerDefaultLocation;
     protected PlayerComponent _player;
 
     [Space]
     [Header("Safehouse")]
     [SerializeField] private List<PlayerStation> _stations;
 
+    [Space]
+    [Header("Cutscene")]
+    [SerializeField] private GameObject entryCutscene;
+
     private void Start()
     {
         Global.OnStationSelected += OnStationSelected;
         Global.OnPlayerSpawned += OnPlayerSpawned;
 
-        //AudioUtility.DoorOpen();
+        AudioUtility.DoorOpen();
     }
 
     protected override IEnumerator Coroutine_PerformEnterActions()
     {
         yield return base.Coroutine_PerformEnterActions();
 
-        // SpawnPlayer();
-        cutscenePlayer.ProcessNext();
+        cutscenePlayer.PlayCutscene(entryCutscene, EntryCutsceneComplete);
+    }
 
+    private void EntryCutsceneComplete()
+    {
+        UIUtility.RequestFadeFromBlack(1.0f);
+        SpawnPlayer();
     }
 
     protected override void ExitActions()
@@ -79,7 +86,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void OnBackButtonPressed()
     {
-        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, playerDefaultLocation));
+        StartCoroutine(PerformStationSelect(Enumerations.SafehouseStation.None, playerSpawner.transform));
     }
 
     private void SpawnPlayer()

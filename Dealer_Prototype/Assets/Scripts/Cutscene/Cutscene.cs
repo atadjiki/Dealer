@@ -25,20 +25,31 @@ public class Cutscene : MonoBehaviour
 
     public void Begin(System.Action _OnCutsceneFinished)
     {
-        //spawn the characters we need for this scene
-        foreach(CutsceneCharacterData data in CharacterData)
-        {
-            CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
-
-            if(characterComponent != null)
-            {
-                Characters.Add(characterComponent);
-            }
-        }
-
         OnCutsceneFinished = _OnCutsceneFinished;
 
         _currentNode = _root;
+
+        StartCoroutine(Coroutine_Begin());
+    }
+
+    private IEnumerator Coroutine_Begin()
+    {
+        //spawn the characters we need for this scene
+        foreach (CutsceneCharacterData data in CharacterData)
+        {
+            CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
+
+            yield return new WaitUntil(() => characterComponent != null);
+
+            if (characterComponent != null)
+            {
+                Characters.Add(characterComponent);
+            }
+
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
 
         ProcessCurrentNode();
     }

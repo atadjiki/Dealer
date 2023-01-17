@@ -32,68 +32,6 @@ Transform:
   m_Father: {fileID: 7289437741279611513}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3619077716821384812
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7252724767651647262}
-  - component: {fileID: 2927397882567678199}
-  m_Layer: 0
-  m_Name: Node_InitialWait
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7252724767651647262
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3619077716821384812}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 7289437741677774894}
-  m_Father: {fileID: 7289437741279611513}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2927397882567678199
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3619077716821384812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 238da5cc662a94f1aa8ade22bf4a12f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _PreEvents:
-    AnimEvent:
-      Data: []
-    CamEvent:
-      VirtualCamera: {fileID: 0}
-    TransactionEvent:
-      Quantity: 0
-  _PostEvents:
-    AnimEvent:
-      Data: []
-    CamEvent:
-      VirtualCamera: {fileID: 0}
-    TransactionEvent:
-      Quantity: 0
-  _FadeIn: 0
-  _FadeOut: 0
-  waitTime: 2.5
-  _next: {fileID: 8707151371980982469}
 --- !u!1 &5310194132549414692
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909415800245922068}
-  - component: {fileID: 1691885354365799956}
+  - component: {fileID: 5204494111056450600}
   m_Layer: 0
   m_Name: Node_Wait
   m_TagString: Untagged
@@ -125,7 +63,7 @@ Transform:
   m_Father: {fileID: 7289437741677774894}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1691885354365799956
+--- !u!114 &5204494111056450600
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,14 +72,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5310194132549414692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aedad460202f67740815da71e21a3b47, type: 3}
+  m_Script: {fileID: 11500000, guid: 238da5cc662a94f1aa8ade22bf4a12f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _PreEvents:
     AnimEvent:
-      Data:
-      - CharacterID: 1
-        Anim: 17
+      Data: []
     CamEvent:
       VirtualCamera: {fileID: 0}
     TransactionEvent:
@@ -155,8 +91,7 @@ MonoBehaviour:
       Quantity: 0
   _FadeIn: 0
   _FadeOut: 0
-  _data:
-    MainText: you have arrived at your apartment
+  waitTime: 1
   _next: {fileID: 0}
 --- !u!1 &7212849409089581630
 GameObject:
@@ -216,7 +151,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7252724767651647262}
+  - {fileID: 7289437741677774894}
   - {fileID: 8057735599276980544}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -233,10 +168,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d9c6c90e1954be0a09f4aaed62da21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _root: {fileID: 2927397882567678199}
+  _root: {fileID: 8707151371980982469}
   CharacterData:
   - ID: 1
-    Model: 1
+    Model: 2
     SpawnLocation: {fileID: 611023044775238808}
 --- !u!1 &7289437741677774888
 GameObject:
@@ -267,7 +202,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 909415800245922068}
-  m_Father: {fileID: 7252724767651647262}
+  m_Father: {fileID: 7289437741279611513}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8707151371980982469
@@ -300,7 +235,7 @@ MonoBehaviour:
   _FadeOut: 0
   CharacterID: 1
   Location: {fileID: 8347962088172296136}
-  _next: {fileID: 1691885354365799956}
+  _next: {fileID: 5204494111056450600}
 --- !u!1 &8493310381397601905
 GameObject:
   m_ObjectHideFlags: 0

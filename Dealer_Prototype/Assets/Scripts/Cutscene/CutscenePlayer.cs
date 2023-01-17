@@ -25,6 +25,14 @@ public class CutscenePlayer : MonoBehaviour
         OnAllScenesFinished = _OnAllScenesFinished;
     }
 
+    public void PlayCutscene(GameObject prefab, System.Action Callback)
+    {
+        GameObject cutsceneObject = Instantiate<GameObject>(prefab);
+        Cutscene cutscene = cutsceneObject.GetComponent<Cutscene>();
+
+        cutscene.Begin(Callback);
+    }
+
     public void ProcessNext()
     {
         if (_currentIndex < _cutscenes.Count)
