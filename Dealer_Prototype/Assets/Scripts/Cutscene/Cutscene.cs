@@ -23,19 +23,21 @@ public class Cutscene : MonoBehaviour
 
     private System.Action OnCutsceneFinished;
 
+    private TransitionPanel transitionPanel;
+
     public void Begin(System.Action _OnCutsceneFinished)
     {
         OnCutsceneFinished = _OnCutsceneFinished;
 
         _currentNode = _root;
 
+        transitionPanel = UIUtility.RequestTransitionScreen(true);
+
         StartCoroutine(Coroutine_Begin());
     }
 
     private IEnumerator Coroutine_Begin()
     {
-        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(true);
-
         foreach (CutsceneCharacterData data in CharacterData)
         {
             CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
@@ -48,9 +50,9 @@ public class Cutscene : MonoBehaviour
             }
 
             yield return new WaitForSeconds(1f);
-        }
 
-        transitionPanel.ToggleAndDestroy(false, 1.0f);
+            transitionPanel.Toggle(false);
+        }
 
         ProcessCurrentNode();
     }
@@ -64,21 +66,22 @@ public class Cutscene : MonoBehaviour
     {
         if (_currentNode != null)
         {
-            if(_currentNode.DoFadeIn())
-            {
-                UIUtility.RequestFadeFromBlack(_currentNode.GetFadeIn());
-                yield return new WaitForSeconds(_currentNode.GetFadeIn());
-            }
-
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPreEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(this, cutsceneEvent);
+            }
+
+            if (_currentNode.DoFadeIn())
+            {
+                transitionPanel.Toggle(true, _currentNode.GetFadeIn());
+                yield return new WaitForSeconds(_currentNode.GetFadeIn());
             }
 
             _currentNode.Setup(this, OnNodeComplete);
         }
         else
         {
+            transitionPanel.ToggleAndDestroy(false, 1.0f);
             OnCutsceneFinished.Invoke();
             Destroy(this.gameObject);
         }
@@ -95,10 +98,8 @@ public class Cutscene : MonoBehaviour
         {
             if (_currentNode.DoFadeOut())
             {
-                TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(false);
-                transitionPanel.ToggleAndDestroy(true, _currentNode.GetFadeOut());
+                transitionPanel.Toggle(true, _currentNode.GetFadeOut());
                 yield return new WaitForSeconds(_currentNode.GetFadeOut());
-                
             }
 
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents().ToList())
