@@ -20,7 +20,7 @@ namespace GameDelegates
     public delegate void ModelClicked();
 
     //npc
-    public delegate void NewDestination(Vector3 destination);
+    public delegate void NewDestination(Vector3 position , Quaternion rotation);
     public delegate void NewCommand(Enumerations.CommandType command);
 
     public delegate void PlayerSpawned(PlayerComponent playerComponent);

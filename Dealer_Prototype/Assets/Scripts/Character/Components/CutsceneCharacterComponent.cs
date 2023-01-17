@@ -56,11 +56,11 @@ public class CutsceneCharacterComponent : CharacterComponent
         OnMovementStateChanged.Invoke(Enumerations.MovementState.Stopped);
     }
 
-    public void GoTo(Vector3 location)
+    public void GoTo(Vector3 position, Quaternion rotation)
     {
         StopAllCoroutines();
 
-        OnNewDestination.Invoke(location);
+        OnNewDestination.Invoke(position, rotation);
 
         BeginMovement();
     }

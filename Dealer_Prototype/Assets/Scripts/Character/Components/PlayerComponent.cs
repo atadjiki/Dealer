@@ -80,19 +80,19 @@ public class PlayerComponent : NPCComponent, IGameplayInitializer
                         else
                         {
                             //TODO - characters should have a location in front of them that is approachable
-                            GoTo(hit.point);
+                           GoTo(hit.point, Quaternion.identity);
                         }
                     }
                     else if (station != null)
                     {
                         Debug.Log("Visiting station");
-                        GoTo(station.GetEntryTransform().position);
+                        GoTo(station.GetEntryTransform().position, station.GetEntryTransform().rotation);
                     }
                     else if (hit.collider.tag == "Ground")
                     {
                         if (NavigationHelper.IsPointValid( hit.point))
                         {
-                            GoTo(hit.point);
+                           GoTo(hit.point, Quaternion.identity);
                         }
                         else
                         {

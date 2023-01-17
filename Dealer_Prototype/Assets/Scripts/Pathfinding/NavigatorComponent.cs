@@ -65,26 +65,26 @@ public class NavigatorComponent : MonoBehaviour
         _initialized = true;
     }
 
-    public void SetDestination(Vector3 destination)
+    public void SetDestination(Vector3 position, Quaternion rotation)
     {
         if (OnNewDestinationDelegate != null)
         {
-            OnNewDestinationDelegate.Invoke(destination);
+            OnNewDestinationDelegate.Invoke(position, rotation);
         }
 
-        _AI.destination = destination;
+        _AI.destination = position;
         _seeker.pathCallback += OnPathComplete;
 
         if(showDecals)
         {
             GameObject navDecal = Instantiate<GameObject>(PrefabLibrary.GetCharacterNavDecal(), null);
             CharacterNavDecal decalComponent = navDecal.GetComponent<CharacterNavDecal>();
-            decalComponent.Setup(this, destination);
+            decalComponent.Setup(this, position);
 
             decalComponent.Show(Enumerations.Team.Player);
         }
 
-        StartCoroutine(PerformMove());
+        StartCoroutine(PerformMove(position, rotation));
     }
 
     public Vector3 GetDestination()
@@ -151,14 +151,14 @@ public class NavigatorComponent : MonoBehaviour
         }
     }
 
-    public IEnumerator PerformMove()
+    public IEnumerator PerformMove(Vector3 destination, Quaternion rotation)
     {
         _AI.canMove = true;
         _AI.SearchPath();
 
         yield return new WaitForSeconds(_velocityCheckInterval);
 
-        while (IsMoving() && GetDistanceToDestination() > _AI.radius && CanMove())
+        while (IsMoving() && GetDistanceToDestination() > 0.01f && CanMove())
         {
             if (_velocityCheckTime >= _velocityCheckInterval)
             {
@@ -180,6 +180,10 @@ public class NavigatorComponent : MonoBehaviour
 
             _velocityCheckTime += Time.fixedDeltaTime;
         }
+
+        //teleport to exact destination and rotation
+        this.transform.position = destination;
+        this.transform.rotation = rotation;
 
         _AI.canMove = false;
 

@@ -35,7 +35,6 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void EntryCutsceneComplete()
     {
-        UIUtility.RequestFadeFromBlack(1.0f);
         SpawnPlayer();
     }
 

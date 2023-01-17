@@ -24,7 +24,7 @@ public class MoveNode : CutsceneNode
         if (characterComponent != null)
         {
             characterComponent.OnDestinationReached += CompleteNode;
-            characterComponent.GoTo(Location.position);
+            characterComponent.GoTo(Location.position, Location.rotation);
         }
     }
 

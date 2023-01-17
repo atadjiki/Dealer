@@ -16,7 +16,7 @@ public class CharacterNavDecal : CharacterGroundDecal
         this.transform.position = location;     
     }
 
-    private void NewDestination(Vector3 destination)
+    private void NewDestination(Vector3 position, Quaternion rotation)
     {
         PathComplete();
     }
