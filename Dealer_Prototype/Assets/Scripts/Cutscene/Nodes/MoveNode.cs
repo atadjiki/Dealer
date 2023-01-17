@@ -9,6 +9,13 @@ public class MoveNode : CutsceneNode
     [Space]
     [SerializeField] private Enumerations.CharacterID CharacterID;
     [SerializeField] private Transform Location;
+    [SerializeField] private bool checkMaxTime = false;
+    [SerializeField] private float maxTime;
+
+
+    private bool _destinationReached;
+    private bool _maxTimeExceeded;
+    private bool _minTimeExceeded;
 
     [Space]
     [SerializeField] private CutsceneNode _next;
@@ -23,9 +30,40 @@ public class MoveNode : CutsceneNode
 
         if (characterComponent != null)
         {
-            characterComponent.OnDestinationReached += CompleteNode;
-            characterComponent.GoTo(Location.position, Location.rotation);
+            characterComponent.OnDestinationReached += OnDestinationReached;
+
+            StartCoroutine(NodeUpdate());
         }
+    }
+
+    private IEnumerator NodeUpdate()
+    {
+        characterComponent.GoTo(Location.position, Location.rotation);
+
+        if (checkMaxTime == false)
+        {
+            while (_destinationReached == false)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        else if(checkMaxTime)
+        {
+            float currentTime = 0;
+
+            while(currentTime < maxTime)
+            {
+                currentTime += Time.fixedDeltaTime;
+                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        CompleteNode();
+    }
+
+    private void OnDestinationReached()
+    {
+        _destinationReached = true;
     }
 
     public override CutsceneNode GetNext()

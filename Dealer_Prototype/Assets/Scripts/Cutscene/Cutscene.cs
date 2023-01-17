@@ -34,6 +34,8 @@ public class Cutscene : MonoBehaviour
 
     private IEnumerator Coroutine_Begin()
     {
+        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(true);
+
         foreach (CutsceneCharacterData data in CharacterData)
         {
             CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
@@ -47,6 +49,8 @@ public class Cutscene : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+
+        transitionPanel.ToggleAndDestroy(false, 1.0f);
 
         ProcessCurrentNode();
     }
@@ -91,8 +95,7 @@ public class Cutscene : MonoBehaviour
         {
             if (_currentNode.DoFadeOut())
             {
-                TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen();
-                transitionPanel.SetInitialState(false);
+                TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(false);
                 transitionPanel.ToggleAndDestroy(true, _currentNode.GetFadeOut());
                 yield return new WaitForSeconds(_currentNode.GetFadeOut());
                 

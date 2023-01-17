@@ -65,8 +65,7 @@ public class Environment_Safehouse : EnvironmentComponent
     {
         Global.OnToggleUI(false);
         Cursor.visible = false;
-        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen();
-        transitionPanel.SetInitialState(true);
+        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen(true);
         Global.OnToggleUI(false);
 
         yield return new WaitForSeconds(0.25f);

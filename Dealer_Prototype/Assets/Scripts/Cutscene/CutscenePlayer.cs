@@ -27,11 +27,9 @@ public class CutscenePlayer : MonoBehaviour
 
     public void PlayCutscene(GameObject prefab, System.Action Callback)
     {
-        GameObject cutsceneObject = Instantiate<GameObject>(prefab);
-        Cutscene cutscene = cutsceneObject.GetComponent<Cutscene>();
-
-        UIUtility.RequestFadeToBlack(1.5f);
-
+        GameObject cutsceneInstance = Instantiate(prefab);
+        Cutscene cutscene = cutsceneInstance.GetComponent<Cutscene>();
+       
         cutscene.Begin(Callback);
     }
 
@@ -39,7 +37,7 @@ public class CutscenePlayer : MonoBehaviour
     {
         if (_currentIndex < _cutscenes.Count)
         {
-            GameObject cutsceneObject = Instantiate<GameObject>(_cutscenes[_currentIndex].gameObject);
+            GameObject cutsceneObject = Instantiate(_cutscenes[_currentIndex].gameObject);
             Cutscene cutscene = cutsceneObject.GetComponent<Cutscene>();
 
             cutscene.Begin(OnCutsceneFinished);
@@ -53,7 +51,7 @@ public class CutscenePlayer : MonoBehaviour
     private void OnCutsceneFinished()
     {
         _currentIndex++;
-        UIUtility.RequestFadeFromBlack(2.5f);
+
         ProcessNext();
     }
 }

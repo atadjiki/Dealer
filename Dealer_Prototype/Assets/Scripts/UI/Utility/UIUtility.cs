@@ -7,11 +7,13 @@ using Constants;
 
 public class UIUtility : MonoBehaviour
 {
-    public static TransitionPanel RequestTransitionScreen()
+    public static TransitionPanel RequestTransitionScreen(bool state)
     {
         GameObject gameObject = Instantiate<GameObject>(PrefabLibrary.GetTransitionCanvas(), null);
 
         TransitionPanel panel = gameObject.GetComponent<TransitionPanel>();
+
+        panel.SetInitialState(state);
 
         return panel;
     }
