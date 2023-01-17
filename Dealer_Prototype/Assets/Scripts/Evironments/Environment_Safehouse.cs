@@ -24,6 +24,10 @@ public class Environment_Safehouse : EnvironmentComponent
         Global.OnPlayerSpawned += OnPlayerSpawned;
 
         AudioUtility.DoorOpen();
+        musicSource.PlayDelayed(0.75f);
+
+        Global.OnToggleUI(false);
+        Cursor.visible = false;
     }
 
     protected override IEnumerator Coroutine_PerformEnterActions()
@@ -60,7 +64,9 @@ public class Environment_Safehouse : EnvironmentComponent
     private IEnumerator PerformStationSelect(Enumerations.SafehouseStation station, Transform location)
     {
         Global.OnToggleUI(false);
-        TransitionPanel transitionPanel = UIUtility.RequestFadeToBlack(0.25f);
+        Cursor.visible = false;
+        TransitionPanel transitionPanel = UIUtility.RequestTransitionScreen();
+        transitionPanel.SetInitialState(true);
         Global.OnToggleUI(false);
 
         yield return new WaitForSeconds(0.25f);
@@ -78,7 +84,8 @@ public class Environment_Safehouse : EnvironmentComponent
             Global.OnToggleUI(true);
         }
 
-        transitionPanel.ToggleAndDestroy(false, 1);
+        transitionPanel.ToggleAndDestroy(false, 1.5f);
+        Cursor.visible = true;
 
         yield return null;
     }
@@ -99,5 +106,8 @@ public class Environment_Safehouse : EnvironmentComponent
     private void OnPlayerSpawned(PlayerComponent playerComponent)
     {
         _player = playerComponent;
+
+        Global.OnToggleUI(true);
+        Cursor.visible = true;
     }
 }

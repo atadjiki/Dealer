@@ -158,7 +158,7 @@ public class NavigatorComponent : MonoBehaviour
 
         yield return new WaitForSeconds(_velocityCheckInterval);
 
-        while (IsMoving() && GetDistanceToDestination() > 0.01f && CanMove())
+        while (IsMoving() && CanMove())
         {
             if (_velocityCheckTime >= _velocityCheckInterval)
             {

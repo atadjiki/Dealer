@@ -30,6 +30,8 @@ public class CutscenePlayer : MonoBehaviour
         GameObject cutsceneObject = Instantiate<GameObject>(prefab);
         Cutscene cutscene = cutsceneObject.GetComponent<Cutscene>();
 
+        UIUtility.RequestFadeToBlack(1.5f);
+
         cutscene.Begin(Callback);
     }
 
@@ -51,6 +53,7 @@ public class CutscenePlayer : MonoBehaviour
     private void OnCutsceneFinished()
     {
         _currentIndex++;
+        UIUtility.RequestFadeFromBlack(2.5f);
         ProcessNext();
     }
 }
