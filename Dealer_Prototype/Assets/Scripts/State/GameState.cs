@@ -1,16 +1,23 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using GameDelegates;
 using UnityEngine;
 using static LevelUtility;
 
+[System.Serializable]
+public class GameData
+{
+    public int Day;
+    public int Player_Drugs;
+    public int Player_Money;
+
+    public GameData()
+    {
+        Day = 1;
+    }
+}
+
 public class GameState : MonoBehaviour
 {
-    private static string Key_Day = "Day";
-    private static string Key_Money = "Money";
-    private static string Key_Drugs = "Drugs";
-
+    private static GameData _data;
     public static PlayerLocation location = PlayerLocation.Safehouse;
 
     public void StateChange()
@@ -21,16 +28,21 @@ public class GameState : MonoBehaviour
         }
     }
 
+    public static void Refresh()
+    {
+        if(_data == null)
+        {
+            Load();
+        }
+    }
 
     public static int IncrementDay()
     {
-        int value = GetDay();
+        Refresh();
 
-        value++;
+        _data.Day += 1;
 
-        SetValue(Key_Day, value);
-
-        return value;
+        return _data.Day;
     }
 
     public static void HandleTransaction(int Quantity)
@@ -42,44 +54,47 @@ public class GameState : MonoBehaviour
 
     public static int GetDay()
     {
-        return GetValue(Key_Day);
+        Refresh();
+
+        return _data.Day;
     }
 
     public static int GetMoney()
     {
-        return GetValue(Key_Money);
+        Refresh();
+
+        return _data.Player_Money;
     }
 
     public static int GetDrugs()
     {
-        return GetValue(Key_Drugs);
+        Refresh();
+
+        return _data.Player_Drugs;
     }
 
     private static void AdjustDrugs(int amount)
     {
-        AdjustValue(Key_Drugs, amount);
+        Refresh();
+
+        _data.Player_Drugs += amount;
     }
 
     private static void AdjustMoney(int amount)
     {
-        AdjustValue(Key_Money, amount);
+        Refresh();
+
+        _data.Player_Money += amount;
     }
 
-    private static void AdjustValue(string key, int amount)
+    private static void Load()
     {
-        int value = GetValue(key);
-        value += amount;
-        value = Mathf.Clamp(value, 0, value);
-        SetValue(key, value);
+        _data = ES3.Load<GameData>("GameData", new GameData());
     }
 
-    private static int GetValue(string key)
+    private static void Save()
     {
-        return ES3.Load<int>(key, 0);
-    }
-
-    private static void SetValue(string key, int value)
-    {
-        ES3.Save<int>(key, value);
+        ES3.Save<GameData>("GameData", _data);
     }
 }
+
