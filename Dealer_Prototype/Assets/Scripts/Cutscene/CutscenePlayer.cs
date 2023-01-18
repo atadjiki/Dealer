@@ -35,8 +35,8 @@ public class CutscenePlayer : MonoBehaviour
 
     private IEnumerator Coroutine_PlayCutscene(Cutscene cutscene, System.Action Callback)
     {
-        UIUtility.FadeToBlack(0);
-        yield return new WaitForSeconds(1.0f);
+        UIUtility.FadeToBlack(0.5f);
+        yield return new WaitForSeconds(0.5f);
         cutscene.Begin(Callback);
     }
 
@@ -55,7 +55,6 @@ public class CutscenePlayer : MonoBehaviour
     private void OnCutsceneFinished()
     {
         _currentIndex++;
-
         ProcessNext();
     }
 }

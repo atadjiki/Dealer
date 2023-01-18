@@ -15,8 +15,7 @@ public class UIUtility : MonoBehaviour
 
         _transitionPanel = gameObject.GetComponent<TransitionPanel>();
 
-        _transitionPanel.SetInitialState(false);
-
+        _transitionPanel.SetInitialState(true);
     }
 
     public static void FadeToBlack(float time)
@@ -25,8 +24,6 @@ public class UIUtility : MonoBehaviour
         {
             InitTransitionPanel();
         }
-
-        _transitionPanel.SetInitialState(false);
 
         _transitionPanel.Toggle(true, time);
 
@@ -41,9 +38,19 @@ public class UIUtility : MonoBehaviour
         }
 
         _transitionPanel.SetInitialState(true);
-
         _transitionPanel.Toggle(false, time);
 
         Debug.Log("Fade To Transparent " + time + "s");
     }
+
+    public static void FadeInAndOut(float inTime, float holdTime, float outTime)
+    {
+        if (_transitionPanel == null)
+        {
+            InitTransitionPanel();
+        }
+
+        _transitionPanel.FadeInAndOut(inTime, holdTime, outTime);
+    }
 }
+

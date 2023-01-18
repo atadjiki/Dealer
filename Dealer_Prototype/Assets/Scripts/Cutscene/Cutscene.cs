@@ -34,8 +34,6 @@ public class Cutscene : MonoBehaviour
 
     private IEnumerator Coroutine_Begin()
     {
-        yield return new WaitForEndOfFrame();
-
         foreach (CutsceneCharacterData data in CharacterData)
         {
             CutsceneCharacterComponent characterComponent = CutsceneHelper.SpawnCutsceneCharacter(this, data);
@@ -50,8 +48,6 @@ public class Cutscene : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
-        UIUtility.FadeToTransparent(1.5f);
-        yield return new WaitForSeconds(1);
         ProcessCurrentNode();
     }
 
@@ -71,10 +67,10 @@ public class Cutscene : MonoBehaviour
             }
 
             _currentNode.Setup(this, OnNodeComplete);
+            UIUtility.FadeToTransparent(0.5f);
         }
         else
         {
-            UIUtility.FadeToBlack(0);
             OnCutsceneFinished.Invoke();
             Destroy(this.gameObject);
         }
@@ -89,6 +85,9 @@ public class Cutscene : MonoBehaviour
     {
         if (_currentNode != null)
         {
+            UIUtility.FadeToBlack(0.5f);
+            yield return new WaitForSeconds(0.5f);
+
             foreach (CutsceneEvent cutsceneEvent in _currentNode.GetPostEvents().ToList())
             {
                 CutsceneHelper.ProcessCutsceneEvent(this, cutsceneEvent);
@@ -99,7 +98,6 @@ public class Cutscene : MonoBehaviour
         _currentNode = _currentNode.GetNext();
 
         ProcessCurrentNode();
-
     }
 
     public List<CutsceneCharacterComponent> GetCharacters()

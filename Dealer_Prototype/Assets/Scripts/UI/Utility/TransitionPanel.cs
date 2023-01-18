@@ -86,4 +86,18 @@ public class TransitionPanel : MonoBehaviour
 
         image.color = new Color(initialColor.r, initialColor.g, initialColor.b, finalOpacity);
     }
+
+    public void FadeInAndOut(float inTime, float holdTime,float outTime)
+    {
+        StartCoroutine(LerpInAndOut(inTime, holdTime, outTime));
+    }
+
+    private IEnumerator LerpInAndOut(float inTime, float holdTime, float outTime)
+    {
+        yield return LerpOpacity(1, inTime);
+
+        yield return new WaitForSeconds(holdTime);
+
+        yield return LerpOpacity(0, outTime);
+    }
 }

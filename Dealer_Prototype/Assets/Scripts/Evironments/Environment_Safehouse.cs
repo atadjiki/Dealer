@@ -109,10 +109,9 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private IEnumerator Coroutine_OnPlayerSpawned()
     {
-        yield return new WaitForSeconds(1.0f);
-        UIUtility.FadeToTransparent(2.0f);
+        UIUtility.FadeToTransparent(0.5f);
+        yield return new WaitForSeconds(0.5f);
         Global.OnToggleUI(true);
         Cursor.visible = true;
     }
 }
-
