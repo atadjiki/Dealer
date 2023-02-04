@@ -13,8 +13,6 @@ public class PlayerStation : MonoBehaviour
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Enumerations.SafehouseStation stationID = Enumerations.SafehouseStation.None;
 
-    [SerializeField] private StationCanvas _stationCanvas;
-
     public Transform GetEntryTransform()
     {
         return _entryTransform;
@@ -32,19 +30,19 @@ public class PlayerStation : MonoBehaviour
 
     private void Start()
     {
-        if(_stationCanvas != null)
-        {
-            _stationCanvas.Setup(stationID);
-        }
+        //if(_stationCanvas != null)
+        //{
+        //    _stationCanvas.Setup(stationID);
+        //}
 
     }
 
     private void ToggleUI(bool flag)
     {
-        if(_stationCanvas != null)
-        {
-            _stationCanvas.gameObject.SetActive(flag);
-        }
+        //if(_stationCanvas != null)
+        //{
+        //    _stationCanvas.gameObject.SetActive(flag);
+        //}
     }
 
 
