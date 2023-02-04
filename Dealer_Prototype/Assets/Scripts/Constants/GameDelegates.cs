@@ -28,7 +28,7 @@ namespace GameDelegates
     public delegate void DestinationReached();
 
     //ui
-    public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
+    //public delegate void SafehouseStationSelected(Enumerations.SafehouseStation station);
 
     public delegate void GameStateChanged();
 
@@ -53,7 +53,7 @@ namespace GameDelegates
 
         public static PlayerSpawned OnPlayerSpawned;
 
-        public static SafehouseStationSelected OnStationSelected;
+       // public static SafehouseStationSelected OnStationSelected;
 
         public static GameStateChanged OnGameStateChanged;
 

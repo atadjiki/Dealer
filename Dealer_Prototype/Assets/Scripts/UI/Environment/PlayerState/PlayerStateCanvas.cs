@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using GameDelegates;
 
 public class PlayerStateCanvas : MonoBehaviour
@@ -16,7 +16,7 @@ public class PlayerStateCanvas : MonoBehaviour
        Global.OnGameStateChanged += Refresh;
        Global.OnToggleUI += OnToggleUI;
 
-        Refresh();
+       Refresh();
     }
 
     private void OnDestroy()

@@ -20,7 +20,7 @@ public class Environment_Safehouse : EnvironmentComponent
 
     private void Start()
     {
-        Global.OnStationSelected += OnStationSelected;
+       // Global.OnStationSelected += OnStationSelected;
         Global.OnPlayerSpawned += OnPlayerSpawned;
 
         AudioUtility.DoorOpen();
@@ -46,7 +46,7 @@ public class Environment_Safehouse : EnvironmentComponent
     {
         base.ExitActions();
 
-        Global.OnStationSelected -= OnStationSelected;
+      //  Global.OnStationSelected -= OnStationSelected;
         Global.OnPlayerSpawned -= OnPlayerSpawned;
     }
 

@@ -14,7 +14,7 @@ public class StationCanvas : MonoBehaviour
     {
         Button_Station.onClick.AddListener(delegate ()
         {
-            Global.OnStationSelected.Invoke(station);
+            //Global.OnStationSelected.Invoke(station);
             AudioUtility.ButtonClick();
         });
     }
