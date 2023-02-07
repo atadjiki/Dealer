@@ -27,8 +27,8 @@ public class PlayerStateCanvas : MonoBehaviour
 
     private void Refresh()
     {
-        Text_Money.text = "$" + GameState.GetMoney();
-        Text_Drugs.text = "" + GameState.GetDrugs();
+        Text_Money.text = "$" + GameState.GetPlayerMoney();
+        Text_Drugs.text = "" + GameState.GetPlayerDrugs();
         Text_Day.text = "Day " + GameState.GetDay();
     }
 

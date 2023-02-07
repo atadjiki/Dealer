@@ -96,6 +96,13 @@ namespace Constants
             Medium, 
             High, 
         };
+
+        public enum InventoryID
+        {
+            None,
+            DRUGS,
+            MONEY
+        }
     }
 
     public class NPC

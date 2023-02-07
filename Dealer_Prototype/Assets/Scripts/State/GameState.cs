@@ -1,17 +1,49 @@
+using System.Collections.Generic;
 using GameDelegates;
+using Constants;
 using UnityEngine;
 using static LevelUtility;
+
+public struct Inventory
+{
+    public int Money;
+    public int Drugs;
+
+    public static Inventory DefaultPlayerInventory()
+    {
+        Inventory inventory = new Inventory();
+
+        inventory.Money = 0;
+        inventory.Drugs = 0;
+
+        return inventory;
+    }
+
+    public static Inventory DefaultSafehouseInventory()
+    {
+        Inventory inventory = new Inventory();
+
+        inventory.Money = 1000;
+        inventory.Drugs = 100;
+
+        return inventory;
+    }
+}
 
 [System.Serializable]
 public class GameData
 {
     public int Day;
-    public int Player_Drugs;
-    public int Player_Money;
+
+    public Inventory PlayerInventory;
+    public Inventory SafehouseInventory;
 
     public GameData()
     {
         Day = 1;
+
+        PlayerInventory = Inventory.DefaultPlayerInventory();
+        SafehouseInventory = Inventory.DefaultSafehouseInventory();
     }
 }
 
@@ -19,6 +51,11 @@ public class GameState : MonoBehaviour
 {
     private static GameData _data;
     public static PlayerLocation location = PlayerLocation.Safehouse;
+
+    private void Awake()
+    {
+        _data = new GameData();
+    }
 
     public void StateChange()
     {
@@ -28,18 +65,8 @@ public class GameState : MonoBehaviour
         }
     }
 
-    public static void Refresh()
-    {
-        if(_data == null)
-        {
-            Load();
-        }
-    }
-
     public static int IncrementDay()
     {
-        Refresh();
-
         _data.Day += 1;
 
         return _data.Day;
@@ -47,54 +74,53 @@ public class GameState : MonoBehaviour
 
     public static void HandleTransaction(int Quantity)
     {
-        AdjustDrugs(-1* Quantity);
+        AdjustPlayerDrugs(-1* Quantity);
 
-        AdjustMoney(Quantity * 100);
+        AdjustPlayerMoney(Quantity * 100);
     }
 
     public static int GetDay()
     {
-        Refresh();
-
         return _data.Day;
     }
 
-    public static int GetMoney()
+    public static int GetPlayerMoney()
     {
-        Refresh();
-
-        return _data.Player_Money;
+        return _data.PlayerInventory.Money;
     }
 
-    public static int GetDrugs()
+    public static int GetPlayerDrugs()
     {
-        Refresh();
-
-        return _data.Player_Drugs;
+        return _data.PlayerInventory.Drugs;
     }
 
-    private static void AdjustDrugs(int amount)
+    public static int GetSafehouseMoney()
     {
-        Refresh();
-
-        _data.Player_Drugs += amount;
+        return _data.SafehouseInventory.Money;
     }
 
-    private static void AdjustMoney(int amount)
+    public static int GetSafehouseDrugs()
     {
-        Refresh();
-
-        _data.Player_Money += amount;
+        return _data.SafehouseInventory.Drugs;
     }
 
-    private static void Load()
+    private static void AdjustPlayerDrugs(int amount)
     {
-        _data = ES3.Load<GameData>("GameData", new GameData());
+        _data.PlayerInventory.Drugs += amount;
     }
 
-    private static void Save()
+    private static void AdjustPlayerMoney(int amount)
     {
-        ES3.Save<GameData>("GameData", _data);
+        _data.PlayerInventory.Money += amount;
+    }
+
+    private static void AdjustSafehouseDrugs(int amount)
+    {
+        _data.SafehouseInventory.Drugs += amount;
+    }
+
+    private static void AdjustSafehouseMoney(int amount)
+    {
+        _data.SafehouseInventory.Money += amount;
     }
 }
-
