@@ -3,47 +3,54 @@ using GameDelegates;
 using Constants;
 using UnityEngine;
 using static LevelUtility;
-
-public struct Inventory
-{
-    public int Money;
-    public int Drugs;
-
-    public static Inventory DefaultPlayerInventory()
-    {
-        Inventory inventory = new Inventory();
-
-        inventory.Money = 0;
-        inventory.Drugs = 0;
-
-        return inventory;
-    }
-
-    public static Inventory DefaultSafehouseInventory()
-    {
-        Inventory inventory = new Inventory();
-
-        inventory.Money = 1000;
-        inventory.Drugs = 100;
-
-        return inventory;
-    }
-}
+using System;
 
 [System.Serializable]
 public class GameData
 {
     public int Day;
 
-    public Inventory PlayerInventory;
-    public Inventory SafehouseInventory;
+    public Dictionary<Enumerations.InventoryID, int> PlayerInventory;
+    public Dictionary<Enumerations.InventoryID, int> SafehouseInventory;
 
     public GameData()
     {
         Day = 1;
 
-        PlayerInventory = Inventory.DefaultPlayerInventory();
-        SafehouseInventory = Inventory.DefaultSafehouseInventory();
+        PlayerInventory = DefaultPlayerInventory();
+        SafehouseInventory = DefaultSafehouseInventory();
+    }
+
+    private static Dictionary<Enumerations.InventoryID, int> DefaultPlayerInventory()
+    {
+        Dictionary<Enumerations.InventoryID, int> inventory = MakeInventory();
+
+        inventory[Enumerations.InventoryID.MONEY] = 0;
+        inventory[Enumerations.InventoryID.DRUGS] = 0;
+
+        return inventory;
+    }
+
+    private static Dictionary<Enumerations.InventoryID, int> DefaultSafehouseInventory()
+    {
+        Dictionary<Enumerations.InventoryID, int> inventory = MakeInventory();
+
+        inventory[Enumerations.InventoryID.MONEY] = 1000;
+        inventory[Enumerations.InventoryID.DRUGS] = 100;
+
+        return inventory;
+    }
+
+    private static Dictionary<Enumerations.InventoryID, int> MakeInventory()
+    {
+        Dictionary<Enumerations.InventoryID, int> inventory = new Dictionary<Enumerations.InventoryID, int>();
+
+        foreach (Enumerations.InventoryID ID in Enum.GetValues(typeof(Enumerations.InventoryID)))
+        {
+            inventory.Add(ID, 0);
+        }
+
+        return inventory;
     }
 }
 
@@ -86,41 +93,41 @@ public class GameState : MonoBehaviour
 
     public static int GetPlayerMoney()
     {
-        return _data.PlayerInventory.Money;
+        return _data.PlayerInventory[Enumerations.InventoryID.MONEY];
     }
 
     public static int GetPlayerDrugs()
     {
-        return _data.PlayerInventory.Drugs;
+        return _data.PlayerInventory[Enumerations.InventoryID.DRUGS];
     }
 
     public static int GetSafehouseMoney()
     {
-        return _data.SafehouseInventory.Money;
+        return _data.SafehouseInventory[Enumerations.InventoryID.MONEY];
     }
 
     public static int GetSafehouseDrugs()
     {
-        return _data.SafehouseInventory.Drugs;
+        return _data.SafehouseInventory[Enumerations.InventoryID.DRUGS];
     }
 
     private static void AdjustPlayerDrugs(int amount)
     {
-        _data.PlayerInventory.Drugs += amount;
+        _data.PlayerInventory[Enumerations.InventoryID.DRUGS] += amount;
     }
 
     private static void AdjustPlayerMoney(int amount)
     {
-        _data.PlayerInventory.Money += amount;
+        _data.PlayerInventory[Enumerations.InventoryID.MONEY] += amount;
     }
 
     private static void AdjustSafehouseDrugs(int amount)
     {
-        _data.SafehouseInventory.Drugs += amount;
+        _data.SafehouseInventory[Enumerations.InventoryID.DRUGS] += amount;
     }
 
     private static void AdjustSafehouseMoney(int amount)
     {
-        _data.SafehouseInventory.Money += amount;
+        _data.SafehouseInventory[Enumerations.InventoryID.MONEY] += amount;
     }
 }

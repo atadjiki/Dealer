@@ -57,7 +57,7 @@ public class SafehouseCanvas : MonoBehaviour
 
     private void Refresh()
     {
-        Text_Money.text = "$" + GameState.GetPlayerMoney();
+        Text_Money.text = "$" + GameState.GetSafehouseMoney();
         Text_Day.text = "Day " + GameState.GetDay();
     }
 
