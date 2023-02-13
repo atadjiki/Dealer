@@ -658,7 +658,7 @@
 			int newWidth = maxX - minX + 1;
 			int newHeight = maxY - minY + 1;
 			if (newWidth != width || newHeight != height) {
-				texture.Resize(newWidth, newHeight);
+				texture.Reinitialize(newWidth, newHeight);
 				var newColors = new Color[newWidth * newHeight];
 				for (int y = 0; y < newHeight; y++) {
 					for (int x = 0; x < newWidth; x++) {
@@ -756,7 +756,7 @@
 
 
 		public static void OverrideTexture (Texture2D instance, Texture2D data) {
-			instance.Resize(data.width, data.height, data.format, false);
+			instance.Reinitialize(data.width, data.height, data.format, false);
 			instance.SetPixels(data.GetPixels());
 			instance.Apply();
 		}
