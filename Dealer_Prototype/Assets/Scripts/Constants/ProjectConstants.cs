@@ -100,7 +100,7 @@ namespace Constants
         public enum InventoryID
         {
             None,
-            DRUGS,
+            DRUGS_TYPE_A,
             MONEY
         }
     }

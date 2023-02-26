@@ -24,7 +24,7 @@ public class SafehouseCanvas : MonoBehaviour
     private void Awake()
     {
         Global.OnGameStateChanged += Refresh;
-        Global.OnToggleUI += OnToggleUI;
+     //   Global.OnToggleUI += OnToggleUI;
 
         Button_Settings.onClick.AddListener(delegate ()
         {
@@ -52,12 +52,12 @@ public class SafehouseCanvas : MonoBehaviour
     private void OnDestroy()
     {
         Global.OnGameStateChanged -= Refresh;
-        Global.OnToggleUI -= OnToggleUI;
+       // Global.OnToggleUI -= OnToggleUI;
     }
 
     private void Refresh()
     {
-        Text_Money.text = "$" + GameState.GetSafehouseMoney();
+        Text_Money.text = "$" + GameState.GetSafehouseInventory(Enumerations.InventoryID.MONEY);
         Text_Day.text = "Day " + GameState.GetDay();
     }
 
