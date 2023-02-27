@@ -29,13 +29,15 @@ public class InventoryPanel : MonoBehaviour
 
         foreach(Enumerations.InventoryID ID in inventory.Keys)
         {
-            if(ID != Enumerations.InventoryID.None && ID != Enumerations.InventoryID.MONEY)
+            int quantity = inventory[ID];
+
+            if (ID != Enumerations.InventoryID.None && ID != Enumerations.InventoryID.MONEY && quantity > 0)
             {
                 GameObject listItemObject = Instantiate<GameObject>(PrefabLibrary.GetInventoryListItem(), ListPanel.transform);
 
-                TextMeshProUGUI itemText = listItemObject.GetComponentInChildren<TextMeshProUGUI>();
+                InventoryListItem listItem = listItemObject.GetComponent<InventoryListItem>();
 
-                itemText.text = ID.ToString();
+                listItem.Setup(ID, inventory[ID]);
             }
         }
 
