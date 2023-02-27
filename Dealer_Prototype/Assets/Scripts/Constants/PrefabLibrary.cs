@@ -18,6 +18,7 @@ namespace Constants
         private static string Prefix_UI_GameMode = "Prefabs/UI/GameMode/";
         private static string Prefix_UI_Safehouse = "Prefabs/UI/Safehouse/";
         private static string Prefix_UI_Utility = "Prefabs/UI/Utility/";
+        private static string Prefix_UI_Inventory = "Prefabs/UI/Inventory/";
 
         //character models
 
@@ -116,6 +117,11 @@ namespace Constants
         public static GameObject GetLoadingScreen()
         {
             return Resources.Load<GameObject>(Prefix_UI_GameMode + "UI_Panel_Loading");
+        }
+
+        public static GameObject GetInventoryListItem()
+        {
+            return Resources.Load<GameObject>(Prefix_UI_Inventory + "Button_Inventory_ListItem");
         }
     }
 }

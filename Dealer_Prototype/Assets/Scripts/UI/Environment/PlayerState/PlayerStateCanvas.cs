@@ -27,8 +27,8 @@ public class PlayerStateCanvas : MonoBehaviour
 
     private void Refresh()
     {
-        Text_Money.text = "$" + GameState.GetPlayerInventory(Constants.Enumerations.InventoryID.MONEY);
-        Text_Drugs.text = "" + GameState.GetPlayerInventory(Constants.Enumerations.InventoryID.DRUGS_TYPE_A);
+        Text_Money.text = "$" + GameState.GetPlayerItem(Constants.Enumerations.InventoryID.MONEY);
+        Text_Drugs.text = "" + GameState.GetPlayerItem(Constants.Enumerations.InventoryID.DRUGS_TYPE_A);
         Text_Day.text = "Day " + GameState.GetDay();
     }
 

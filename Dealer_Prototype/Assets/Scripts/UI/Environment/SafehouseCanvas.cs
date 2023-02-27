@@ -57,7 +57,7 @@ public class SafehouseCanvas : MonoBehaviour
 
     private void Refresh()
     {
-        Text_Money.text = "$" + GameState.GetSafehouseInventory(Enumerations.InventoryID.MONEY);
+        Text_Money.text = "$" + GameState.GetSafehouseItem(Enumerations.InventoryID.MONEY);
         Text_Day.text = "Day " + GameState.GetDay();
     }
 

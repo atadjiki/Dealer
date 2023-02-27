@@ -57,13 +57,27 @@ public class GameState : MonoBehaviour
         return _data.Day;
     }
 
-    public static int GetPlayerInventory(InventoryID ID)
+    public static int GetPlayerItem(InventoryID ID)
     {
         return _data.PlayerInventory[ID];
     }
 
-    public static int GetSafehouseInventory(InventoryID ID)
+    public static int GetSafehouseItem(InventoryID ID)
     {
         return _data.SafehouseInventory[ID];
+    }
+
+    public static Inventory GetInventory(InventoryType Type)
+    {
+        if(Type == InventoryType.Player)
+        {
+            return _data.PlayerInventory;
+        }
+        else if(Type == InventoryType.Safehouse)
+        {
+            return _data.SafehouseInventory;
+        }
+
+        return null;
     }
 }

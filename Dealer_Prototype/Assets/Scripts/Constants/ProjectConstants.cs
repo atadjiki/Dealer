@@ -97,6 +97,13 @@ namespace Constants
             High, 
         };
 
+        public enum InventoryType
+        {
+            None,
+            Player,
+            Safehouse,
+        }
+
         public enum InventoryID
         {
             None,
