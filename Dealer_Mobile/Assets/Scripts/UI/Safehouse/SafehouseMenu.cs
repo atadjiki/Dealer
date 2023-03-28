@@ -35,7 +35,6 @@ public class SafehouseMenu : MonoBehaviour
 
         Button_Settings.onClick.AddListener(OnSettingsButtonClicked);
         Button_Continue.onClick.AddListener(OnContinueButtonClicked);
-
     }
 
     private void OnListButtonClicked(SummaryListSection section)
@@ -51,6 +50,15 @@ public class SafehouseMenu : MonoBehaviour
         {
             case SummaryListSection.Summary:
                 Instantiate(Prefab_SummaryMenu, Transform_ContextPanel);
+                break;
+            case SummaryListSection.Stash:
+                Instantiate(Prefab_StashMenu, Transform_ContextPanel);
+                break;
+            case SummaryListSection.Inbox:
+                Instantiate(Prefab_InboxMenu, Transform_ContextPanel);
+                break;
+            case SummaryListSection.Map:
+                Instantiate(Prefab_MapMenu, Transform_ContextPanel);
                 break;
             default:
                 break;

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  m_Color: {r: 0.1, g: 0.1, b: 0.1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -112,7 +112,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0.000061035156, y: 25}
+  m_AnchoredPosition: {x: 0, y: 25}
   m_SizeDelta: {x: -50, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1906729282623899584
@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 1906729283983374607}
   - component: {fileID: 406282106}
   m_Layer: 5
-  m_Name: SafehouseMenuMain
+  m_Name: Canvas_Safehouse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -550,6 +550,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab_SummaryMenu: {fileID: 5303125306190311395, guid: 4380e54a1bb6277419ba50e65a4af98a, type: 3}
+  Prefab_StashMenu: {fileID: 6949213116805460114, guid: 565ec2387259c3f4f861aed6d14d9776, type: 3}
+  Prefab_InboxMenu: {fileID: 244465300308705898, guid: 7a744837f3934f746a499b8a71ef843b, type: 3}
+  Prefab_MapMenu: {fileID: 5835302827969217129, guid: 05225a81270ed5740b5e4f8d92aff408, type: 3}
   Transform_ContextPanel: {fileID: 1906729283194269540}
   Button_Summary: {fileID: 2852567817973845537}
   Button_Stash: {fileID: 2852567819565119381}
