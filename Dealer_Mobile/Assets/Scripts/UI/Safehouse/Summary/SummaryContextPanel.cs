@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class SummaryContextPanel : MonoBehaviour
+public class SummaryContextPanel : ContextPanel
 {
-    [SerializeField] private GameObject ListItemPrefab;
-
-    [SerializeField] private Transform ContentTransform;
-
     private void Awake()
     {
         int randomNumber = Random.Range(1, 10);
@@ -17,15 +13,5 @@ public class SummaryContextPanel : MonoBehaviour
         {
             GenerateListItem("item " + i + " out of " + randomNumber, i);
         }
-    }
-
-    private SummaryListItem GenerateListItem(string itemText, int index)
-    {
-        GameObject listItemObject = Instantiate(ListItemPrefab, ContentTransform);
-        listItemObject.name = "SummaryListItem_" + index;
-        SummaryListItem listItem = listItemObject.GetComponent<SummaryListItem>();
-        listItem.SetText(itemText);
-
-        return listItem;
     }
 }
