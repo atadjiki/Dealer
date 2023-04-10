@@ -11,15 +11,13 @@ public class SummaryContextPanel : ContextPanel
 
         for(int i = 0; i < randomNumber; i++)
         {
-            GenerateListItem("item " + i + " out of " + randomNumber, i);
+            GenerateListItem("item " + i + " out of " + randomNumber);
         }
     }
 
-    protected override ListItem GenerateListItem(string itemText, int index)
+    protected override ListItem GenerateListItem(string itemText)
     {
-        GameObject listItemObject = Instantiate(ListItemPrefab, ContentTransform);
-        listItemObject.name = "ListItem_" + index;
-        SummaryListItem listItem = (SummaryListItem) listItemObject.GetComponent<ListItem>();
+        SummaryListItem listItem = (SummaryListItem) base.GenerateListItem(itemText);
 
         if(listItem != null)
         {

@@ -11,15 +11,13 @@ public class InboxContextPanel : ContextPanel
 
         for (int i = 0; i < randomNumber; i++)
         {
-            GenerateListItem("item " + i + " out of " + randomNumber, i);
+            GenerateListItem("item " + i + " out of " + randomNumber);
         }
     }
 
-    protected override ListItem GenerateListItem(string itemText, int index)
+    protected override ListItem GenerateListItem(string itemText)
     {
-        GameObject listItemObject = Instantiate(ListItemPrefab, ContentTransform);
-        listItemObject.name = "ListItem_" + index;
-        InboxListItem listItem = (InboxListItem)listItemObject.GetComponent<ListItem>();
+        InboxListItem listItem = (InboxListItem)base.GenerateListItem(itemText);
 
         if (listItem != null)
         {

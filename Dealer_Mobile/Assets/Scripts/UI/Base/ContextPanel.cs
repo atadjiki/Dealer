@@ -8,8 +8,9 @@ public class ContextPanel : MonoBehaviour
 
     [SerializeField] protected Transform ContentTransform;
 
-    protected virtual ListItem GenerateListItem(string itemText, int index)
+    protected virtual ListItem GenerateListItem(string itemText)
     {
-        return null;
+        GameObject listItemObject = Instantiate(ListItemPrefab, ContentTransform);
+        return listItemObject.GetComponent<ListItem>();
     }
 }

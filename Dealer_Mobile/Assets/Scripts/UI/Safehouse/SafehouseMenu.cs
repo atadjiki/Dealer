@@ -21,7 +21,6 @@ public class SafehouseMenu : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button Button_Settings;
-    [SerializeField] private Button Button_Continue;
 
     private int currentOption;
 
@@ -35,12 +34,11 @@ public class SafehouseMenu : MonoBehaviour
                 OptionsList[i].button.onClick.AddListener(delegate { SelectListOption(index); });
             }
 
-            SelectListOption(0);
-            OptionsList[0].button.Select();
+            //SelectListOption(0);
+            //OptionsList[0].button.Select();
         }
 
         Button_Settings.onClick.AddListener(OnSettingsButtonClicked);
-        Button_Continue.onClick.AddListener(OnContinueButtonClicked);
     }
 
     private void SelectListOption(int index)
@@ -59,10 +57,6 @@ public class SafehouseMenu : MonoBehaviour
         var children = new List<GameObject>();
         foreach (Transform child in Transform_ContextPanel) children.Add(child.gameObject);
         children.ForEach(child => Destroy(child));
-    }
-
-    private void OnContinueButtonClicked()
-    {
     }
 
     private void OnSettingsButtonClicked()
