@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class ListItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] protected TextMeshProUGUI Text;
-
     [Header("Colors")]
     [SerializeField] protected Color NormalColor;
     [SerializeField] protected Color HighlightedColor;
@@ -20,11 +18,6 @@ public class ListItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemImage = GetComponent<Image>();
 
         itemImage.color = NormalColor;
-    }
-
-    public void SetText(string text)
-    {
-        Text.text = text;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 2718315151437137660}
   - component: {fileID: -5158079002154509357}
   m_Layer: 5
-  m_Name: Scrollview_Item_Message
+  m_Name: Scrollview_Item_Inbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -509,6 +509,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d837bf8c8361e48e498d3d28ef1d2ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NormalColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+  HighlightedColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  Image_Sender: {fileID: 5896692517481982039}
+  Text_Sender: {fileID: 8769897402554633492}
+  Text_Message: {fileID: 5695702608519000747}
 --- !u!1 &8318472011214435376
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,5 +6,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class SummaryListItem : ListItem
-{ 
+{
+    [SerializeField] private TextMeshProUGUI Text_Info;
+
+    public void Setup(string text)
+    {
+        Text_Info.text = text;
+    }
 }
