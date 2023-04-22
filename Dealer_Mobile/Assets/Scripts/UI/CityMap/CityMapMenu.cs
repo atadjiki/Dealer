@@ -16,13 +16,8 @@ public class CityMapMenu : MonoBehaviour
     [Header("Options")]
     [SerializeField] private List<CityMapOptionData> OptionsList;
 
-    [Header("Elements")]
-    [SerializeField] private Transform Transform_ContextPanel;
-
     [Header("Buttons")]
     [SerializeField] private Button Button_Settings;
-
-    private int currentOption;
 
     private void Awake()
     {
@@ -40,20 +35,7 @@ public class CityMapMenu : MonoBehaviour
 
     private void SelectListOption(int index)
     {
-        if(currentOption == index && Transform_ContextPanel.childCount > 0) { return; }
-
-        currentOption = index;
-
-        ClearContextPanel();
-
-        Instantiate(OptionsList[currentOption].prefab, Transform_ContextPanel);
-    }
-
-    private void ClearContextPanel()
-    {
-        var children = new List<GameObject>();
-        foreach (Transform child in Transform_ContextPanel) children.Add(child.gameObject);
-        children.ForEach(child => Destroy(child));
+        Instantiate(OptionsList[index].prefab);
     }
 
     private void OnSettingsButtonClicked()
