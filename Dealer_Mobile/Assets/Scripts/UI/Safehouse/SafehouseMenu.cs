@@ -5,16 +5,16 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public struct CityMapOptionData
+public struct SafehouseOptionData
 {
     public Button button;
     public GameObject prefab;
 }
 
-public class CityMapMenu : MonoBehaviour
+public class SafehouseMenu : MonoBehaviour
 {
     [Header("Options")]
-    [SerializeField] private List<CityMapOptionData> OptionsList;
+    [SerializeField] private List<SafehouseOptionData> OptionsList;
 
     [Header("Buttons")]
     [SerializeField] private Button Button_Settings;
