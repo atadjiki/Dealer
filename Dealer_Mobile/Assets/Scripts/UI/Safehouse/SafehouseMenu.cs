@@ -35,10 +35,41 @@ public class SafehouseMenu : MonoBehaviour
 
     private void SelectListOption(int index)
     {
-        Instantiate(OptionsList[index].prefab);
+        GameObject prefab = Instantiate(OptionsList[index].prefab);
+        OverlayMenu overlayMenu = prefab.GetComponent<OverlayMenu>();
+
+        if(overlayMenu != null)
+        {
+            Button cancelButton = overlayMenu.GetCancelButton();
+
+            if(cancelButton != null)
+            {
+                cancelButton.onClick.AddListener(delegate { OnCancelButtonCiicked(); });
+
+                ToggleMenu(false);
+                
+            }
+        }
+
     }
 
     private void OnSettingsButtonClicked()
-    { 
+    {
+        
+    }
+
+    private void OnCancelButtonCiicked()
+    {
+        ToggleMenu(true);
+    }
+
+    private void ToggleMenu(bool flag)
+    {
+        Button_Settings.gameObject.SetActive(flag);
+
+        foreach(SafehouseOptionData option in OptionsList)
+        {
+            option.button.gameObject.SetActive(flag);
+        }
     }
 }
