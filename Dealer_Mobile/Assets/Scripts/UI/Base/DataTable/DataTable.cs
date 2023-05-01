@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 [Serializable]
 public class RowData : Dictionary<string, string> { }
@@ -28,22 +29,19 @@ public class DataTable : MonoBehaviour
 
     private DataTableInfo _data;
 
-    private Dictionary<string, GameObject> _columnObjects;
-
-    private void Awake()
-    {
-        _columnObjects = new Dictionary<string, GameObject>();
-    }
+    private Dictionary<string, GameObject> _columnObjects = new Dictionary<string, GameObject>();
 
     public void GenerateTable(DataTableInfo tableInfo)
     {
         if (tableInfo == null) { return; }
 
+        if(tableInfo.Columns.Count == 0) { return; }
+
         _data = tableInfo;
 
         GenerateColumns();
 
-        GenerateRows(_data.Rows);
+        SelectColumn(_data.Columns[0]);
     }
 
     private void GenerateColumns()
@@ -69,7 +67,7 @@ public class DataTable : MonoBehaviour
             DataTableHeaderCell headerCell = headerObject.GetComponent<DataTableHeaderCell>();
             if (headerCell != null)
             {
-                headerCell.onClick.AddListener(() => OnHeaderSelected(columnID));
+                headerCell.onClick.AddListener(() => SelectColumn(columnID));
             }
         }
     }
@@ -92,13 +90,19 @@ public class DataTable : MonoBehaviour
         }
     }
 
-    private void OnHeaderSelected(string columnID)
+    private void SelectColumn(string columnID)
     {
         ClearContents();
 
         GenerateColumns();
 
         GenerateRows(SortDataBy(columnID));
+
+        DataTableHeaderCell headerCell = _columnObjects[columnID].GetComponentInChildren<DataTableHeaderCell>();
+        if(headerCell != null)
+        {
+            headerCell.Select();
+        }
     }
 
     private List<RowData> SortDataBy(string columnID)
