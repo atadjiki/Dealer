@@ -11,7 +11,7 @@ public class OverlayMenu_Stash : OverlayMenu
     [SerializeField] private TextMeshProUGUI Text_Capacity;
 
     [Header("Table")]
-    [SerializeField] private TablePanel DataTable;
+    [SerializeField] private DataTable Table;
 
     [Header("Detail Panel")]
     [SerializeField] private Image Image_Item;
@@ -19,12 +19,12 @@ public class OverlayMenu_Stash : OverlayMenu
 
     private void Awake()
     {
-        TableData tableData = CreateTableData();
+        DataTableInfo tableData = CreateTableData();
 
-        DataTable.GenerateTable(tableData);
+        Table.GenerateTable(tableData);
     }
 
-    private TableData CreateTableData()
+    private DataTableInfo CreateTableData()
     {
         //get player data
         Inventory inventory = FindObjectOfType<Inventory>(true);
@@ -32,7 +32,7 @@ public class OverlayMenu_Stash : OverlayMenu
         if(inventory != null)
         {
             //pack it into columns
-            TableData tableData = new TableData();
+            DataTableInfo tableData = new DataTableInfo();
 
             ColumnData column_name = new ColumnData("Name");
 
