@@ -4,25 +4,16 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 [Serializable]
-public class ColumnData
-{
-    public string Name;
-
-    public List<string> Values;
-
-    public ColumnData(string _Name)
-    {
-        Name = _Name;
-        Values = new List<string>();
-    }
-}
+public class RowData : Dictionary<string, string> { }
 
 [Serializable]
 public class DataTableInfo
 {
-    public List<ColumnData> Columns = new List<ColumnData>();
+    public List<string> Columns = new List<string>(); 
+    public List<RowData> Rows = new List<RowData>();
 }
 
 public class DataTable : MonoBehaviour
@@ -37,14 +28,11 @@ public class DataTable : MonoBehaviour
 
     private DataTableInfo _data;
 
-    private Dictionary<string, DataTableColumn> _columnObjects;
-
-    private List<List<string>> _roWValues;
+    private Dictionary<string, GameObject> _columnObjects;
 
     private void Awake()
     {
-        _columnObjects = new Dictionary<string, DataTableColumn>();
-        _roWValues = new List<List<string>>();
+        _columnObjects = new Dictionary<string, GameObject>();
     }
 
     public void GenerateTable(DataTableInfo tableInfo)
@@ -53,64 +41,52 @@ public class DataTable : MonoBehaviour
 
         _data = tableInfo;
 
-        GenerateColumnObjects();
+        GenerateColumns();
 
-        GenerateHeaders();
-
-        GenerateValues();
+        GenerateRows(_data.Rows);
     }
 
-    private void GenerateColumnObjects()
+    private void GenerateColumns()
     {
-        foreach(ColumnData columnData in _data.Columns)
+        foreach(string columnID in _data.Columns)
         {
             GameObject columnObject = Instantiate<GameObject>(Prefab_Column, Contents.transform);
-            columnObject.name = "Col_" + columnData.Name;
+            columnObject.name = "Col_" + columnID;
 
-            DataTableColumn column = columnObject.GetComponent<DataTableColumn>();
-
-            if(column != null)
+            if(columnID != null)
             {
-                _columnObjects.Add(columnData.Name, column);
+                _columnObjects.Add(columnID, columnObject);
             }
-        }
-    }
-
-    private void GenerateHeaders()
-    {
-        foreach(ColumnData columnData in _data.Columns)
-        {
-            GameObject columnObject = _columnObjects[columnData.Name].gameObject;
 
             GameObject headerObject = Instantiate<GameObject>(Prefab_Column_Header, columnObject.transform);
-            headerObject.name = "Header_" + columnData.Name;
+            headerObject.name = "Header_" + columnID;
             TextMeshProUGUI headerText = headerObject.GetComponentInChildren<TextMeshProUGUI>();
             if (headerText != null)
             {
-                headerText.SetText(columnData.Name);
+                headerText.SetText(columnID);
             }
 
             DataTableHeaderCell headerCell = headerObject.GetComponent<DataTableHeaderCell>();
             if (headerCell != null)
             {
-                headerCell.onClick.AddListener(() => OnHeaderSelected(columnData.Name));
+                headerCell.onClick.AddListener(() => OnHeaderSelected(columnID));
             }
         }
     }
 
-    private void GenerateValues()
+    private void GenerateRows(List<RowData> Rows)
     {
-        foreach (ColumnData columnData in _data.Columns)
+        foreach (RowData rowData in Rows)
         {
-            GameObject columnObject = _columnObjects[columnData.Name].gameObject;
-
-            foreach (string value in columnData.Values)
+            foreach (string key in rowData.Keys)
             {
+                GameObject columnObject = _columnObjects[key].gameObject;
+
                 GameObject cellObject = Instantiate<GameObject>(Prefab_Column_Cell, columnObject.transform);
                 TextMeshProUGUI cellText = cellObject.GetComponentInChildren<TextMeshProUGUI>();
                 if (cellText != null)
                 {
-                    cellText.SetText(value);
+                    cellText.SetText(rowData[key]);
                 }
             }
         }
@@ -118,33 +94,41 @@ public class DataTable : MonoBehaviour
 
     private void OnHeaderSelected(string columnID)
     {
-        Debug.Log("Column " + columnID + " clicked");
+        ClearContents();
 
-        SortDataBy(columnID);
+        GenerateColumns();
+
+        GenerateRows(SortDataBy(columnID));
     }
 
-    private void SortDataBy(string columnID)
+    private List<RowData> SortDataBy(string columnID)
     {
-        ColumnData columnData = GetColumnData(columnID);
+        //map each row to its value for this column
+        List<KeyValuePair<string, RowData>> RowMap = new List<KeyValuePair<string, RowData>>();
 
-        if(columnData != null)
+        foreach(RowData rowData in _data.Rows)
         {
-            List<string> sortedValues = columnData.Values;
-
-            sortedValues.Sort();
+            RowMap.Add(new KeyValuePair<string, RowData>(rowData[columnID], rowData));
         }
+
+        List<RowData> SortedRows = new List<RowData>();
+
+        foreach(KeyValuePair<string,RowData> pair in RowMap.OrderBy( x => x.Key))
+        {
+            SortedRows.Add(pair.Value);
+        }
+
+        return SortedRows;
     }
 
-    private ColumnData GetColumnData(string columnID)
+    private void ClearContents()
     {
-        foreach(ColumnData columnData in _data.Columns)
+        for (int i = Contents.transform.childCount - 1; i >= 0; --i)
         {
-            if(columnData.Name == columnID)
-            {
-                return columnData;
-            }
+            var child = Contents.transform.GetChild(i).gameObject;
+            Destroy(child);
         }
 
-        return null;
+        _columnObjects = new Dictionary<string, GameObject>();
     }
 }

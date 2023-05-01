@@ -34,22 +34,20 @@ public class OverlayMenu_Stash : OverlayMenu
             //pack it into columns
             DataTableInfo tableData = new DataTableInfo();
 
-            ColumnData column_name = new ColumnData("Name");
-
-            ColumnData column_grade = new ColumnData("Grade");
-
-            ColumnData column_quantity = new ColumnData("Quantity");
+            tableData.Columns.Add("Name");
+            tableData.Columns.Add("Grade");
+            tableData.Columns.Add("Quantity");
 
             foreach (DrugItem item in inventory.GetDrugStash())
             {
-                column_name.Values.Add(Drugs.Format(item.ID));
-                column_grade.Values.Add(Drugs.Format(item.Grade));
-                column_quantity.Values.Add(""+item.Quantity);
-            }
+                RowData rowData = new RowData();
 
-            tableData.Columns.Add(column_name);
-            tableData.Columns.Add(column_grade);
-            tableData.Columns.Add(column_quantity);
+                rowData.Add("Name", Drugs.Format(item.ID));
+                rowData.Add("Grade", Drugs.Format(item.Grade));
+                rowData.Add("Quantity", "" + item.Quantity);
+
+                tableData.Rows.Add(rowData);
+            }
 
             return tableData;
         }
