@@ -28,13 +28,12 @@ public class TableData
 public class TablePanel : MonoBehaviour
 {
     [Header("Table Transforms")]
-    [SerializeField] private GameObject Header;
     [SerializeField] private GameObject Contents;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject HeaderPrefab;
-    [SerializeField] private GameObject RowPrefab;
-    [SerializeField] private GameObject ColumnItemPrefab;
+    [SerializeField] private GameObject Prefab_Column;
+    [SerializeField] private GameObject Prefab_Column_Header;
+    [SerializeField] private GameObject Prefab_Column_Cell;
 
     public void GenerateTable(TableData tableData)
     {
@@ -42,62 +41,30 @@ public class TablePanel : MonoBehaviour
 
         if (columns == null) return;
 
-        //generate the header first
         foreach(ColumnData column in columns)
         {
-            //add the column title to the header
-            GameObject headerObject = Instantiate<GameObject>(HeaderPrefab, Header.transform);
-            Button columnHeaderButton = headerObject.GetComponent<Button>();
+            GameObject columnObject = Instantiate<GameObject>(Prefab_Column, Contents.transform);
+            columnObject.name = "Col_" + column.Name;
 
-            if(columnHeaderButton != null) { columnHeaderButton.interactable = false; }
-
-            TextMeshProUGUI columnHeaderText = headerObject.GetComponentInChildren<TextMeshProUGUI>();
-
-            if(columnHeaderText != null)
+            //generate the header first
+            GameObject headerObject = Instantiate<GameObject>(Prefab_Column_Header, columnObject.transform);
+            headerObject.name = "Header_" + column.Name;
+            TextMeshProUGUI headerText = headerObject.GetComponentInChildren<TextMeshProUGUI>();
+            if(headerText != null)
             {
-                columnHeaderText.SetText(column.Name);
+                headerText.SetText(column.Name);
             }
-        }
 
-        int rowCount = GetMaxColumnSize(columns);
-
-        for(int i = 0; i < rowCount; i++)
-        {
-            GameObject rowPrefab = Instantiate<GameObject>(RowPrefab, Contents.transform);
-
-            foreach(ColumnData column in columns)
+            //now add all the column values
+            foreach(string  value in column.Values)
             {
-                if(column.Values.Count <= rowCount)
+                GameObject cellObject = Instantiate<GameObject>(Prefab_Column_Cell, columnObject.transform);
+                TextMeshProUGUI cellText = cellObject.GetComponentInChildren<TextMeshProUGUI>();
+                if(cellText != null)
                 {
-                    GameObject columnPrefab = Instantiate<GameObject>(ColumnItemPrefab, rowPrefab.transform);
-                    TextMeshProUGUI textMesh = columnPrefab.GetComponentInChildren<TextMeshProUGUI>();
-
-                    if (textMesh != null)
-                    {
-                        textMesh.SetText(column.Values[i]);
-                    }
+                    cellText.SetText(value);
                 }
             }
         }
-    }
-
-    private int GetMaxColumnSize(List<ColumnData> columns)
-    {
-        int max = 0;
-
-        foreach(ColumnData data in columns)
-        {
-            if(data.Values != null)
-            {
-                if(data.Values.Count > max)
-                {
-                    max = data.Values.Count;
-                }
-            }
-        }
-
-        return max;
     }
 }
-
-

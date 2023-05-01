@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using System.Text;
+using static Constants.Inventory;
 
 public class OverlayMenu_Stash : OverlayMenu
 {
@@ -39,14 +40,10 @@ public class OverlayMenu_Stash : OverlayMenu
 
             ColumnData column_quantity = new ColumnData("Quantity");
 
-            foreach (InventoryItem item in inventory.GetItems())
+            foreach (DrugItem item in inventory.GetDrugStash())
             {
-                string itemName = Constants.Inventory.Format(item.ID);
-
-                itemName = AppendSpaces(itemName, 12);
-
-                column_name.Values.Add(itemName);
-                column_grade.Values.Add(Constants.Inventory.Drugs.Quality.None.ToString());
+                column_name.Values.Add(Drugs.Format(item.ID));
+                column_grade.Values.Add(Drugs.Format(item.Grade));
                 column_quantity.Values.Add(""+item.Quantity);
             }
 

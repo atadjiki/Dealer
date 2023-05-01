@@ -2,21 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
+using static Constants.Inventory;
 
 [Serializable]
-public class InventoryItem
+public class DrugItem
 {
-    public Constants.Inventory.ID ID = Constants.Inventory.ID.None;
+    public Drugs.ID ID = Drugs.ID.None;
+    public Drugs.Grade Grade = Drugs.Grade.None;
     public int Quantity = 0;
 }
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private List<InventoryItem> Items;
+    [SerializeField] private List<DrugItem> DrugItems;
 
-    public List<InventoryItem> GetItems()
+    public List<DrugItem> GetDrugStash()
     {
-        return Items;
+        return DrugItems;
     }
 }
