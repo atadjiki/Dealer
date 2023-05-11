@@ -15,10 +15,11 @@ namespace Constants
             public enum Grade 
             { 
                 None, 
-                POOR,
-                AVERAGE,
-                GOOD,
-                PURE
+                F,
+                D,
+                C,
+                B,
+                A,
             };
 
             public static string Format(ID id)
@@ -33,23 +34,6 @@ namespace Constants
                         return "Ultra Stim";
                     default:
                         return id.ToString();
-                };
-            }
-
-            public static string Format(Grade grade)
-            {
-                switch (grade)
-                {
-                    case Grade.POOR:
-                        return "Poor";
-                    case Grade.AVERAGE:
-                        return "Average";
-                    case Grade.GOOD:
-                        return "Good";
-                    case Grade.PURE:
-                        return "Pure";
-                    default:
-                        return grade.ToString();
                 };
             }
         }
