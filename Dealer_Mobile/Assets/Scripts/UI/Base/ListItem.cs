@@ -5,28 +5,44 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ListItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ListItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     [Header("Colors")]
     [SerializeField] protected Color NormalColor;
     [SerializeField] protected Color HighlightedColor;
+    [SerializeField] protected Color ClickedColor;
 
-    private Image itemImage;
+    [SerializeField] private Image Image_Tint;
 
     private void Awake()
     {
-        itemImage = GetComponent<Image>();
-
-        itemImage.color = NormalColor;
+        Image_Tint.color = NormalColor;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        itemImage.color = HighlightedColor;
+        Image_Tint.color = HighlightedColor;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        itemImage.color = NormalColor;
+        Image_Tint.color = NormalColor;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Image_Tint.color = NormalColor;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Image_Tint.color = ClickedColor;
+
+        HandleClick();
+    }
+
+    protected virtual void HandleClick()
+    {
+
     }
 }

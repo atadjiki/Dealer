@@ -14,10 +14,10 @@ public class OverlayMenu_Stash : OverlayMenu
 
     private void Awake()
     {
-        PopulateGrids();
+        Populate();
     }
 
-    private void PopulateGrids()
+    private void Populate()
     {
         //get player data
         Inventory inventory = FindObjectOfType<Inventory>(true);

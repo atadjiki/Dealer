@@ -2,6 +2,12 @@ namespace Constants
 {
     public class Inventory
     {
+        public enum ID
+        {
+            Player_Stash,
+            Player_Bag
+        }
+
         public class Drugs
         {
             public enum ID
