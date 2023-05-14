@@ -24,9 +24,9 @@ public class OverlayMenu_Stash : OverlayMenu
 
         if(inventory != null)
         {
-            foreach (DrugItem item in inventory.GetDrugStash())
+            foreach (KeyValuePair<Drugs.ID,int> pair in inventory.GetDrugStash())
             {
-                Grid_Stash.Add(item);
+                Grid_Stash.Add(pair);
             }
         }
     }

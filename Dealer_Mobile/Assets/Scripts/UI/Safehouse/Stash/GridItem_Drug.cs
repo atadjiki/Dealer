@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using Constants;
+using static Constants.Inventory;
 
 [RequireComponent(typeof(Button))]
 public class GridItem_Drug : MonoBehaviour
@@ -11,33 +12,34 @@ public class GridItem_Drug : MonoBehaviour
     [Header("UI Elements")]
 
     [SerializeField] private TextMeshProUGUI Text_Name;
-    [SerializeField] private TextMeshProUGUI Text_Grade;
+    //[SerializeField] private TextMeshProUGUI Text_Grade;
     [SerializeField] private TextMeshProUGUI Text_Quantity;
 
     [SerializeField] private GameObject Panel_Icon;
 
     [SerializeField] private Image Image_Icon;
-    [SerializeField] private Image Image_Tint;
+    //[SerializeField] private Image Image_Tint;
+
+    private string _ID;
 
     private Button _itemButton;
-    private DrugItem _drugItem;
 
     private void Awake()
     {
         _itemButton = GetComponent<Button>();
     }
 
-    public void Setup(DrugItem drugItem)
+    public void Setup(KeyValuePair<Drugs.ID, int> pair)
     {
-        _drugItem = drugItem;
+        _ID = pair.Key.ToString();
 
-        Text_Name.text = Constants.Inventory.Drugs.Format(drugItem.ID);
-        Text_Grade.text = drugItem.Grade.ToString();
-        Text_Quantity.text = "" + drugItem.Quantity;
+        Text_Name.text = _ID;
+        //Text_Grade.text = drugItem.Grade.ToString();
+        Text_Quantity.text = pair.Value.ToString();
 
         Panel_Icon.SetActive(true);
 
-        Image_Tint.color = ColorHelper.FromGrade(drugItem.Grade);
+        //Image_Tint.color = ColorHelper.FromGrade(drugItem.Grade);
 
         if(_itemButton != null)
         {
@@ -47,7 +49,7 @@ public class GridItem_Drug : MonoBehaviour
 
     public void OnItemClicked()
     {
-        Debug.Log("Item clicked " + _drugItem.ID.ToString());
+        Debug.Log("Item clicked " + _ID.ToString());
     }
 
 }

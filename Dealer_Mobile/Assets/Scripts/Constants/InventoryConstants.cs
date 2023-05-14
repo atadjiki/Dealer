@@ -7,34 +7,34 @@ namespace Constants
             public enum ID
             {
                 None,
-                KETRACEL_WHITE,
-                NEO_OPIUM,
-                ULTRA_STIM
-
+                Heroin,
+                Cocaine,
+                Ecstasy,
+                LSD,
+                Mushrooms,
+                Amphetamines
             }
-            public enum Grade 
-            { 
-                None, 
-                F,
-                D,
-                C,
-                B,
-                A,
-            };
 
-            public static string Format(ID id)
+            public static string GetIconResourcePathByID(Drugs.ID ID)
             {
-                switch (id)
+                string prefix = "Sprites/Icons/Drugs/Black/";
+                switch (ID)
                 {
-                    case ID.KETRACEL_WHITE:
-                        return "Ketracel White";
-                    case ID.NEO_OPIUM:
-                        return "Neo Opium";
-                    case ID.ULTRA_STIM:
-                        return "Ultra Stim";
+                    case ID.Amphetamines:
+                        return prefix + "Icon_Black_Drugs_Crystals";
+                    case ID.Cocaine:
+                        return prefix + "Icon_Black_Drugs_Powder";
+                    case ID.Ecstasy:
+                        return prefix + "Icon_Black_Drugs_Pill_Plural";
+                    case ID.Heroin:
+                        return prefix + "Icon_Black_Drugs_Baggie";
+                    case ID.LSD:
+                        return prefix + "Icon_Black_Drugs_Blister_Pack";
+                    case ID.Mushrooms:
+                        return prefix + "Icon_Black_Drugs_Mushrooms";
                     default:
-                        return id.ToString();
-                };
+                        return prefix + "Icon_Black_Drugs_Narcotic";
+                }
             }
         }
     }

@@ -1,22 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants.Inventory;
 
 public class GridLayout_Drug : MonoBehaviour
 {
-    [SerializeField] private GameObject Prefab_DrugGridItem;
+    [SerializeField] private GameObject Prefab_DrugItem;
 
     [SerializeField] private GameObject Panel_Content;
 
-    public void Add(DrugItem item)
+    public void Add(KeyValuePair<Drugs.ID, int> pair)
     {
-        GameObject itemObject = Instantiate<GameObject>(Prefab_DrugGridItem, Panel_Content.transform);
+        GameObject itemObject = Instantiate<GameObject>(Prefab_DrugItem, Panel_Content.transform);
 
-        GridItem_Drug itemComponent = itemObject.GetComponent<GridItem_Drug>();
+        ListItem_Drug itemComponent = itemObject.GetComponent<ListItem_Drug>();
 
         if(itemComponent != null)
         {
-            itemComponent.Setup(item);
+            itemComponent.Setup(pair);
         }
     }
 }

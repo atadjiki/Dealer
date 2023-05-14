@@ -113,7 +113,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -25, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6848635901281134554
 CanvasRenderer:
@@ -501,7 +501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5781699837990175250}
-  - component: {fileID: 281054945033355723}
+  - component: {fileID: 4877685780159732757}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -525,10 +525,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00089092547, y: -0.00012207031}
-  m_SizeDelta: {x: -31.966185, y: 300}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &281054945033355723
+--- !u!114 &4877685780159732757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -537,21 +537,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 4361274879287819550}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 15
-    m_Right: 15
-    m_Top: 15
-    m_Bottom: 15
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 200, y: 200}
-  m_Spacing: {x: 5, y: 5}
-  m_Constraint: 1
-  m_ConstraintCount: 3
+    m_Left: 5
+    m_Right: 5
+    m_Top: 5
+    m_Bottom: 5
+  m_ChildAlignment: 1
+  m_Spacing: 5
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &4631915304481085466
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b814cf725e6b004e9aba1acc9662160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab_DrugGridItem: {fileID: 4162356645402176390, guid: b30ae44ab90413e4cab868e0684ff5e6, type: 3}
+  Prefab_DrugItem: {fileID: 4785323716385222088, guid: 23dcc10ab0ff845758e6a93835e97fc3, type: 3}
   Panel_Content: {fileID: 4361274879287819550}
 --- !u!1 &5798673068162871010
 GameObject:
@@ -799,7 +801,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6115236500062596223}
   m_HandleRect: {fileID: 5012924637923204186}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1187,7 +1189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 5781699837990175250}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -1198,7 +1200,7 @@ MonoBehaviour:
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 8950014715791204244}
   m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 1
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:

@@ -5,19 +5,32 @@ using UnityEngine;
 using static Constants.Inventory;
 
 [Serializable]
-public class DrugItem
+public class DrugContainer : Dictionary<Drugs.ID, int>
 {
-    public Drugs.ID ID = Drugs.ID.None;
-    public Drugs.Grade Grade = Drugs.Grade.None;
-    public int Quantity = 0;
+    public DrugContainer()
+    {
+        //setup blank container 
+        foreach(Drugs.ID ID in Enum.GetValues(typeof(Drugs.ID)))
+        {
+            if(ID != Drugs.ID.None)
+            {
+                this.Add(ID, 0);
+            }
+        }
+    }
 }
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private List<DrugItem> DrugItems;
+    private DrugContainer PlayerStash;
 
-    public List<DrugItem> GetDrugStash()
+    private void Awake()
     {
-        return DrugItems;
+        PlayerStash = new DrugContainer();
+    }
+
+    public DrugContainer GetDrugStash()
+    {
+        return PlayerStash;
     }
 }
