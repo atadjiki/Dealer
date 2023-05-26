@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Constants.Inventory;
 
-public class ListItem_Drug : ListItem
+public class DrugContainerViewItem : ListItem
 {
     [Header("UI Elements")]
 

@@ -312,7 +312,6 @@ GameObject:
   - component: {fileID: 2372738328020348619}
   - component: {fileID: 2372738328020348620}
   - component: {fileID: 2372738328020348621}
-  - component: {fileID: 1889600228}
   m_Layer: 5
   m_Name: Canvas_Overlay_Inventory
   m_TagString: Untagged
@@ -401,20 +400,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1889600228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2372738328020348622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e12a0a92c56394fb2b01041cc3293430, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Button_Cancel: {fileID: 7860532102558064938}
-  Grid_Stash: {fileID: 6770856599299768923}
 --- !u!1 &3595133544210057457
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,7 +548,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3646280990172426934}
-  - component: {fileID: 6770856599299768923}
   m_Layer: 5
   m_Name: Panel_Stash
   m_TagString: Untagged
@@ -592,20 +576,6 @@ RectTransform:
   m_AnchoredPosition: {x: -15, y: 0}
   m_SizeDelta: {x: 650, y: -30}
   m_Pivot: {x: 1, y: 0.5}
---- !u!114 &6770856599299768923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4631915304481085466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b814cf725e6b004e9aba1acc9662160, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prefab_DrugItem: {fileID: 4785323716385222088, guid: 23dcc10ab0ff845758e6a93835e97fc3, type: 3}
-  Panel_Content: {fileID: 4361274879287819550}
 --- !u!1 &5798673068162871010
 GameObject:
   m_ObjectHideFlags: 0

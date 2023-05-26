@@ -6,11 +6,10 @@ using TMPro;
 using System.Text;
 using static Constants.Inventory;
 
-public class OverlayMenu_Stash : OverlayMenu
+public class PlayerStashView : OverlayMenu
 {
-
-    [Header("Grid Layouts")]
-    [SerializeField] private GridLayout_Drug Grid_Stash;
+    [Header("Views")]
+    [SerializeField] private DrugContainerView stashContainerView;
 
     private void Awake()
     {
@@ -26,9 +25,8 @@ public class OverlayMenu_Stash : OverlayMenu
         {
             foreach (KeyValuePair<Drugs.ID,int> pair in inventory.GetDrugStash())
             {
-                Grid_Stash.Add(pair);
+                stashContainerView.Add(pair);
             }
         }
     }
 }
-
