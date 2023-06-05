@@ -12,10 +12,7 @@ public class DrugContainer : Dictionary<Drugs.ID, int>
         //setup blank container 
         foreach(Drugs.ID ID in Enum.GetValues(typeof(Drugs.ID)))
         {
-            if(ID != Drugs.ID.None)
-            {
-                this.Add(ID, 0);
-            }
+            this.Add(ID, 0);
         }
     }
 }
