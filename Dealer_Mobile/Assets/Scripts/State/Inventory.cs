@@ -9,7 +9,6 @@ public class DrugContainer : Dictionary<Drugs.ID, int>
 {
     public DrugContainer()
     {
-        //setup blank container 
         foreach(Drugs.ID ID in Enum.GetValues(typeof(Drugs.ID)))
         {
             this.Add(ID, 0);

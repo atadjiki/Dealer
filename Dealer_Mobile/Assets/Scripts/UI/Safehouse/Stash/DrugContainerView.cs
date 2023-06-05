@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants.Inventory;
 
-public class GridLayout_Drug : MonoBehaviour
+public class DrugContainerView : MonoBehaviour
 {
     [SerializeField] private GameObject Prefab_DrugItem;
 
@@ -13,7 +13,7 @@ public class GridLayout_Drug : MonoBehaviour
     {
         GameObject itemObject = Instantiate<GameObject>(Prefab_DrugItem, Panel_Content.transform);
 
-        ListItem_Drug itemComponent = itemObject.GetComponent<ListItem_Drug>();
+        DrugContainerViewItem itemComponent = itemObject.GetComponent<DrugContainerViewItem>();
 
         if(itemComponent != null)
         {
