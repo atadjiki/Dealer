@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
+using GameDelegates;
 
 [Serializable]
 public struct SafehouseOptionData
 {
     public Button button;
-    public GameObject prefab;
+    public string sceneName;
 }
 
 public class SafehouseMenu : MonoBehaviour
@@ -21,6 +23,8 @@ public class SafehouseMenu : MonoBehaviour
 
     private void Awake()
     {
+        GameDelegates.Global.OnSafehouseMenuComplete += OnSafehouseMenuComplete;
+
         if(OptionsList.Count > 0)
         {
             for (int i = 0; i < OptionsList.Count; i++)
@@ -29,47 +33,32 @@ public class SafehouseMenu : MonoBehaviour
                 OptionsList[i].button.onClick.AddListener(delegate { SelectListOption(index); });
             }
         }
-
-        Button_Settings.onClick.AddListener(OnSettingsButtonClicked);
     }
 
     private void SelectListOption(int index)
     {
-        GameObject prefab = Instantiate(OptionsList[index].prefab);
-        OverlayMenu overlayMenu = prefab.GetComponent<OverlayMenu>();
-
-        if(overlayMenu != null)
-        {
-            Button cancelButton = overlayMenu.GetCancelButton();
-
-            if(cancelButton != null)
-            {
-                cancelButton.onClick.AddListener(delegate { OnCancelButtonCiicked(); });
-
-                ToggleMenu(false);
-                
-            }
-        }
-
+        StartCoroutine(Coroutine_LoadMenu(index));
     }
 
-    private void OnSettingsButtonClicked()
+    private IEnumerator Coroutine_LoadMenu(int optionIndex)
     {
-        
+        string sceneName = OptionsList[optionIndex].sceneName;
+
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+        yield return new WaitUntil(() => operation.isDone);
+
+        ToggleMenu(false);
+
     }
 
-    private void OnCancelButtonCiicked()
+    private void OnSafehouseMenuComplete(Constants.Safehouse.SafehouseMenu Menu)
     {
         ToggleMenu(true);
     }
 
     private void ToggleMenu(bool flag)
     {
-        Button_Settings.gameObject.SetActive(flag);
-
-        foreach(SafehouseOptionData option in OptionsList)
-        {
-            option.button.gameObject.SetActive(flag);
-        }
+        this.gameObject.SetActive(flag);
     }
 }

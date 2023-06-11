@@ -7,8 +7,12 @@ namespace GameDelegates
 {
     public delegate void DrugTransfer(Constants.Inventory.ID From, Constants.Inventory.ID To, Constants.Inventory.Drugs.ID ID, int amount);
 
+    public delegate void SafehouseMenuComplete(Safehouse.SafehouseMenu Menu);
+
     public class Global
     {
         public static DrugTransfer OnDrugTransfer;
+
+        public static SafehouseMenuComplete OnSafehouseMenuComplete;
     }
 }

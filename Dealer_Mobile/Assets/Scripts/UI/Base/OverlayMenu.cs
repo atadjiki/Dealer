@@ -7,7 +7,7 @@ public class OverlayMenu : MonoBehaviour
 {
     [SerializeField] protected Button Button_Cancel;
 
-    private void Awake()
+    private void Start()
     {
         Button_Cancel.onClick.AddListener(delegate
         {
@@ -21,7 +21,7 @@ public class OverlayMenu : MonoBehaviour
         return Button_Cancel;
     }
 
-    private void OnCancelButtonClicked()
+    protected virtual void OnCancelButtonClicked()
     {
         Destroy(this.gameObject);
     }

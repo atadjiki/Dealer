@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using System.Text;
 using static Constants.Inventory;
+using GameDelegates;
 
 public class PlayerStashView : OverlayMenu
 {
@@ -16,17 +17,25 @@ public class PlayerStashView : OverlayMenu
         Populate();
     }
 
+    protected override void OnCancelButtonClicked()
+    {
+        GameDelegates.Global.OnSafehouseMenuComplete.Invoke(Constants.Safehouse.SafehouseMenu.Inventory);
+
+        base.OnCancelButtonClicked();
+    }
+
     private void Populate()
     {
-        //get player data
-        Inventory inventory = FindObjectOfType<Inventory>(true);
-
-        if(inventory != null)
+        if(GameState.Instance != null)
         {
-            foreach (KeyValuePair<Drugs.ID,int> pair in inventory.GetDrugStash())
+            foreach (DrugInventoryData data in GameState.Instance.GetInventory())
             {
-                stashContainerView.Add(pair);
+                stashContainerView.Add(data);
             }
+        }
+        else
+        {
+            Debug.Log("Cant populate stash view, GameState is null!");
         }
     }
 }
