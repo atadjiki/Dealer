@@ -37,8 +37,9 @@ public class DrugContainerViewItem : MonoBehaviour
         Text_Quantity_R.text = data.Quantity_Stash.ToString();
 
         Slider_Quantity.minValue = 0;
-        Slider_Quantity.maxValue = data.Quantity_Stash;
-        Slider_Quantity.value = data.Quantity_Stash - data.Quantity_Bag;
+        Slider_Quantity.maxValue = data.Quantity_Stash + data.Quantity_Bag;
+        Slider_Quantity.value = data.Quantity_Stash;
+        Slider_Quantity.SetDirection(Slider.Direction.LeftToRight, true);
 
         lastValue = Slider_Quantity.value;
 
@@ -76,9 +77,6 @@ public class DrugContainerViewItem : MonoBehaviour
                     //update the quantity labels
                     Text_Quantity_L.text = data.Quantity_Bag.ToString();
                     Text_Quantity_R.text = data.Quantity_Stash.ToString();
-
-                    Slider_Quantity.minValue = 0;
-                    Slider_Quantity.maxValue = Mathf.Abs(data.Quantity_Stash - data.Quantity_Bag);
 
                     lastValue = Slider_Quantity.value;
                 }
