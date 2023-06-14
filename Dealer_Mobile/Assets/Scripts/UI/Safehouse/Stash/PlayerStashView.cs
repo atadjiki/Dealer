@@ -28,9 +28,9 @@ public class PlayerStashView : OverlayMenu
     {
         if(GameState.Instance != null)
         {
-            foreach (DrugInventoryData data in GameState.Instance.GetInventory())
+            foreach (ItemID ID in Constants.Inventory.GetDrugIDs())
             {
-                stashContainerView.Add(data);
+                stashContainerView.Add(ID);
             }
         }
         else

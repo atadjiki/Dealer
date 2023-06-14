@@ -4,21 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants.Inventory;
 
-[Serializable]
-public struct DrugInventoryData
-{
-    public Drugs.ID ID;
-    public int Quantity_Bag;
-    public int Quantity_Stash;
-}
-
 public class DrugContainerView : MonoBehaviour
 {
     [SerializeField] private GameObject Prefab_DrugItem;
 
     [SerializeField] private GameObject Panel_Content;
 
-    public void Add(DrugInventoryData data)
+    public void Add(ItemID itemID)
     {
         GameObject itemObject = Instantiate<GameObject>(Prefab_DrugItem, Panel_Content.transform);
 
@@ -26,7 +18,7 @@ public class DrugContainerView : MonoBehaviour
 
         if(itemComponent != null)
         {
-            itemComponent.Setup(data);
+            itemComponent.Setup(itemID);
         }
     }
 }

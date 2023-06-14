@@ -19,26 +19,33 @@ public class DrugContainerViewItem : MonoBehaviour
 
     [SerializeField] private Image Image_Icon;
 
-    private Drugs.ID drugID;
+    private ItemID _itemID;
 
     private float lastValue;
 
-    public void Setup(DrugInventoryData data)
+    public void Setup(ItemID itemID)
     {
-        Sprite sprite = Instantiate<Sprite>(Resources.Load<Sprite>(Drugs.GetIconResourcePathByID(Drugs.ID.Cocaine)));
+        Sprite sprite = Instantiate(Resources.Load<Sprite>(GetIconResourcePathByID(ItemID.Cocaine)));
 
         Image_Icon.sprite = sprite;
 
-        Text_Name.text = data.ID.ToString();
+        Text_Name.text = itemID.ToString();
 
-        drugID = data.ID;
+        _itemID = itemID;
 
-        Text_Quantity_L.text = data.Quantity_Bag.ToString();
-        Text_Quantity_R.text = data.Quantity_Stash.ToString();
+        if (GameState.Instance != null)
+        {
+            int quantity_bag = GameState.Instance.GetInventory(OwnerID.Player_Bag).GetQuantity(itemID);
+            int quantity_stash = GameState.Instance.GetInventory(OwnerID.Player_Stash).GetQuantity(itemID);
 
-        Slider_Quantity.minValue = 0;
-        Slider_Quantity.maxValue = data.Quantity_Stash + data.Quantity_Bag;
-        Slider_Quantity.value = data.Quantity_Stash;
+            Text_Quantity_L.text = quantity_bag.ToString();
+            Text_Quantity_R.text = quantity_stash.ToString();
+
+            Slider_Quantity.minValue = 0;
+            Slider_Quantity.maxValue = quantity_bag + quantity_stash;
+            Slider_Quantity.value = quantity_stash;
+        }
+
         Slider_Quantity.SetDirection(Slider.Direction.LeftToRight, true);
 
         lastValue = Slider_Quantity.value;
@@ -54,12 +61,12 @@ public class DrugContainerViewItem : MonoBehaviour
         {
             if(GameState.Instance != null)
             {
-                GameState.Instance.AddToBag(drugID, Mathf.Abs(difference));
+                GameState.Instance.AddToBag(_itemID, Mathf.Abs(difference));
             }
         }
         else
         {
-            GameState.Instance.RemoveFromBag(drugID, Mathf.Abs(difference));
+            GameState.Instance.RemoveFromBag(_itemID, Mathf.Abs(difference));
         }
 
         RefreshPanel();
@@ -69,18 +76,14 @@ public class DrugContainerViewItem : MonoBehaviour
     {
         if(GameState.Instance != null)
         {
+            int quantity_bag = GameState.Instance.GetInventory(OwnerID.Player_Bag).GetQuantity(_itemID);
+            int quantity_stash = GameState.Instance.GetInventory(OwnerID.Player_Stash).GetQuantity(_itemID);
 
-            foreach(DrugInventoryData data in GameState.Instance.GetInventory())
-            {
-                if(data.ID == drugID)
-                {
-                    //update the quantity labels
-                    Text_Quantity_L.text = data.Quantity_Bag.ToString();
-                    Text_Quantity_R.text = data.Quantity_Stash.ToString();
+            //update the quantity labels
+            Text_Quantity_L.text = quantity_bag.ToString();
+            Text_Quantity_R.text = quantity_stash.ToString();
 
-                    lastValue = Slider_Quantity.value;
-                }
-            }
+            lastValue = Slider_Quantity.value;
         }
     }
 }
