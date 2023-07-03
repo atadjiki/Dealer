@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: Swaying Noise
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor v1.9.1.5\n// Available at the
+    Unity Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=19105\nNode;AmplifyShaderEditor.ScaleAndOffsetNode;1;114.5844,50.88444;Inherit;False;3;0;FLOAT3;0,0,0;False;1;FLOAT;1;False;2;FLOAT;0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionNode;2;-317.4156,162.8844;Inherit;False;Step;-1;;2;c9de8566d16b34343904e07e5fc2014a;0;2;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleTimeNode;3;-525.4156,146.8844;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.NoiseGeneratorNode;5;306.5844,50.88444;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;37.64,0;False;1;FLOAT;8.91;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;7;914.5844,18.88444;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.PosVertexDataNode;8;-109.4156,-141.1156;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.NegateNode;9;386.5844,-509.1156;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.TransformDirectionNode;18;290.5844,178.8844;Inherit;False;World;Object;True;Fast;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;20;-77.41565,162.8844;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0.1;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;21;-45.41565,66.88445;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;22;-350.4156,43.88444;Inherit;False;Property;_SwayNoiseScale;Sway
+    Noise Scale;4;0;Create;True;0;0;0;False;0;False;1;2;0;10;0;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;4;-621.4156,226.8844;Inherit;False;Property;_SwayFramerate;Sway
+    Framerate;2;1;[IntRange];Create;True;0;0;0;False;0;False;10;10;0;60;0;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;19;-317.4156,258.8844;Inherit;False;Property;_SwaySpeed;Sway
+    Speed;3;0;Create;True;0;0;0;False;0;False;1;1;0;10;0;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;14;194.5844,-205.1156;Inherit;False;Property;_SwayOffset;Sway
+    Offset;0;0;Create;True;1;Sketched Noise;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.Vector3Node;17;114.5844,178.8844;Inherit;False;Property;_SwayDirection;Sway
+    Direction;6;0;Create;True;0;0;0;False;0;False;0,1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.RangedFloatNode;12;194.5844,-509.1156;Inherit;False;Property;_SwaySensitivity;Sway
+    Sensitivity;8;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.Compare;27;1104,-32;Inherit;False;0;4;0;FLOAT;0;False;1;FLOAT;1;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionOutput;16;1264,-32;Inherit;False;True;-1;Output;0;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.RangedFloatNode;15;306.5844,-28.00224;Inherit;False;Property;_SwayAmount;Sway
+    Amount;1;0;Create;True;1;Vertex Sway;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode;28;546.5844,-205.1156;Inherit;False;Mask
+    Channels;-1;;3;de9e437547125164c8f3e0dda5e41b4d;0;5;19;FLOAT;0;False;21;FLOAT;0;False;22;FLOAT3;1,0,0;False;23;FLOAT3;0,0,0;False;24;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;26;912,-64;Inherit;False;Property;_UseSway;UseSway;9;1;[Toggle];Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;6;546.5844,18.88444;Inherit;False;4;4;0;FLOAT;0;False;1;FLOAT3;0.01,0.01,0.01;False;2;FLOAT;0;False;3;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.Vector3Node;10;194.5844,-349.1156;Inherit;False;Property;_SwayMask;Sway
+    Mask;7;0;Create;True;0;0;0;False;0;False;1,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.RangedFloatNode;25;192,-432;Inherit;False;Property;_SwaySource;Sway
+    Source;5;1;[Enum];Create;True;0;4;Distance From Center;0;Position Axis;1;Vertex
+    Colors;2;Uniform;3;0;False;0;False;3;0;0;0;0;1;FLOAT;0\nWireConnection;1;0;8;0\nWireConnection;1;1;21;0\nWireConnection;1;2;20;0\nWireConnection;2;1;3;0\nWireConnection;2;2;4;0\nWireConnection;5;0;1;0\nWireConnection;7;0;28;0\nWireConnection;7;1;6;0\nWireConnection;9;0;12;0\nWireConnection;18;0;17;0\nWireConnection;20;0;2;0\nWireConnection;20;2;19;0\nWireConnection;21;0;22;0\nWireConnection;27;0;26;0\nWireConnection;27;2;7;0\nWireConnection;16;0;27;0\nWireConnection;28;19;9;0\nWireConnection;28;21;25;0\nWireConnection;28;22;10;0\nWireConnection;28;23;8;0\nWireConnection;28;24;14;0\nWireConnection;6;0;15;0\nWireConnection;6;2;5;0\nWireConnection;6;3;18;0\nASEEND*/\n//CHKSM=27B5CD6336E975A0FA7ADAF6FC5F4611FBB76F88"
+  m_functionName: 
+  m_description: 
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_additionalDirectives:
+    m_validData: 0
+    m_isDirty: 0
+    m_moduleName: ' Additional Directives'
+    m_independentModule: 1
+    m_customEdited: 0
+    m_additionalDirectives: []
+    m_shaderFunctionDirectives: []
+    m_nativeDirectives: []
+    m_nativeDirectivesIndex: -1
+    m_nativeDirectivesFoldout: 0
+    m_directivesSaveItems: []
+  m_nodeCategory: 3
+  m_headerStyle: 0
+  m_headerColor: {r: 1, g: 0.4, b: 0, a: 1}
+  m_customNodeCategory: 
+  m_previewPosition: 0
+  m_hidden: 0
+  m_url: 

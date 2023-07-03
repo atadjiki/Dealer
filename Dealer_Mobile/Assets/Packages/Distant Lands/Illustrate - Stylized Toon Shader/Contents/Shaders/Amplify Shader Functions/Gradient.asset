@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: Gradient
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor v1.9.1.5\n// Available at the
+    Unity Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=19105\nNode;AmplifyShaderEditor.Compare;7;-2048,80;Inherit;False;0;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.TransformPositionNode;9;-2320,-16;Inherit;False;World;Object;False;Fast;True;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.WireNode;26;-2336,128;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.SimpleSubtractOpNode;48;-1856,80;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.RegisterLocalVarNode;10;-1712,80;Inherit;False;AdjustedPosition;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.NegateNode;72;64,-896;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.ColorNode;30;-2576,320;Inherit;False;Property;_NearColor;Near
+    Color;4;1;[HDR];Create;True;0;0;0;False;0;False;1,1,1,1;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.GetLocalVarNode;33;-2576,672;Inherit;True;15;Distance;1;0;OBJECT;;False;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;70;-128,-512;Inherit;False;Property;_GradientOffset;Gradient
+    Offset;6;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;32;-2240,512;Inherit;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0\nNode;AmplifyShaderEditor.RegisterLocalVarNode;15;560,-736;Inherit;True;Distance;-1;True;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.GetLocalVarNode;11;-128,-592;Inherit;False;10;AdjustedPosition;1;0;OBJECT;;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.WorldPosInputsNode;4;-2544,-16;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.RegisterLocalVarNode;34;-1984,512;Inherit;False;AdjustedGradient;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.LerpOp;28;-2240,-704;Inherit;False;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.ComponentMaskNode;55;-2496,-768;Inherit;False;True;True;True;False;1;0;COLOR;0,0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.DynamicAppendNode;57;-2064,-704;Inherit;False;FLOAT4;4;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.WireNode;58;-2112,-576;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;-1712,-704;Inherit;False;True;-1;Output;0;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.FunctionInput;14;-2752,-768;Inherit;False;Input;5;0;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.ComponentMaskNode;36;-2496,-608;Inherit;False;False;False;False;True;1;0;COLOR;0,0,0,0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.ComponentMaskNode;56;-2496,-528;Inherit;False;False;False;False;True;1;0;COLOR;0,0,0,0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.WireNode;61;-2544,-464;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.WireNode;62;-1952,-496;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.Compare;59;-1888,-704;Inherit;False;0;4;0;FLOAT;0;False;1;FLOAT;1;False;2;FLOAT4;0,0,0,0;False;3;COLOR;0,0,0,0;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.GetLocalVarNode;35;-2832,-640;Inherit;False;34;AdjustedGradient;1;0;OBJECT;;False;1;COLOR;0\nNode;AmplifyShaderEditor.ComponentMaskNode;29;-2496,-688;Inherit;False;True;True;True;False;1;0;COLOR;0,0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.RangedFloatNode;1;-128,-817;Inherit;False;Property;_GradientSource;Gradient
+    Source;1;1;[Enum];Create;True;0;3;Distance From Center;0;Position Axis;1;Vertex
+    Colors;2;0;False;0;False;1;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;38;-128,-896;Inherit;False;Property;_GradientSensitivity;Gradient
+    Sensitivity;7;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.Vector3Node;63;-128,-736;Inherit;False;Property;_GradientChannelMask;Gradient
+    Channel Mask;8;0;Create;True;0;0;0;False;0;False;0,1,0;0,1,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.Vector3Node;20;-2064,223;Inherit;False;Property;_GradientPositionalOffset;Gradient
+    Positional Offset;3;0;Create;True;0;0;0;False;0;False;0,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3\nNode;AmplifyShaderEditor.RangedFloatNode;2;-2256,208;Inherit;False;Property;_Space;Space;2;1;[Enum];Create;True;0;2;World
+    Space;0;Local Space;1;0;False;0;False;1;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.ColorNode;31;-2576,496;Inherit;False;Property;_FarColor;Far
+    Color;5;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,1;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.RangedFloatNode;60;-2144,-800;Inherit;False;Property;_UseGradientShading;Use
+    Gradient Shading;0;2;[Header];[Toggle];Create;True;1;Gradient Shading;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode;88;240,-735;Inherit;True;Mask
+    Channels;-1;;20;de9e437547125164c8f3e0dda5e41b4d;0;5;19;FLOAT;1;False;21;FLOAT;1;False;22;FLOAT3;0,1,0;False;23;FLOAT3;0,0,0;False;24;FLOAT;0;False;1;FLOAT;0\nWireConnection;7;0;2;0\nWireConnection;7;2;26;0\nWireConnection;7;3;9;0\nWireConnection;9;0;4;0\nWireConnection;26;0;4;0\nWireConnection;48;0;7;0\nWireConnection;48;1;20;0\nWireConnection;10;0;48;0\nWireConnection;72;0;38;0\nWireConnection;32;0;30;0\nWireConnection;32;1;31;0\nWireConnection;32;2;33;0\nWireConnection;15;0;88;0\nWireConnection;34;0;32;0\nWireConnection;28;0;55;0\nWireConnection;28;1;29;0\nWireConnection;28;2;36;0\nWireConnection;55;0;14;0\nWireConnection;57;0;28;0\nWireConnection;57;3;58;0\nWireConnection;58;0;56;0\nWireConnection;0;0;59;0\nWireConnection;36;0;35;0\nWireConnection;56;0;14;0\nWireConnection;61;0;14;0\nWireConnection;62;0;61;0\nWireConnection;59;0;60;0\nWireConnection;59;2;57;0\nWireConnection;59;3;62;0\nWireConnection;29;0;35;0\nWireConnection;88;19;72;0\nWireConnection;88;21;1;0\nWireConnection;88;22;63;0\nWireConnection;88;23;11;0\nWireConnection;88;24;70;0\nASEEND*/\n//CHKSM=3206FF998D179E98FB4F0F3B2E85E8E9D1202271"
+  m_functionName: 
+  m_description: 
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_additionalDirectives:
+    m_validData: 0
+    m_isDirty: 0
+    m_moduleName: ' Additional Directives'
+    m_independentModule: 1
+    m_customEdited: 0
+    m_additionalDirectives: []
+    m_shaderFunctionDirectives: []
+    m_nativeDirectives: []
+    m_nativeDirectivesIndex: -1
+    m_nativeDirectivesFoldout: 0
+    m_directivesSaveItems: []
+  m_nodeCategory: 3
+  m_headerStyle: 0
+  m_headerColor: {r: 1, g: 0.4, b: 0, a: 1}
+  m_customNodeCategory: 
+  m_previewPosition: 0
+  m_hidden: 0
+  m_url: 
