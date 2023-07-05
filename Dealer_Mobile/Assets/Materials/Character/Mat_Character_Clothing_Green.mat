@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Character_Clothing_Black
+  m_Name: Mat_Character_Clothing_Green
   m_Shader: {fileID: 4800000, guid: 7498cc6ef4a7aa34880ce87140cff123, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -28,6 +28,7 @@ Material:
   m_InvalidKeywords:
   - _CLAMPADJUSTMENTS_ON
   - _MULTIPLYBYLIGHTCOLOR_ON
+  - _SCROLLEMISSION_ON
   - _USEOUTLINES_ON
   - _USESCREENNOISE_ON
   - _USESHADOWS_ON
@@ -103,7 +104,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
-        m_Texture: {fileID: 2800000, guid: fed49622bfae18f4e844115cdc70c038, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6c6a03f2df5fdf845afbb01b2fa7761a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -144,17 +145,17 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EmissionEffectScale: 1
-    - _EmissionLightRatio: 1
-    - _EmissionShadowRatio: 1
+    - _EmissionLightRatio: 0.25
+    - _EmissionShadowRatio: 0
     - _EmissionUVSource: 0
     - _EnvironmentReflections: 1
     - _FlutterAmount: 2.5
     - _FlutterFramerate: 10
-    - _FlutterNoiseScale: 1
+    - _FlutterNoiseScale: 1.05
     - _FlutterOffset: 0
     - _FlutterSensitivity: 1
     - _FlutterSource: 3
-    - _FlutterSpeed: 1
+    - _FlutterSpeed: 0.95
     - _GlintScale: 0.4
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -196,7 +197,7 @@ Material:
     - _RimRamp: 1
     - _SaturationShift: 0
     - _SaturationVariation: 0
-    - _ScrollEmission: 0
+    - _ScrollEmission: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _Space: 1
@@ -221,7 +222,7 @@ Material:
     - _SwirlSource: 3
     - _SwirlSpeed: 1
     - _UseColorAdjustments: 0
-    - _UseEmission: 0
+    - _UseEmission: 1
     - _UseFlutter: 0
     - _UseGlint: 0
     - _UseGradientShading: 0
@@ -254,9 +255,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomNormalDirection: {r: 0, g: 1, b: 0, a: 0}
     - _CustomNormalEllipseSize: {r: 1, g: 1, b: 1, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionScrolling1: {r: 1, g: 1, b: 0, a: 0}
-    - _EmissionScrolling2: {r: 0.1, g: -0.5, b: 0, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionScrolling1: {r: 10, g: 5, b: 0, a: 0}
+    - _EmissionScrolling2: {r: 5, g: -0.5, b: 0, a: 0}
     - _FarColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlutterDirection: {r: 0, g: 1, b: 0, a: 0}
     - _FlutterMask: {r: 1, g: 0, b: 0, a: 0}

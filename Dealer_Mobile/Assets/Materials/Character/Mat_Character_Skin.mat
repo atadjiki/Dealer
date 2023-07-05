@@ -16,6 +16,7 @@ Material:
   - _CLAMPADJUSTMENTS_ON
   - _MULTIPLYBYLIGHTCOLOR_ON
   - _NORMALSURFACEOUTLINE_ON
+  - _SCROLLEMISSION_ON
   - _USEFLUTTER_ON
   - _USEGRADIENTSHADING_ON
   - _USEOUTLINES_ON
@@ -134,7 +135,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EmissionEffectScale: 1
-    - _EmissionLightRatio: 1
+    - _EmissionLightRatio: 0.15
     - _EmissionShadowRatio: 1
     - _EmissionUVSource: 0
     - _EnvironmentReflections: 1
@@ -186,7 +187,7 @@ Material:
     - _RimRamp: 1
     - _SaturationShift: 0
     - _SaturationVariation: 0
-    - _ScrollEmission: 0
+    - _ScrollEmission: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _Space: 1
@@ -211,8 +212,8 @@ Material:
     - _SwirlSource: 3
     - _SwirlSpeed: 1
     - _UseColorAdjustments: 0
-    - _UseEmission: 0
-    - _UseFlutter: 1
+    - _UseEmission: 1
+    - _UseFlutter: 0
     - _UseGlint: 0
     - _UseGradientShading: 1
     - _UseHSVVariation: 0
@@ -244,7 +245,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomNormalDirection: {r: 0, g: 1, b: 0, a: 0}
     - _CustomNormalEllipseSize: {r: 1, g: 1, b: 1, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionScrolling1: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionScrolling2: {r: 0.1, g: -0.5, b: 0, a: 0}
     - _FarColor: {r: 0, g: 0, b: 0, a: 1}
