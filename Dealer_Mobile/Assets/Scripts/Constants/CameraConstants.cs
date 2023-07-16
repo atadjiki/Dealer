@@ -4,7 +4,7 @@ namespace Constants
     {
         public enum CameraID
         {
-            CAM_ARENA_FOLLOW_TARGET,
+            CAM_ARENA,
             CAM_ARENA_OVERVIEW
         }
     }

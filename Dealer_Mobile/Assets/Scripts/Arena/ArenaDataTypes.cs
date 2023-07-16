@@ -29,4 +29,6 @@ public struct ArenaData
     [Header("Arena Data")]
     [Space]
     public List<SquadData> Squads;
+    [Space]
+    public CharacterConstants.Team PlayerTeam;
 }

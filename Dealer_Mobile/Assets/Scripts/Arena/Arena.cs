@@ -9,14 +9,11 @@ public class Arena : MonoBehaviour
     [SerializeField] private ArenaData Data;
     [SerializeField] private CameraManager CameraManager;
 
-    [SerializeField] private CameraFollowTarget FollowTarget;
+    [SerializeField] private ArenaCamera ArenaCamera;
 
-    private Transform defaultFollowTargetParent;
 
     private void Awake()
     {
-        defaultFollowTargetParent = FollowTarget.transform.parent;
-
         PerformOverviewScene();
     }
 
@@ -33,9 +30,11 @@ public class Arena : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA_FOLLOW_TARGET);
+        CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA);
 
-        yield return null;
+        yield return new WaitForSeconds(2.5f);
+
+        ArenaCamera.SetTarget(GetCurrentPlayerCharacter().marker.transform);
     }
 
     public void PopulateArena()
@@ -50,49 +49,35 @@ public class Arena : MonoBehaviour
         {
             foreach (CharacterData characterData in teamData.Characters)
             {
-                PerformSpawn(characterData, teamData.ID);
+                CharacterHelper.PerformSpawn(characterData, teamData.ID, this.transform);
             }
         }
     }
 
-    public void PerformSpawn(CharacterData data, CharacterConstants.Team team)
+    public CharacterData GetCurrentPlayerCharacter()
     {
-        if(data.marker == null)
+        SquadData playerSquad = GetPlayerSquad();
+
+        if(playerSquad.Characters.Count > 0)
         {
-            Debug.Log("Cannot spawn character, marker is null");
+            return playerSquad.Characters[0];
         }
-        StartCoroutine(Coroutine_PerformSpawn(data, team));
+
+        Debug.Log("Couldnt find current player character?");
+        return new CharacterData();
     }
 
-    private IEnumerator Coroutine_PerformSpawn(CharacterData data, CharacterConstants.Team team)
+    public SquadData GetPlayerSquad()
     {
-        Debug.Log("Spawn: " + data.type + " " + team);
-        GameObject characterModel = Instantiate(ArenaPrefabHelper.GetCharacterModelByTeam(team, data.type), data.marker.transform);
-
-        characterModel.transform.LookAt(this.transform.position);
-
-        GameObject decalPrefab = Instantiate(ArenaPrefabHelper.GetCharacterDecal(), data.marker.transform);
-
-        if (decalPrefab != null)
+        foreach(SquadData squadData in Data.Squads)
         {
-            CharacterDecal decal = decalPrefab.GetComponent<CharacterDecal>();
-
-            if (decal != null)
+            if(squadData.ID == Data.PlayerTeam)
             {
-                decal.SetColorByTeam(team);
+                return squadData;
             }
         }
-        yield return null;
-    }
 
-    public void SetFollowTarget(Transform newParent)
-    {
-        FollowTarget.transform.parent = newParent;
-        FollowTarget.transform.localPosition = Vector3.zero;
-    }
-
-    public void ResetFollowTarget()
-    {
-        SetFollowTarget(defaultFollowTargetParent);
+        Debug.Log("Couldnt find player team?");
+        return new SquadData();
     }
 }

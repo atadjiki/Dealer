@@ -10,7 +10,7 @@ namespace Constants
 
         public enum Weapon
         {
-            Unarmed,
+            Revolver,
             Pistol,
         }
 
