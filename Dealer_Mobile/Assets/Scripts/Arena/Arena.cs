@@ -30,9 +30,9 @@ public class Arena : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA);
+        CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA_MAIN);
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1.5f);
 
         ArenaCamera.SetTarget(GetCurrentPlayerCharacter().marker.transform);
     }
