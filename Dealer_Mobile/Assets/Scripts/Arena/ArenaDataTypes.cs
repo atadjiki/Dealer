@@ -1,23 +1,32 @@
 using System;
 using System.Collections.Generic;
 using Constants;
+using UnityEngine;
 
 [Serializable]
-public struct CharacterMarkerData
+public struct CharacterData
 {
+    [Header("Character Info")]
+    [Space]
     public CharacterConstants.CharacterType type;
     public CharacterConstants.Weapon weapon;
+    [Space]
+    public CharacterMarker marker;
 }
 
 [Serializable]
-public struct TeamData
+public struct SquadData
 {
-    public List<CharacterMarker> Markers;
+    [Header("Squad Data")]
+    [Space]
+    public CharacterConstants.Team ID;
+    public List<CharacterData> Characters;
 }
 
 [Serializable]
 public struct ArenaData
 {
-    public CharacterConstants.Team ID;
-    public List<TeamData> Teams;
+    [Header("Arena Data")]
+    [Space]
+    public List<SquadData> Squads;
 }
