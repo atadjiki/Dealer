@@ -7,7 +7,7 @@ public static class ArenaPrefabHelper
 {
     public static GameObject GetCharacterDecal()
     {
-        return Resources.Load<GameObject>("Prefabs/Arena/Character/Marker/Decal_Character");
+        return Resources.Load<GameObject>("Prefabs/Decals/Decal_Character");
     }
 
     public static GameObject GetCharacterModelByTeam(CharacterConstants.Team team, CharacterConstants.CharacterType type)
@@ -29,9 +29,9 @@ public static class ArenaPrefabHelper
         switch (type)
         {
             case CharacterConstants.CharacterType.Alternate:
-                return Resources.Load<GameObject>("Prefabs/Arena/Character/Mafia/Model_Character_Mafia_Alternate");
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Alternate");
             default:
-                return Resources.Load<GameObject>("Prefabs/Arena/Character/Mafia/Model_Character_Mafia_Default");
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Default");
         }
     }
 
@@ -40,9 +40,9 @@ public static class ArenaPrefabHelper
         switch (type)
         {
             case CharacterConstants.CharacterType.Alternate:
-                return Resources.Load<GameObject>("Prefabs/Arena/Character/DEA/Model_Character_DEA_Alternate");
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Alternate");
             default:
-                return Resources.Load<GameObject>("Prefabs/Arena/Character/DEA/Model_Character_DEA_Default");
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Default");
         }
     }
 }
