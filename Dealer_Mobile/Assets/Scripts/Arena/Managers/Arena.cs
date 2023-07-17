@@ -21,17 +21,13 @@ public class Arena : MonoBehaviour
     //combat phase
     public Queue<QueueData> CharacterQueue;
 
+    private enum State { NONE, WAITING, BUSY };
+
+    private State _state = State.NONE;
+
     private void Awake()
     {
         Launch();
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            ProcessQueue();
-        }
     }
 
     public void Launch()
@@ -55,9 +51,9 @@ public class Arena : MonoBehaviour
 
         ToggleCharacterUI(true);
 
+        ProcessQueue();
+
         yield return null;
-
-
     }
 
     public void PopulateArena()
@@ -88,17 +84,69 @@ public class Arena : MonoBehaviour
         {
             //update all positions
 
-            QueueData queueData = CharacterQueue.Dequeue();
+            QueueData queueData = CharacterQueue.Peek();
 
             Debug.Log("Processing queue - Turn " + queueData.team + " - Character - " + queueData.characterData.marker.name);
             
             SelectCharacter(queueData.characterData);
+
+            _state = State.WAITING;
         }
+    }
+
+    public void ProcessTurn_AI()
+    {
+        //pick a target
+        CharacterData target = PickTarget();
+
+        EndTurn();
+
+    }
+
+    private CharacterData PickTarget()
+    {
+
+        foreach(SquadData squad in data.Squads)
+        {
+            if(squad.ID == GetOpposingTeam())
+            {
+                return squad.Characters[UnityEngine.Random.Range(0, squad.Characters.Count - 1)];
+            }
+        }
+
+        Debug.Log("Couldnt find target");
+        return new CharacterData();
+    }
+
+    private CharacterConstants.Team GetCurrentTeam()
+    {
+        return CharacterQueue.Peek().team;
+    }
+
+    private CharacterConstants.Team GetOpposingTeam()
+    {
+        foreach(SquadData squad in data.Squads)
+        {
+            if(squad.ID != GetCurrentTeam())
+            {
+                return squad.ID;
+            }
+        }
+
+        return CharacterConstants.Team.NONE;
+    }
+
+    public void EndTurn()
+    {
+        CharacterQueue.Dequeue();
+        ProcessQueue();
     }
 
     public void SelectCharacter(CharacterData character)
     {
-        ArenaCamera.SetTarget(character.marker.transform);
+        CharacterCameraOffset offset = character.marker.GetComponentInChildren<CharacterCameraOffset>();
+
+        ArenaCamera.SetTarget(offset.transform);
     }
 
     public void BuildCharacterQueue()

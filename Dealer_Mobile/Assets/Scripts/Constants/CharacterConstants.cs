@@ -4,6 +4,7 @@ namespace Constants
     {
         public enum Team
         {
+            NONE,
             DEA,
             Mafia,
         }
