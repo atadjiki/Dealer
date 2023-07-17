@@ -6,24 +6,29 @@ using UnityEngine;
 
 public class Arena : MonoBehaviour
 {
-    [SerializeField] private ArenaData Data;
+    //setup phase
+    [SerializeField] private ArenaData data;
     [SerializeField] private CameraManager CameraManager;
 
     [SerializeField] private ArenaCamera ArenaCamera;
 
+    //combat phase
+    public Queue<CharacterData> CharacterQueue;
 
     private void Awake()
     {
-        PerformOverviewScene();
+        Launch();
     }
 
-    private void PerformOverviewScene()
+    public void Launch()
     {
-        StartCoroutine(Coroutine_PerformOverviewScene());
+        StartCoroutine(Coroutine_SetupArena());
     }
 
-    private IEnumerator Coroutine_PerformOverviewScene()
+    private IEnumerator Coroutine_SetupArena()
     {
+        BuildCharacterQueue();
+
         PopulateArena();
 
         CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA_OVERVIEW);
@@ -39,13 +44,13 @@ public class Arena : MonoBehaviour
 
     public void PopulateArena()
     {
-        if (Data.Squads == null || Data.Squads.Count == 0)
+        if (data.Squads == null || data.Squads.Count == 0)
         {
             Debug.Log("Could not populate arena, no teams defined.");
             return;
         }
 
-        foreach (SquadData teamData in Data.Squads)
+        foreach (SquadData teamData in data.Squads)
         {
             foreach (CharacterData characterData in teamData.Characters)
             {
@@ -69,9 +74,9 @@ public class Arena : MonoBehaviour
 
     public SquadData GetPlayerSquad()
     {
-        foreach(SquadData squadData in Data.Squads)
+        foreach(SquadData squadData in data.Squads)
         {
-            if(squadData.ID == Data.PlayerTeam)
+            if(squadData.ID == data.PlayerTeam)
             {
                 return squadData;
             }
@@ -79,5 +84,38 @@ public class Arena : MonoBehaviour
 
         Debug.Log("Couldnt find player team?");
         return new SquadData();
+    }
+
+    public void BuildCharacterQueue()
+    {
+        CharacterQueue = new Queue<CharacterData>();
+
+        Dictionary<CharacterConstants.Team, int> squadSizes = new Dictionary<CharacterConstants.Team, int>();
+
+        foreach(SquadData squad in data.Squads)
+        {
+            squadSizes.Add(squad.ID, squad.Characters.Count);
+        }
+
+        int totalCharacters = 0;
+
+        foreach(KeyValuePair<CharacterConstants.Team, int> pair in squadSizes)
+        {
+
+            totalCharacters += pair.Value;
+        }
+
+        //iterate through squads and form queue
+        for(int i = 0; i < totalCharacters; i++)
+        {
+            for(int j = 0; j < data.Squads.Count; j++)
+            {
+                if(data.Squads[j].Characters.Count > i)
+                {
+                    CharacterQueue.Enqueue(data.Squads[j].Characters[i]);
+                    Debug.Log(data.Squads[j].Characters[i].marker.gameObject.name);
+                }
+            }
+        }
     }
 }
