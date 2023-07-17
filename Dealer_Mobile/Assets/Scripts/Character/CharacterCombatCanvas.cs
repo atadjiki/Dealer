@@ -15,14 +15,14 @@ public class CharacterCombatCanvas : MonoBehaviour
     public void Refresh(int position, CharacterConstants.TeamID team, CharacterData data)
     {
         Text_Position.text = "1";
-        Text_Name.text = team + " " + data.Type;
+        Text_Name.text = team + " " + data.ClassID;
 
         SetHealthBar(data.Health);
     }
 
     private void SetHealthBar(int value)
     {
-        value = Mathf.Clamp(value, 0, 9);
+        value = Mathf.Clamp(value, 0, 10);
         for(int i = 0; i < HealthBar.transform.childCount; i++)
         {
             if(i > value)
