@@ -208,6 +208,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4d34f2508ab64e45a7ae1f4ad5eb063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &46027868 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3110978374255065074, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+  m_PrefabInstance: {fileID: 414193517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eea4f17cc8224bbab13b6785e4c9b5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &46027869 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+  m_PrefabInstance: {fileID: 414193517}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &342065671
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,9 +253,71 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 397510345126956611}
+  - {fileID: 46027869}
   m_Father: {fileID: 1392592758}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &414193517
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 342065672}
+    m_Modifications:
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_RootOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296482110048035630, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6790019705856951216, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
+      propertyPath: m_Name
+      value: Marker_Mafia_2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
 --- !u!1 &687928816
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,10 +778,10 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 31
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
@@ -784,9 +862,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 1
+  m_ShowDebugText: 0
   m_ShowCameraFrustum: 0
-  m_IgnoreTimeScale: 1
+  m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
@@ -860,7 +938,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6790019705856951216, guid: 4958b2cd08bc04632965c001b3c6152a, type: 3}
       propertyPath: m_Name
-      value: Marker_Mafia
+      value: Marker_Mafia_1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -930,7 +1008,7 @@ GameObject:
   - component: {fileID: 3192035844956834262}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1110,7 +1188,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1599052622994765973, guid: 59bb8ac75411a47ee9f8a1d1f31d9c1c, type: 3}
       propertyPath: m_Name
-      value: Marker_DEA
+      value: Marker_DEA_1
       objectReference: {fileID: 0}
     - target: {fileID: 4459006017805376407, guid: 59bb8ac75411a47ee9f8a1d1f31d9c1c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1256,11 +1334,17 @@ MonoBehaviour:
       - type: 0
         weapon: 0
         marker: {fileID: 2347938742644243231}
+        health: 5
     - ID: 1
       Characters:
       - type: 0
         weapon: 1
         marker: {fileID: 397510345126956612}
+        health: 8
+      - type: 1
+        weapon: 1
+        marker: {fileID: 46027868}
+        health: 7
     PlayerTeam: 0
   CameraManager: {fileID: 5058785708092498477}
   ArenaCamera: {fileID: 5415797}

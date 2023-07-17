@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
+public struct QueueData
+{
+    public CharacterConstants.Team team;
+    public CharacterData characterData;
+}
+
 public class Arena : MonoBehaviour
 {
     //setup phase
@@ -13,11 +19,19 @@ public class Arena : MonoBehaviour
     [SerializeField] private ArenaCamera ArenaCamera;
 
     //combat phase
-    public Queue<CharacterData> CharacterQueue;
+    public Queue<QueueData> CharacterQueue;
 
     private void Awake()
     {
         Launch();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            ProcessQueue();
+        }
     }
 
     public void Launch()
@@ -33,13 +47,17 @@ public class Arena : MonoBehaviour
 
         CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA_OVERVIEW);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.5f);
 
         CameraManager.GoTo(CameraConstants.CameraID.CAM_ARENA_MAIN);
 
         yield return new WaitForSeconds(1.5f);
 
-        ArenaCamera.SetTarget(GetCurrentPlayerCharacter().marker.transform);
+        ToggleCharacterUI(true);
+
+        yield return null;
+
+
     }
 
     public void PopulateArena()
@@ -54,41 +72,38 @@ public class Arena : MonoBehaviour
         {
             foreach (CharacterData characterData in teamData.Characters)
             {
-                CharacterHelper.PerformSpawn(characterData, teamData.ID, this.transform);
+                PerformSpawn(characterData, teamData.ID);
             }
         }
     }
 
-    public CharacterData GetCurrentPlayerCharacter()
+    public void ProcessQueue()
     {
-        SquadData playerSquad = GetPlayerSquad();
-
-        if(playerSquad.Characters.Count > 0)
+        if(CharacterQueue.Count == 0)
         {
-            return playerSquad.Characters[0];
+            BuildCharacterQueue();
+            ProcessQueue();
         }
+        else
+        {
+            //update all positions
 
-        Debug.Log("Couldnt find current player character?");
-        return new CharacterData();
+            QueueData queueData = CharacterQueue.Dequeue();
+
+            Debug.Log("Processing queue - Turn " + queueData.team + " - Character - " + queueData.characterData.marker.name);
+            
+            SelectCharacter(queueData.characterData);
+        }
     }
 
-    public SquadData GetPlayerSquad()
+    public void SelectCharacter(CharacterData character)
     {
-        foreach(SquadData squadData in data.Squads)
-        {
-            if(squadData.ID == data.PlayerTeam)
-            {
-                return squadData;
-            }
-        }
-
-        Debug.Log("Couldnt find player team?");
-        return new SquadData();
+        ArenaCamera.SetTarget(character.marker.transform);
     }
 
     public void BuildCharacterQueue()
     {
-        CharacterQueue = new Queue<CharacterData>();
+        CharacterQueue = new Queue<QueueData>();
 
         Dictionary<CharacterConstants.Team, int> squadSizes = new Dictionary<CharacterConstants.Team, int>();
 
@@ -112,10 +127,110 @@ public class Arena : MonoBehaviour
             {
                 if(data.Squads[j].Characters.Count > i)
                 {
-                    CharacterQueue.Enqueue(data.Squads[j].Characters[i]);
-                    Debug.Log(data.Squads[j].Characters[i].marker.gameObject.name);
+                    QueueData queueData = new QueueData();
+                    queueData.team = data.Squads[j].ID;
+                    queueData.characterData = data.Squads[j].Characters[i];
+
+                    CharacterQueue.Enqueue(queueData);
+                    Debug.Log(data.Squads[j].ID + " " + (i+1));
                 }
             }
         }
+    }
+
+    private void ToggleCharacterUI(bool flag)
+    {
+        foreach(SquadData squad in data.Squads)
+        {
+            foreach(CharacterData character in squad.Characters)
+            {
+                CharacterMarker marker = character.marker;
+                if(marker != null)
+                {
+                    CharacterCombatCanvas canvas = marker.GetComponentInChildren<CharacterCombatCanvas>();
+                    if (canvas != null)
+                    {
+                        canvas.Toggle(flag);
+                    }
+                    else
+                    {
+                        Debug.Log("Couldnt find canvas");
+                    }
+                }
+            }
+        }
+    }
+
+    private void PerformSpawn(CharacterData data, CharacterConstants.Team team)
+    {
+        if (data.marker == null)
+        {
+            Debug.Log("Cannot spawn character, marker is null");
+        }
+
+        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModelByTeam(team, data.type), data.marker.transform);
+
+        CharacterWeaponAnchor anchor = characterModel.GetComponentInChildren<CharacterWeaponAnchor>();
+
+        if (anchor != null)
+        {
+            GameObject characterWeapon = Instantiate(PrefabHelper.GetWeaponByID(data.weapon), anchor.transform);
+        }
+        else
+        {
+            Debug.Log("Could not attach weapon, no anchor found on character");
+        }
+
+        characterModel.transform.LookAt(this.transform.position);
+
+        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), data.marker.transform);
+
+        if (decalPrefab != null)
+        {
+            CharacterDecal decal = decalPrefab.GetComponent<CharacterDecal>();
+
+            if (decal != null)
+            {
+                decal.SetColorByTeam(team);
+            }
+        }
+
+        CharacterAnimator animator = characterModel.GetComponent<CharacterAnimator>();
+        if (animator != null)
+        {
+            animator.Setup(data, AnimationConstants.State.Idle);
+        }
+
+        GameObject canvasObject = Instantiate(PrefabHelper.GetCharacterCombatCanvas(), data.marker.transform);
+        CharacterCombatCanvas combatCanvas = canvasObject.GetComponent<CharacterCombatCanvas>();
+        combatCanvas.Refresh(0, team, data);
+        combatCanvas.Toggle(false);
+    }
+
+    public CharacterData GetCurrentPlayerCharacter()
+    {
+        SquadData playerSquad = GetPlayerSquad();
+
+        if (playerSquad.Characters.Count > 0)
+        {
+            return playerSquad.Characters[0];
+        }
+
+        Debug.Log("Couldnt find current player character?");
+        return new CharacterData();
+    }
+
+    public SquadData GetPlayerSquad()
+    {
+        foreach (SquadData squadData in data.Squads)
+        {
+            if (squadData.ID == data.PlayerTeam)
+            {
+                return squadData;
+            }
+        }
+
+        Debug.Log("Couldnt find player team?");
+        return new SquadData();
     }
 }

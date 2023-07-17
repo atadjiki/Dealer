@@ -12,6 +12,10 @@ public struct CharacterData
     public CharacterConstants.Weapon weapon;
     [Space]
     public CharacterMarker marker;
+    [Space]
+
+    [Space]
+    public int health;
 }
 
 [Serializable]

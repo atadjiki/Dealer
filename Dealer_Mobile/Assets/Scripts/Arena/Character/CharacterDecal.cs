@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class CharacterDecal : MonoBehaviour
 {
+
+    private static Color Color_DEA = new Color(0, 0.501668f, 0.9716981f);
+    private static Color Color_Mafia = new Color(1, 0.08050716f, 0);
+
     public void SetColorByTeam(CharacterConstants.Team team)
     {
         switch(team)
         {
             case CharacterConstants.Team.DEA:
-                SetColor(Color.blue);
+                SetColor(Color_DEA);
                 break;
             case CharacterConstants.Team.Mafia:
-                SetColor(Color.red);
+                SetColor(Color_Mafia);
                 break;
             default:
                 SetColor(Color.grey);

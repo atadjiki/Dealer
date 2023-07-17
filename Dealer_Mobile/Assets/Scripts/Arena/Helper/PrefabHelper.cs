@@ -10,6 +10,11 @@ public static class PrefabHelper
         return Resources.Load<GameObject>("Prefabs/Decals/Decal_Character");
     }
 
+    public static GameObject GetCharacterCombatCanvas()
+    {
+        return Resources.Load<GameObject>("Prefabs/UI/CharacterCombatCanvas");
+    }
+
     public static GameObject GetWeaponByID(CharacterConstants.Weapon type)
     {
         switch(type)
