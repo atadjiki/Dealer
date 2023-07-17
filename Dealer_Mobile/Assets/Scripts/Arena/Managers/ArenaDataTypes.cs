@@ -7,15 +7,15 @@ using UnityEngine;
 public struct CharacterData
 {
     [Header("Character Info")]
+    public CharacterConstants.ClassID ClassID;
     [Space]
-    public CharacterConstants.CharacterType type;
-    public CharacterConstants.Weapon weapon;
+    public CharacterConstants.TypeID Type;
     [Space]
-    public CharacterMarker marker;
+    public CharacterMarker Marker;
     [Space]
 
     [Space]
-    public int health;
+    public int Health;
 }
 
 [Serializable]
@@ -23,7 +23,7 @@ public struct SquadData
 {
     [Header("Squad Data")]
     [Space]
-    public CharacterConstants.Team ID;
+    public CharacterConstants.TeamID ID;
     public List<CharacterData> Characters;
 }
 
@@ -34,5 +34,5 @@ public struct ArenaData
     [Space]
     public List<SquadData> Squads;
     [Space]
-    public CharacterConstants.Team PlayerTeam;
+    public CharacterConstants.TeamID PlayerTeam;
 }

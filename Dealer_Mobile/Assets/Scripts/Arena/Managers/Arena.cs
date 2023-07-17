@@ -6,7 +6,7 @@ using UnityEngine;
 
 public struct QueueData
 {
-    public CharacterConstants.Team team;
+    public CharacterConstants.TeamID team;
     public CharacterData characterData;
 }
 
@@ -86,7 +86,7 @@ public class Arena : MonoBehaviour
 
             QueueData queueData = CharacterQueue.Peek();
 
-            Debug.Log("Processing queue - Turn " + queueData.team + " - Character - " + queueData.characterData.marker.name);
+            Debug.Log("Processing queue - Turn " + queueData.team + " - Character - " + queueData.characterData.Marker.name);
             
             SelectCharacter(queueData.characterData);
 
@@ -118,12 +118,12 @@ public class Arena : MonoBehaviour
         return new CharacterData();
     }
 
-    private CharacterConstants.Team GetCurrentTeam()
+    private CharacterConstants.TeamID GetCurrentTeam()
     {
         return CharacterQueue.Peek().team;
     }
 
-    private CharacterConstants.Team GetOpposingTeam()
+    private CharacterConstants.TeamID GetOpposingTeam()
     {
         foreach(SquadData squad in data.Squads)
         {
@@ -133,7 +133,7 @@ public class Arena : MonoBehaviour
             }
         }
 
-        return CharacterConstants.Team.NONE;
+        return CharacterConstants.TeamID.NONE;
     }
 
     public void EndTurn()
@@ -144,7 +144,7 @@ public class Arena : MonoBehaviour
 
     public void SelectCharacter(CharacterData character)
     {
-        CharacterCameraOffset offset = character.marker.GetComponentInChildren<CharacterCameraOffset>();
+        CharacterCameraOffset offset = character.Marker.GetComponentInChildren<CharacterCameraOffset>();
 
         ArenaCamera.SetTarget(offset.transform);
     }
@@ -153,7 +153,7 @@ public class Arena : MonoBehaviour
     {
         CharacterQueue = new Queue<QueueData>();
 
-        Dictionary<CharacterConstants.Team, int> squadSizes = new Dictionary<CharacterConstants.Team, int>();
+        Dictionary<CharacterConstants.TeamID, int> squadSizes = new Dictionary<CharacterConstants.TeamID, int>();
 
         foreach(SquadData squad in data.Squads)
         {
@@ -162,7 +162,7 @@ public class Arena : MonoBehaviour
 
         int totalCharacters = 0;
 
-        foreach(KeyValuePair<CharacterConstants.Team, int> pair in squadSizes)
+        foreach(KeyValuePair<CharacterConstants.TeamID, int> pair in squadSizes)
         {
 
             totalCharacters += pair.Value;
@@ -192,7 +192,7 @@ public class Arena : MonoBehaviour
         {
             foreach(CharacterData character in squad.Characters)
             {
-                CharacterMarker marker = character.marker;
+                CharacterMarker marker = character.Marker;
                 if(marker != null)
                 {
                     CharacterCombatCanvas canvas = marker.GetComponentInChildren<CharacterCombatCanvas>();
@@ -209,20 +209,22 @@ public class Arena : MonoBehaviour
         }
     }
 
-    private void PerformSpawn(CharacterData data, CharacterConstants.Team team)
+    private void PerformSpawn(CharacterData data, CharacterConstants.TeamID team)
     {
-        if (data.marker == null)
+        if (data.Marker == null)
         {
             Debug.Log("Cannot spawn character, marker is null");
         }
 
-        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModelByTeam(team, data.type), data.marker.transform);
+        CharacterConstants.ModelID modelID = CharacterConstants.GetModelID(data.ClassID, data.Type, team);
+        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModel(modelID), data.Marker.transform);
 
         CharacterWeaponAnchor anchor = characterModel.GetComponentInChildren<CharacterWeaponAnchor>();
 
         if (anchor != null)
         {
-            GameObject characterWeapon = Instantiate(PrefabHelper.GetWeaponByID(data.weapon), anchor.transform);
+            CharacterConstants.WeaponID weapon = CharacterConstants.GetWeapon(data.ClassID, team);
+            GameObject characterWeapon = Instantiate(PrefabHelper.GetWeaponByID(weapon), anchor.transform);
         }
         else
         {
@@ -231,7 +233,7 @@ public class Arena : MonoBehaviour
 
         characterModel.transform.LookAt(this.transform.position);
 
-        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), data.marker.transform);
+        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), data.Marker.transform);
 
         if (decalPrefab != null)
         {
@@ -246,10 +248,10 @@ public class Arena : MonoBehaviour
         CharacterAnimator animator = characterModel.GetComponent<CharacterAnimator>();
         if (animator != null)
         {
-            animator.Setup(data, AnimationConstants.State.Idle);
+            animator.Setup(data, team, AnimationConstants.State.Idle);
         }
 
-        GameObject canvasObject = Instantiate(PrefabHelper.GetCharacterCombatCanvas(), data.marker.transform);
+        GameObject canvasObject = Instantiate(PrefabHelper.GetCharacterCombatCanvas(), data.Marker.transform);
         CharacterCombatCanvas combatCanvas = canvasObject.GetComponent<CharacterCombatCanvas>();
         combatCanvas.Refresh(0, team, data);
         combatCanvas.Toggle(false);

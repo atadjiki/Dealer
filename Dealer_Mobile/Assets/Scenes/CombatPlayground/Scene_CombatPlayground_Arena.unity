@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44764113, g: 0.4976148, b: 0.57536775, a: 1}
+  m_IndirectSpecularColor: {r: 0.44764173, g: 0.4976157, b: 0.5753696, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1558,21 +1558,21 @@ MonoBehaviour:
     Squads:
     - ID: 1
       Characters:
-      - type: 0
-        weapon: 0
-        marker: {fileID: 2347938742644243231}
-        health: 5
+      - ClassID: 0
+        Type: 1
+        Marker: {fileID: 2347938742644243231}
+        Health: 10
     - ID: 2
       Characters:
-      - type: 0
-        weapon: 1
-        marker: {fileID: 397510345126956612}
-        health: 8
-      - type: 1
-        weapon: 1
-        marker: {fileID: 46027868}
-        health: 7
-    PlayerTeam: 0
+      - ClassID: 0
+        Type: 0
+        Marker: {fileID: 397510345126956612}
+        Health: 10
+      - ClassID: 0
+        Type: 1
+        Marker: {fileID: 46027868}
+        Health: 10
+    PlayerTeam: 1
   CameraManager: {fileID: 5058785708092498477}
   ArenaCamera: {fileID: 5415797}
 --- !u!4 &7568766974883927769

@@ -15,52 +15,34 @@ public static class PrefabHelper
         return Resources.Load<GameObject>("Prefabs/UI/CharacterCombatCanvas");
     }
 
-    public static GameObject GetWeaponByID(CharacterConstants.Weapon type)
+    public static GameObject GetWeaponByID(CharacterConstants.WeaponID type)
     {
         switch(type)
         {
-            case CharacterConstants.Weapon.Revolver:
+            case CharacterConstants.WeaponID.Revolver:
                 return Resources.Load<GameObject>("Prefabs/Weapons/Model_Weapon_Revolver");
-            case CharacterConstants.Weapon.Pistol:
+            case CharacterConstants.WeaponID.Pistol:
                 return Resources.Load<GameObject>("Prefabs/Weapons/Model_Weapon_Pistol");
             default:
                 return null;
         }
     }
 
-    public static GameObject GetCharacterModelByTeam(CharacterConstants.Team team, CharacterConstants.CharacterType type)
+    public static GameObject GetCharacterModel(CharacterConstants.ModelID ID)
     {
-        switch(team)
+        switch(ID)
         {
-            case CharacterConstants.Team.Mafia:
-                return GetMafiaCharacterPrefab(type);
-            case CharacterConstants.Team.DEA:
-                return GetDEACharacterPrefab(type);
+            case CharacterConstants.ModelID.MAFIA_ITALIAN:
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Alternate");
+            case CharacterConstants.ModelID.MAFIA_BRITISH:
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Default");
+            case CharacterConstants.ModelID.DEA_FEMALE:
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Alternate");
+            case CharacterConstants.ModelID.DEA_MALE:
+                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Default");
             default:
                 return null;
 
-        }
-    }
-
-    public static GameObject GetMafiaCharacterPrefab(CharacterConstants.CharacterType type)
-    {
-        switch (type)
-        {
-            case CharacterConstants.CharacterType.Alternate:
-                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Alternate");
-            default:
-                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_Mafia_Default");
-        }
-    }
-
-    public static GameObject GetDEACharacterPrefab(CharacterConstants.CharacterType type)
-    {
-        switch (type)
-        {
-            case CharacterConstants.CharacterType.Alternate:
-                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Alternate");
-            default:
-                return Resources.Load<GameObject>("Prefabs/Character/Model_Character_DEA_Default");
         }
     }
 }

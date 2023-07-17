@@ -28,12 +28,12 @@ namespace Constants
             Anim_Character_Pistol_Attack_Single,
         }
 
-        public static Anim GetAnimByWeaponType(CharacterConstants.Weapon Weapon, State state)
+        public static Anim GetAnimByWeaponType(CharacterConstants.WeaponID Weapon, State state)
         {
             switch(Weapon)
             {
-                case CharacterConstants.Weapon.Pistol:
-                case CharacterConstants.Weapon.Revolver:
+                case CharacterConstants.WeaponID.Pistol:
+                case CharacterConstants.WeaponID.Revolver:
                     return GetPistolAnim(state);
 
                 default:

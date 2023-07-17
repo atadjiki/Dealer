@@ -12,12 +12,12 @@ public class CharacterCombatCanvas : MonoBehaviour
     [SerializeField] private TextMeshProUGUI Text_Name;
     [SerializeField] private GameObject HealthBar;
 
-    public void Refresh(int position, CharacterConstants.Team team, CharacterData data)
+    public void Refresh(int position, CharacterConstants.TeamID team, CharacterData data)
     {
         Text_Position.text = "1";
-        Text_Name.text = team + " " + data.type;
+        Text_Name.text = team + " " + data.Type;
 
-        SetHealthBar(data.health);
+        SetHealthBar(data.Health);
     }
 
     private void SetHealthBar(int value)

@@ -9,14 +9,14 @@ public class CharacterDecal : MonoBehaviour
     private static Color Color_DEA = new Color(0, 0.501668f, 0.9716981f);
     private static Color Color_Mafia = new Color(1, 0.08050716f, 0);
 
-    public void SetColorByTeam(CharacterConstants.Team team)
+    public void SetColorByTeam(CharacterConstants.TeamID team)
     {
         switch(team)
         {
-            case CharacterConstants.Team.DEA:
+            case CharacterConstants.TeamID.DEA:
                 SetColor(Color_DEA);
                 break;
-            case CharacterConstants.Team.Mafia:
+            case CharacterConstants.TeamID.Mafia:
                 SetColor(Color_Mafia);
                 break;
             default:

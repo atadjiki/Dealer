@@ -8,15 +8,17 @@ public class CharacterAnimator : MonoBehaviour
 {
     private Animator _animator;
     private CharacterData _data;
+    private CharacterConstants.TeamID _team;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
     }
 
-    public void Setup(CharacterData data, AnimationConstants.State initialState)
+    public void Setup(CharacterData data, CharacterConstants.TeamID team, AnimationConstants.State initialState)
     {
         _data = data;
+        _team = team;
 
         GoTo(initialState);
        
@@ -24,7 +26,9 @@ public class CharacterAnimator : MonoBehaviour
 
     public void GoTo(AnimationConstants.State state)
     {
-        AnimationConstants.Anim anim = AnimationConstants.GetAnimByWeaponType(_data.weapon, state);
+        CharacterConstants.WeaponID weapon = CharacterConstants.GetWeapon(_data.ClassID, _team);
+
+        AnimationConstants.Anim anim = AnimationConstants.GetAnimByWeaponType(weapon, state);
 
         _animator.CrossFade(anim.ToString(), 0.15f); ;
     }
