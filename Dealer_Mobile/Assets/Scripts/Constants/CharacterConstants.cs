@@ -5,8 +5,8 @@ namespace Constants
         public enum TeamID
         {
             NONE,
-            DEA,
-            Mafia,
+            Player,
+            Enemy,
         }
 
         public enum WeaponID
@@ -43,9 +43,9 @@ namespace Constants
         {
             switch(team)
             {
-                case TeamID.DEA:
+                case TeamID.Player:
                     return GetModelID_DEA(classID, type);
-                case TeamID.Mafia:
+                case TeamID.Enemy:
                     return GetModelID_Mafia(classID, type);
                 default:
                     return ModelID.NONE;
@@ -86,9 +86,9 @@ namespace Constants
         {
             switch(Team)
             {
-                case TeamID.DEA:
+                case TeamID.Player:
                     return GetWeapon_DEA(ID);
-                case TeamID.Mafia:
+                case TeamID.Enemy:
                     return GetWeapon_Mafia(ID);
                 default:
                     return WeaponID.Revolver;

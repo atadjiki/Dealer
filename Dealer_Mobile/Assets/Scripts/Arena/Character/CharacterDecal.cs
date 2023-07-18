@@ -13,10 +13,10 @@ public class CharacterDecal : MonoBehaviour
     {
         switch(team)
         {
-            case CharacterConstants.TeamID.DEA:
+            case CharacterConstants.TeamID.Player:
                 SetColor(Color_DEA);
                 break;
-            case CharacterConstants.TeamID.Mafia:
+            case CharacterConstants.TeamID.Enemy:
                 SetColor(Color_Mafia);
                 break;
             default:
