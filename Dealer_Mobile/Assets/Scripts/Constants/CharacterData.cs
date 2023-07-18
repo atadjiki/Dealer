@@ -4,18 +4,6 @@ using Constants;
 using UnityEngine;
 
 [Serializable]
-public struct CharacterDefinition
-{
-    public CharacterConstants.UniqueID ID;
-
-    public List<CharacterConstants.ModelID> AllowedModels;
-
-    public List<CharacterConstants.WeaponID> AllowedWeapons;
-
-    public int BaseHealth;
-}
-
-[Serializable]
 public struct CharacterSpawnData
 {
     //who are we spawning and where?

@@ -2,6 +2,12 @@ namespace Constants
 {
     public class CharacterConstants
     {
+        public enum TeamID
+        {
+            Player,
+            Enemy,
+        }
+
         public enum WeaponID
         {
             Revolver,
@@ -25,6 +31,14 @@ namespace Constants
         {
             //Enemy
             HENCHMAN,
+        }
+
+        public enum AbilityID
+        {
+            Reload,
+            Heal,
+            SkipTurn,
+            Attack,
         }
     }
 }

@@ -6,18 +6,18 @@ using UnityEngine;
 public class CharacterDecal : MonoBehaviour
 {
 
-    private static Color Color_DEA = new Color(0, 0.501668f, 0.9716981f);
-    private static Color Color_Mafia = new Color(1, 0.08050716f, 0);
+    private static Color Color_Player = new Color(0, 0.501668f, 0.9716981f);
+    private static Color Color_Enemy = new Color(1, 0.08050716f, 0);
 
     public void SetColorByTeam(CharacterConstants.TeamID team)
     {
         switch(team)
         {
             case CharacterConstants.TeamID.Player:
-                SetColor(Color_DEA);
+                SetColor(Color_Player);
                 break;
             case CharacterConstants.TeamID.Enemy:
-                SetColor(Color_Mafia);
+                SetColor(Color_Enemy);
                 break;
             default:
                 SetColor(Color.grey);

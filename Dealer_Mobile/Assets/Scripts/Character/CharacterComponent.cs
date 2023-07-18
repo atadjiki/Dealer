@@ -12,14 +12,16 @@ public class CharacterComponent : MonoBehaviour
             Debug.Log("Cannot spawn character, marker is null");
         }
 
-        CharacterConstants.ModelID modelID = CharacterConstants.GetModelID(data.ClassID, data.Type, team);
+        CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(data.ID);
+
+        CharacterConstants.ModelID modelID = def.AllowedModels[0];
         GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModel(modelID), data.Marker.transform);
 
         CharacterWeaponAnchor anchor = characterModel.GetComponentInChildren<CharacterWeaponAnchor>();
 
         if (anchor != null)
         {
-            CharacterConstants.WeaponID weapon = CharacterConstants.GetWeapon(data.ClassID, team);
+            CharacterConstants.WeaponID weapon = def.AllowedWeapons[0];
             GameObject characterWeapon = Instantiate(PrefabHelper.GetWeaponByID(weapon), anchor.transform);
         }
         else
@@ -35,14 +37,14 @@ public class CharacterComponent : MonoBehaviour
 
             if (decal != null)
             {
-                decal.SetColorByTeam(team);
+                decal.SetColorByTeam(CharacterConstants.TeamID.Enemy);
             }
         }
 
         CharacterAnimator animator = characterModel.GetComponent<CharacterAnimator>();
         if (animator != null)
         {
-            animator.Setup(data, team, AnimationConstants.State.Idle);
+            animator.Setup(AnimationConstants.State.Idle);
         }
     }
 }

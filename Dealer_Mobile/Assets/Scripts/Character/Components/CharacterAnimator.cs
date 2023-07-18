@@ -7,28 +7,22 @@ using UnityEngine;
 public class CharacterAnimator : MonoBehaviour
 {
     private Animator _animator;
-    private CharacterSpawnData _data;
-    private CharacterConstants.TeamID _team;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
     }
 
-    public void Setup(CharacterSpawnData data, CharacterConstants.TeamID team, AnimationConstants.State initialState)
+    public void Setup(AnimationConstants.State initialState)
     {
-        _data = data;
-        _team = team;
-
         GoTo(initialState);
        
     }
 
     public void GoTo(AnimationConstants.State state)
     {
-        CharacterConstants.WeaponID weapon = CharacterConstants.GetWeapon(_data.ClassID, _team);
-
-        AnimationConstants.Anim anim = AnimationConstants.GetAnimByWeaponType(weapon, state);
+        //TODO fix setup weapon
+        AnimationConstants.Anim anim = AnimationConstants.GetAnimByWeaponType(CharacterConstants.WeaponID.Pistol, state);
 
         _animator.CrossFade(anim.ToString(), 0.15f); ;
     }
