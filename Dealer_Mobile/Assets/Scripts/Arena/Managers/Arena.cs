@@ -251,10 +251,10 @@ public class Arena : MonoBehaviour
             animator.Setup(data, team, AnimationConstants.State.Idle);
         }
 
-        GameObject canvasObject = Instantiate(PrefabHelper.GetCharacterCombatCanvas(), data.Marker.transform);
-        CharacterCombatCanvas combatCanvas = canvasObject.GetComponent<CharacterCombatCanvas>();
-        combatCanvas.Refresh(0, team, data);
-        combatCanvas.Toggle(false);
+        //GameObject canvasObject = Instantiate(PrefabHelper.GetCharacterCombatCanvas(), data.Marker.transform);
+        //CharacterCombatCanvas combatCanvas = canvasObject.GetComponent<CharacterCombatCanvas>();
+        //combatCanvas.Refresh(0, team, data);
+        //combatCanvas.Toggle(false);
     }
 
     public CharacterData GetCurrentPlayerCharacter()
