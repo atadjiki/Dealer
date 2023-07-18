@@ -12,7 +12,7 @@ public class CharacterCombatPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI Text_Name;
     [SerializeField] private GameObject HealthBar;
 
-    public void Refresh(int position, CharacterConstants.TeamID team, CharacterData data)
+    public void Refresh(int position, CharacterConstants.TeamID team, CharacterSpawnData data)
     {
         Text_Position.text = "1";
         Text_Name.text = team + " " + data.ClassID;
