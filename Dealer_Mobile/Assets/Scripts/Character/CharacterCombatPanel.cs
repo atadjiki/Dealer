@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Constants;
 
-public class CharacterCombatCanvas : MonoBehaviour
+public class CharacterCombatPanel : MonoBehaviour
 {
     [SerializeField] private GameObject Panel_Main;
     [SerializeField] private TextMeshProUGUI Text_Position;

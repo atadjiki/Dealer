@@ -188,25 +188,25 @@ public class Arena : MonoBehaviour
 
     private void ToggleCharacterUI(bool flag)
     {
-        foreach(SquadData squad in data.Squads)
-        {
-            foreach(CharacterData character in squad.Characters)
-            {
-                CharacterMarker marker = character.Marker;
-                if(marker != null)
-                {
-                    CharacterCombatCanvas canvas = marker.GetComponentInChildren<CharacterCombatCanvas>();
-                    if (canvas != null)
-                    {
-                        canvas.Toggle(flag);
-                    }
-                    else
-                    {
-                        Debug.Log("Couldnt find canvas");
-                    }
-                }
-            }
-        }
+        //foreach(SquadData squad in data.Squads)
+        //{
+        //    foreach(CharacterData character in squad.Characters)
+        //    {
+        //        CharacterMarker marker = character.Marker;
+        //        if(marker != null)
+        //        {
+        //            CharacterCombatCanvas canvas = marker.GetComponentInChildren<CharacterCombatCanvas>();
+        //            if (canvas != null)
+        //            {
+        //                canvas.Toggle(flag);
+        //            }
+        //            else
+        //            {
+        //                Debug.Log("Couldnt find canvas");
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     private void PerformSpawn(CharacterData data, CharacterConstants.TeamID team)
