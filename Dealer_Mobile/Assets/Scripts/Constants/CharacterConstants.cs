@@ -6,6 +6,7 @@ namespace Constants
         {
             Player,
             Enemy,
+            Neutral,
         }
 
         public enum WeaponID
@@ -52,6 +53,29 @@ namespace Constants
             PLAYER_2,
         }
 
+        public enum AbilityID
+        {
+            Reload,
+            Heal,
+            SkipTurn,
+            Attack,
+        }
+
+        public static TeamID GetTeamByID(CharacterConstants.CharacterID ID)
+        {
+            switch(ID)
+            {
+                case CharacterID.HENCHMAN:
+                    return TeamID.Enemy;
+                case CharacterID.PLAYER_1:
+                case CharacterID.PLAYER_2:
+                    return TeamID.Player;
+                default:
+                    return TeamID.Neutral;
+            }
+        }
+
+        //helpers
         public static CharacterID ToCharacterID(EnemyID ID)
         {
             switch (ID)
@@ -65,7 +89,7 @@ namespace Constants
 
         public static CharacterID ToCharacterID(PlayerID ID)
         {
-            switch(ID)
+            switch (ID)
             {
                 case PlayerID.PLAYER_1:
                     return CharacterID.PLAYER_1;
@@ -74,14 +98,6 @@ namespace Constants
             }
 
             return CharacterID.NONE;
-        }
-
-        public enum AbilityID
-        {
-            Reload,
-            Heal,
-            SkipTurn,
-            Attack,
         }
     }
 }
