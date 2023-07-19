@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class CombatEncounter : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera CM_Overview;
-
     //setup phase
     [SerializeField] private EncounterData encounterData;
 
@@ -127,12 +125,12 @@ public class CombatEncounter : MonoBehaviour
     {
         encounterCamera.Priority = 0;
 
-        CM_Overview.Priority = 10;
+        //CM_Overview.Priority = 10;
     }
 
     private void SwitchToEncounterCamera()
     {
-        CM_Overview.Priority = 0;
+        //CM_Overview.Priority = 0;
 
         encounterCamera.Priority = 10;
     }
