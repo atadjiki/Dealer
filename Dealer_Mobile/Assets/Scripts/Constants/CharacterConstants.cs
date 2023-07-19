@@ -6,7 +6,6 @@ namespace Constants
         {
             Player,
             Enemy,
-            Neutral,
         }
 
         public enum WeaponID
@@ -70,9 +69,9 @@ namespace Constants
                 case CharacterID.PLAYER_1:
                 case CharacterID.PLAYER_2:
                     return TeamID.Player;
-                default:
-                    return TeamID.Neutral;
             }
+
+            return TeamID.Enemy;
         }
 
         //helpers

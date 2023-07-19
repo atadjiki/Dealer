@@ -2,35 +2,46 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Constants;
+using Cinemachine;
 using UnityEngine;
 
 public class CombatEncounter : MonoBehaviour
 {
+    [SerializeField] private CinemachineVirtualCamera CM_Overview;
+
     //setup phase
     [SerializeField] private EncounterData encounterData;
-    [SerializeField] private CameraManager CameraManager;
 
-    [SerializeField] private CombatEncounterCamera encounterCamera;
+    [SerializeField] private CinemachineVirtualCamera encounterCamera;
+
+    private CharacterConstants.TeamID _currentTurn = CharacterConstants.TeamID.Player;
+
+    private List<PlayerCharacterComponent> _playerCharacters;
+    private List<EnemyCharacterComponent> _enemyCharacters;
 
     private void Awake()
     {
-        SetupEncounter();
+        _playerCharacters = new List<PlayerCharacterComponent>();
+        _enemyCharacters = new List<EnemyCharacterComponent>();
+
+        SwitchToEncounterCamera();
+
+        Setup();
+        Launch();
     }
 
-    public void SetupEncounter()
+    public void Setup()
     {
-        StartCoroutine(Coroutine_SetupEncounter());
-    }
+        Debug.Log("Setting Up Encounter " + gameObject.name);
 
-    private IEnumerator Coroutine_SetupEncounter()
-    {
         //spawn players
         foreach (PlayerSpawnData spawnData in encounterData.PlayerSquad)
         {
             GameObject characterObject = new GameObject();
             characterObject.transform.parent = spawnData.Marker.transform;
-            PlayerCharacterComponent characterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-            characterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+            PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
+            playerCharacterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+            _playerCharacters.Add(playerCharacterComponent);
         }
 
         //spawn enemies
@@ -40,11 +51,89 @@ public class CombatEncounter : MonoBehaviour
             {
                 GameObject characterObject = new GameObject();
                 characterObject.transform.parent = spawnData.Marker.transform;
-                EnemyCharacterComponent characterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                characterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
+                enemyCharacterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+                _enemyCharacters.Add(enemyCharacterComponent);
             }
         }
+    }
 
-        yield return null;
+    private void Launch()
+    {
+        ProcessTurn();
+    }
+
+    private void ProcessTurn()
+    {
+        switch (_currentTurn)
+        {
+            case CharacterConstants.TeamID.Player:
+                ProcessPlayerTurn();
+                break;
+            case CharacterConstants.TeamID.Enemy:
+                ProcessEnemyTurn();
+                break;
+        }
+    }
+
+    private void ProcessPlayerTurn()
+    {
+        Debug.Log("Procesing player turn");
+
+        //iterate through each player character and wait for an ability to be performed 
+        foreach(PlayerCharacterComponent playerCharacter in _playerCharacters)
+        {
+            //select character 
+        }
+    }
+
+    private void OnPlayerAbilityPerformed()
+    {
+
+    }
+
+    private void ProcessEnemyTurn()
+    {
+
+    }
+
+    private void OnComplete()
+    {
+    }
+
+    public void AdvanceTurn()
+    {
+        if(_currentTurn == CharacterConstants.TeamID.Player)
+        {
+            _currentTurn = CharacterConstants.TeamID.Enemy;
+        }
+        else if (_currentTurn == CharacterConstants.TeamID.Enemy)
+        {
+            _currentTurn = CharacterConstants.TeamID.Player;
+        }
+    }
+
+    public EncounterData GetEncounterData()
+    {
+        return encounterData;
+    }
+
+    public CinemachineVirtualCamera GetCamera()
+    {
+        return encounterCamera;
+    }
+
+    private void SwitchToOverviewCamera()
+    {
+        encounterCamera.Priority = 0;
+
+        CM_Overview.Priority = 10;
+    }
+
+    private void SwitchToEncounterCamera()
+    {
+        CM_Overview.Priority = 0;
+
+        encounterCamera.Priority = 10;
     }
 }
