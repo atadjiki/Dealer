@@ -4,27 +4,27 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public class Arena : MonoBehaviour
+public class CombatEncounter : MonoBehaviour
 {
     //setup phase
-    [SerializeField] private EncounterData data;
+    [SerializeField] private EncounterData encounterData;
     [SerializeField] private CameraManager CameraManager;
 
-    [SerializeField] private ArenaCamera ArenaCamera;
+    [SerializeField] private CombatEncounterCamera encounterCamera;
 
     private void Awake()
     {
-        Launch();
+        SetupEncounter();
     }
 
-    public void Launch()
+    public void SetupEncounter()
     {
-        StartCoroutine(Coroutine_SetupArena());
+        StartCoroutine(Coroutine_SetupEncounter());
     }
 
-    private IEnumerator Coroutine_SetupArena()
+    private IEnumerator Coroutine_SetupEncounter()
     {
-        foreach (WaveData teamData in data.Waves)
+        foreach (WaveData teamData in encounterData.Waves)
         {
             foreach (CharacterSpawnData spawnData in teamData.Characters)
             {

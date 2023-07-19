@@ -4,7 +4,7 @@ using UnityEngine;
 using Cinemachine;
 
 [RequireComponent(typeof(CinemachineVirtualCamera))]
-public class ArenaCamera : MonoBehaviour
+public class CombatEncounterCamera : MonoBehaviour
 {
     private CinemachineVirtualCamera _camera;
 
