@@ -15,21 +15,21 @@ public class PlayerCharacterComponent : CharacterComponent
         CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(ID);
 
         CharacterConstants.ModelID modelID = def.AllowedModels[0];
-        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModel(modelID), Marker.transform);
+        GameObject characterModel = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetCharacterModel(modelID)), Marker.transform);
 
         CharacterWeaponAnchor anchor = characterModel.GetComponentInChildren<CharacterWeaponAnchor>();
 
         if (anchor != null)
         {
             CharacterConstants.WeaponID weapon = def.AllowedWeapons[0];
-            GameObject characterWeapon = Instantiate(PrefabHelper.GetWeaponByID(weapon), anchor.transform);
+            GameObject characterWeapon = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetWeaponByID(weapon)), anchor.transform);
         }
         else
         {
             Debug.Log("Could not attach weapon, no anchor found on character");
         }
 
-        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), Marker.transform);
+        GameObject decalPrefab = Instantiate(Resources.Load<GameObject>(PrefabPaths.Path_Character_Decal), Marker.transform);
 
         if (decalPrefab != null)
         {
