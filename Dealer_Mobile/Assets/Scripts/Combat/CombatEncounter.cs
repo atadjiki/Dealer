@@ -38,7 +38,7 @@ public class CombatEncounter : MonoBehaviour
             GameObject characterObject = new GameObject();
             characterObject.transform.parent = spawnData.Marker.transform;
             PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-            playerCharacterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+            playerCharacterComponent.PerformSpawn(spawnData.GetID(), spawnData.Marker);
             _playerCharacters.Add(playerCharacterComponent);
         }
 
@@ -50,7 +50,7 @@ public class CombatEncounter : MonoBehaviour
                 GameObject characterObject = new GameObject();
                 characterObject.transform.parent = spawnData.Marker.transform;
                 EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+                enemyCharacterComponent.PerformSpawn(spawnData.GetID(), spawnData.Marker);
                 _enemyCharacters.Add(enemyCharacterComponent);
             }
         }
