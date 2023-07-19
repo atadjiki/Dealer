@@ -24,14 +24,24 @@ public class CombatEncounter : MonoBehaviour
 
     private IEnumerator Coroutine_SetupEncounter()
     {
-        foreach (WaveData teamData in encounterData.Waves)
+        //spawn players
+        foreach (PlayerSpawnData spawnData in encounterData.PlayerSquad)
         {
-            foreach (CharacterSpawnData spawnData in teamData.Characters)
+            GameObject characterObject = new GameObject();
+            characterObject.transform.parent = spawnData.Marker.transform;
+            PlayerCharacterComponent characterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
+            characterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
+        }
+
+        //spawn enemies
+        foreach (WaveData waveData in encounterData.Waves)
+        {
+            foreach (EnemySpawnData spawnData in waveData.Enemies)
             {
                 GameObject characterObject = new GameObject();
                 characterObject.transform.parent = spawnData.Marker.transform;
-                CharacterComponent characterComponent = characterObject.AddComponent<CharacterComponent>();
-                characterComponent.PerformSpawn(spawnData);
+                EnemyCharacterComponent characterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
+                characterComponent.PerformSpawn(CharacterConstants.ToCharacterID(spawnData.ID), spawnData.Marker);
             }
         }
 

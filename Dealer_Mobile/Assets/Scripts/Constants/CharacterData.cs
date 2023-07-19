@@ -4,29 +4,28 @@ using Constants;
 using UnityEngine;
 
 [Serializable]
-public struct CharacterSpawnData
+public struct PlayerSpawnData
 {
-    //who are we spawning and where?
-    [Header("Character Info")]
-    public CharacterConstants.UniqueID ID;
-    [Space]
-    public CharacterMarker Marker;
+    public CharacterConstants.PlayerID ID;
+    public PlayerCharacterMarker Marker;
+}
+
+[Serializable]
+public struct EnemySpawnData
+{
+    public CharacterConstants.EnemyID ID;
+    public EnemyCharacterMarker Marker;
 }
 
 [Serializable]
 public struct WaveData
 {
-    //what enemies are we spawning?
-    [Header("Wave Data")]
-    [Space]
-    public List<CharacterSpawnData> Characters;
+    public List<EnemySpawnData> Enemies;
 }
 
 [Serializable]
 public struct EncounterData
 {
-    //how many waves in encounter?
-    [Header("Encounter Data")]
-    [Space]
+    public List<PlayerSpawnData> PlayerSquad;
     public List<WaveData> Waves;
 }

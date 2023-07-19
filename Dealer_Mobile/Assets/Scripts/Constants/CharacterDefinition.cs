@@ -5,7 +5,7 @@ namespace Constants
 {
     public struct CharacterDefinition
     {
-        public CharacterConstants.UniqueID ID;
+        public CharacterConstants.CharacterID ID;
 
         public CharacterConstants.ModelID[] AllowedModels;
 
@@ -14,15 +14,15 @@ namespace Constants
         public int BaseHealth;
 
         //yep these are hardcoded :)
-        public static CharacterDefinition GetCharacterDefinition(CharacterConstants.UniqueID uniqueID)
+        public static CharacterDefinition GetCharacterDefinition(CharacterConstants.CharacterID uniqueID)
         {
             switch (uniqueID)
             {
-                case CharacterConstants.UniqueID:
+                case CharacterConstants.CharacterID:
                 {
                     return new CharacterDefinition()
                     {
-                        ID = CharacterConstants.UniqueID.HENCHMAN,
+                        ID = CharacterConstants.CharacterID.HENCHMAN,
                         AllowedModels = new CharacterConstants.ModelID[]
                         {
                     CharacterConstants.ModelID.MAFIA_BRITISH,

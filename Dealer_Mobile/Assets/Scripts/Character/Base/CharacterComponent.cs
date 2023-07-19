@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    public void PerformSpawn(CharacterSpawnData data)
+    public virtual void PerformSpawn(CharacterConstants.CharacterID ID, CharacterMarker Marker)
     {
-        if (data.Marker == null)
+        if (Marker == null)
         {
             Debug.Log("Cannot spawn character, marker is null");
         }
 
-        CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(data.ID);
+        CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(ID);
 
         CharacterConstants.ModelID modelID = def.AllowedModels[0];
-        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModel(modelID), data.Marker.transform);
+        GameObject characterModel = Instantiate(PrefabHelper.GetCharacterModel(modelID), Marker.transform);
 
         CharacterWeaponAnchor anchor = characterModel.GetComponentInChildren<CharacterWeaponAnchor>();
 
@@ -29,7 +29,7 @@ public class CharacterComponent : MonoBehaviour
             Debug.Log("Could not attach weapon, no anchor found on character");
         }
 
-        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), data.Marker.transform);
+        GameObject decalPrefab = Instantiate(PrefabHelper.GetCharacterDecal(), Marker.transform);
 
         if (decalPrefab != null)
         {
