@@ -35,10 +35,9 @@ public class CombatEncounter : MonoBehaviour
         //spawn players
         foreach (PlayerSpawnData spawnData in encounterData.PlayerCharacters)
         {
-            GameObject characterObject = new GameObject();
-            characterObject.transform.parent = spawnData.Marker.transform;
+            GameObject characterObject = CreateCharacterObject("Player_" + spawnData.GetID(), spawnData.Marker.transform);
             PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-            playerCharacterComponent.PerformSpawn(spawnData.GetID(), spawnData.Marker);
+            playerCharacterComponent.PerformSpawn(spawnData.GetID());
             _playerCharacters.Add(playerCharacterComponent);
         }
 
@@ -47,13 +46,21 @@ public class CombatEncounter : MonoBehaviour
         {
             foreach (EnemySpawnData spawnData in waveData.Enemies)
             {
-                GameObject characterObject = new GameObject();
-                characterObject.transform.parent = spawnData.Marker.transform;
+                GameObject characterObject = CreateCharacterObject("Enemy" + spawnData.GetID(), spawnData.Marker.transform);
                 EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.PerformSpawn(spawnData.GetID(), spawnData.Marker);
+                enemyCharacterComponent.PerformSpawn(spawnData.GetID());
                 _enemyCharacters.Add(enemyCharacterComponent);
             }
         }
+    }
+
+    private GameObject CreateCharacterObject(string name, Transform markerTransform)
+    {
+        GameObject characterObject = new GameObject(name);
+        characterObject.transform.parent = markerTransform;
+        characterObject.transform.localPosition = Vector3.zero;
+        characterObject.transform.localRotation = Quaternion.identity;
+        return characterObject;
     }
 
     private void Launch()
