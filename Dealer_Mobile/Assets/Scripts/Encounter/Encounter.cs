@@ -8,7 +8,7 @@ using UnityEngine;
 public class CombatEncounter : MonoBehaviour
 {
     //setup phase
-    [SerializeField] private EncounterData encounterData;
+    [SerializeField] private EncounterSetupData encounterData;
 
     [SerializeField] private CinemachineVirtualCamera encounterCamera;
 
@@ -33,7 +33,7 @@ public class CombatEncounter : MonoBehaviour
         Debug.Log("Setting Up Encounter " + gameObject.name);
 
         //spawn players
-        foreach (PlayerSpawnData spawnData in encounterData.PlayerSquad)
+        foreach (PlayerSpawnData spawnData in encounterData.PlayerCharacters)
         {
             GameObject characterObject = new GameObject();
             characterObject.transform.parent = spawnData.Marker.transform;
@@ -43,7 +43,7 @@ public class CombatEncounter : MonoBehaviour
         }
 
         //spawn enemies
-        foreach (WaveData waveData in encounterData.Waves)
+        foreach (EnemySpawnGroupData waveData in encounterData.EnemyGroups)
         {
             foreach (EnemySpawnData spawnData in waveData.Enemies)
             {
@@ -111,7 +111,7 @@ public class CombatEncounter : MonoBehaviour
         }
     }
 
-    public EncounterData GetEncounterData()
+    public EncounterSetupData GetEncounterData()
     {
         return encounterData;
     }

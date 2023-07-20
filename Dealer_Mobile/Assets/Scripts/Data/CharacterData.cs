@@ -28,14 +28,7 @@ public struct EnemySpawnData
 }
 
 [Serializable]
-public struct WaveData
+public struct EnemySpawnGroupData
 {
     public List<EnemySpawnData> Enemies;
-}
-
-[Serializable]
-public struct EncounterData
-{
-    public List<PlayerSpawnData> PlayerSquad;
-    public List<WaveData> Waves;
 }
