@@ -45,7 +45,7 @@ public class CharacterComponent : MonoBehaviour
 
     protected virtual CharacterModel SetupModel()
     {
-        CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(_ID);
+        CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         CharacterConstants.ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
         GameObject characterModelObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetCharacterModel(modelID)), this.transform);
@@ -59,7 +59,7 @@ public class CharacterComponent : MonoBehaviour
 
         if (anchor != null)
         {
-            CharacterDefinition def = CharacterDefinition.GetCharacterDefinition(_ID);
+            CharacterDefinition def = CharacterDefinition.Get(_ID);
 
             if(def.AllowedWeapons.Length > 0)
             {

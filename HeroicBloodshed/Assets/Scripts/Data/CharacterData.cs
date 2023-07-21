@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using Constants;
 using UnityEngine;
 
-public struct PlayerCombatData
+public class CharacterEncounterData
 {
-    //player model
-    //marker
+    public CharacterComponent Character;
+    public int Health = 0;
+
+    public CharacterEncounterData(CharacterComponent _Character, int _Health)
+    {
+        Character = _Character;
+        Health = _Health;
+    }
 }
 
 [Serializable]

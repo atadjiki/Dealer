@@ -14,7 +14,7 @@ namespace Constants
         public int BaseHealth;
 
         //yep these are hardcoded :)
-        public static CharacterDefinition GetCharacterDefinition(CharacterConstants.CharacterID uniqueID)
+        public static CharacterDefinition Get(CharacterConstants.CharacterID uniqueID)
         {
             switch (uniqueID)
             {
