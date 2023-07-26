@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class EncounterStateData
 {
-    //the initial set of players and enemies
-    public List<CharacterEncounterData> PlayerCharacters = new List<CharacterEncounterData>();
-    public List<CharacterEncounterData> EnemyCharacters = new List<CharacterEncounterData>();
+    //the initial state of players and enemies
+    public EncounterSetupData SetupData;
 
     //queues are built each turn based on who is still alive
     public Queue<CharacterEncounterData> PlayerQueue = null;

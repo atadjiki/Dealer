@@ -21,11 +21,11 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log("Setting Up Encounter " + encounter.gameObject.name);
 
-        EncounterSetupData setupData = encounter.GetSetupData();
-
         _stateData = new EncounterStateData();
 
-        SpawnCharacters(setupData);
+        _stateData.SetupData = encounter.GetSetupData();
+
+        SpawnCharacters(_stateData.SetupData);
 
         yield return new WaitUntil( () => _stateData.IsInitialized() );
 
@@ -51,7 +51,7 @@ public class EncounterManager : MonoBehaviour
 
             CharacterEncounterData characterData = new CharacterEncounterData(playerCharacterComponent, def.BaseHealth);
 
-            _stateData.PlayerCharacters.Add(characterData);
+            _stateData.PlayerQueue.Enqueue(characterData);
         }
 
         //spawn enemies
@@ -67,7 +67,7 @@ public class EncounterManager : MonoBehaviour
 
                 CharacterEncounterData characterData = new CharacterEncounterData(enemyCharacterComponent, def.BaseHealth);
 
-                _stateData.PlayerCharacters.Add(characterData);
+                _stateData.EnemyQueue.Enqueue(characterData);
             }
         }
 
