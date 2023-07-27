@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -8,14 +8,14 @@ public class CharacterAnimator : MonoBehaviour
 {
     private Animator _animator;
 
-    private Game.WeaponID _weaponID;
+    private WeaponID _weaponID;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
     }
 
-    public void Setup(Anim.State initialState, Game.WeaponID weapon)
+    public void Setup(AnimState initialState, WeaponID weapon)
     {
         _weaponID = weapon;
 
@@ -23,9 +23,9 @@ public class CharacterAnimator : MonoBehaviour
        
     }
 
-    public void GoTo(Anim.State state)
+    public void GoTo(AnimState state)
     {
-        Anim.ID anim = Anim.GetAnimByWeaponType(_weaponID, state);
+        AnimID anim = GetAnimByWeaponType(_weaponID, state);
 
         _animator.CrossFade(anim.ToString(), 0.0f);
 

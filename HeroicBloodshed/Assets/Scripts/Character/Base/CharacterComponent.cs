@@ -1,23 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 public class CharacterComponent : MonoBehaviour
 {
-    protected Game.CharacterID _ID;
+    protected CharacterID _ID;
     protected CharacterModel _model;
     protected CharacterWeapon _weapon;
 
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
-    public void PerformSpawn(Game.CharacterID ID)
+    public void PerformSpawn(CharacterID ID)
     {
         StartCoroutine(Coroutine_PerformSpawn(ID));
     }
 
-    protected virtual IEnumerator Coroutine_PerformSpawn(Game.CharacterID ID)
+    protected virtual IEnumerator Coroutine_PerformSpawn(CharacterID ID)
     {
         _ID = ID;
 
@@ -47,7 +47,7 @@ public class CharacterComponent : MonoBehaviour
     {
         CharacterDefinition def = CharacterDefinition.Get(_ID);
 
-        Game.ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
+        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
         GameObject characterModelObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetCharacterModel(modelID)), this.transform);
 
         return characterModelObject.GetComponent<CharacterModel>();
@@ -63,7 +63,7 @@ public class CharacterComponent : MonoBehaviour
 
             if(def.AllowedWeapons.Length > 0)
             {
-                Game.WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length-1)];
+                WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length-1)];
                 GameObject characterWeaponObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetWeaponByID(weaponID)), anchor.transform);
 
                 CharacterWeapon weaponComponent = characterWeaponObject.GetComponent<CharacterWeapon>();
@@ -86,7 +86,7 @@ public class CharacterComponent : MonoBehaviour
         CharacterAnimator animator = _model.GetComponent<CharacterAnimator>();
         if (animator != null)
         {
-            animator.Setup(Anim.State.Idle, _weapon.GetID());
+            animator.Setup(AnimState.Idle, _weapon.GetID());
         }
     }
 
@@ -100,7 +100,7 @@ public class CharacterComponent : MonoBehaviour
 
             if (decal != null)
             {
-                decal.SetColorByTeam(Game.GetTeamByID(_ID));
+                decal.SetColorByTeam(GetTeamByID(_ID));
             }
         }
     }

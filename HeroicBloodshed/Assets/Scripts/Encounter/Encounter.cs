@@ -1,19 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using Cinemachine;
 using UnityEngine;
 
 public class Encounter : MonoBehaviour
 {
-    private Constants.Encounter.State State;
+    private EncounterState State;
 
     //keep track of all characters involved in this encounter
-    private Dictionary<Game.TeamID, List<CharacterEncounterData>> CharacterMap;
+    private Dictionary<TeamID, List<CharacterEncounterData>> CharacterMap;
 
     private int _TurnCount;
-    private Game.TeamID _Turn;
+    private TeamID _Turn;
 
     //setup phase
     [SerializeField] private EncounterSetupData SetupData;
@@ -22,12 +22,12 @@ public class Encounter : MonoBehaviour
 
     private void Awake()
     {
-        State = Constants.Encounter.State.NONE;
+        State = EncounterState.NONE;
 
         InitCharacterMap();
             
         _TurnCount = 0;
-        _Turn = Game.TeamID.Player;
+        _Turn = TeamID.Player;
     }
 
     public void SpawnCharacters()
@@ -43,7 +43,7 @@ public class Encounter : MonoBehaviour
 
             CharacterEncounterData characterData = new CharacterEncounterData(playerCharacterComponent, def.BaseHealth);
 
-            AddCharacterToList(Game.TeamID.Player, characterData);
+            AddCharacterToList(TeamID.Player, characterData);
         }
 
         //spawn enemies
@@ -59,14 +59,14 @@ public class Encounter : MonoBehaviour
 
                 CharacterEncounterData characterData = new CharacterEncounterData(enemyCharacterComponent, def.BaseHealth);
 
-                AddCharacterToList(Game.TeamID.Enemy, characterData);
+                AddCharacterToList(TeamID.Enemy, characterData);
             }
         }
 
-        State = Constants.Encounter.State.ACTIVE;
+        State = EncounterState.ACTIVE;
     }
 
-    public Constants.Encounter.State GetCurrentState()
+    public EncounterState GetCurrentState()
     {
         return State;
     }
@@ -84,16 +84,16 @@ public class Encounter : MonoBehaviour
     //private
     private void InitCharacterMap()
     {
-        CharacterMap = new Dictionary<Game.TeamID, List<CharacterEncounterData>>();
+        CharacterMap = new Dictionary<TeamID, List<CharacterEncounterData>>();
 
         //create a mapping for each team 
-        foreach (Game.TeamID Team in Enum.GetValues(typeof(Game.TeamID)))
+        foreach (TeamID Team in Enum.GetValues(typeof(TeamID)))
         {
             CharacterMap.Add(Team, new List<CharacterEncounterData>());
         }
     }
 
-    private void AddCharacterToList(Game.TeamID Team, CharacterEncounterData Data)
+    private void AddCharacterToList(TeamID Team, CharacterEncounterData Data)
     {
         if(CharacterMap.ContainsKey(Team))
         {

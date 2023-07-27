@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using Constants;
-using UnityEngine;
+using static Constants;
 
-namespace GameDelegates
+public delegate void DrugTransfer(OwnerID Sender, OwnerID Recepient, InventoryItemID Item, int Quantity);
+
+public delegate void SafehouseMenuComplete(SafehouseMenuID MenuID);
+
+public class Global
 {
-    public delegate void DrugTransfer(Constants.Inventory.OwnerID Sender, Constants.Inventory.OwnerID Recepient, Constants.Inventory.ItemID Item, int Quantity);
+    public static DrugTransfer OnDrugTransfer;
 
-    public delegate void SafehouseMenuComplete(Safehouse.SafehouseMenu Menu);
-
-    public class Global
-    {
-        public static DrugTransfer OnDrugTransfer;
-
-        public static SafehouseMenuComplete OnSafehouseMenuComplete;
-    }
+    public static SafehouseMenuComplete OnSafehouseMenuComplete;
 }

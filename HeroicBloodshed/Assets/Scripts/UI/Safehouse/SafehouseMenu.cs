@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
-using GameDelegates;
+using static Constants;
 
 [Serializable]
 public struct SafehouseOptionData
@@ -23,7 +23,7 @@ public class SafehouseMenu : MonoBehaviour
 
     private void Awake()
     {
-        GameDelegates.Global.OnSafehouseMenuComplete += OnSafehouseMenuComplete;
+        Global.OnSafehouseMenuComplete += OnSafehouseMenuComplete;
 
         if(OptionsList.Count > 0)
         {
@@ -52,7 +52,7 @@ public class SafehouseMenu : MonoBehaviour
 
     }
 
-    private void OnSafehouseMenuComplete(Constants.Safehouse.SafehouseMenu Menu)
+    private void OnSafehouseMenuComplete(SafehouseMenuID MenuID)
     {
         ToggleMenu(true);
     }

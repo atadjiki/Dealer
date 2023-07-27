@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Constants;
+using static Constants;
 
 public class CharacterCombatPanel : MonoBehaviour
 {

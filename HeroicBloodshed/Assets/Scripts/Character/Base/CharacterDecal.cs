@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 public class CharacterDecal : MonoBehaviour
@@ -9,14 +9,14 @@ public class CharacterDecal : MonoBehaviour
     private static Color Color_Player = new Color(0, 0.501668f, 0.9716981f);
     private static Color Color_Enemy = new Color(1, 0.08050716f, 0);
 
-    public void SetColorByTeam(Game.TeamID team)
+    public void SetColorByTeam(TeamID team)
     {
         switch(team)
         {
-            case Game.TeamID.Player:
+            case TeamID.Player:
                 SetColor(Color_Player);
                 break;
-            case Game.TeamID.Enemy:
+            case TeamID.Enemy:
                 SetColor(Color_Enemy);
                 break;
             default:

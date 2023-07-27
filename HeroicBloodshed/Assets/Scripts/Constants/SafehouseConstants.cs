@@ -1,12 +1,9 @@
-namespace Constants
+public static partial class Constants
 {
-    public class Safehouse
+    public enum SafehouseMenuID
     {
-        public enum SafehouseMenu
-        {
-            None,
-            Inventory,
-            Map
-        }
+        None,
+        Inventory,
+        Map
     }
 }

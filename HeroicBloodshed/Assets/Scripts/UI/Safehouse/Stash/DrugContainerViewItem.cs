@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Constants.Inventory;
+using static Constants;
 
 public class DrugContainerViewItem : MonoBehaviour
 {
@@ -19,13 +19,13 @@ public class DrugContainerViewItem : MonoBehaviour
 
     [SerializeField] private Image Image_Icon;
 
-    private ItemID _itemID;
+    private InventoryItemID _itemID;
 
     private float lastValue;
 
-    public void Setup(ItemID itemID)
+    public void Setup(InventoryItemID itemID)
     {
-        Sprite sprite = Instantiate(Resources.Load<Sprite>(GetIconResourcePathByID(ItemID.Cocaine)));
+        Sprite sprite = Instantiate(Resources.Load<Sprite>(GetIconResourcePathByID(InventoryItemID.Cocaine)));
 
         Image_Icon.sprite = sprite;
 

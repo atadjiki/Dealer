@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class Inventory
 {
     //who does this belong to?
-    private Constants.Inventory.OwnerID _OwnerID;
+    private OwnerID _OwnerID;
 
-    public Constants.Inventory.OwnerID GetOwner() { return _OwnerID; }
+    public OwnerID GetOwner() { return _OwnerID; }
 
     //the collection itself (maps inventory IDs to quantities
-    private Dictionary<Constants.Inventory.ItemID, int> _ItemMap;
+    private Dictionary<InventoryItemID, int> _ItemMap;
 
-    public bool HasItem(Constants.Inventory.ItemID Item)
+    public bool HasItem(InventoryItemID Item)
     {
         return _ItemMap.ContainsKey(Item);
     }
@@ -29,7 +30,7 @@ public class Inventory
         return total;
     }
 
-    public int GetQuantity(Constants.Inventory.ItemID Item)
+    public int GetQuantity(InventoryItemID Item)
     {
         if(_ItemMap.ContainsKey(Item))
         {
@@ -42,7 +43,7 @@ public class Inventory
         }
     }
 
-    public int AddQuantity(Constants.Inventory.ItemID Item, int Quantity)
+    public int AddQuantity(InventoryItemID Item, int Quantity)
     {
         //add check for capacity later 
 
@@ -56,7 +57,7 @@ public class Inventory
         Debug.Log("Item " + Item.ToString() + " not found in " + _OwnerID.ToString());
         return 0;
     }
-    public int RemoveQuantity(Constants.Inventory.ItemID Item, int Quantity)
+    public int RemoveQuantity(InventoryItemID Item, int Quantity)
     {
         if (_ItemMap.ContainsKey(Item))
         {
@@ -71,18 +72,18 @@ public class Inventory
         return 0;
     }
 
-    public Inventory(Constants.Inventory.OwnerID Owner)
+    public Inventory(OwnerID Owner)
     {
         _OwnerID = Owner;
 
-        _ItemMap = new Dictionary<Constants.Inventory.ItemID, int>();
+        _ItemMap = new Dictionary<InventoryItemID, int>();
     }
 
-    public static Inventory GenerateDrugInventory(Constants.Inventory.OwnerID Owner)
+    public static Inventory GenerateDrugInventory(OwnerID Owner)
     {
         Inventory drugInventory = new Inventory(Owner);
 
-        foreach(Constants.Inventory.ItemID drugID in Constants.Inventory.GetDrugIDs())
+        foreach(InventoryItemID drugID in GetDrugIDs())
         {
             drugInventory._ItemMap.Add(drugID, 0);
         }
@@ -101,9 +102,9 @@ public class GameState : MonoBehaviour
 
     [SerializeField] private int Money = 100;
 
-    [SerializeField] private Inventory PlayerStash = Inventory.GenerateDrugInventory(Constants.Inventory.OwnerID.Player_Stash);
+    [SerializeField] private Inventory PlayerStash = Inventory.GenerateDrugInventory(OwnerID.Player_Stash);
 
-    [SerializeField] private Inventory PlayerBag = Inventory.GenerateDrugInventory(Constants.Inventory.OwnerID.Player_Bag);
+    [SerializeField] private Inventory PlayerBag = Inventory.GenerateDrugInventory(OwnerID.Player_Bag);
 
     private void Awake()
     {
@@ -121,7 +122,7 @@ public class GameState : MonoBehaviour
 
     private void Build()
     {
-        PlayerStash.AddQuantity(Constants.Inventory.ItemID.Cocaine, 100);
+        PlayerStash.AddQuantity(InventoryItemID.Cocaine, 100);
     }
 
     public int GetDay()
@@ -134,13 +135,13 @@ public class GameState : MonoBehaviour
         return Money;
     }
 
-    public Inventory GetInventory(Constants.Inventory.OwnerID ID)
+    public Inventory GetInventory(OwnerID ID)
     {
-        if(ID == Constants.Inventory.OwnerID.Player_Stash)
+        if(ID == OwnerID.Player_Stash)
         {
             return PlayerStash;
         }
-        else if (ID == Constants.Inventory.OwnerID.Player_Bag)
+        else if (ID == OwnerID.Player_Bag)
         {
             return PlayerBag;
         }
@@ -150,7 +151,7 @@ public class GameState : MonoBehaviour
         }
     }
 
-    public void TransferItemQuantity(Constants.Inventory.OwnerID SenderID, Constants.Inventory.OwnerID RecepientID, Constants.Inventory.ItemID Item, int Quantity)
+    public void TransferItemQuantity(OwnerID SenderID, OwnerID RecepientID, InventoryItemID Item, int Quantity)
     {
         if(SenderID == RecepientID)
         {
@@ -180,13 +181,13 @@ public class GameState : MonoBehaviour
         }
     }
 
-    public void AddToBag(Constants.Inventory.ItemID ID, int Quantity)
+    public void AddToBag(InventoryItemID ID, int Quantity)
     {
-        TransferItemQuantity(Constants.Inventory.OwnerID.Player_Stash, Constants.Inventory.OwnerID.Player_Bag, ID, Quantity);
+        TransferItemQuantity(OwnerID.Player_Stash, OwnerID.Player_Bag, ID, Quantity);
     }
 
-    public void RemoveFromBag(Constants.Inventory.ItemID ID, int Quantity)
+    public void RemoveFromBag(InventoryItemID ID, int Quantity)
     {
-        TransferItemQuantity(Constants.Inventory.OwnerID.Player_Bag, Constants.Inventory.OwnerID.Player_Stash, ID, Quantity);
+        TransferItemQuantity(OwnerID.Player_Bag, OwnerID.Player_Stash, ID, Quantity);
     }
 }

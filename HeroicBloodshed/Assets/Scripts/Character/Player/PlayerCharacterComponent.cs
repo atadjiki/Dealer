@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 public class PlayerCharacterComponent : CharacterComponent

@@ -4,8 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using System.Text;
-using static Constants.Inventory;
-using GameDelegates;
+using static Constants;
 
 public class PlayerStashView : OverlayMenu
 {
@@ -19,7 +18,7 @@ public class PlayerStashView : OverlayMenu
 
     protected override void OnCancelButtonClicked()
     {
-        GameDelegates.Global.OnSafehouseMenuComplete.Invoke(Constants.Safehouse.SafehouseMenu.Inventory);
+        Global.OnSafehouseMenuComplete.Invoke(SafehouseMenuID.Inventory);
 
         base.OnCancelButtonClicked();
     }
@@ -28,7 +27,7 @@ public class PlayerStashView : OverlayMenu
     {
         if(GameState.Instance != null)
         {
-            foreach (ItemID ID in Constants.Inventory.GetDrugIDs())
+            foreach (InventoryItemID ID in GetDrugIDs())
             {
                 stashContainerView.Add(ID);
             }

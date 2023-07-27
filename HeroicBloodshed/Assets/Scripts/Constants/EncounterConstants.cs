@@ -1,14 +1,11 @@
-namespace Constants
+public static partial class Constants
 {
-    public class Encounter
+    public enum EncounterState
     {
-       public enum State
-       {
-            NONE,
-            SETUP,
-            READY,
-            ACTIVE,
-            COMPLETE, 
-       }
+        NONE,
+        SETUP,
+        READY,
+        ACTIVE,
+        COMPLETE,
     }
 }

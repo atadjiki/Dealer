@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 public class CharacterWeapon : MonoBehaviour
 {
-    private Game.WeaponID _ID;
+    private WeaponID _ID;
 
-    public void SetID(Game.WeaponID ID)
+    public void SetID(WeaponID ID)
     {
         _ID = ID;
     }
 
-    public Game.WeaponID GetID()
+    public WeaponID GetID()
     {
         return _ID;
     }

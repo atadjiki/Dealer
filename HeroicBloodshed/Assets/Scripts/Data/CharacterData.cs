@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Constants;
 using UnityEngine;
+using static Constants;
 
 public class CharacterEncounterData
 {
@@ -18,19 +18,19 @@ public class CharacterEncounterData
 [Serializable]
 public struct PlayerSpawnData
 {
-    [SerializeField] private Game.PlayerID ID;
+    [SerializeField] private PlayerID ID;
     public PlayerCharacterMarker Marker;
 
-    public Game.CharacterID GetID() { return Game.ToCharacterID(ID); }
+    public CharacterID GetID() { return ToCharacterID(ID); }
 }
 
 [Serializable]
 public struct EnemySpawnData
 {
-    [SerializeField] private Game.EnemyID ID;
+    [SerializeField] private EnemyID ID;
     public EnemyCharacterMarker Marker;
 
-    public Game.CharacterID GetID() { return Game.ToCharacterID(ID); }
+    public CharacterID GetID() { return ToCharacterID(ID); }
 }
 
 [Serializable]

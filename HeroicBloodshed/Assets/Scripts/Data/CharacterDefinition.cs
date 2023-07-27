@@ -1,93 +1,91 @@
 using System;
 using System.Collections.Generic;
+using static Constants;
 
-namespace Constants
+public struct CharacterDefinition
 {
-    public struct CharacterDefinition
+    public CharacterID ID;
+
+    public ModelID[] AllowedModels;
+
+    public WeaponID[] AllowedWeapons;
+
+    public int BaseHealth;
+
+    //yep these are hardcoded :)
+    public static CharacterDefinition Get(CharacterID uniqueID)
     {
-        public Game.CharacterID ID;
-
-        public Game.ModelID[] AllowedModels;
-
-        public Game.WeaponID[] AllowedWeapons;
-
-        public int BaseHealth;
-
-        //yep these are hardcoded :)
-        public static CharacterDefinition Get(Game.CharacterID uniqueID)
+        switch (uniqueID)
         {
-            switch (uniqueID)
-            {
-                case Game.CharacterID.PLAYER_1:
+            case CharacterID.PLAYER_1:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new Game.ModelID[]
+                        AllowedModels = new ModelID[]
                         {
-                            Game.ModelID.DEA_MALE,
+                            ModelID.DEA_MALE,
                         },
-                        AllowedWeapons = new Game.WeaponID[]
+                        AllowedWeapons = new WeaponID[]
                         {
-                            Game.WeaponID.Revolver,
+                            WeaponID.Revolver,
                         },
 
                         BaseHealth = 10,
                     };
                 }
-                case Game.CharacterID.PLAYER_2:
+            case CharacterID.PLAYER_2:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new Game.ModelID[]
+                        AllowedModels = new ModelID[]
                         {
-                        Game.ModelID.DEA_FEMALE,
+                        ModelID.DEA_FEMALE,
                         },
-                        AllowedWeapons = new Game.WeaponID[]
+                        AllowedWeapons = new WeaponID[]
                         {
-                        Game.WeaponID.Revolver,
+                        WeaponID.Revolver,
                         },
 
                         BaseHealth = 10,
                     };
                 }
-                case Game.CharacterID.HENCHMAN:
+            case CharacterID.HENCHMAN:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new Game.ModelID[]
+                        AllowedModels = new ModelID[]
                         {
-                            Game.ModelID.MAFIA_BRITISH,
-                            Game.ModelID.MAFIA_ITALIAN,
+                            ModelID.MAFIA_BRITISH,
+                            ModelID.MAFIA_ITALIAN,
                         },
-                            AllowedWeapons = new Game.WeaponID[]
+                        AllowedWeapons = new WeaponID[]
                         {
-                            Game.WeaponID.Pistol,
-                            Game.WeaponID.Revolver,
+                            WeaponID.Pistol,
+                            WeaponID.Revolver,
                         },
 
                         BaseHealth = 4,
                     };
                 }
-                default:
+            default:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new Game.ModelID[]
+                        AllowedModels = new ModelID[]
                         {
-                            Game.ModelID.MAFIA_BRITISH,
+                            ModelID.MAFIA_BRITISH,
                         },
-                        AllowedWeapons = new Game.WeaponID[]
+                        AllowedWeapons = new WeaponID[]
                         {
                         },
 
                         BaseHealth = 1,
                     };
                 }
-            }
         }
     }
 }

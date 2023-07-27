@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
+using static Constants;
 
 public class CharacterMarker : MonoBehaviour
 {

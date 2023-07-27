@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Constants;
+using static Constants;
 using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
@@ -26,7 +26,7 @@ public class EncounterManager : MonoBehaviour
 
         encounter.SpawnCharacters();
 
-        yield return new WaitUntil( () => encounter.GetCurrentState() == Constants.Encounter.State.ACTIVE);
+        yield return new WaitUntil( () => encounter.GetCurrentState() == EncounterState.ACTIVE);
 
         yield return null;
     }
