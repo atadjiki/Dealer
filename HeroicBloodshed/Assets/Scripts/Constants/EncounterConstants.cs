@@ -1,6 +1,6 @@
 namespace Constants
 {
-    public class EncounterConstants
+    public class Encounter
     {
        public enum State
        {

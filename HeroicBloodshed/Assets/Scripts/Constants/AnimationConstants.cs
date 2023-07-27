@@ -1,6 +1,6 @@
 namespace Constants
 {
-    public class AnimationConstants
+    public class Anim
     {
         public enum State
         {
@@ -10,7 +10,7 @@ namespace Constants
             Attack_Single,
         }
 
-        public enum Anim
+        public enum ID
         {
             //for cutscenes/non combat use
 
@@ -28,34 +28,34 @@ namespace Constants
             Anim_Character_Pistol_Attack_Single,
         }
 
-        public static Anim GetAnimByWeaponType(CharacterConstants.WeaponID Weapon, State state)
+        public static ID GetAnimByWeaponType(Game.WeaponID Weapon, State state)
         {
             switch(Weapon)
             {
-                case CharacterConstants.WeaponID.Pistol:
-                case CharacterConstants.WeaponID.Revolver:
+                case Game.WeaponID.Pistol:
+                case Game.WeaponID.Revolver:
                     return GetPistolAnim(state);
 
                 default:
-                    return Anim.Anim_Character_Idle;
+                    return ID.Anim_Character_Idle;
             }
         }
 
-        public static Anim GetPistolAnim(State state)
+        public static ID GetPistolAnim(State state)
         {
             switch(state)
             {
                 case State.Idle:
-                    return Anim.Anim_Character_Pistol_Idle;
+                    return ID.Anim_Character_Pistol_Idle;
                 case State.Walking:
-                    return Anim.Anim_Character_Pistol_Walking;
+                    return ID.Anim_Character_Pistol_Walking;
                 case State.Running:
-                    return Anim.Anim_Character_Pistol_Running;
+                    return ID.Anim_Character_Pistol_Running;
                 case State.Attack_Single:
-                    return Anim.Anim_Character_Pistol_Attack_Single;
+                    return ID.Anim_Character_Pistol_Attack_Single;
 
                 default:
-                    return Anim.Anim_Character_Pistol_Idle;
+                    return ID.Anim_Character_Pistol_Idle;
             }
 
         }

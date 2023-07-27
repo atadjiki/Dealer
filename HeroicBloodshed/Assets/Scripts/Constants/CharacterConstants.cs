@@ -1,6 +1,6 @@
 namespace Constants
 {
-    public class CharacterConstants
+    public class Game
     {
         public enum TeamID
         {
@@ -60,7 +60,7 @@ namespace Constants
             Attack,
         }
 
-        public static TeamID GetTeamByID(CharacterConstants.CharacterID ID)
+        public static TeamID GetTeamByID(Game.CharacterID ID)
         {
             switch(ID)
             {

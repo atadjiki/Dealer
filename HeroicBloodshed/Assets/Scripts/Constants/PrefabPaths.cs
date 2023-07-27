@@ -13,30 +13,30 @@ namespace Constants
         public static string Path_Model_Character_DEA_Male = "Prefabs/Character/Model_Character_DEA_Male";
         public static string Path_Model_Character_DEA_Female = "Prefabs/Character/Model_Character_DEA_Female";
 
-        public static string GetWeaponByID(CharacterConstants.WeaponID type)
+        public static string GetWeaponByID(Game.WeaponID type)
         {
             switch (type)
             {
-                case CharacterConstants.WeaponID.Revolver:
+                case Game.WeaponID.Revolver:
                     return Path_Weapon_Revolver;
-                case CharacterConstants.WeaponID.Pistol:
+                case Game.WeaponID.Pistol:
                     return Path_Weapon_Pistol;
                 default:
                     return null;
             }
         }
 
-        public static string GetCharacterModel(CharacterConstants.ModelID ID)
+        public static string GetCharacterModel(Game.ModelID ID)
         {
             switch (ID)
             {
-                case CharacterConstants.ModelID.MAFIA_ITALIAN:
+                case Game.ModelID.MAFIA_ITALIAN:
                     return Path_Model_Character_Mafia_Italian;
-                case CharacterConstants.ModelID.MAFIA_BRITISH:
+                case Game.ModelID.MAFIA_BRITISH:
                     return Path_Model_Character_Mafia_British;
-                case CharacterConstants.ModelID.DEA_FEMALE:
+                case Game.ModelID.DEA_FEMALE:
                     return Path_Model_Character_DEA_Female;
-                case CharacterConstants.ModelID.DEA_MALE:
+                case Game.ModelID.DEA_MALE:
                     return Path_Model_Character_DEA_Male;
                 default:
                     return null;

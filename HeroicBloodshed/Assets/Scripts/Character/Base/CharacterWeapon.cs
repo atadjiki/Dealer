@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class CharacterWeapon : MonoBehaviour
 {
-    private CharacterConstants.WeaponID _ID;
+    private Game.WeaponID _ID;
 
-    public void SetID(CharacterConstants.WeaponID ID)
+    public void SetID(Game.WeaponID ID)
     {
         _ID = ID;
     }
 
-    public CharacterConstants.WeaponID GetID()
+    public Game.WeaponID GetID()
     {
         return _ID;
     }

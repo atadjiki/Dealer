@@ -9,14 +9,14 @@ public class CharacterDecal : MonoBehaviour
     private static Color Color_Player = new Color(0, 0.501668f, 0.9716981f);
     private static Color Color_Enemy = new Color(1, 0.08050716f, 0);
 
-    public void SetColorByTeam(CharacterConstants.TeamID team)
+    public void SetColorByTeam(Game.TeamID team)
     {
         switch(team)
         {
-            case CharacterConstants.TeamID.Player:
+            case Game.TeamID.Player:
                 SetColor(Color_Player);
                 break;
-            case CharacterConstants.TeamID.Enemy:
+            case Game.TeamID.Enemy:
                 SetColor(Color_Enemy);
                 break;
             default:

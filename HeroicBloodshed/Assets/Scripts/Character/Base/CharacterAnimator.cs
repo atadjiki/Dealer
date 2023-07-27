@@ -8,14 +8,14 @@ public class CharacterAnimator : MonoBehaviour
 {
     private Animator _animator;
 
-    private CharacterConstants.WeaponID _weaponID;
+    private Game.WeaponID _weaponID;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
     }
 
-    public void Setup(AnimationConstants.State initialState, CharacterConstants.WeaponID weapon)
+    public void Setup(Anim.State initialState, Game.WeaponID weapon)
     {
         _weaponID = weapon;
 
@@ -23,9 +23,9 @@ public class CharacterAnimator : MonoBehaviour
        
     }
 
-    public void GoTo(AnimationConstants.State state)
+    public void GoTo(Anim.State state)
     {
-        AnimationConstants.Anim anim = AnimationConstants.GetAnimByWeaponType(_weaponID, state);
+        Anim.ID anim = Anim.GetAnimByWeaponType(_weaponID, state);
 
         _animator.CrossFade(anim.ToString(), 0.0f);
 

@@ -18,19 +18,19 @@ public class CharacterEncounterData
 [Serializable]
 public struct PlayerSpawnData
 {
-    [SerializeField] private CharacterConstants.PlayerID ID;
+    [SerializeField] private Game.PlayerID ID;
     public PlayerCharacterMarker Marker;
 
-    public CharacterConstants.CharacterID GetID() { return CharacterConstants.ToCharacterID(ID); }
+    public Game.CharacterID GetID() { return Game.ToCharacterID(ID); }
 }
 
 [Serializable]
 public struct EnemySpawnData
 {
-    [SerializeField] private CharacterConstants.EnemyID ID;
+    [SerializeField] private Game.EnemyID ID;
     public EnemyCharacterMarker Marker;
 
-    public CharacterConstants.CharacterID GetID() { return CharacterConstants.ToCharacterID(ID); }
+    public Game.CharacterID GetID() { return Game.ToCharacterID(ID); }
 }
 
 [Serializable]

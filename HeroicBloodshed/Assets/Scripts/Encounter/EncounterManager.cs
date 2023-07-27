@@ -26,7 +26,7 @@ public class EncounterManager : MonoBehaviour
 
         encounter.SpawnCharacters();
 
-        yield return new WaitUntil( () => encounter.GetCurrentState() == EncounterConstants.State.ACTIVE);
+        yield return new WaitUntil( () => encounter.GetCurrentState() == Constants.Encounter.State.ACTIVE);
 
         yield return null;
     }

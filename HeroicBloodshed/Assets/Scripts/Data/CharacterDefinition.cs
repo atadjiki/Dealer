@@ -5,67 +5,67 @@ namespace Constants
 {
     public struct CharacterDefinition
     {
-        public CharacterConstants.CharacterID ID;
+        public Game.CharacterID ID;
 
-        public CharacterConstants.ModelID[] AllowedModels;
+        public Game.ModelID[] AllowedModels;
 
-        public CharacterConstants.WeaponID[] AllowedWeapons;
+        public Game.WeaponID[] AllowedWeapons;
 
         public int BaseHealth;
 
         //yep these are hardcoded :)
-        public static CharacterDefinition Get(CharacterConstants.CharacterID uniqueID)
+        public static CharacterDefinition Get(Game.CharacterID uniqueID)
         {
             switch (uniqueID)
             {
-                case CharacterConstants.CharacterID.PLAYER_1:
+                case Game.CharacterID.PLAYER_1:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new CharacterConstants.ModelID[]
+                        AllowedModels = new Game.ModelID[]
                         {
-                            CharacterConstants.ModelID.DEA_MALE,
+                            Game.ModelID.DEA_MALE,
                         },
-                        AllowedWeapons = new CharacterConstants.WeaponID[]
+                        AllowedWeapons = new Game.WeaponID[]
                         {
-                            CharacterConstants.WeaponID.Revolver,
+                            Game.WeaponID.Revolver,
                         },
 
                         BaseHealth = 10,
                     };
                 }
-                case CharacterConstants.CharacterID.PLAYER_2:
+                case Game.CharacterID.PLAYER_2:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new CharacterConstants.ModelID[]
+                        AllowedModels = new Game.ModelID[]
                         {
-                        CharacterConstants.ModelID.DEA_FEMALE,
+                        Game.ModelID.DEA_FEMALE,
                         },
-                        AllowedWeapons = new CharacterConstants.WeaponID[]
+                        AllowedWeapons = new Game.WeaponID[]
                         {
-                        CharacterConstants.WeaponID.Revolver,
+                        Game.WeaponID.Revolver,
                         },
 
                         BaseHealth = 10,
                     };
                 }
-                case CharacterConstants.CharacterID.HENCHMAN:
+                case Game.CharacterID.HENCHMAN:
                 {
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new CharacterConstants.ModelID[]
+                        AllowedModels = new Game.ModelID[]
                         {
-                            CharacterConstants.ModelID.MAFIA_BRITISH,
-                            CharacterConstants.ModelID.MAFIA_ITALIAN,
+                            Game.ModelID.MAFIA_BRITISH,
+                            Game.ModelID.MAFIA_ITALIAN,
                         },
-                            AllowedWeapons = new CharacterConstants.WeaponID[]
+                            AllowedWeapons = new Game.WeaponID[]
                         {
-                            CharacterConstants.WeaponID.Pistol,
-                            CharacterConstants.WeaponID.Revolver,
+                            Game.WeaponID.Pistol,
+                            Game.WeaponID.Revolver,
                         },
 
                         BaseHealth = 4,
@@ -76,11 +76,11 @@ namespace Constants
                     return new CharacterDefinition()
                     {
                         ID = uniqueID,
-                        AllowedModels = new CharacterConstants.ModelID[]
+                        AllowedModels = new Game.ModelID[]
                         {
-                            CharacterConstants.ModelID.MAFIA_BRITISH,
+                            Game.ModelID.MAFIA_BRITISH,
                         },
-                        AllowedWeapons = new CharacterConstants.WeaponID[]
+                        AllowedWeapons = new Game.WeaponID[]
                         {
                         },
 
