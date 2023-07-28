@@ -8,18 +8,23 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterID _ID;
     protected CharacterModel _model;
     protected CharacterWeapon _weapon;
+    protected int _health = 0;
 
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
-    public void PerformSpawn(CharacterID ID)
+    public void PerformSetup(CharacterID ID)
     {
-        StartCoroutine(Coroutine_PerformSpawn(ID));
+        StartCoroutine(Coroutine_PerformSetup(ID));
     }
 
-    protected virtual IEnumerator Coroutine_PerformSpawn(CharacterID ID)
+    protected virtual IEnumerator Coroutine_PerformSetup(CharacterID ID)
     {
+        CharacterDefinition def = CharacterDefinition.Get(ID);
+
         _ID = ID;
+
+        _health = def.BaseHealth;
 
         _model = SetupModel();
 
@@ -113,5 +118,32 @@ public class CharacterComponent : MonoBehaviour
         {
             GameObject.Destroy(decal.gameObject);
         }
+    }
+
+    public CharacterID GetCharacterID()
+    {
+        return _ID;
+    }
+
+    public virtual void SetHealth(int health)
+    {
+        _health = health;
+    }
+
+    public virtual int GetHealth()
+    {
+        return _health;
+    }
+
+    public virtual bool IsAlive()
+    {
+        return _health > 0;
+    }
+
+    public virtual void SubtractHealth(int amount)
+    {
+        _health -= Mathf.Abs(amount);
+
+        _health = Mathf.Clamp(_health, 0, _health);
     }
 }

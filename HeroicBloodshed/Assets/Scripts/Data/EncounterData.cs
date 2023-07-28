@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 [Serializable]
-public struct EncounterSetupData
+public struct EncounterTeamData
 {
-    public List<PlayerSpawnData> PlayerCharacters;
-    public List<EnemySpawnGroupData> EnemyGroups;
+    public TeamID Team;
+    public List<CharacterID> Characters; //who are we spawning?
+    public List<CharacterMarker> Markers; //where are they spawning?
 }

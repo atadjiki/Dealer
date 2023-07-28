@@ -7,97 +7,169 @@ using UnityEngine;
 
 public class Encounter : MonoBehaviour
 {
-    private EncounterState State;
+    //setup data
+    [SerializeField] private List<EncounterTeamData> Teams;
 
-    //keep track of all characters involved in this encounter
-    private Dictionary<TeamID, List<CharacterEncounterData>> CharacterMap;
+    //when setup is performed, store spawned characters
+    private Dictionary<TeamID, List<CharacterComponent>> CharacterMap;
 
-    private int _TurnCount;
-    private TeamID _Turn;
+    //create a queue for each team each combat loop
+    private Dictionary<TeamID, Queue<CharacterComponent>> TeamQueues;
 
-    //setup phase
-    [SerializeField] private EncounterSetupData SetupData;
-
-    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    private TeamID _currentTurn = TeamID.Player; //player starts by default 
 
     private void Awake()
     {
-        State = EncounterState.NONE;
+        PopulateCharacterMap(); //generate characters based on spawn data
 
-        InitCharacterMap();
-            
-        _TurnCount = 0;
-        _Turn = TeamID.Player;
+        SetupTeamQueues(); //populate team queues based on who is alive, etc
+
+        ProcessEncounterLoop();
     }
 
-    public void SpawnCharacters()
+    public void ProcessEncounterLoop()
     {
-        //spawn players
-        foreach (PlayerSpawnData spawnData in SetupData.PlayerCharacters)
+        Debug.Log(_currentTurn + " turn");
+
+        switch (_currentTurn)
         {
-            GameObject characterObject = EncounterHelper.CreateCharacterObject("Player_" + spawnData.GetID(), spawnData.Marker.transform);
-            PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-            playerCharacterComponent.PerformSpawn(spawnData.GetID());
+            case TeamID.Player:
+                ProcessPlayerTurn();
+                break;
+            case TeamID.Enemy:
+                break;
+        }
+    }
 
-            CharacterDefinition def = CharacterDefinition.Get(spawnData.GetID());
+    private void ProcessPlayerTurn()
+    {
+        SelectCharacter(GetCurrentCharacter());
 
-            CharacterEncounterData characterData = new CharacterEncounterData(playerCharacterComponent, def.BaseHealth);
+        Debug.Log("Waiting for player action");
+    }
 
-            AddCharacterToList(TeamID.Player, characterData);
+    public void SelectCharacter(CharacterComponent characterComponent)
+    {
+        Debug.Log("Selecting character " + characterComponent.GetCharacterID());
+    }
+
+    public CharacterComponent GetCurrentCharacter()
+    {
+        if(TeamQueues.ContainsKey(_currentTurn))
+        {
+            return TeamQueues[_currentTurn].Peek();
         }
 
-        //spawn enemies
-        foreach (EnemySpawnGroupData waveData in SetupData.EnemyGroups)
+        return null;
+    }
+
+    public void SetupTeamQueues()
+    {
+        TeamQueues = new Dictionary<TeamID, Queue<CharacterComponent>>();
+
+        foreach(TeamID team in CharacterMap.Keys)
         {
-            foreach (EnemySpawnData spawnData in waveData.Enemies)
+            Debug.Log("Setting up queue for Team: " + team);
+
+            if(TeamQueues.ContainsKey(team) == false)
             {
-                GameObject characterObject = EncounterHelper.CreateCharacterObject("Enemy" + spawnData.GetID(), spawnData.Marker.transform);
-                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.PerformSpawn(spawnData.GetID());
+                TeamQueues.Add(team, new Queue<CharacterComponent>()); //create a new queue
 
-                CharacterDefinition def = CharacterDefinition.Get(spawnData.GetID());
+                foreach (CharacterComponent characterComponent in CharacterMap[team])
+                {
+                    if (characterComponent.IsAlive())
+                    {
+                        TeamQueues[team].Enqueue(characterComponent);
+                    }
+                }
 
-                CharacterEncounterData characterData = new CharacterEncounterData(enemyCharacterComponent, def.BaseHealth);
-
-                AddCharacterToList(TeamID.Enemy, characterData);
+                Debug.Log("Counting " + TeamQueues[team].Count + " for team " + team);
+            }
+            else
+            {
+                Debug.Log("Already have an entry for team " + team);
             }
         }
-
-        State = EncounterState.ACTIVE;
     }
 
-    public EncounterState GetCurrentState()
+    public void PopulateCharacterMap()
     {
-        return State;
-    }
+        CharacterMap = new Dictionary<TeamID, List<CharacterComponent>>();
 
-    public EncounterSetupData GetSetupData()
-    {
-        return SetupData;
-    }
-
-    public CinemachineVirtualCamera GetCamera()
-    {
-        return virtualCamera;
-    }
-
-    //private
-    private void InitCharacterMap()
-    {
-        CharacterMap = new Dictionary<TeamID, List<CharacterEncounterData>>();
-
-        //create a mapping for each team 
-        foreach (TeamID Team in Enum.GetValues(typeof(TeamID)))
+        foreach(EncounterTeamData teamData in Teams)
         {
-            CharacterMap.Add(Team, new List<CharacterEncounterData>());
+            Debug.Log("Setting up characters for Team: " + teamData.Team);
+
+            CharacterMap.Add(teamData.Team, new List<CharacterComponent>());
+
+            //spawn characters for each team 
+            foreach (CharacterID characterID in teamData.Characters)
+            {
+                //see if we have a marker available to spawn them in
+                foreach (CharacterMarker marker in teamData.Markers)
+                {
+                    if(marker.IsOccupied() == false)
+                    {
+                        Debug.Log("-" + characterID + " at " + marker.gameObject.name);
+
+                        marker.SetOccupied(true);
+
+                        GameObject characterObject = CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
+                        CharacterComponent characterComponent = AddComponentByTeam(teamData.Team, characterID, characterObject);
+
+                        CharacterMap[teamData.Team].Add(characterComponent);
+
+                        break;
+                    }
+
+
+                    Debug.Log("Cannot spawn character, no more markers available");
+                }
+            }
         }
     }
 
-    private void AddCharacterToList(TeamID Team, CharacterEncounterData Data)
+    private CharacterComponent AddComponentByTeam(TeamID teamID, CharacterID characterID, GameObject characterObject)
     {
-        if(CharacterMap.ContainsKey(Team))
+        switch(teamID)
         {
-            CharacterMap[Team].Add(Data);
+            case TeamID.Player:
+                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
+                playerCharacterComponent.PerformSetup(characterID);
+                return playerCharacterComponent;
+            case TeamID.Enemy:
+                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
+                enemyCharacterComponent.PerformSetup(characterID);
+                return enemyCharacterComponent;
+            default:
+                return null;
+        }
+    }
+
+    private GameObject CreateCharacterObject(string name, Transform markerTransform)
+    {
+        GameObject characterObject = new GameObject(name);
+        characterObject.transform.parent = markerTransform;
+        characterObject.transform.localPosition = Vector3.zero;
+        characterObject.transform.localRotation = Quaternion.identity;
+        return characterObject;
+    }
+
+    public TeamID GetCurrentTurn()
+    {
+        return _currentTurn;
+    }
+
+    private void IncrementTurn()
+    {
+        switch(_currentTurn)
+        {
+            case TeamID.Player:
+                _currentTurn = TeamID.Enemy;
+                break;
+            case TeamID.Enemy:
+                _currentTurn = TeamID.Player;
+                break;
         }
     }
 }

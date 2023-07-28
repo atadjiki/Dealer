@@ -2,18 +2,22 @@ public static partial class Constants
 {
     public enum TeamID
     {
+        None,
         Player,
         Enemy,
     }
 
     public enum WeaponID
     {
+        None,
         Revolver,
         Pistol,
     }
 
     public enum ModelID
     {
+        NONE,
+
         //dea
         DEA_MALE,
         DEA_FEMALE,
@@ -21,8 +25,6 @@ public static partial class Constants
         //mafia
         MAFIA_BRITISH,
         MAFIA_ITALIAN,
-
-        NONE,
     }
 
     public enum CharacterID
@@ -39,12 +41,16 @@ public static partial class Constants
 
     public enum EnemyID
     {
+        NONE,
+
         //Enemy
         HENCHMAN,
     }
 
     public enum PlayerID
     {
+        NONE,
+
         //Player
         PLAYER_1,
         PLAYER_2,
@@ -52,6 +58,7 @@ public static partial class Constants
 
     public enum AbilityID
     {
+        None,
         Reload,
         Heal,
         SkipTurn,

@@ -9,10 +9,6 @@ public class EncounterManager : MonoBehaviour
 
     private void Awake()
     {
-        if(CurrentEncounter != null)
-        {
-            SetupEncounter(CurrentEncounter);
-        }
     }
 
     public void SetupEncounter(Encounter encounter)
@@ -24,9 +20,7 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log("Setting Up Encounter " + encounter.gameObject.name);
 
-        encounter.SpawnCharacters();
-
-        yield return new WaitUntil( () => encounter.GetCurrentState() == EncounterState.ACTIVE);
+        //encounter.SpawnCharacters();
 
         yield return null;
     }
