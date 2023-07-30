@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public static partial class Constants
 {
     public enum TeamID
@@ -63,6 +65,18 @@ public static partial class Constants
         Heal,
         SkipTurn,
         Attack,
+    }
+
+    public static List<AbilityID> GetAllowedAbilities(CharacterID characterID)
+    {
+        List<AbilityID> CharacterAbilities = new List<AbilityID>()
+        {
+            AbilityID.SkipTurn //all characters have this by default
+        };
+
+        //eventually we will add dynamically abilities based on weapon type and team 
+
+        return CharacterAbilities;
     }
 
     public static TeamID GetTeamByID(CharacterID ID)

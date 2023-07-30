@@ -10,3 +10,5 @@ public struct EncounterTeamData
     public List<CharacterID> Characters; //who are we spawning?
     public List<CharacterMarker> Markers; //where are they spawning?
 }
+
+

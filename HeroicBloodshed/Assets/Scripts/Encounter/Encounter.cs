@@ -4,8 +4,58 @@ using System.Collections.Generic;
 
 using Cinemachine;
 using UnityEngine;
-
 using static Constants;
+
+public class EncounterState
+{
+    private EncounterStateID _stateID;
+
+    private int _turnCount;
+
+    private TeamID _currentTeam;
+
+    public EncounterState()
+    {
+        _stateID = EncounterStateID.NONE;
+        _turnCount = 0;
+        _currentTeam = TeamID.Player; //the player always goes first 
+    }
+
+    public void To(EncounterStateID ID)
+    {
+        _stateID = ID;
+        Debug.Log("Encounter State: " + _stateID);
+    }
+    public EncounterStateID Get() { return _stateID; }
+
+    public TeamID IncrementTeam()
+    {
+        switch(_currentTeam)
+        {
+            case TeamID.Player:
+                _currentTeam = TeamID.Enemy;
+                break;
+            case TeamID.Enemy:
+                _currentTeam = TeamID.None;
+                break;
+        }
+
+        Debug.Log("Current Team: " + _currentTeam);
+
+        return _currentTeam;
+    }
+
+    public TeamID GetCurrentTeam() { return _currentTeam; }
+
+    public int IncrementTurnCount()
+    {
+        _turnCount += 1;
+        Debug.Log("Turn Count: " + _turnCount);
+        return _turnCount;
+    }
+
+    public int GetTurnCount() { return _turnCount; }
+}
 
 public class Encounter : MonoBehaviour
 {
@@ -20,32 +70,190 @@ public class Encounter : MonoBehaviour
     //create a queue for each team each combat loop
     private Dictionary<TeamID, Queue<CharacterComponent>> TeamQueues;
 
-    private int _turns = 0;
-
-    private TeamID _currentTeam = TeamID.Player; //player starts by default
-
-    private EncounterState _state = EncounterState.NONE;
+    private EncounterState _state;
 
     private void Awake()
+    {
+        _state = new EncounterState();
+
+        Setup();
+    }
+
+    //Public
+
+    //process spawn data and setup characters before we start the encounter 
+    public void Setup()
     {
         StartCoroutine(Coroutine_PerformSetup());
     }
 
-    private IEnumerator Coroutine_PerformSetup()
+    //this is called at the beginning of every turn
+    public void BuildTeamQueues()
     {
-        _state = EncounterState.SETUP;
+        StartCoroutine(Coroutine_BuildTeamQueues());
+    }
 
-        yield return PopulateCharacterMap();
+    //check queues and see if we have met the conditions to consider the encounter done
+    public void CheckWinConditions()
+    {
+        //if any queues are empty, then we are done with the encounter
+        foreach (Queue<CharacterComponent> TeamQueue in TeamQueues.Values)
+        {
+            if(TeamQueue.Count == 0)
+            {
+                //call delegate
+                OnEncounterComplete();
+                return;
+            }
+        }
 
-        yield return SetupTeamQueues();
+        PrepareTurn();
+    }
 
-        _state = EncounterState.READY;
+    //focus on the character who is currently performing an ability
+    public void PrepareTurn()
+    {
+        CharacterComponent currentCharacter = TeamQueues[_state.GetCurrentTeam()].Peek();
+
+        //create decal
+        currentCharacter.CreateDecal();
+
+        //focus camera on character
+        VirtualCamera.Follow = currentCharacter.transform;
+
+        //show appropriate UI
 
         ProcessTurn();
     }
 
-    private IEnumerator PopulateCharacterMap()
+    //allow every team to perform an ability, then build the queues again 
+    public void ProcessTurn()
     {
+        //foreach team
+        //foreach character in team
+
+        TeamID CurrentTeam = _state.GetCurrentTeam();
+
+        if(CurrentTeam == TeamID.Player)
+        {
+            ChooseCharacterAbility();
+            return;
+        }
+        else if(CurrentTeam == TeamID.Enemy)
+        {
+            ChooseCharacterAbility();
+            return;
+        }
+    }
+
+    //wait for player to choose an ability to perform 
+    public void WaitOnPlayerInput()
+    {
+        //hold until we receive input from player
+        _state.To(EncounterStateID.WAITING_ON_INPUT);
+    }
+
+    //non player AI will use this to determine their action for the turn 
+    public void ChooseCharacterAbility()
+    {
+        //choose ability on character stats/abilities, etc
+        _state.To(EncounterStateID.WAITING_ON_AI);
+
+        CharacterComponent currentCharacter = TeamQueues[_state.GetCurrentTeam()].Peek();
+
+        AbilityID chosenAbility = GetAllowedAbilities(currentCharacter.GetCharacterID())[0];
+
+        PerformCharacterAbility(chosenAbility);
+    }
+
+    //perform ability for the currently selected character
+    public void PerformCharacterAbility(AbilityID abilityID)
+    {
+        //block input, play animation, do effects, update character data to reflect, update UI
+        switch(abilityID)
+        {
+            default:
+                Debug.Log("Performing ability " + abilityID);
+                StartCoroutine(Coroutine_PerformAbility_SkipTurn());
+                break;
+        }
+    }
+
+    private IEnumerator Coroutine_PerformAbility_SkipTurn()
+    {
+        yield return new WaitForSeconds(2.5f);
+
+        CleanupTurn();
+    }
+
+    //deselect current character before starting a new turn 
+    public void CleanupTurn()
+    {
+        //deselect the current character 
+        CharacterComponent currentCharacter = TeamQueues[_state.GetCurrentTeam()].Peek();
+
+        //destroy any decals
+        currentCharacter.DestroyDecal();
+
+        //recenter camera
+        VirtualCamera.Follow = null;
+
+        //pop the current character from the queue 
+        TeamQueues[_state.GetCurrentTeam()].Dequeue();
+
+        //update the encounter state 
+        UpdateState();
+    }
+
+    public void UpdateState()
+    {
+        _state.IncrementTurnCount();
+
+        //check if we are done with this team 
+        if (TeamQueues[_state.GetCurrentTeam()].Count == 0)
+        {
+            Debug.Log(_state.GetCurrentTeam() + " team done");
+
+            if(_state.IncrementTeam() == TeamID.None)
+            {
+                //if all teams have gone, then time to rebuild queues
+                BuildTeamQueues();
+                return;
+            }
+        }
+
+        PrepareTurn();
+    }
+
+    //Callbacks
+
+    private void OnSetupComplete()
+    {
+        Debug.Log("Setup compete");
+        _state.To(EncounterStateID.BUSY);
+
+        BuildTeamQueues();
+    }
+
+    private void OnQueuesBuilt()
+    {
+        Debug.Log("Team Queues Built");
+        _state.To(EncounterStateID.BUSY);
+
+        CheckWinConditions();
+    }
+
+    private void OnEncounterComplete()
+    {
+        Debug.Log("Encounter Complete");
+        _state.To(EncounterStateID.DONE);
+    }
+
+    //Coroutines
+    private IEnumerator Coroutine_PerformSetup()
+    {
+        _state.To(EncounterStateID.SETUP);
+
         CharacterMap = new Dictionary<TeamID, List<CharacterComponent>>();
 
         foreach (EncounterTeamData teamData in Teams)
@@ -69,23 +277,23 @@ public class Encounter : MonoBehaviour
                         GameObject characterObject = CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
                         CharacterComponent characterComponent = AddComponentByTeam(teamData.Team, characterID, characterObject);
 
-                        yield return new WaitUntil( () => characterComponent != null );
+                        yield return new WaitUntil(() => characterComponent != null);
 
                         CharacterMap[teamData.Team].Add(characterComponent);
 
                         break;
                     }
-
-
-                    Debug.Log("Cannot spawn character, no more markers available");
                 }
             }
         }
 
+        yield return new WaitForSeconds(1.0f);
+
+        OnSetupComplete();
         yield return null;
     }
 
-    private IEnumerator SetupTeamQueues()
+    private IEnumerator Coroutine_BuildTeamQueues()
     {
         TeamQueues = new Dictionary<TeamID, Queue<CharacterComponent>>();
 
@@ -113,110 +321,15 @@ public class Encounter : MonoBehaviour
             }
         }
 
+        OnQueuesBuilt();
         yield return null;
     }
 
-    private void Update()
+    //Helpers
+
+    private static CharacterComponent AddComponentByTeam(TeamID teamID, CharacterID characterID, GameObject characterObject)
     {
-        if(Input.GetKeyDown(KeyCode.Space) && _state == EncounterState.WAITING_FOR_PLAYER)
-        {
-            AdvanceTurn();
-        }
-    }
-
-    public void AdvanceTurn()
-    {
-        CharacterComponent dequeuedCharacter = TeamQueues[_currentTeam].Dequeue();
-
-        dequeuedCharacter.DestroyDecal();//cleanup character after turn 
-
-        Debug.Log("End turn " + dequeuedCharacter);
-
-        if(ReadyForNextTurn())
-        {
-            Debug.Log("Advancing to next turn");
-            SetupTeamQueues();
-            NextTeam();
-            IncrementTurns();
-            ProcessTurn();
-        }
-        else
-        {
-            if (TeamQueues[_currentTeam].Count > 0) //if there are still characters in this team that have yet to go 
-            {
-                ProcessTurn();
-            }
-            else //if everyone is done, advance to the next team 
-            {
-                Debug.Log("next team");
-                NextTeam();
-                ProcessTurn();
-            }
-        }
-    }
-
-    public void ProcessTurn()
-    {
-        Debug.Log(_currentTeam + " turn");
-
-        switch (_currentTeam)
-        {
-            case TeamID.Player:
-                ProcessPlayerTurn();
-                break;
-            case TeamID.Enemy:
-                ProcessEnemyTurn();
-                break;
-        }
-    }
-
-    private void ProcessPlayerTurn()
-    {
-        SelectCharacter(GetCurrentCharacter());
-
-        Debug.Log("Waiting for player action");
-
-        _state = EncounterState.WAITING_FOR_PLAYER;
-    }
-
-    private void ProcessEnemyTurn()
-    {
-        SelectCharacter(GetCurrentCharacter());
-
-        Debug.Log("Performing enemy action");
-
-        _state = EncounterState.BUSY;
-
-        AdvanceTurn();
-    }
-
-    public void SelectCharacter(CharacterComponent characterComponent)
-    {
-        Debug.Log("Selecting character " + characterComponent.GetCharacterID());
-
-        //fix camera on the character
-        VirtualCamera.Follow = characterComponent.transform;
-
-        //turn on character decal
-        characterComponent.CreateDecal();
-    }
-
-    public CharacterComponent GetCurrentCharacter()
-    {
-        if(TeamQueues.ContainsKey(_currentTeam))
-        {
-            if(TeamQueues[_currentTeam].Count > 0 )
-            {
-                return TeamQueues[_currentTeam].Peek();
-            }
-        }
-
-        return null;
-    }
-
-    private CharacterComponent AddComponentByTeam(TeamID teamID, CharacterID characterID, GameObject characterObject)
-    {
-        switch(teamID)
+        switch (teamID)
         {
             case TeamID.Player:
                 PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
@@ -231,49 +344,12 @@ public class Encounter : MonoBehaviour
         }
     }
 
-    private GameObject CreateCharacterObject(string name, Transform markerTransform)
+    private static GameObject CreateCharacterObject(string name, Transform markerTransform)
     {
         GameObject characterObject = new GameObject(name);
         characterObject.transform.parent = markerTransform;
         characterObject.transform.localPosition = Vector3.zero;
         characterObject.transform.localRotation = Quaternion.identity;
         return characterObject;
-    }
-
-    public bool ReadyForNextTurn()
-    {
-        foreach (TeamID team in TeamQueues.Keys)
-        {
-            if (TeamQueues[team].Count > 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public int IncrementTurns()
-    {
-        Debug.Log("Turn " + _turns + 1);
-        return _turns++;
-    }
-
-    public TeamID GetCurrentTeam()
-    {
-        return _currentTeam;
-    }
-
-    private void NextTeam()
-    {
-        switch(_currentTeam)
-        {
-            case TeamID.Player:
-                _currentTeam = TeamID.Enemy;
-                break;
-            case TeamID.Enemy:
-                _currentTeam = TeamID.Player;
-                break;
-        }
     }
 }
