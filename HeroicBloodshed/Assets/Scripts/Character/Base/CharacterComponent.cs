@@ -13,26 +13,29 @@ public class CharacterComponent : MonoBehaviour
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
-    public void PerformSetup(CharacterID ID)
+    public void SetID(CharacterID ID)
     {
-        StartCoroutine(Coroutine_PerformSetup(ID));
+        _ID = ID;
     }
 
-    protected virtual IEnumerator Coroutine_PerformSetup(CharacterID ID)
+    public void PerformSetup()
     {
-        CharacterDefinition def = CharacterDefinition.Get(ID);
+        StartCoroutine(Coroutine_PerformSetup());
+    }
 
-        _ID = ID;
+    protected virtual IEnumerator Coroutine_PerformSetup()
+    {
+        CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         _health = def.BaseHealth;
 
-        _model = SetupModel();
+        SetupModel();
 
         yield return new WaitWhile(() => _model == null);
 
         Debug.Log("model created");
     
-        _weapon = SetupWeapon();
+        SetupWeapon();
 
         yield return new WaitWhile(() => _weapon == null);
 
@@ -48,17 +51,26 @@ public class CharacterComponent : MonoBehaviour
         yield return null;
     }
 
-    protected virtual CharacterModel SetupModel()
+    public virtual void SetupModel()
     {
         CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
         GameObject characterModelObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetCharacterModel(modelID)), this.transform);
 
-        return characterModelObject.GetComponent<CharacterModel>();
+        _model = characterModelObject.GetComponent<CharacterModel>();
     }
 
-    protected virtual CharacterWeapon SetupWeapon()
+    public virtual void DestroyModel()
+    {
+        GameObject modelObject = _model.gameObject;
+
+        _model = null;
+
+        GameObject.Destroy(modelObject);
+    }
+
+    public virtual void SetupWeapon()
     {
         CharacterWeaponAnchor anchor = _model.GetComponentInChildren<CharacterWeaponAnchor>();
 
@@ -78,12 +90,18 @@ public class CharacterComponent : MonoBehaviour
                     weaponComponent.SetID(weaponID);
                 }
 
-                return weaponComponent;
+                _weapon = weaponComponent;
             }
         }
+    }
 
-        Debug.Log("Weapon was null!");
-        return null;
+    public virtual void DestroyWeapon()
+    {
+        GameObject weaponObject = _weapon.gameObject;
+
+        _weapon = null;
+
+        GameObject.Destroy(weaponObject);
     }
 
     protected virtual void SetupAnimator()
@@ -120,7 +138,7 @@ public class CharacterComponent : MonoBehaviour
         }
     }
 
-    public CharacterID GetCharacterID()
+    public CharacterID GetID()
     {
         return _ID;
     }
