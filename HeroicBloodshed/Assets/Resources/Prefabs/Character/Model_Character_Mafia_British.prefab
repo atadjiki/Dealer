@@ -911,7 +911,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1541090540514307063}
   - component: {fileID: 6572100542302810217}
-  - component: {fileID: 8137524657028548407}
+  - component: {fileID: -37046378191284190}
+  - component: {fileID: 1354804403354499073}
   m_Layer: 3
   m_Name: Model_Character_Mafia_British
   m_TagString: Untagged
@@ -948,7 +949,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: a297d44f5b128b9469843fe1737fcfb4, type: 2}
   m_Controller: {fileID: 9100000, guid: 236c1f6f3c802504ca4a144abaed773d, type: 2}
   m_CullingMode: 1
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -957,7 +958,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8137524657028548407
+--- !u!114 &-37046378191284190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3729889453533377453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5169f7c7a59364a57ac19524f3d64bfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1354804403354499073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

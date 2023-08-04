@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1017551254211682}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -132,7 +132,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1097410464239230}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -221,7 +221,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1199193211550852}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -304,7 +304,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200904882002072}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -387,7 +387,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1206857248290240}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -433,6 +433,7 @@ GameObject:
   - component: {fileID: 33104624322080634}
   - component: {fileID: 23399592162570362}
   - component: {fileID: 64238331953550046}
+  - component: {fileID: 5527409790253694114}
   m_Layer: 0
   m_Name: Model_Weapon_Revolver
   m_TagString: Untagged
@@ -449,7 +450,7 @@ Transform:
   m_GameObject: {fileID: 1306635022288864}
   m_LocalRotation: {x: -0.75802624, y: 0.00000025331966, z: -0.00000076927216, w: 0.6522241}
   m_LocalPosition: {x: -0.037, y: 0.063, z: -0.03}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4456269772396222}
@@ -474,7 +475,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306635022288864}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -530,6 +531,27 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43222226589301668, guid: e34f30a1d055ae348bce6209f544adaf, type: 2}
+--- !u!114 &5527409790253694114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306635022288864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2102b381389cb42c2b5a0aba56122f2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Transform_Muzzle: {fileID: 0}
+  Prefab_Muzzle_FX: {fileID: 0}
+  SoundBank_Gunshot:
+  - {fileID: 8300000, guid: 10bda0cd8adc44938bf1b9bc8c5aed32, type: 3}
+  - {fileID: 8300000, guid: e4df6ed77e5d24e2085e07b58d14e488, type: 3}
+  - {fileID: 8300000, guid: 1cd235d70a8714157a39f4b22522b09a, type: 3}
+  - {fileID: 8300000, guid: 34287c1d6fda14d5e86818005a518346, type: 3}
+  - {fileID: 8300000, guid: 89d3b0fe64d4c486baa69786eec9e808, type: 3}
+  - {fileID: 8300000, guid: 189000a42bd3c4d9483b4b746bc59154, type: 3}
 --- !u!1 &1322639143531860
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +601,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322639143531860}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -662,7 +684,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1358870792786548}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -745,7 +767,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407457929326728}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -828,7 +850,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1612025256293470}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -912,7 +934,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734763199764308}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

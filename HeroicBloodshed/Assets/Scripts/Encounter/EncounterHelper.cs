@@ -6,8 +6,10 @@ using static Constants;
 
 public class EncounterHelper
 {
-    public static CharacterComponent AddComponentByTeam(TeamID teamID, CharacterID characterID, GameObject characterObject)
+    public static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
     {
+        TeamID teamID = GetTeamByID(characterID);
+
         switch (teamID)
         {
             case TeamID.Player:
@@ -30,5 +32,21 @@ public class EncounterHelper
         characterObject.transform.localPosition = Vector3.zero;
         characterObject.transform.localRotation = Quaternion.identity;
         return characterObject;
+    }
+
+    public static IEnumerator SpawnCharacters(Encounter encounter)
+    {
+        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        {
+            yield return characterComponent.SpawnCharacter();
+        }
+    }
+
+    public static IEnumerator DespawnCharacters(Encounter encounter)
+    {
+        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        {
+            yield return characterComponent.PerformCleanup();
+        }
     }
 }

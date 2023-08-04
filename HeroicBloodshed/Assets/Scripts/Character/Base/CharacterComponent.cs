@@ -7,7 +7,9 @@ public class CharacterComponent : MonoBehaviour
 {
     protected CharacterID _ID;
     protected CharacterModel _model;
+    protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
+    protected CharacterAnimator _animator;
     protected int _health = 0;
 
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
@@ -18,32 +20,58 @@ public class CharacterComponent : MonoBehaviour
         _ID = ID;
     }
 
-    public void PerformSetup()
-    {
-        StartCoroutine(Coroutine_PerformSetup());
-    }
-
-    protected virtual IEnumerator Coroutine_PerformSetup()
+    public virtual IEnumerator SpawnCharacter()
     {
         CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         _health = def.BaseHealth;
 
-        SetupModel();
+        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
+
+        ResourceRequest modelRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetCharacterModel(modelID));
+
+        yield return new WaitUntil(() => modelRequest.isDone);
+
+        GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, this.transform);
+
+        _model = modelPrefab.GetComponent<CharacterModel>();
+
+        Debug.Log("Setup " + _model);
 
         yield return new WaitWhile(() => _model == null);
+        
+        _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
 
-        Debug.Log("model created");
-    
-        SetupWeapon();
+        yield return new WaitWhile(() => _weaponAnchor == null);
 
-        yield return new WaitWhile(() => _weapon == null);
+        Debug.Log("Setup " + _weaponAnchor);
 
-        Debug.Log("weapon created");
+        if (def.AllowedWeapons.Length > 0)
+        {
+            WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length - 1)];
 
-        SetupAnimator();
+            ResourceRequest weaponRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetWeaponByID(weaponID));
 
-        if(onSetupComplete != null)
+            yield return new WaitUntil(() => weaponRequest.isDone);
+
+            GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, _weaponAnchor.transform);
+
+            _weapon = weaponPrefab.GetComponent<CharacterWeapon>();
+
+            yield return new WaitWhile(() => _weapon == null);
+
+            Debug.Log("Setup " + _weapon);
+
+            _weapon.SetID(weaponID);
+        }
+
+        _animator = modelPrefab.GetComponent<CharacterAnimator>();
+
+        yield return new WaitWhile(() => _animator == null);
+
+        _animator.Setup(AnimState.Idle, _weapon.GetID());
+
+        if (onSetupComplete != null)
         {
             onSetupComplete.Invoke(this);
         }
@@ -51,66 +79,35 @@ public class CharacterComponent : MonoBehaviour
         yield return null;
     }
 
-    public virtual void SetupModel()
+    public virtual IEnumerator PerformCleanup()
     {
-        CharacterDefinition def = CharacterDefinition.Get(_ID);
+        yield return DestroyModel();
 
-        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
-        GameObject characterModelObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetCharacterModel(modelID)), this.transform);
+        yield return DestroyWeapon();
 
-        _model = characterModelObject.GetComponent<CharacterModel>();
+        yield return null;
     }
 
-    public virtual void DestroyModel()
+    protected virtual IEnumerator DestroyModel()
     {
         GameObject modelObject = _model.gameObject;
 
         _model = null;
 
         GameObject.Destroy(modelObject);
+
+        yield return new WaitUntil( () => modelObject == null );
     }
 
-    public virtual void SetupWeapon()
-    {
-        CharacterWeaponAnchor anchor = _model.GetComponentInChildren<CharacterWeaponAnchor>();
-
-        if (anchor != null)
-        {
-            CharacterDefinition def = CharacterDefinition.Get(_ID);
-
-            if(def.AllowedWeapons.Length > 0)
-            {
-                WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length-1)];
-                GameObject characterWeaponObject = Instantiate(Resources.Load<GameObject>(PrefabPaths.GetWeaponByID(weaponID)), anchor.transform);
-
-                CharacterWeapon weaponComponent = characterWeaponObject.GetComponent<CharacterWeapon>();
-
-                if(weaponComponent != null)
-                {
-                    weaponComponent.SetID(weaponID);
-                }
-
-                _weapon = weaponComponent;
-            }
-        }
-    }
-
-    public virtual void DestroyWeapon()
+    protected virtual IEnumerator DestroyWeapon()
     {
         GameObject weaponObject = _weapon.gameObject;
 
         _weapon = null;
 
         GameObject.Destroy(weaponObject);
-    }
 
-    protected virtual void SetupAnimator()
-    {
-        CharacterAnimator animator = _model.GetComponent<CharacterAnimator>();
-        if (animator != null)
-        {
-            animator.Setup(AnimState.Idle, _weapon.GetID());
-        }
+        yield return new WaitUntil(() => weaponObject == null);
     }
 
     public virtual void CreateDecal()
