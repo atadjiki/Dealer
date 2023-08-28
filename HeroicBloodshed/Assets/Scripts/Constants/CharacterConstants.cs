@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public static partial class Constants
 {
@@ -116,5 +117,18 @@ public static partial class Constants
         }
 
         return CharacterID.NONE;
+    }
+
+    public static Color GetColorByTeam(TeamID teamID)
+    {
+        switch(teamID)
+        {
+            case TeamID.Player:
+                return Color.white;
+            case TeamID.Enemy:
+                return Color.black;
+            default:
+                return Color.clear;
+        }
     }
 }

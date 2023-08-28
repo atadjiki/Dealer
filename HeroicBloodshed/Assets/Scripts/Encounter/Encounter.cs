@@ -7,12 +7,8 @@ using UnityEngine;
 using static Constants;
 
 [Serializable]
-public class Encounter 
+public class Encounter : MonoBehaviour
 {
-    public delegate void EncounterStateChangedDelegate(EncounterStateID stateID);
-
-    public EncounterStateChangedDelegate OnStateChanged;
-    
     //collections
     //when setup is performed, store spawned characters
     private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
@@ -20,8 +16,7 @@ public class Encounter
     //create a queue for each team each combat loop
     private Dictionary<TeamID, Queue<CharacterComponent>> _queues;
 
-    //vars
-    private EncounterStateID _state;
+    private HashSet<EncounterStateTag> _tagContainer = new HashSet<EncounterStateTag>();
 
     private int _turnCount;
 
@@ -31,9 +26,15 @@ public class Encounter
 
     private Transform _defaultCameraFollow;
 
-    //perform setup
-    public Encounter(EncounterSetupData setupData)
+    public void Setup(EncounterSetupData setupData)
     {
+        StartCoroutine(Coroutine_Setup(setupData));
+    }
+
+    private IEnumerator Coroutine_Setup(EncounterSetupData setupData)
+    {
+        Debug.Log("Setting up encounter " + setupData.name);
+
         _virtualCamera = setupData.VirtualCamera;
         _defaultCameraFollow = _virtualCamera.Follow;
 
@@ -67,6 +68,10 @@ public class Encounter
                 }
             }
         }
+
+        yield return EncounterHelper.SpawnCharacters(this);
+
+        AddTag(EncounterStateTag.WAITING_FOR_INPUT);
     }
 
     //this is called at the beginning of every turn
@@ -189,20 +194,6 @@ public class Encounter
         return _turnCount++;
     }
 
-    //state ID
-    public EncounterStateID CurrentState()
-    {
-        return _state;
-    }
-
-    public void TrasitionToState()
-    {
-        if (OnStateChanged != null)
-        {
-            OnStateChanged.Invoke(_state);
-        }
-    }
-
     public void ToggleCamera(bool flag)
     {
         _virtualCamera.enabled = flag;
@@ -216,5 +207,24 @@ public class Encounter
     public void ResetCameraFollow()
     {
         SetCameraFollow(_defaultCameraFollow);
+    }
+
+
+    //state
+    public void AddTag(EncounterStateTag tag)
+    {
+        Debug.Log("Adding tag " + tag);
+        _tagContainer.Add(tag);
+    }
+
+    public void RemoveTag(EncounterStateTag tag)
+    {
+        Debug.Log("Removing tag " + tag);
+        _tagContainer.Remove(tag);
+    }
+
+    public bool HasTag(EncounterStateTag tag)
+    {
+        return _tagContainer.Contains(tag);
     }
 }

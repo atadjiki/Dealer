@@ -21,23 +21,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Character_Highlight
-  m_Shader: {fileID: 4800000, guid: 2b0250d0dc7b0b14995a44d95448b053, type: 3}
+  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _CLAMPADJUSTMENTS_ON
-  - _MULTIPLYBYLIGHTCOLOR_ON
-  - _POSTERIZECOLORS_ON
-  - _USEEMISSION_ON
-  - _USESHADOWS_ON
-  - _USESPECULAR_ON
+  m_ValidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses:
+  - DepthOnly
+  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -130,6 +128,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BlendOp: 0
     - _BlendStrength: 0.5
     - _BumpScale: 1
     - _ClampAdjustments: 1
@@ -141,8 +140,8 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _DstBlendAlpha: 0
+    - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _EmissionEffectScale: 1
     - _EmissionLightRatio: 0.1
     - _EmissionShadowRatio: 0.1
@@ -192,6 +191,7 @@ Material:
     - _RimLightRampOffset: 0.5
     - _RimLightShadowIntensity: 1
     - _RimRamp: 1
+    - _SampleGI: 0
     - _SaturationShift: 0
     - _SaturationVariation: 0
     - _ScrollEmission: 0
@@ -201,9 +201,9 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularRamp: 0
     - _SpecularRampOffset: 0.93
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _SrcBlendAlpha: 1
-    - _Surface: 0
+    - _Surface: 1
     - _SwayAmount: 0
     - _SwayFramerate: 10
     - _SwayNoiseScale: 1
@@ -245,10 +245,10 @@ Material:
     - _WaveSource: 3
     - _WaveSpeed: 3.004473
     - _WorkflowMode: 1
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _CustomNormalDirection: {r: 0, g: 1, b: 0, a: 0}
     - _CustomNormalEllipseSize: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
@@ -261,7 +261,7 @@ Material:
     - _GradientChannelMask: {r: 0, g: 1, b: 0, a: 0}
     - _GradientPositionalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _LightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.37201646, g: 1, b: 0.023584902, a: 0.5019608}
+    - _MainColor: {r: 0, g: 0, b: 0, a: 0.2509804}
     - _NearColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimLightColor: {r: 0.3921569, g: 0.3921569, b: 0.3921569, a: 1}
     - _ShadowColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}

@@ -12,6 +12,8 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterAnimator _animator;
     protected int _health = 0;
 
+    protected CapsuleCollider _collider;
+
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
@@ -35,6 +37,8 @@ public class CharacterComponent : MonoBehaviour
         GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, this.transform);
 
         _model = modelPrefab.GetComponent<CharacterModel>();
+
+        _model.Setup(def);
 
         Debug.Log("Setup " + _model);
 
@@ -71,12 +75,33 @@ public class CharacterComponent : MonoBehaviour
 
         _animator.Setup(AnimState.Idle, _weapon.GetID());
 
+        _collider = this.gameObject.AddComponent<CapsuleCollider>();
+
+        yield return new WaitWhile(() => _collider == null);
+
+        _collider.isTrigger = true;
+        _collider.radius = 0.5f;
+        _collider.height = 2.0f;
+        _collider.center = new Vector3(0, 1.0f, 0);
+
         if (onSetupComplete != null)
         {
             onSetupComplete.Invoke(this);
         }
 
         yield return null;
+    }
+
+    private void OnMouseOver()
+    {
+        Debug.Log("mouse over " + this.name);
+        _model.ToggleHighlight(true);
+    }
+
+    private void OnMouseExit()
+    {
+        Debug.Log("mouse exit " + this.name);
+        _model.ToggleHighlight(false);
     }
 
     public virtual IEnumerator PerformCleanup()
