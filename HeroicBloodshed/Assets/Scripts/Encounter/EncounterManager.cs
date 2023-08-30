@@ -15,6 +15,11 @@ public class EncounterManager : MonoBehaviour
 
     private bool _allowInput = false;
 
+    private void Awake()
+    {
+        Debug.Log("Press space to load encounter");
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -36,7 +41,6 @@ public class EncounterManager : MonoBehaviour
         _encounter.OnStateChanged += EncounterStateCallback;
         _encounter.SetSetupData(_setupData);
         _allowInput = true;
-        Debug.Log("Encounter loaded: " + _encounter.name);
     }
 
     private void EncounterStateCallback(EncounterState state)

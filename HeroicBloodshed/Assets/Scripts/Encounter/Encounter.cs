@@ -6,7 +6,6 @@ using UnityEngine;
 
 using static Constants;
 
-[Serializable]
 public class Encounter : MonoBehaviour
 {
     //event handling
@@ -14,9 +13,7 @@ public class Encounter : MonoBehaviour
     public EncounterStateDelegate OnStateChanged;
 
     //setup data
-    EncounterSetupData _setupData;
-
-    public void SetSetupData(EncounterSetupData setupData) { _setupData = setupData; }
+    private EncounterSetupData _setupData;
 
     //collections
     //when setup is performed, store spawned characters
@@ -27,21 +24,7 @@ public class Encounter : MonoBehaviour
 
     private EncounterState _pendingState = EncounterState.SETUP;
 
-    public EncounterState GetState() { return _pendingState; }
-
     private bool _busy = false;
-
-    private void SetState(EncounterState state)
-    {
-        Debug.Log("Transitioning from " + _pendingState + " to " + state);
-
-        _pendingState = state;
-
-        if (OnStateChanged != null)
-        {
-            OnStateChanged.Invoke(_pendingState);
-        }
-    }
 
     private int _turnCount;
 
@@ -50,6 +33,13 @@ public class Encounter : MonoBehaviour
     private CinemachineVirtualCamera _virtualCamera;
 
     private Transform _defaultCameraFollow;
+
+    private void Awake()
+    {
+        Debug.Log("Encounter created " + this.name);
+    }
+    //
+    //state machine
 
     public void TransitionState()
     {
@@ -102,6 +92,9 @@ public class Encounter : MonoBehaviour
             case EncounterState.UPDATE:
                 yield return Coroutine_UpdateEncounter();
                 break;
+            case EncounterState.DONE:
+                yield return Coroutine_Done();
+                break;
             default:
                 Debug.Log("No state transition available!");
                 break;
@@ -112,9 +105,12 @@ public class Encounter : MonoBehaviour
         yield return null;
     }
 
-    //state behavior
+    //state behaviors
+
     private IEnumerator Coroutine_Setup()
     {
+        Debug.Log("Performing Setup");
+
         _virtualCamera = _setupData.VirtualCamera;
         _defaultCameraFollow = _virtualCamera.Follow;
 
@@ -155,6 +151,8 @@ public class Encounter : MonoBehaviour
 
     private IEnumerator Coroutine_BuildQueues()
     {
+        Debug.Log("Building Queues");
+
         _queues = new Dictionary<TeamID, Queue<CharacterComponent>>();
 
         foreach (TeamID team in _characterMap.Keys)
@@ -180,6 +178,8 @@ public class Encounter : MonoBehaviour
 
     private IEnumerator Coroutine_CheckConditions()
     {
+        Debug.Log("Checking Conditions");
+
         //if any queues are empty, then we are done with the encounter
         foreach (Queue<CharacterComponent> TeamQueue in _queues.Values)
         {
@@ -197,58 +197,69 @@ public class Encounter : MonoBehaviour
 
     private IEnumerator Coroutine_Done()
     {
+        Debug.Log("Encounter done");
+
         SetState(EncounterState.DONE);
         yield return null;
     }
 
     private IEnumerator Coroutine_ProcessTurn()
     {
+        Debug.Log("Processing Turn");
+
         SetState(EncounterState.SELECT_CURRENT_CHARACTER);
         yield return null;
     }
 
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
+        Debug.Log("Selecting Current Character");
+
         SetState(EncounterState.CHOOSE_AI_ACTION);
         yield return null;
     }
 
     private IEnumerator Coroutine_WaitForInput()
     {
+        Debug.Log("Waiting For Player Input");
+
         yield return null;
     }
 
     private IEnumerator Coroutine_ChooseAIAction()
     {
+        Debug.Log("Choose AI Action");
+
         SetState(EncounterState.PERFORM_ACTION);
         yield return null;
     }
 
     private IEnumerator Coroutine_PerformAction()
     {
+        Debug.Log("Performing Action");
+
         SetState(EncounterState.DESELECT_CURRENT_CHARACTER);
         yield return null;
     }
 
     private IEnumerator Coroutine_DeselectCurrentCharacter()
     {
+        Debug.Log("Deselecting Current Character");
+
         SetState(EncounterState.UPDATE);
         yield return null;
     }
 
     private IEnumerator Coroutine_UpdateEncounter()
     {
+        Debug.Log("Updating Encounter");
+
         SetState(EncounterState.BUILD_QUEUES);
         yield return null;
     }
 
-    //getters/setters
-
-    //character
-    public CharacterComponent GetCurrentCharacter()
-    {
-        return _queues[_currentTeam].Peek();
-    }
+    //
+    //helpers
 
     public List<CharacterComponent> GetAllCharacters()
     {
@@ -262,42 +273,11 @@ public class Encounter : MonoBehaviour
         return result;
     }
 
-    public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID)
-    {
-        return _characterMap[teamID];
-    }
-
-    //team queue
-    public void PopCurrentCharacter()
-    {
-        _queues[_currentTeam].Dequeue();
-    }
-
     public bool IsQueueEmpty(TeamID teamID)
     {
-        if (_queues.ContainsKey(teamID))
-        {
-            return (_queues[teamID].Count == 0);
-        }
+        if (_queues.ContainsKey(teamID)) { return (_queues[teamID].Count == 0); }
 
         return false;
-    }
-
-
-    public bool IsCurrentTeamQueueEmpty()
-    {
-        return IsQueueEmpty(_currentTeam);
-    }
-
-    public List<CharacterComponent> GetAllCharactersInTeamQueue(TeamID teamID)
-    {
-        return new List<CharacterComponent>(_queues[teamID].ToArray());
-    }
-
-    //team
-    public TeamID GetCurrentTeam()
-    {
-        return _currentTeam;
     }
 
     public TeamID IncrementTeam()
@@ -315,29 +295,48 @@ public class Encounter : MonoBehaviour
         return _currentTeam;
     }
 
-    //turn count
-    public int GetTurnCount()
-    {
-        return _turnCount;
-    }
+    //getters/setters
 
-    public int IncrementTurnCount()
-    {
-        return _turnCount++;
-    }
+    //data
+    public void SetSetupData(EncounterSetupData setupData) { _setupData = setupData; }
 
-    public void ToggleCamera(bool flag)
-    {
-        _virtualCamera.enabled = flag;
-    }
+    //state
+    public EncounterState GetState() { return _pendingState; }
 
-    public void SetCameraFollow(Transform target)
+    private void SetState(EncounterState state)
     {
-        _virtualCamera.Follow = target;
-    }
+        Debug.Log("New pending state: " + _pendingState + " to " + state);
 
-    public void ResetCameraFollow()
-    {
-        SetCameraFollow(_defaultCameraFollow);
+        _pendingState = state;
+
+        if (OnStateChanged != null)
+        {
+            OnStateChanged.Invoke(_pendingState);
+        }
     }
+    //characters
+    public CharacterComponent GetCurrentCharacter() { return _queues[_currentTeam].Peek(); }
+
+    public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) { return _characterMap[teamID]; }
+
+    public List<CharacterComponent> GetAllCharactersInTeamQueue(TeamID teamID) { return new List<CharacterComponent>(_queues[teamID].ToArray()); }
+
+    public void PopCurrentCharacter() { _queues[_currentTeam].Dequeue(); }
+
+    //teams
+    public bool IsCurrentTeamQueueEmpty() { return IsQueueEmpty(_currentTeam); }
+
+    public TeamID GetCurrentTeam() { return _currentTeam; }
+
+    //turns
+    public int GetTurnCount() { return _turnCount; }
+
+    public int IncrementTurnCount() { return _turnCount++; }
+
+    //camera
+    public void ToggleCamera(bool flag) { _virtualCamera.enabled = flag; }
+
+    public void SetCameraFollow(Transform target) { _virtualCamera.Follow = target; }
+
+    public void ResetCameraFollow() { SetCameraFollow(_defaultCameraFollow); }
 }
