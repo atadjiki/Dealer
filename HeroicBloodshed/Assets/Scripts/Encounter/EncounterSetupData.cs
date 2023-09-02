@@ -17,5 +17,5 @@ public struct EncounterTeamData
 public class EncounterSetupData : MonoBehaviour
 {
     public List<EncounterTeamData> Teams;
-    public CinemachineVirtualCamera VirtualCamera;
+    public Transform CameraFollowTarget;
 }

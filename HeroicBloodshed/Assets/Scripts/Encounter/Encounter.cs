@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cinemachine;
 using UnityEngine;
 
 using static Constants;
@@ -9,7 +8,7 @@ using static Constants;
 public class Encounter : MonoBehaviour
 {
     //event handling
-    public delegate void EncounterStateDelegate(EncounterState encounterState);
+    public delegate void EncounterStateDelegate(Encounter encounter, EncounterState encounterState);
     public EncounterStateDelegate OnStateChanged;
 
     //setup data
@@ -30,9 +29,9 @@ public class Encounter : MonoBehaviour
 
     private TeamID _currentTeam;
 
-    private CinemachineVirtualCamera _virtualCamera;
+    private Transform cameraFollow;
 
-    private Transform _defaultCameraFollow;
+    private float _debugWaitTime = 1.0f;
 
     private void Awake()
     {
@@ -102,6 +101,12 @@ public class Encounter : MonoBehaviour
 
         _busy = false;
 
+        //broadcast state change
+        if (OnStateChanged != null)
+        {
+            OnStateChanged.Invoke(this, _pendingState);
+        }
+
         yield return null;
     }
 
@@ -111,13 +116,12 @@ public class Encounter : MonoBehaviour
     {
         Debug.Log("Performing Setup");
 
-        _virtualCamera = _setupData.VirtualCamera;
-        _defaultCameraFollow = _virtualCamera.Follow;
-
         _turnCount = 0;
         _currentTeam = TeamID.Player; //the player always goes first
 
         _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
+
+        cameraFollow = _setupData.CameraFollowTarget;
 
         foreach (EncounterTeamData teamData in _setupData.Teams)
         {
@@ -146,6 +150,8 @@ public class Encounter : MonoBehaviour
 
         yield return EncounterHelper.SpawnCharacters(this);
 
+        yield return new WaitForSeconds(_debugWaitTime);
+
         SetState(EncounterState.BUILD_QUEUES);
     }
 
@@ -157,28 +163,40 @@ public class Encounter : MonoBehaviour
 
         foreach (TeamID team in _characterMap.Keys)
         {
+            string debugString = "Queue - Team: " + team + "{ ";
+
             if (_queues.ContainsKey(team) == false)
             {
+
                 _queues.Add(team, new Queue<CharacterComponent>()); //create a new queue
 
                 foreach (CharacterComponent characterComponent in _characterMap[team])
                 {
                     if (characterComponent.IsAlive())
                     {
+                        debugString += characterComponent.GetID() + ", ";
                         _queues[team].Enqueue(characterComponent);
                     }
                 }
+                debugString += " }";
             }
+
+            Debug.Log(debugString);
         }
 
         SetState(EncounterState.CHECK_CONDITIONS);
-
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_CheckConditions()
     {
         Debug.Log("Checking Conditions");
+
+        if(GetTurnCount() > 0)
+        {
+            SetState(EncounterState.DONE);
+            yield break;
+        }
 
         //if any queues are empty, then we are done with the encounter
         foreach (Queue<CharacterComponent> TeamQueue in _queues.Values)
@@ -192,70 +210,72 @@ public class Encounter : MonoBehaviour
         }
 
         SetState(EncounterState.PROCESS_TURN);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_Done()
     {
-        Debug.Log("Encounter done");
-
         SetState(EncounterState.DONE);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_ProcessTurn()
     {
-        Debug.Log("Processing Turn");
-
         SetState(EncounterState.SELECT_CURRENT_CHARACTER);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
-        Debug.Log("Selecting Current Character");
+        Debug.Log("Current Character: " + GetCurrentCharacter().GetID() + " - " + GetCurrentTeam());
 
         SetState(EncounterState.CHOOSE_AI_ACTION);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_WaitForInput()
     {
-        Debug.Log("Waiting For Player Input");
-
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_ChooseAIAction()
     {
-        Debug.Log("Choose AI Action");
-
         SetState(EncounterState.PERFORM_ACTION);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_PerformAction()
     {
-        Debug.Log("Performing Action");
-
         SetState(EncounterState.DESELECT_CURRENT_CHARACTER);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_DeselectCurrentCharacter()
     {
-        Debug.Log("Deselecting Current Character");
+        PopCurrentCharacter();
 
+        Debug.Log(GetAllCharactersInTeamQueue(GetCurrentTeam()).Count + " characters left in queue for team " + GetCurrentTeam());
+;
         SetState(EncounterState.UPDATE);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     private IEnumerator Coroutine_UpdateEncounter()
     {
-        Debug.Log("Updating Encounter");
+        //if all queues are empty, rebuild them for the next loop
+        if(AreAllQueuesEmpty())
+        { 
+            IncrementTurnCount();
+            SetState(EncounterState.BUILD_QUEUES);
+        }
+        //if the current team's queue is empty, it's the next teams turn
+        else 
+        {
+            IncrementTeam();
+            SetState(EncounterState.PROCESS_TURN);
+        }
 
-        SetState(EncounterState.BUILD_QUEUES);
-        yield return null;
+        yield return new WaitForSeconds(_debugWaitTime);
     }
 
     //
@@ -280,6 +300,19 @@ public class Encounter : MonoBehaviour
         return false;
     }
 
+    public bool AreAllQueuesEmpty()
+    {
+        foreach(Queue<CharacterComponent> queue in _queues.Values)
+        {
+            if(queue.Count != 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public TeamID IncrementTeam()
     {
         switch (_currentTeam)
@@ -291,6 +324,8 @@ public class Encounter : MonoBehaviour
                 _currentTeam = TeamID.None;
                 break;
         }
+
+        Debug.Log("Current Team: " + _currentTeam);
 
         return _currentTeam;
     }
@@ -308,14 +343,20 @@ public class Encounter : MonoBehaviour
         Debug.Log("New pending state: " + _pendingState + " to " + state);
 
         _pendingState = state;
-
-        if (OnStateChanged != null)
-        {
-            OnStateChanged.Invoke(_pendingState);
-        }
     }
     //characters
-    public CharacterComponent GetCurrentCharacter() { return _queues[_currentTeam].Peek(); }
+    public CharacterComponent GetCurrentCharacter()
+    {
+        if(_queues[_currentTeam].Count > 0)
+        {
+            return _queues[_currentTeam].Peek();
+        }
+        else
+        {
+            return null;
+        }
+
+    }
 
     public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) { return _characterMap[teamID]; }
 
@@ -331,12 +372,9 @@ public class Encounter : MonoBehaviour
     //turns
     public int GetTurnCount() { return _turnCount; }
 
-    public int IncrementTurnCount() { return _turnCount++; }
-
-    //camera
-    public void ToggleCamera(bool flag) { _virtualCamera.enabled = flag; }
-
-    public void SetCameraFollow(Transform target) { _virtualCamera.Follow = target; }
-
-    public void ResetCameraFollow() { SetCameraFollow(_defaultCameraFollow); }
+    public int IncrementTurnCount()
+    {
+        Debug.Log("Turn Count: " + (_turnCount + 1));
+        return _turnCount++;
+    }
 }

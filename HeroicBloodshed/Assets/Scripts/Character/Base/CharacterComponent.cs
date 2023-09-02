@@ -40,7 +40,7 @@ public class CharacterComponent : MonoBehaviour
 
         _model.Setup(def);
 
-        Debug.Log("Setup " + _model);
+       // Debug.Log("Setup " + _model);
 
         yield return new WaitWhile(() => _model == null);
         
@@ -48,7 +48,7 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitWhile(() => _weaponAnchor == null);
 
-        Debug.Log("Setup " + _weaponAnchor);
+      //  Debug.Log("Setup " + _weaponAnchor);
 
         if (def.AllowedWeapons.Length > 0)
         {
@@ -64,7 +64,7 @@ public class CharacterComponent : MonoBehaviour
 
             yield return new WaitWhile(() => _weapon == null);
 
-            Debug.Log("Setup " + _weapon);
+        //    Debug.Log("Setup " + _weapon);
 
             _weapon.SetID(weaponID);
         }

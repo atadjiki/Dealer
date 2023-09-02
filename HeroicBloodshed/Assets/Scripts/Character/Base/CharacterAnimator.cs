@@ -29,6 +29,6 @@ public class CharacterAnimator : MonoBehaviour
 
         _animator.CrossFade(anim.ToString(), 0.0f);
 
-        Debug.Log("Transitioning to anim " + anim);
+       // Debug.Log("Transitioning to anim " + anim);
     }
 }
