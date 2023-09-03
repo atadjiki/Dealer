@@ -120,7 +120,14 @@ public class EncounterManager : MonoBehaviour
         encounter = null;
     }
 
+    public void FollowCharacter(CharacterComponent characterComponent)
+    {
+        Transform characterTransform = characterComponent.transform;
+        SetCameraFollow(characterTransform);
+    }
+
+
     private void ToggleCamera(bool flag) { _virtualCamera.enabled = flag; }
     private void SetCameraFollow(Transform target) { _virtualCamera.Follow = target; }
-    private void ResetCameraFollow() { SetCameraFollow(this.transform); }
+    public void ResetCameraFollow() { SetCameraFollow(this.transform); }
 }

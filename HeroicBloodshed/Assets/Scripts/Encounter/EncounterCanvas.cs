@@ -94,10 +94,38 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     private void PopulateQueues(Encounter encounter)
     {
         Panel_Encounter.SetActive(true);
+
+        //add a portrait for each character in the player queue
+        foreach(CharacterComponent character in encounter.GetAllCharactersInTeamQueue(TeamID.Player))
+        {
+            GameObject portraitObject = Instantiate(Prefab_Portrait, Panel_PlayerQueue.transform);
+            EncounterPortraitPanel portraitPanel = portraitObject.GetComponent<EncounterPortraitPanel>();
+            portraitPanel.Setup(character);
+        }
+
+        //add a line of text for reach character in the enemy queue
+        foreach(CharacterComponent character in encounter.GetAllCharactersInTeamQueue(TeamID.Enemy))
+        {
+            GameObject textObject = Instantiate(Prefab_EnemyText, Panel_EnemyQueue.transform);
+            TextMeshProUGUI textMesh = textObject.GetComponent<TextMeshProUGUI>();
+            textMesh.text = character.GetID().ToString();
+        }
     }
 
     private void HideAll()
     {
         Panel_Encounter.SetActive(false);
+
+        //first, make sure queues are empty
+        DestroyTransformChildren(Panel_PlayerQueue.transform);
+        DestroyTransformChildren(Panel_EnemyQueue.transform);
+    }
+
+    private void DestroyTransformChildren(Transform parentTransform)
+    {
+        for (int i = 0; i < parentTransform.childCount; i++)
+        {
+            DestroyImmediate(parentTransform.GetChild(i).gameObject);
+        }
     }
 }

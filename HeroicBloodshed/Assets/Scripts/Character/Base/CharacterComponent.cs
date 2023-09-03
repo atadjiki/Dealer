@@ -94,13 +94,11 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnMouseOver()
     {
-        Debug.Log("mouse over " + this.name);
         _model.ToggleHighlight(true);
     }
 
     private void OnMouseExit()
     {
-        Debug.Log("mouse exit " + this.name);
         _model.ToggleHighlight(false);
     }
 

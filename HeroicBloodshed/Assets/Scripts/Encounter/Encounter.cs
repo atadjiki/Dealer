@@ -195,12 +195,6 @@ public class Encounter : MonoBehaviour, IEncounter
 
     private IEnumerator Coroutine_CheckConditions()
     {
-        //if(GetTurnCount() > 0)
-        //{
-        //    SetPendingState(EncounterState.DONE);
-        //    yield break;
-        //}
-
         //if any queues are empty, then we are done with the encounter
         foreach (Queue<CharacterComponent> TeamQueue in _queues.Values)
         {

@@ -126,7 +126,7 @@ public static partial class Constants
             case TeamID.Player:
                 return Color.white;
             case TeamID.Enemy:
-                return Color.black;
+                return Color.red;
             default:
                 return Color.clear;
         }
