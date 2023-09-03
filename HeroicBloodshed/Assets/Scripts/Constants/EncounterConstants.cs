@@ -2,15 +2,15 @@ public static partial class Constants
 {
     public enum EncounterState
     {
-        SETUP,//waiting for encounter to begin
+        INIT,
+
+        SETUP_COMPLETE,//waiting for encounter to begin
 
         BUILD_QUEUES,//build queues to see which characters have actions this turn
 
         CHECK_CONDITIONS,//check queues to see if the encounter can be declared Done
 
         DONE,//the encounter is done and we can exit
-
-        PROCESS_TURN,//see which team queue to process
          
         SELECT_CURRENT_CHARACTER,//select the next character in the current team queue
 

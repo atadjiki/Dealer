@@ -5,10 +5,15 @@ using UnityEngine;
 
 using static Constants;
 
-public class Encounter : MonoBehaviour
+public interface IEncounter
+{
+    public IEnumerator HandleInit();
+}
+
+public class Encounter : MonoBehaviour, IEncounter
 {
     //event handling
-    public delegate void EncounterStateDelegate(Encounter encounter, EncounterState encounterState);
+    public delegate void EncounterStateDelegate(Encounter encounter);
     public EncounterStateDelegate OnStateChanged;
 
     //setup data
@@ -21,7 +26,7 @@ public class Encounter : MonoBehaviour
     //create a queue for each team each combat loop
     private Dictionary<TeamID, Queue<CharacterComponent>> _queues;
 
-    private EncounterState _pendingState = EncounterState.SETUP;
+    private EncounterState _pendingState = EncounterState.INIT;
 
     private bool _busy = false;
 
@@ -29,16 +34,51 @@ public class Encounter : MonoBehaviour
 
     private TeamID _currentTeam;
 
-    private Transform cameraFollow;
+    private Transform _cameraFollow;
 
-    private float _debugWaitTime = 1.0f;
-
-    private void Awake()
-    {
-        Debug.Log("Encounter created " + this.name);
-    }
     //
     //state machine
+
+    public IEnumerator HandleInit()
+    {
+        Debug.Log("Encounter init " + this.name);
+
+        yield return new WaitForFixedUpdate();
+
+        _turnCount = 0;
+        _currentTeam = TeamID.Player; //the player always goes first
+
+        _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
+
+        _cameraFollow = _setupData.CameraFollowTarget;
+
+        foreach (EncounterTeamData teamData in _setupData.Teams)
+        {
+            _characterMap.Add(teamData.Team, new List<CharacterComponent>());
+
+            //spawn characters for each team 
+            foreach (CharacterID characterID in teamData.Characters)
+            {
+                //see if we have a marker available to spawn them in
+                foreach (CharacterMarker marker in teamData.Markers)
+                {
+                    if (marker.IsOccupied() == false)
+                    {
+                        marker.SetOccupied(true);
+
+                        GameObject characterObject = EncounterHelper.CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
+                        CharacterComponent characterComponent = EncounterHelper.AddComponentByTeam(characterID, characterObject);
+
+                        _characterMap[teamData.Team].Add(characterComponent);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        yield return EncounterHelper.SpawnCharacters(this);
+    }
 
     public void TransitionState()
     {
@@ -61,17 +101,17 @@ public class Encounter : MonoBehaviour
 
         switch(_pendingState)
         {
-            case EncounterState.SETUP:
-                yield return Coroutine_Setup();
+            case EncounterState.INIT:
+                yield return Coroutine_Init();
+                break;
+            case EncounterState.SETUP_COMPLETE:
+                yield return Coroutine_SetupComplete();
                 break;
             case EncounterState.BUILD_QUEUES:
                 yield return Coroutine_BuildQueues();
                 break;
             case EncounterState.CHECK_CONDITIONS:
                 yield return Coroutine_CheckConditions();
-                break;
-            case EncounterState.PROCESS_TURN:
-                yield return Coroutine_ProcessTurn();
                 break;
             case EncounterState.SELECT_CURRENT_CHARACTER:
                 yield return Coroutine_SelectCurrentCharacter();
@@ -104,61 +144,26 @@ public class Encounter : MonoBehaviour
         //broadcast state change
         if (OnStateChanged != null)
         {
-            OnStateChanged.Invoke(this, _pendingState);
+            OnStateChanged.Invoke(this);
         }
 
         yield return null;
     }
 
-    //state behaviors
-
-    private IEnumerator Coroutine_Setup()
+    private IEnumerator Coroutine_Init()
     {
-        Debug.Log("Performing Setup");
+        SetPendingState(EncounterState.SETUP_COMPLETE);
+        yield return null;
+    }
 
-        _turnCount = 0;
-        _currentTeam = TeamID.Player; //the player always goes first
-
-        _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
-
-        cameraFollow = _setupData.CameraFollowTarget;
-
-        foreach (EncounterTeamData teamData in _setupData.Teams)
-        {
-            _characterMap.Add(teamData.Team, new List<CharacterComponent>());
-
-            //spawn characters for each team 
-            foreach (CharacterID characterID in teamData.Characters)
-            {
-                //see if we have a marker available to spawn them in
-                foreach (CharacterMarker marker in teamData.Markers)
-                {
-                    if (marker.IsOccupied() == false)
-                    {
-                        marker.SetOccupied(true);
-
-                        GameObject characterObject = EncounterHelper.CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
-                        CharacterComponent characterComponent = EncounterHelper.AddComponentByTeam(characterID, characterObject);
-
-                        _characterMap[teamData.Team].Add(characterComponent);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        yield return EncounterHelper.SpawnCharacters(this);
-
-        yield return new WaitForSeconds(_debugWaitTime);
-
-        SetState(EncounterState.BUILD_QUEUES);
+    private IEnumerator Coroutine_SetupComplete()
+    {
+        SetPendingState(EncounterState.BUILD_QUEUES);
+        yield return null;
     }
 
     private IEnumerator Coroutine_BuildQueues()
     {
-        Debug.Log("Building Queues");
-
         _queues = new Dictionary<TeamID, Queue<CharacterComponent>>();
 
         foreach (TeamID team in _characterMap.Keys)
@@ -184,19 +189,17 @@ public class Encounter : MonoBehaviour
             Debug.Log(debugString);
         }
 
-        SetState(EncounterState.CHECK_CONDITIONS);
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.CHECK_CONDITIONS);
+        yield return null;
     }
 
     private IEnumerator Coroutine_CheckConditions()
     {
-        Debug.Log("Checking Conditions");
-
-        if(GetTurnCount() > 0)
-        {
-            SetState(EncounterState.DONE);
-            yield break;
-        }
+        //if(GetTurnCount() > 0)
+        //{
+        //    SetPendingState(EncounterState.DONE);
+        //    yield break;
+        //}
 
         //if any queues are empty, then we are done with the encounter
         foreach (Queue<CharacterComponent> TeamQueue in _queues.Values)
@@ -204,50 +207,53 @@ public class Encounter : MonoBehaviour
             if (TeamQueue.Count == 0)
             {
                 //call delegate
-                SetState(EncounterState.DONE);
+                SetPendingState(EncounterState.DONE);
                 yield break;
             }
         }
 
-        SetState(EncounterState.PROCESS_TURN);
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
     }
 
     private IEnumerator Coroutine_Done()
     {
-        SetState(EncounterState.DONE);
-        yield return new WaitForSeconds(_debugWaitTime);
-    }
-
-    private IEnumerator Coroutine_ProcessTurn()
-    {
-        SetState(EncounterState.SELECT_CURRENT_CHARACTER);
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.DONE);
+        yield return null;
     }
 
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
         Debug.Log("Current Character: " + GetCurrentCharacter().GetID() + " - " + GetCurrentTeam());
 
-        SetState(EncounterState.CHOOSE_AI_ACTION);
-        yield return new WaitForSeconds(_debugWaitTime);
+        switch(GetCurrentTeam())
+        {
+            case TeamID.Player:
+                SetPendingState(EncounterState.WAIT_FOR_PLAYER_INPUT);
+                break;
+            default:
+                SetPendingState(EncounterState.CHOOSE_AI_ACTION);
+                break;
+        }
+
+        yield return null;
     }
 
     private IEnumerator Coroutine_WaitForInput()
     {
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.PERFORM_ACTION);
+        yield return null;
     }
 
     private IEnumerator Coroutine_ChooseAIAction()
     {
-        SetState(EncounterState.PERFORM_ACTION);
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.PERFORM_ACTION);
+        yield return null;
     }
 
     private IEnumerator Coroutine_PerformAction()
     {
-        SetState(EncounterState.DESELECT_CURRENT_CHARACTER);
-        yield return new WaitForSeconds(_debugWaitTime);
+        SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
+        yield return null;
     }
 
     private IEnumerator Coroutine_DeselectCurrentCharacter()
@@ -255,9 +261,9 @@ public class Encounter : MonoBehaviour
         PopCurrentCharacter();
 
         Debug.Log(GetAllCharactersInTeamQueue(GetCurrentTeam()).Count + " characters left in queue for team " + GetCurrentTeam());
-;
-        SetState(EncounterState.UPDATE);
-        yield return new WaitForSeconds(_debugWaitTime);
+
+        SetPendingState(EncounterState.UPDATE);
+        yield return null;
     }
 
     private IEnumerator Coroutine_UpdateEncounter()
@@ -266,16 +272,22 @@ public class Encounter : MonoBehaviour
         if(AreAllQueuesEmpty())
         { 
             IncrementTurnCount();
-            SetState(EncounterState.BUILD_QUEUES);
+            ResetTeam();
+            SetPendingState(EncounterState.BUILD_QUEUES);
         }
         //if the current team's queue is empty, it's the next teams turn
-        else 
+        else if(IsCurrentTeamQueueEmpty())
         {
             IncrementTeam();
-            SetState(EncounterState.PROCESS_TURN);
+            SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
+        }
+        //if we still have characters left in the current team's queue, do nothing here
+        else
+        {
+            SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
         }
 
-        yield return new WaitForSeconds(_debugWaitTime);
+        yield return null;
     }
 
     //
@@ -313,6 +325,13 @@ public class Encounter : MonoBehaviour
         return true;
     }
 
+    public void ResetTeam()
+    {
+        _currentTeam = TeamID.Player;
+
+        Debug.Log("Current Team: " + _currentTeam);
+    }
+
     public TeamID IncrementTeam()
     {
         switch (_currentTeam)
@@ -338,10 +357,8 @@ public class Encounter : MonoBehaviour
     //state
     public EncounterState GetState() { return _pendingState; }
 
-    private void SetState(EncounterState state)
+    private void SetPendingState(EncounterState state)
     {
-        Debug.Log("New pending state: " + _pendingState + " to " + state);
-
         _pendingState = state;
     }
     //characters
@@ -371,6 +388,11 @@ public class Encounter : MonoBehaviour
 
     //turns
     public int GetTurnCount() { return _turnCount; }
+
+    public Transform GetCameraFollow()
+    {
+        return _cameraFollow;
+    }
 
     public int IncrementTurnCount()
     {

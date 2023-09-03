@@ -175,6 +175,11 @@ public class CharacterComponent : MonoBehaviour
         return _health;
     }
 
+    public virtual bool IsDead()
+    {
+        return _health == 0;
+    }
+
     public virtual bool IsAlive()
     {
         return _health > 0;
