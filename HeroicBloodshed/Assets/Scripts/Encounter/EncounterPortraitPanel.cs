@@ -32,8 +32,27 @@ public class EncounterPortraitPanel : MonoBehaviour, IPointerEnterHandler, IPoin
         Text_Name.text = characterID.ToString().Trim().ToLower();
 
         Image_Portrait.color = GetColorByTeam(team);
+    }
 
-        Panel_Dead.SetActive(character.IsDead());
+    public void SetActive()
+    {
+        Panel_Dead.SetActive(false);
+        Panel_Active.SetActive(true);
+        Panel_Inactive.SetActive(false);
+    }
+
+    public void SetInactive()
+    {
+        Panel_Dead.SetActive(false);
+        Panel_Active.SetActive(false);
+        Panel_Inactive.SetActive(true);
+    }
+
+    public void SetDead()
+    {
+        Panel_Dead.SetActive(true);
+        Panel_Active.SetActive(false);
+        Panel_Inactive.SetActive(false);
     }
 
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

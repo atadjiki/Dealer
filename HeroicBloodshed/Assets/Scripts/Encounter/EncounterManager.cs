@@ -78,6 +78,8 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
                 SetCameraFollow(encounter.GetCurrentCharacter().transform);
+                CharacterComponent character = encounter.GetCurrentCharacter();
+                character.CreateDecal();
                 yield return new WaitForSeconds(0.25f);
                 break;
             }
@@ -89,6 +91,8 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
                 SetCameraFollow(encounter.GetCameraFollow());
+                CharacterComponent character = encounter.GetCurrentCharacter();
+                character.DestroyDecal();
                 break;
             }
             case EncounterState.DONE:

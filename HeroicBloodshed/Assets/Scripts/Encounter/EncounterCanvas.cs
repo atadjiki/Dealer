@@ -21,6 +21,11 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     [SerializeField] private GameObject Prefab_Portrait;
     [SerializeField] private GameObject Prefab_EnemyText;
 
+    private void Awake()
+    {
+        HideAll();
+    }
+
     public IEnumerator HandleInit()
     {
         Panel_Encounter.SetActive(false);
@@ -96,19 +101,37 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         Panel_Encounter.SetActive(true);
 
         //add a portrait for each character in the player queue
-        foreach(CharacterComponent character in encounter.GetAllCharactersInTeamQueue(TeamID.Player))
+        foreach (CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Player))
         {
             GameObject portraitObject = Instantiate(Prefab_Portrait, Panel_PlayerQueue.transform);
             EncounterPortraitPanel portraitPanel = portraitObject.GetComponent<EncounterPortraitPanel>();
             portraitPanel.Setup(character);
+
+            if(character == encounter.GetCurrentCharacter())
+            {
+                portraitPanel.SetActive();
+            }
+            else if(character.IsDead())
+            {
+                portraitPanel.SetDead();
+            }
+            else
+            {
+                portraitPanel.SetInactive();
+            }
         }
 
         //add a line of text for reach character in the enemy queue
-        foreach(CharacterComponent character in encounter.GetAllCharactersInTeamQueue(TeamID.Enemy))
+        foreach(CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Enemy))
         {
             GameObject textObject = Instantiate(Prefab_EnemyText, Panel_EnemyQueue.transform);
             TextMeshProUGUI textMesh = textObject.GetComponent<TextMeshProUGUI>();
             textMesh.text = character.GetID().ToString();
+
+            if(character.IsDead())
+            {
+                textMesh.color = Color.grey;
+            }
         }
     }
 
