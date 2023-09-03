@@ -38,6 +38,7 @@ public class EncounterManager : MonoBehaviour
         GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, null);
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
         EncounterCanvas canvas = canvasObject.GetComponent<EncounterCanvas>();
+        canvas.OnAbilitySelected += OnAbilitySelected;
 
         //generate encounter and attach to handler
         Encounter encounter = _setupData.gameObject.AddComponent<Encounter>();
@@ -55,11 +56,16 @@ public class EncounterManager : MonoBehaviour
         yield return null;
     }
 
+    private void OnAbilitySelected(AbilityID abilityID)
+    {
+        Debug.Log("ability selected " + abilityID);
+
+
+    }
+
     private IEnumerator Coroutine_WaitForPlayerInput()
     {
         Debug.Log("Waiting for player input");
-
-        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
         yield return null;
     }
@@ -90,7 +96,7 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
             {
                 yield return Coroutine_WaitForPlayerInput();
-                break;
+                yield break;
             }
             case EncounterState.CHOOSE_AI_ACTION:
             {

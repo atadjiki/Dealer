@@ -7,6 +7,10 @@ using static Constants;
 
 public class EncounterCanvas : MonoBehaviour, IEncounter
 {
+    //event handling
+    public delegate void AbilitySelectedDelegate(AbilityID abilityID);
+    public AbilitySelectedDelegate OnAbilitySelected;
+
     //elements
     [Header("Elements")]
     [SerializeField] private Image Panel_Fade;
@@ -28,6 +32,11 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     private void Awake()
     {
         HideAll();
+    }
+
+    private void OnDestroy()
+    {
+        OnAbilitySelected = null;
     }
 
     public IEnumerator HandleInit()
@@ -117,7 +126,10 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
     private void OnAbilityButtonClicked(EncounterAbilityButton button)
     {
-        Debug.Log("ability selected " + button.GetAbilityID());
+        if(OnAbilitySelected != null)
+        {
+            OnAbilitySelected.Invoke(button.GetAbilityID());
+        }
     }
 
     private void PopulateQueues(Encounter encounter)
