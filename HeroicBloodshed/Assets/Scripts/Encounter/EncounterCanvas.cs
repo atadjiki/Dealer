@@ -17,6 +17,8 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     [SerializeField] private GameObject Panel_PlayerQueue;
     [SerializeField] private GameObject Panel_EnemyQueue;
 
+    [SerializeField] private TextMeshProUGUI Text_StateDetail;
+
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_Portrait;
     [SerializeField] private GameObject Prefab_EnemyText;
@@ -66,33 +68,23 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             }
         }
 
+        Text_StateDetail.text = PopulateStateDetailText(state);
+
         yield return null;
     }
 
-    private IEnumerator Coroutine_PerformFadeToBlack()
+    private string PopulateStateDetailText(EncounterState state)
     {
-        StopCoroutine("Coroutine_PerformFadeToClear");
-        yield return Coroutine_PerformFadeBetween(Color.clear, Color.black, 0.25f);
-    }
-
-    private IEnumerator Coroutine_PerformFadeToClear()
-    {
-        StopCoroutine("Coroutine_PerformFadeToClear");
-        yield return Coroutine_PerformFadeBetween(Color.black, Color.clear, 0.25f);
-    }
-
-    private IEnumerator Coroutine_PerformFadeBetween(Color to, Color from, float duration)
-    {
-        Debug.Log("Fade from " + to.ToString() + " to " + from.ToString());
-        Panel_Fade.color = to;
-
-        float currentTime = 0;
-
-        while(currentTime < duration)
+        switch(state)
         {
-            currentTime += Time.deltaTime;
-            Panel_Fade.color = Color.Lerp(to, from, currentTime/duration);
-            yield return null;
+            case EncounterState.PERFORM_ACTION:
+                return "performing action...";
+            case EncounterState.WAIT_FOR_PLAYER_INPUT:
+                return "waiting for input (space)...";
+            case EncounterState.CHOOSE_AI_ACTION:
+                return "AI choosing action...";
+            default:
+                return string.Empty;
         }
     }
 
@@ -137,11 +129,39 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
     private void HideAll()
     {
-        Panel_Encounter.SetActive(false);
-
         //first, make sure queues are empty
         DestroyTransformChildren(Panel_PlayerQueue.transform);
         DestroyTransformChildren(Panel_EnemyQueue.transform);
+
+        //clear text
+        Text_StateDetail.text = string.Empty;
+    }
+
+    private IEnumerator Coroutine_PerformFadeToBlack()
+    {
+        StopCoroutine("Coroutine_PerformFadeToClear");
+        yield return Coroutine_PerformFadeBetween(Color.clear, Color.black, 0.25f);
+    }
+
+    private IEnumerator Coroutine_PerformFadeToClear()
+    {
+        StopCoroutine("Coroutine_PerformFadeToClear");
+        yield return Coroutine_PerformFadeBetween(Color.black, Color.clear, 0.25f);
+    }
+
+    private IEnumerator Coroutine_PerformFadeBetween(Color to, Color from, float duration)
+    {
+        Debug.Log("Fade from " + to.ToString() + " to " + from.ToString());
+        Panel_Fade.color = to;
+
+        float currentTime = 0;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            Panel_Fade.color = Color.Lerp(to, from, currentTime / duration);
+            yield return null;
+        }
     }
 
     private void DestroyTransformChildren(Transform parentTransform)

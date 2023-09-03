@@ -70,9 +70,14 @@ public class EncounterManager : MonoBehaviour
 
         switch (state)
         {
+            case EncounterState.BUILD_QUEUES:
+            {
+                SetCameraFollow(encounter.GetCameraFollow());
+                break;
+            }
             case EncounterState.PERFORM_ACTION:
             {
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(1f);
                 break;
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
@@ -80,7 +85,6 @@ public class EncounterManager : MonoBehaviour
                 SetCameraFollow(encounter.GetCurrentCharacter().transform);
                 CharacterComponent character = encounter.GetCurrentCharacter();
                 character.CreateDecal();
-                yield return new WaitForSeconds(0.25f);
                 break;
             }
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
@@ -88,9 +92,13 @@ public class EncounterManager : MonoBehaviour
                 yield return Coroutine_WaitForPlayerInput();
                 break;
             }
+            case EncounterState.CHOOSE_AI_ACTION:
+            {
+                yield return new WaitForSeconds(1.0f);
+                break;
+            }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
-                SetCameraFollow(encounter.GetCameraFollow());
                 CharacterComponent character = encounter.GetCurrentCharacter();
                 character.DestroyDecal();
                 break;
@@ -105,6 +113,8 @@ public class EncounterManager : MonoBehaviour
                 break;
             }
         }
+
+        yield return new WaitForSeconds(0.2f);
 
         encounter.TransitionState();
 
