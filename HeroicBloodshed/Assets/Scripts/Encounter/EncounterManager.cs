@@ -57,7 +57,7 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator Coroutine_WaitForPlayerInput()
     {
-        Debug.Log("Waiting for player input (spacebar)");
+        Debug.Log("Waiting for player input");
 
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 

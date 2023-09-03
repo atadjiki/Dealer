@@ -10,18 +10,20 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     //elements
     [Header("Elements")]
     [SerializeField] private Image Panel_Fade;
-    [SerializeField] private GameObject Panel_Encounter;
+    [SerializeField] private GameObject Panel_PlayerTurn;
 
     //the containers for prefabs to be spawned in
     [Header("Containers")]
     [SerializeField] private GameObject Panel_PlayerQueue;
     [SerializeField] private GameObject Panel_EnemyQueue;
+    [SerializeField] private GameObject Panel_AbilityList;
 
     [SerializeField] private TextMeshProUGUI Text_StateDetail;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_Portrait;
     [SerializeField] private GameObject Prefab_EnemyText;
+    [SerializeField] private GameObject Prefab_AbilityButton;
 
     private void Awake()
     {
@@ -30,7 +32,8 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
     public IEnumerator HandleInit()
     {
-        Panel_Encounter.SetActive(false);
+        Panel_PlayerTurn.SetActive(false);
+
         yield return Coroutine_PerformFadeToBlack();
     }
 
@@ -52,7 +55,7 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             }
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
             {
-                PopulateQueues(encounter);
+                PopulatePlayerTurnPanel(encounter);
                 break;
             }
             case EncounterState.DONE:
@@ -80,7 +83,7 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             case EncounterState.PERFORM_ACTION:
                 return "performing action...";
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
-                return "waiting for input (space)...";
+                return "waiting for input...";
             case EncounterState.CHOOSE_AI_ACTION:
                 return "AI choosing action...";
             default:
@@ -88,9 +91,37 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         }
     }
 
-    private void PopulateQueues(Encounter encounter)
+    private void PopulatePlayerTurnPanel(Encounter encounter)
     {
-        Panel_Encounter.SetActive(true);
+        Panel_PlayerTurn.SetActive(true);
+
+        PopulateAbilityList(encounter);
+
+        PopulateQueues(encounter);
+    }
+
+    private void PopulateAbilityList(Encounter encounter)
+    {
+        CharacterComponent character = encounter.GetCurrentCharacter();
+
+        Debug.Log(GetAllowedAbilities(character.GetID()).Count + " abilities counted");
+
+        foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
+        {
+            GameObject ButtonObject = Instantiate(Prefab_AbilityButton, Panel_AbilityList.transform);
+            EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
+            abilityButton.Populate(abilityID);
+            abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
+        }
+    }
+
+    private void OnAbilityButtonClicked(EncounterAbilityButton button)
+    {
+        Debug.Log("ability selected " + button.GetAbilityID());
+    }
+
+    private void PopulateQueues(Encounter encounter)
+    { 
 
         //add a portrait for each character in the player queue
         foreach (CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Player))
@@ -129,9 +160,14 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
     private void HideAll()
     {
+        Panel_PlayerTurn.SetActive(false);
+
         //first, make sure queues are empty
         DestroyTransformChildren(Panel_PlayerQueue.transform);
         DestroyTransformChildren(Panel_EnemyQueue.transform);
+
+        //clear our the ability list
+        DestroyTransformChildren(Panel_AbilityList.transform);
 
         //clear text
         Text_StateDetail.text = string.Empty;
