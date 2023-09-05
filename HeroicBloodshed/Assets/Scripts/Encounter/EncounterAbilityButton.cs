@@ -17,7 +17,7 @@ public class EncounterAbilityButton : Button
 
     public void Populate(AbilityID abilityID)
     {
-        Text_Title.text = abilityID.ToString();
+        Text_Title.text = GetDisplayString(abilityID);
         _abilityID = abilityID;
     }
 

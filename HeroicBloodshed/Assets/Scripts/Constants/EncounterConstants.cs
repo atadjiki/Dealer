@@ -24,4 +24,36 @@ public static partial class Constants
 
         UPDATE //update the turn count, etc 
     }
+
+    public static string GetDisplayString(EncounterState state)
+    {
+        switch(state)
+        {
+            case EncounterState.INIT:
+                return "Initializing...";
+            case EncounterState.SETUP_COMPLETE:
+                return "Setup Complete";
+            case EncounterState.BUILD_QUEUES:
+                return "Building Queues...";
+            case EncounterState.CHECK_CONDITIONS:
+                return "Checking Conditions...";
+            case EncounterState.DONE:
+                return "Done";
+            case EncounterState.SELECT_CURRENT_CHARACTER:
+                return "Selecting Next Character...";
+            case EncounterState.WAIT_FOR_PLAYER_INPUT:
+                return "Waiting For Input...";
+            case EncounterState.CHOOSE_AI_ACTION:
+                return "AI Choosing Action...";
+            case EncounterState.PERFORM_ACTION:
+                return "Performing Action...";
+            case EncounterState.DESELECT_CURRENT_CHARACTER:
+                return "Deselecting Current Character...";
+            case EncounterState.UPDATE:
+                return "Updating...";
+            default:
+                return state.ToString();
+
+        }
+    }
 }

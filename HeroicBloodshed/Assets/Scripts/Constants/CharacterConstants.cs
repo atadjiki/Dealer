@@ -42,6 +42,21 @@ public static partial class Constants
         PLAYER_2,
     }
 
+    public static string GetDisplayString(CharacterID characterID)
+    {
+        switch(characterID)
+        {
+            case CharacterID.HENCHMAN:
+                return "Hencman";
+            case CharacterID.PLAYER_1:
+                return "Mulder";
+            case CharacterID.PLAYER_2:
+                return "Scully";
+            default:
+                return characterID.ToString();
+        }
+    }
+
     public enum EnemyID
     {
         NONE,
@@ -61,11 +76,29 @@ public static partial class Constants
 
     public enum AbilityID
     {
-        None,
+        NONE,
+
         Reload,
         Heal,
         SkipTurn,
         Attack,
+    }
+
+    public static string GetDisplayString(AbilityID abilityID)
+    {
+        switch(abilityID)
+        {
+            case AbilityID.Attack:
+                return "Attack";
+            case AbilityID.Heal:
+                return "Heal";
+            case AbilityID.Reload:
+                return "Reload";
+            case AbilityID.SkipTurn:
+                return "Skip Turn";
+            default:
+                return abilityID.ToString();
+        }
     }
 
     public static List<AbilityID> GetAllowedAbilities(CharacterID characterID)

@@ -45,7 +45,7 @@ public class Encounter : MonoBehaviour, IEncounter
 
         yield return new WaitForFixedUpdate();
 
-        _turnCount = 0;
+        _turnCount = 1;
         _currentTeam = TeamID.Player; //the player always goes first
 
         _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();

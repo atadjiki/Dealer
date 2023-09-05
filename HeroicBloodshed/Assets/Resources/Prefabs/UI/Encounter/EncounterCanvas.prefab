@@ -910,7 +910,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6470609784688684999}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1106,9 +1106,9 @@ MonoBehaviour:
   Text_CurrentTeam: {fileID: 5699139627080440406}
   Text_TurnCount: {fileID: 8981271967078941788}
   Text_StateDetail: {fileID: 4514563763880720285}
-  Prefab_Portrait: {fileID: 1670788825184986544, guid: d370453f02d11465fa5800bae349c539, type: 3}
-  Prefab_EnemyText: {fileID: 8647563818803465372, guid: 9f9ec075642da45b183bfdbae11df33c, type: 3}
-  Prefab_AbilityButton: {fileID: 4746963927115752103, guid: db50263eab89f48a2a5a26cbaf1bf49d, type: 3}
+  Prefab_PlayerQueue_Item: {fileID: 1670788825184986544, guid: d370453f02d11465fa5800bae349c539, type: 3}
+  Prefab_EnemyQueue_Item: {fileID: 3650533595420041444, guid: 48c7235692aaa4cb58aeffea6698dee4, type: 3}
+  Prefab_Ability_Button: {fileID: 4746963927115752103, guid: db50263eab89f48a2a5a26cbaf1bf49d, type: 3}
 --- !u!1 &7031504926726107770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,7 +1280,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -25, y: -25}
-  m_SizeDelta: {x: 200, y: 550}
+  m_SizeDelta: {x: 350, y: 550}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &3894060662762397209
 CanvasRenderer:

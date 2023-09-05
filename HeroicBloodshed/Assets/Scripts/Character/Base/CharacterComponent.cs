@@ -11,6 +11,7 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
     protected int _health = 0;
+    protected int _baseHealth = 0;
 
     protected CapsuleCollider _collider;
 
@@ -27,6 +28,7 @@ public class CharacterComponent : MonoBehaviour
         CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         _health = def.BaseHealth;
+        _baseHealth = def.BaseHealth;
 
         ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
 
@@ -171,6 +173,11 @@ public class CharacterComponent : MonoBehaviour
     public virtual int GetHealth()
     {
         return _health;
+    }
+
+    public virtual int GetBaseHealth()
+    {
+        return _baseHealth;
     }
 
     public virtual bool IsDead()

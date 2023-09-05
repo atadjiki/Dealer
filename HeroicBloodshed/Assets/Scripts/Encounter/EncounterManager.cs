@@ -167,12 +167,22 @@ public class EncounterManager : MonoBehaviour
 
     public void FollowCharacter(CharacterComponent characterComponent)
     {
-        Transform characterTransform = characterComponent.transform;
-        SetCameraFollow(characterTransform);
+        if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
+        {
+            Transform characterTransform = characterComponent.transform;
+            SetCameraFollow(characterTransform);
+        }
     }
 
+    public void UnfollowCharacter()
+    {
+        if(_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
+        {
+            FollowCharacter(_encounter.GetCurrentCharacter());
+        }
+    }
 
     private void ToggleCamera(bool flag) { _virtualCamera.enabled = flag; }
     private void SetCameraFollow(Transform target) { _virtualCamera.Follow = target; }
-    public void ResetCameraFollow() { SetCameraFollow(this.transform); }
+    private void ResetCameraFollow() { SetCameraFollow(this.transform); }
 }

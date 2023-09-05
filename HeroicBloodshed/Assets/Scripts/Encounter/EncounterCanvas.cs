@@ -23,9 +23,9 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     [SerializeField] private TextMeshProUGUI Text_StateDetail;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject Prefab_Portrait;
-    [SerializeField] private GameObject Prefab_EnemyText;
-    [SerializeField] private GameObject Prefab_AbilityButton;
+    [SerializeField] private GameObject Prefab_PlayerQueue_Item;
+    [SerializeField] private GameObject Prefab_EnemyQueue_Item;
+    [SerializeField] private GameObject Prefab_Ability_Button;
 
     private void Awake()
     {
@@ -73,38 +73,19 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             }
         }
 
-        Text_StateDetail.text = PopulateStateDetailText(state);
+        Text_StateDetail.text = GetDisplayString(state);
 
         yield return null;
-    }
-
-    private string PopulateStateDetailText(EncounterState state)
-    {
-        switch(state)
-        {
-            case EncounterState.DESELECT_CURRENT_CHARACTER:
-                return "next character...";
-            case EncounterState.BUILD_QUEUES:
-                return "preparing turn...";
-            case EncounterState.PERFORM_ACTION:
-                return "performing action...";
-            case EncounterState.WAIT_FOR_PLAYER_INPUT:
-                return "waiting for input...";
-            case EncounterState.CHOOSE_AI_ACTION:
-                return "AI choosing action...";
-            default:
-                return string.Empty;
-        }
     }
 
     private void PopulatePlayerTurnPanel(Encounter encounter)
     {
         Panel_PlayerTurn.SetActive(true);
 
-        Text_CurrentTeam.text = encounter.GetCurrentTeam().ToString() + " team";
+        Text_CurrentTeam.text = (encounter.GetCurrentTeam().ToString() + " team").ToLower(); ;
         Text_CurrentTeam.color = Constants.GetColorByTeam(encounter.GetCurrentTeam());
 
-        Text_TurnCount.text = "Turn " + encounter.GetTurnCount().ToString();
+        Text_TurnCount.text = ("Turn " + encounter.GetTurnCount().ToString()).ToLower();
 
         PopulateAbilityList(encounter);
 
@@ -120,7 +101,7 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
         {
 
-            GameObject ButtonObject = Instantiate(Prefab_AbilityButton, Panel_AbilityList.transform);
+            GameObject ButtonObject = Instantiate(Prefab_Ability_Button, Panel_AbilityList.transform);
             EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
             abilityButton.Populate(abilityID);
             abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
@@ -146,34 +127,42 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         //add a portrait for each character in the player queue
         foreach (CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Player))
         {
-            GameObject portraitObject = Instantiate(Prefab_Portrait, Panel_PlayerQueue.transform);
-            EncounterPortraitPanel portraitPanel = portraitObject.GetComponent<EncounterPortraitPanel>();
-            portraitPanel.Setup(character);
+            GameObject queueItemObject = Instantiate(Prefab_PlayerQueue_Item, Panel_PlayerQueue.transform);
+            EncounterPlayerQueueItem playerQueueItem = queueItemObject.GetComponent<EncounterPlayerQueueItem>();
+            playerQueueItem.Setup(character);
 
             if(character == encounter.GetCurrentCharacter())
             {
-                portraitPanel.SetActive();
+                playerQueueItem.SetActive();
             }
             else if(character.IsDead())
             {
-                portraitPanel.SetDead();
+                playerQueueItem.SetDead();
             }
             else
             {
-                portraitPanel.SetInactive();
+                playerQueueItem.SetInactive();
             }
         }
 
         //add a line of text for reach character in the enemy queue
         foreach(CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Enemy))
         {
-            GameObject textObject = Instantiate(Prefab_EnemyText, Panel_EnemyQueue.transform);
-            TextMeshProUGUI textMesh = textObject.GetComponent<TextMeshProUGUI>();
-            textMesh.text = character.GetID().ToString();
+            GameObject queueItemObject = Instantiate(Prefab_EnemyQueue_Item, Panel_EnemyQueue.transform);
+            EncounterEnemyQueueItem enemyQueueItem = queueItemObject.GetComponent<EncounterEnemyQueueItem>();
+            enemyQueueItem.Setup(character);
 
-            if(character.IsDead())
+            if (character == encounter.GetCurrentCharacter())
             {
-                textMesh.color = Color.grey;
+                enemyQueueItem.SetActive();
+            }
+            else if (character.IsDead())
+            {
+                enemyQueueItem.SetDead();
+            }
+            else
+            {
+                enemyQueueItem.SetInactive();
             }
         }
     }
