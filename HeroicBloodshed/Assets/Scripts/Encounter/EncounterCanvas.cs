@@ -7,10 +7,6 @@ using static Constants;
 
 public class EncounterCanvas : MonoBehaviour, IEncounter
 {
-    //event handling
-    public delegate void AbilitySelectedDelegate(AbilityID abilityID);
-    public AbilitySelectedDelegate OnAbilitySelected;
-
     //elements
     [Header("Elements")]
     [SerializeField] private Image Panel_Fade;
@@ -22,6 +18,8 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     [SerializeField] private GameObject Panel_EnemyQueue;
     [SerializeField] private GameObject Panel_AbilityList;
 
+    [SerializeField] private TextMeshProUGUI Text_CurrentTeam;
+    [SerializeField] private TextMeshProUGUI Text_TurnCount;
     [SerializeField] private TextMeshProUGUI Text_StateDetail;
 
     [Header("Prefabs")]
@@ -34,11 +32,6 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         HideAll();
     }
 
-    private void OnDestroy()
-    {
-        OnAbilitySelected = null;
-    }
-
     public IEnumerator HandleInit()
     {
         Panel_PlayerTurn.SetActive(false);
@@ -46,12 +39,12 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         yield return Coroutine_PerformFadeToBlack();
     }
 
-    public void EncounterStateCallback(Encounter encounter)
+    public void UpdateCanvas(Encounter encounter)
     {
-        StartCoroutine(Coroutine_EncounterStateCallback(encounter));
+        StartCoroutine(Coroutine_UpdateCanvas(encounter));
     }
 
-    private IEnumerator Coroutine_EncounterStateCallback(Encounter encounter)
+    private IEnumerator Coroutine_UpdateCanvas(Encounter encounter)
     {
         EncounterState state = encounter.GetState();
 
@@ -69,7 +62,7 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             }
             case EncounterState.DONE:
             {
-                encounter.OnStateChanged -= this.EncounterStateCallback;
+                encounter.OnStateChanged -= this.UpdateCanvas;
                 Destroy(this.gameObject);
                 yield break;
             }
@@ -89,6 +82,10 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     {
         switch(state)
         {
+            case EncounterState.DESELECT_CURRENT_CHARACTER:
+                return "next character...";
+            case EncounterState.BUILD_QUEUES:
+                return "preparing turn...";
             case EncounterState.PERFORM_ACTION:
                 return "performing action...";
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
@@ -104,6 +101,11 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     {
         Panel_PlayerTurn.SetActive(true);
 
+        Text_CurrentTeam.text = encounter.GetCurrentTeam().ToString() + " team";
+        Text_CurrentTeam.color = Constants.GetColorByTeam(encounter.GetCurrentTeam());
+
+        Text_TurnCount.text = "Turn " + encounter.GetTurnCount().ToString();
+
         PopulateAbilityList(encounter);
 
         PopulateQueues(encounter);
@@ -117,18 +119,24 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
         foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
         {
+
             GameObject ButtonObject = Instantiate(Prefab_AbilityButton, Panel_AbilityList.transform);
             EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
             abilityButton.Populate(abilityID);
             abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
+
+            if (GetAllowedAbilities(character.GetID()).IndexOf(abilityID) == 0)
+            {
+                abilityButton.Select();
+            }
         }
     }
 
     private void OnAbilityButtonClicked(EncounterAbilityButton button)
     {
-        if(OnAbilitySelected != null)
+        if(EncounterManager.Instance != null)
         {
-            OnAbilitySelected.Invoke(button.GetAbilityID());
+            EncounterManager.Instance.SelectAbility(button.GetAbilityID());
         }
     }
 
@@ -183,6 +191,8 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
         //clear text
         Text_StateDetail.text = string.Empty;
+        Text_TurnCount.text = string.Empty;
+        Text_CurrentTeam.text = string.Empty;
     }
 
     private IEnumerator Coroutine_PerformFadeToBlack()

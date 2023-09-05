@@ -17,7 +17,28 @@ public class EncounterManager : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private GameObject Prefab_EncounterCanvas;
 
+    private static EncounterManager _instance;
+
+    public static EncounterManager Instance { get { return _instance; } }
+
+    private Encounter _encounter;
+    private EncounterCanvas _encounterCanvas;
+
     private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+
+        Build();
+    }
+
+    private void Build()
     {
         LoadEncounter();
     }
@@ -37,30 +58,28 @@ public class EncounterManager : MonoBehaviour
         //create a canvas 
         GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, null);
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
-        EncounterCanvas canvas = canvasObject.GetComponent<EncounterCanvas>();
-        canvas.OnAbilitySelected += OnAbilitySelected;
+        _encounterCanvas = canvasObject.GetComponent<EncounterCanvas>();
 
         //generate encounter and attach to handler
-        Encounter encounter = _setupData.gameObject.AddComponent<Encounter>();
-        yield return new WaitWhile(() => encounter.GetComponent<Encounter>() == null);
-        encounter.SetSetupData(_setupData);
+        _encounter = _setupData.gameObject.AddComponent<Encounter>();
+        yield return new WaitWhile(() => _setupData.gameObject.GetComponent<Encounter>() == null);
+        _encounter.SetSetupData(_setupData);
 
-        encounter.OnStateChanged += canvas.EncounterStateCallback;
-        encounter.OnStateChanged += this.EncounterStateCallback;
+        _encounter.OnStateChanged += this.EncounterStateCallback;
 
-        yield return canvas.HandleInit();
-        yield return encounter.HandleInit();
+        yield return _encounterCanvas.HandleInit();
+        yield return _encounter.HandleInit();
 
-        encounter.TransitionState();
+        _encounter.TransitionState();
 
         yield return null;
     }
 
-    private void OnAbilitySelected(AbilityID abilityID)
+    public void SelectAbility(AbilityID abilityID)
     {
         Debug.Log("ability selected " + abilityID);
 
-
+        _encounter.TransitionState();
     }
 
     private IEnumerator Coroutine_WaitForPlayerInput()
@@ -74,11 +93,14 @@ public class EncounterManager : MonoBehaviour
     {
         EncounterState state = encounter.GetState();
 
+        _encounterCanvas.UpdateCanvas(encounter);
+
         switch (state)
         {
             case EncounterState.BUILD_QUEUES:
             {
                 SetCameraFollow(encounter.GetCameraFollow());
+                yield return new WaitForSeconds(1.0f);
                 break;
             }
             case EncounterState.PERFORM_ACTION:
@@ -126,18 +148,21 @@ public class EncounterManager : MonoBehaviour
 
         if(state == EncounterState.DONE)
         {
-            CleanUpEncounter(encounter);
+            CleanUpCurrentEncounter();
         }
 
         yield return null;
     }
 
-    private void CleanUpEncounter(Encounter encounter)
+    private void CleanUpCurrentEncounter()
     {
-        encounter.OnStateChanged -= this.EncounterStateCallback;
+        if(_encounter != null)
+        {
+            _encounter.OnStateChanged -= this.EncounterStateCallback;
 
-        Destroy(encounter.gameObject);
-        encounter = null;
+            Destroy(_encounter.gameObject);
+            _encounter = null;
+        }
     }
 
     public void FollowCharacter(CharacterComponent characterComponent)
