@@ -82,7 +82,7 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     {
         Panel_PlayerTurn.SetActive(true);
 
-        Text_CurrentTeam.text = (encounter.GetCurrentTeam().ToString() + " team").ToLower(); ;
+        Text_CurrentTeam.text = (encounter.GetCurrentTeam().ToString() + " turn").ToLower(); ;
         Text_CurrentTeam.color = Constants.GetColorByTeam(encounter.GetCurrentTeam());
 
         Text_TurnCount.text = ("Turn " + encounter.GetTurnCount().ToString()).ToLower();

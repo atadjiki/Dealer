@@ -77,7 +77,7 @@ public class Encounter : MonoBehaviour, IEncounter
             }
         }
 
-        yield return EncounterHelper.SpawnCharacters(this);
+        yield return EncounterManager.Instance.SpawnCharacters(this);
     }
 
     public void TransitionState()

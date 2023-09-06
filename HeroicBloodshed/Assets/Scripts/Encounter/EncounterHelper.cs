@@ -33,20 +33,4 @@ public class EncounterHelper
         characterObject.transform.localRotation = Quaternion.identity;
         return characterObject;
     }
-
-    public static IEnumerator SpawnCharacters(Encounter encounter)
-    {
-        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
-        {
-            yield return characterComponent.SpawnCharacter();
-        }
-    }
-
-    public static IEnumerator DespawnCharacters(Encounter encounter)
-    {
-        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
-        {
-            yield return characterComponent.PerformCleanup();
-        }
-    }
 }

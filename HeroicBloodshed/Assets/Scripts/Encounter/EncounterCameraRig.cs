@@ -18,10 +18,7 @@ public class EncounterCameraRig : MonoBehaviour
 
     private void Awake()
     {
-        CM_Main = null;
-        _cameraMap = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
-        
-        CM_Main.Priority = _priorityMain;
+        _cameraMap = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();  
     }
 
     public void Setup(Transform defaultFollowTarget)

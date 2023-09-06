@@ -157,7 +157,7 @@ public static partial class Constants
         switch(teamID)
         {
             case TeamID.Player:
-                return Color.white;
+                return Color.blue;
             case TeamID.Enemy:
                 return Color.red;
             default:

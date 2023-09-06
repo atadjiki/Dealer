@@ -170,22 +170,6 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
-    public void OnCharacterSpawned(CharacterComponent characterComponent)
-    {
-        if(_cameraRig != null)
-        {
-            _cameraRig.RegisterCharacterCamera(characterComponent);
-        }
-    }
-
-    public void OnCharacterDespawned(CharacterComponent characterComponent)
-    {
-        if(_cameraRig != null)
-        {
-            _cameraRig.UnregisterCharacterCamera(characterComponent);
-        }
-    }
-
     public void FollowCharacter(CharacterComponent characterComponent)
     {
         if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
@@ -199,6 +183,38 @@ public class EncounterManager : MonoBehaviour
         if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
         {
             FollowCharacter(_encounter.GetCurrentCharacter());
+        }
+    }
+
+    public IEnumerator SpawnCharacters(Encounter encounter)
+    {
+        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        {
+            yield return characterComponent.SpawnCharacter();
+        }
+    }
+
+    public void OnCharacterSpawned(CharacterComponent characterComponent)
+    {
+        if (_cameraRig != null)
+        {
+            _cameraRig.RegisterCharacterCamera(characterComponent);
+        }
+    }
+
+    public IEnumerator DespawnCharacters(Encounter encounter)
+    {
+        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        {
+            yield return characterComponent.PerformCleanup();
+        }
+    }
+
+    public void OnCharacterDespawned(CharacterComponent characterComponent)
+    {
+        if (_cameraRig != null)
+        {
+            _cameraRig.UnregisterCharacterCamera(characterComponent);
         }
     }
 }
