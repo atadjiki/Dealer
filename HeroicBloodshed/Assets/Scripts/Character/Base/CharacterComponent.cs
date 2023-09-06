@@ -91,6 +91,11 @@ public class CharacterComponent : MonoBehaviour
             onSetupComplete.Invoke(this);
         }
 
+        if(EncounterManager.Instance != null)
+        {
+            EncounterManager.Instance.OnCharacterSpawned(this);
+        }
+
         yield return null;
     }
 
@@ -109,6 +114,11 @@ public class CharacterComponent : MonoBehaviour
         yield return DestroyModel();
 
         yield return DestroyWeapon();
+
+        if(EncounterManager.Instance != null)
+        {
+            EncounterManager.Instance.OnCharacterDespawned(this);
+        }
 
         yield return null;
     }

@@ -47,7 +47,7 @@ public static partial class Constants
         switch(characterID)
         {
             case CharacterID.HENCHMAN:
-                return "Hencman";
+                return "Henchman";
             case CharacterID.PLAYER_1:
                 return "Mulder";
             case CharacterID.PLAYER_2:

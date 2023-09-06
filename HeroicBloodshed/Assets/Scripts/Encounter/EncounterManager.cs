@@ -11,10 +11,8 @@ public class EncounterManager : MonoBehaviour
     [Header("Setup Data")]
     [SerializeField] private EncounterSetupData _setupData; //setup data
 
-    [Header("Camera")]
-    [SerializeField] private CinemachineVirtualCamera _virtualCamera;
-
-    [Header("Canvas")]
+    [Header("Prefabs")]
+    [SerializeField] private GameObject Prefab_EncounterCameraRig;
     [SerializeField] private GameObject Prefab_EncounterCanvas;
 
     private static EncounterManager _instance;
@@ -22,7 +20,8 @@ public class EncounterManager : MonoBehaviour
     public static EncounterManager Instance { get { return _instance; } }
 
     private Encounter _encounter;
-    private EncounterCanvas _encounterCanvas;
+    private EncounterCanvas _canvas;
+    private EncounterCameraRig _cameraRig;
 
     private void Awake()
     {
@@ -58,7 +57,13 @@ public class EncounterManager : MonoBehaviour
         //create a canvas 
         GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, null);
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
-        _encounterCanvas = canvasObject.GetComponent<EncounterCanvas>();
+        _canvas = canvasObject.GetComponent<EncounterCanvas>();
+
+        //create a camera rig
+        GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, null);
+        yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
+        _cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
+        _cameraRig.Setup(_setupData.CameraFollowTarget);
 
         //generate encounter and attach to handler
         _encounter = _setupData.gameObject.AddComponent<Encounter>();
@@ -67,7 +72,7 @@ public class EncounterManager : MonoBehaviour
 
         _encounter.OnStateChanged += this.EncounterStateCallback;
 
-        yield return _encounterCanvas.HandleInit();
+        yield return _canvas.HandleInit();
         yield return _encounter.HandleInit();
 
         _encounter.TransitionState();
@@ -93,13 +98,13 @@ public class EncounterManager : MonoBehaviour
     {
         EncounterState state = encounter.GetState();
 
-        _encounterCanvas.UpdateCanvas(encounter);
+        _canvas.UpdateCanvas(encounter);
 
         switch (state)
         {
             case EncounterState.BUILD_QUEUES:
             {
-                SetCameraFollow(encounter.GetCameraFollow());
+                _cameraRig.GoToMainCamera();
                 yield return new WaitForSeconds(1.0f);
                 break;
             }
@@ -110,8 +115,8 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
-                SetCameraFollow(encounter.GetCurrentCharacter().transform);
                 CharacterComponent character = encounter.GetCurrentCharacter();
+                _cameraRig.GoToCharacter(character);
                 character.CreateDecal();
                 break;
             }
@@ -133,7 +138,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.DONE:
             {
-                ResetCameraFollow();
+                _cameraRig.GoToMainCamera();
                 break;
             }
             default:
@@ -165,24 +170,35 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
+    public void OnCharacterSpawned(CharacterComponent characterComponent)
+    {
+        if(_cameraRig != null)
+        {
+            _cameraRig.RegisterCharacterCamera(characterComponent);
+        }
+    }
+
+    public void OnCharacterDespawned(CharacterComponent characterComponent)
+    {
+        if(_cameraRig != null)
+        {
+            _cameraRig.UnregisterCharacterCamera(characterComponent);
+        }
+    }
+
     public void FollowCharacter(CharacterComponent characterComponent)
     {
         if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
         {
-            Transform characterTransform = characterComponent.transform;
-            SetCameraFollow(characterTransform);
+            _cameraRig.GoToCharacter(characterComponent);
         }
     }
 
     public void UnfollowCharacter()
     {
-        if(_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
+        if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
         {
             FollowCharacter(_encounter.GetCurrentCharacter());
         }
     }
-
-    private void ToggleCamera(bool flag) { _virtualCamera.enabled = flag; }
-    private void SetCameraFollow(Transform target) { _virtualCamera.Follow = target; }
-    private void ResetCameraFollow() { SetCameraFollow(this.transform); }
 }

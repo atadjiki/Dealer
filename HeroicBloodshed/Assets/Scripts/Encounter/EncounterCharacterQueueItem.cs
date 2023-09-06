@@ -26,12 +26,12 @@ public class EncounterCharacterQueueItem : MonoBehaviour, IPointerEnterHandler, 
     {
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         EncounterManager.Instance.FollowCharacter(_characterComponent);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         EncounterManager.Instance.UnfollowCharacter();
     }
