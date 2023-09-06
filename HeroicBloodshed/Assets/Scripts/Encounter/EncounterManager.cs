@@ -19,7 +19,7 @@ public class EncounterManager : MonoBehaviour
 
     public static EncounterManager Instance { get { return _instance; } }
 
-    private Encounter _encounter;
+    private EncounterModel _encounter;
     private EncounterCanvas _canvas;
     private EncounterCameraRig _cameraRig;
 
@@ -47,9 +47,9 @@ public class EncounterManager : MonoBehaviour
         StartCoroutine(Coroutine_LoadEncounter());
     }
 
-    private void EncounterStateCallback(Encounter encounter)
+    private void EncounterStateCallback(EncounterModel model)
     {
-        StartCoroutine(Coroutine_EncounterStateCallback(encounter));
+        StartCoroutine(Coroutine_EncounterStateCallback(model));
     }
 
     private IEnumerator Coroutine_LoadEncounter()
@@ -66,8 +66,8 @@ public class EncounterManager : MonoBehaviour
         _cameraRig.Setup(_setupData.CameraFollowTarget);
 
         //generate encounter and attach to handler
-        _encounter = _setupData.gameObject.AddComponent<Encounter>();
-        yield return new WaitWhile(() => _setupData.gameObject.GetComponent<Encounter>() == null);
+        _encounter = _setupData.gameObject.AddComponent<EncounterModel>();
+        yield return new WaitWhile(() => _setupData.gameObject.GetComponent<EncounterModel>() == null);
         _encounter.SetSetupData(_setupData);
 
         _encounter.OnStateChanged += this.EncounterStateCallback;
@@ -94,11 +94,11 @@ public class EncounterManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator Coroutine_EncounterStateCallback(Encounter encounter)
+    private IEnumerator Coroutine_EncounterStateCallback(EncounterModel model)
     {
-        EncounterState state = encounter.GetState();
+        EncounterState state = model.GetState();
 
-        _canvas.UpdateCanvas(encounter);
+        _canvas.UpdateCanvas(model);
 
         switch (state)
         {
@@ -115,7 +115,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
-                CharacterComponent character = encounter.GetCurrentCharacter();
+                CharacterComponent character = model.GetCurrentCharacter();
                 _cameraRig.GoToCharacter(character);
                 character.CreateDecal();
                 break;
@@ -132,7 +132,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
-                CharacterComponent character = encounter.GetCurrentCharacter();
+                CharacterComponent character = model.GetCurrentCharacter();
                 character.DestroyDecal();
                 break;
             }
@@ -149,7 +149,7 @@ public class EncounterManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
 
-        encounter.TransitionState();
+        model.TransitionState();
 
         if(state == EncounterState.DONE)
         {
@@ -186,9 +186,9 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
-    public IEnumerator SpawnCharacters(Encounter encounter)
+    public IEnumerator SpawnCharacters(EncounterModel model)
     {
-        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        foreach (CharacterComponent characterComponent in model.GetAllCharacters())
         {
             yield return characterComponent.SpawnCharacter();
         }
@@ -202,9 +202,9 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
-    public IEnumerator DespawnCharacters(Encounter encounter)
+    public IEnumerator DespawnCharacters(EncounterModel model)
     {
-        foreach (CharacterComponent characterComponent in encounter.GetAllCharacters())
+        foreach (CharacterComponent characterComponent in model.GetAllCharacters())
         {
             yield return characterComponent.PerformCleanup();
         }

@@ -10,10 +10,10 @@ public interface IEncounter
     public IEnumerator HandleInit();
 }
 
-public class Encounter : MonoBehaviour, IEncounter
+public class EncounterModel : MonoBehaviour, IEncounter
 {
     //event handling
-    public delegate void EncounterStateDelegate(Encounter encounter);
+    public delegate void EncounterStateDelegate(EncounterModel model);
     public EncounterStateDelegate OnStateChanged;
 
     //setup data

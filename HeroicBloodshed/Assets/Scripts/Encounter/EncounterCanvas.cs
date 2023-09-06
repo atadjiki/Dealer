@@ -39,14 +39,14 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         yield return Coroutine_PerformFadeToBlack();
     }
 
-    public void UpdateCanvas(Encounter encounter)
+    public void UpdateCanvas(EncounterModel model)
     {
-        StartCoroutine(Coroutine_UpdateCanvas(encounter));
+        StartCoroutine(Coroutine_UpdateCanvas(model));
     }
 
-    private IEnumerator Coroutine_UpdateCanvas(Encounter encounter)
+    private IEnumerator Coroutine_UpdateCanvas(EncounterModel model)
     {
-        EncounterState state = encounter.GetState();
+        EncounterState state = model.GetState();
 
         switch (state)
         {
@@ -57,12 +57,12 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             }
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
             {
-                PopulatePlayerTurnPanel(encounter);
+                PopulatePlayerTurnPanel(model);
                 break;
             }
             case EncounterState.DONE:
             {
-                encounter.OnStateChanged -= this.UpdateCanvas;
+                model.OnStateChanged -= this.UpdateCanvas;
                 Destroy(this.gameObject);
                 yield break;
             }
@@ -78,23 +78,23 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         yield return null;
     }
 
-    private void PopulatePlayerTurnPanel(Encounter encounter)
+    private void PopulatePlayerTurnPanel(EncounterModel model)
     {
         Panel_PlayerTurn.SetActive(true);
 
-        Text_CurrentTeam.text = (encounter.GetCurrentTeam().ToString() + " turn").ToLower(); ;
-        Text_CurrentTeam.color = Constants.GetColorByTeam(encounter.GetCurrentTeam());
+        Text_CurrentTeam.text = (model.GetCurrentTeam().ToString() + " turn").ToLower(); ;
+        Text_CurrentTeam.color = Constants.GetColorByTeam(model.GetCurrentTeam());
 
-        Text_TurnCount.text = ("Turn " + encounter.GetTurnCount().ToString()).ToLower();
+        Text_TurnCount.text = ("Turn " + model.GetTurnCount().ToString()).ToLower();
 
-        PopulateAbilityList(encounter);
+        PopulateAbilityList(model);
 
-        PopulateQueues(encounter);
+        PopulateQueues(model);
     }
 
-    private void PopulateAbilityList(Encounter encounter)
+    private void PopulateAbilityList(EncounterModel model)
     {
-        CharacterComponent character = encounter.GetCurrentCharacter();
+        CharacterComponent character = model.GetCurrentCharacter();
 
         Debug.Log(GetAllowedAbilities(character.GetID()).Count + " abilities counted");
 
@@ -106,10 +106,10 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             abilityButton.Populate(abilityID);
             abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
 
-            if (GetAllowedAbilities(character.GetID()).IndexOf(abilityID) == 0)
-            {
-                abilityButton.Select();
-            }
+            //if (GetAllowedAbilities(character.GetID()).IndexOf(abilityID) == 0)
+            //{
+            //    abilityButton.Select();
+            //}
         }
     }
 
@@ -121,17 +121,17 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         }
     }
 
-    private void PopulateQueues(Encounter encounter)
+    private void PopulateQueues(EncounterModel model)
     { 
 
         //add a portrait for each character in the player queue
-        foreach (CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Player))
+        foreach (CharacterComponent character in model.GetAllCharactersInTeam(TeamID.Player))
         {
             GameObject queueItemObject = Instantiate(Prefab_PlayerQueue_Item, Panel_PlayerQueue.transform);
             EncounterPlayerQueueItem playerQueueItem = queueItemObject.GetComponent<EncounterPlayerQueueItem>();
             playerQueueItem.Setup(character);
 
-            if(character == encounter.GetCurrentCharacter())
+            if(character == model.GetCurrentCharacter())
             {
                 playerQueueItem.SetActive();
             }
@@ -146,13 +146,13 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         }
 
         //add a line of text for reach character in the enemy queue
-        foreach(CharacterComponent character in encounter.GetAllCharactersInTeam(TeamID.Enemy))
+        foreach(CharacterComponent character in model.GetAllCharactersInTeam(TeamID.Enemy))
         {
             GameObject queueItemObject = Instantiate(Prefab_EnemyQueue_Item, Panel_EnemyQueue.transform);
             EncounterEnemyQueueItem enemyQueueItem = queueItemObject.GetComponent<EncounterEnemyQueueItem>();
             enemyQueueItem.Setup(character);
 
-            if (character == encounter.GetCurrentCharacter())
+            if (character == model.GetCurrentCharacter())
             {
                 enemyQueueItem.SetActive();
             }
