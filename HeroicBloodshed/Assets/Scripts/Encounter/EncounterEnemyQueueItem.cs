@@ -8,6 +8,7 @@ using static Constants;
 
 public class EncounterEnemyQueueItem : EncounterCharacterQueueItem
 {
+    [Header("Members")]
     [SerializeField] private Image Image_Portrait;
     [SerializeField] private TextMeshProUGUI Text_Title;
     [SerializeField] private TextMeshProUGUI Text_HP;

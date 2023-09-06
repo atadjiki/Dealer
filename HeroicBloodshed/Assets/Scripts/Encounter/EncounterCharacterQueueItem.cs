@@ -9,6 +9,18 @@ public class EncounterCharacterQueueItem : MonoBehaviour, IPointerEnterHandler, 
 {
     protected CharacterComponent _characterComponent;
 
+    [Header("Highlights")]
+    [SerializeField] protected GameObject Panel_Active;
+    [SerializeField] protected GameObject Panel_Inactive;
+    [SerializeField] protected GameObject Panel_Dead;
+
+    protected virtual void OnEnable()
+    {
+        Panel_Active.SetActive(false);
+        Panel_Inactive.SetActive(false);
+        Panel_Dead.SetActive(false);
+    }
+
     public virtual void Setup(CharacterComponent character)
     {
         _characterComponent = character;
@@ -16,14 +28,24 @@ public class EncounterCharacterQueueItem : MonoBehaviour, IPointerEnterHandler, 
 
     public virtual void SetActive()
     {
+        Panel_Dead.SetActive(false);
+        Panel_Active.SetActive(true);
+        Panel_Inactive.SetActive(false);
     }
 
     public virtual void SetInactive()
     {
+
+        Panel_Dead.SetActive(false);
+        Panel_Active.SetActive(false);
+        Panel_Inactive.SetActive(true);
     }
 
     public virtual void SetDead()
     {
+        Panel_Dead.SetActive(true);
+        Panel_Active.SetActive(false);
+        Panel_Inactive.SetActive(false);
     }
 
     public virtual void OnPointerEnter(PointerEventData eventData)
