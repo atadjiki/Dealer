@@ -19,7 +19,7 @@ public class EncounterManager : MonoBehaviour
 
     public static EncounterManager Instance { get { return _instance; } }
 
-    private EncounterModel _encounter;
+    private EncounterModel _model;
     private EncounterCanvas _canvas;
     private EncounterCameraRig _cameraRig;
 
@@ -66,16 +66,16 @@ public class EncounterManager : MonoBehaviour
         _cameraRig.Setup(_setupData.CameraFollowTarget);
 
         //generate encounter and attach to handler
-        _encounter = _setupData.gameObject.AddComponent<EncounterModel>();
+        _model = _setupData.gameObject.AddComponent<EncounterModel>();
         yield return new WaitWhile(() => _setupData.gameObject.GetComponent<EncounterModel>() == null);
-        _encounter.SetSetupData(_setupData);
+        _model.SetSetupData(_setupData);
 
-        _encounter.OnStateChanged += this.EncounterStateCallback;
+        _model.OnStateChanged += this.EncounterStateCallback;
 
         yield return _canvas.HandleInit();
-        yield return _encounter.HandleInit();
+        yield return _model.HandleInit();
 
-        _encounter.TransitionState();
+        _model.TransitionState();
 
         yield return null;
     }
@@ -84,7 +84,9 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log("ability selected " + abilityID);
 
-        _encounter.TransitionState();
+        _model.OnAbilitySelected(abilityID);
+
+        _model.TransitionState();
     }
 
     private IEnumerator Coroutine_WaitForPlayerInput()
@@ -110,14 +112,19 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.PERFORM_ACTION:
             {
-                yield return new WaitForSeconds(1f);
+                CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+                yield return CharacterAbility.Perform(currentCharacter);
                 break;
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
                 CharacterComponent character = model.GetCurrentCharacter();
-                _cameraRig.GoToCharacter(character);
-                character.CreateDecal();
+                if(character.IsAlive())
+                {
+                    _cameraRig.GoToCharacter(character);
+                    character.CreateDecal();
+                }
+
                 break;
             }
             case EncounterState.WAIT_FOR_PLAYER_INPUT:
@@ -161,18 +168,18 @@ public class EncounterManager : MonoBehaviour
 
     private void CleanUpCurrentEncounter()
     {
-        if(_encounter != null)
+        if(_model != null)
         {
-            _encounter.OnStateChanged -= this.EncounterStateCallback;
+            _model.OnStateChanged -= this.EncounterStateCallback;
 
-            Destroy(_encounter.gameObject);
-            _encounter = null;
+            Destroy(_model.gameObject);
+            _model = null;
         }
     }
 
     public void FollowCharacter(CharacterComponent characterComponent)
     {
-        if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
+        if (_model.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
         {
             _cameraRig.GoToCharacter(characterComponent);
         }
@@ -180,9 +187,9 @@ public class EncounterManager : MonoBehaviour
 
     public void UnfollowCharacter()
     {
-        if (_encounter.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
+        if (_model.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
         {
-            FollowCharacter(_encounter.GetCurrentCharacter());
+            FollowCharacter(_model.GetCurrentCharacter());
         }
     }
 
@@ -216,5 +223,33 @@ public class EncounterManager : MonoBehaviour
         {
             _cameraRig.UnregisterCharacterCamera(characterComponent);
         }
+    }
+
+    //helpers
+    public CharacterComponent FindTargetForCharacter(CharacterComponent characterComponent)
+    {
+        //get a list of this character's enemies in the encounter
+        TeamID opposingTeam = GetOpposingTeam(characterComponent);
+        List<CharacterComponent> enemies =_model.GetAllCharactersInTeam(opposingTeam);
+
+        if(enemies.Count > 0)
+        {
+            List<CharacterComponent> targets = new List<CharacterComponent>();
+
+            foreach(CharacterComponent enemy in enemies)
+            {
+                if(enemy.IsAlive())
+                {
+                    targets.Add(enemy);
+                }
+            }
+
+            CharacterComponent targetCharacter = targets[UnityEngine.Random.Range(0, targets.Count - 1)];
+            Debug.Log("Found target: " + targetCharacter.gameObject.name);
+            characterComponent.SetTarget(targetCharacter);
+            return targetCharacter;
+        }
+
+        return null;
     }
 }

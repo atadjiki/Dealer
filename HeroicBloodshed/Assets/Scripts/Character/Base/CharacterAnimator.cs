@@ -25,10 +25,17 @@ public class CharacterAnimator : MonoBehaviour
 
     public void GoTo(AnimState state)
     {
-        AnimID anim = GetAnimByWeaponType(_weaponID, state);
+        AnimID anim;
+
+        if (state == AnimState.Dead)
+        {
+            anim = GetUnarmedAnim(state);
+        }
+        else
+        {
+            anim = GetAnimByWeaponType(_weaponID, state);
+        }
 
         _animator.CrossFade(anim.ToString(), 0.0f);
-
-       // Debug.Log("Transitioning to anim " + anim);
     }
 }

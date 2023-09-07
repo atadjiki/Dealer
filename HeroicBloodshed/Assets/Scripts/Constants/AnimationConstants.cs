@@ -6,6 +6,7 @@ public static partial class Constants
         Walking,
         Running,
         Attack_Single,
+        Dead,
     }
 
     public enum AnimID
@@ -24,6 +25,20 @@ public static partial class Constants
         Anim_Character_Pistol_Walking,
         Anim_Character_Pistol_Running,
         Anim_Character_Pistol_Attack_Single,
+
+        //death
+        Anim_Character_Death
+    }
+
+    public static AnimID GetUnarmedAnim(AnimState state)
+    {
+        switch(state)
+        {
+            case AnimState.Dead:
+                return AnimID.Anim_Character_Death;
+            default:
+                return AnimID.Anim_Character_Idle;
+        }
     }
 
     public static AnimID GetAnimByWeaponType(WeaponID Weapon, AnimState state)

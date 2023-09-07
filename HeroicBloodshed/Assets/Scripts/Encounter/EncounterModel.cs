@@ -284,6 +284,22 @@ public class EncounterModel : MonoBehaviour, IEncounter
         yield return null;
     }
 
+    //game events
+    public void OnAbilitySelected(AbilityID abilityID)
+    {
+        //check if the current character can support this before we accept
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        if(currentCharacter.HasAbility(abilityID))
+        {
+            currentCharacter.SetActiveAbility(abilityID);
+        }
+        else
+        {
+            Debug.Log("character doesnt support this ability!");
+        }
+    }
+
     //
     //helpers
 
@@ -373,7 +389,12 @@ public class EncounterModel : MonoBehaviour, IEncounter
 
     public List<CharacterComponent> GetAllCharactersInTeamQueue(TeamID teamID) { return new List<CharacterComponent>(_queues[teamID].ToArray()); }
 
-    public void PopCurrentCharacter() { _queues[_currentTeam].Dequeue(); }
+    public void PopCurrentCharacter()
+    {
+        CharacterComponent dequedCharacter = _queues[_currentTeam].Dequeue();
+        dequedCharacter.SetActiveAbility(AbilityID.NONE);
+        dequedCharacter.ResetTarget();
+    }
 
     //teams
     public bool IsCurrentTeamQueueEmpty() { return IsQueueEmpty(_currentTeam); }

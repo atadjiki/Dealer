@@ -5,52 +5,44 @@ using static Constants;
 
 public class CharacterAbility : MonoBehaviour
 {
-    public enum AbilityState { NONE, START, PERFORM, END }
-
-    [SerializeField] protected AbilityID _abilityID;
-
-    protected AbilityState _state = AbilityState.NONE;
-
-    protected CharacterComponent _caster;
-    protected CharacterComponent _target;
-
-    public void Setup()
+    public static IEnumerator Perform(CharacterComponent caster)
     {
-        StartCoroutine(Coroutine_Setup());
+        AbilityID abilityID = caster.GetActiveAbility();
+        //CharacterComponent target = null;
+
+        Debug.Log(caster.GetID() + " performing ability " + abilityID.ToString());
+
+        switch (abilityID)
+        {
+            case AbilityID.Attack:
+                yield return HandleAbility_Attack(caster);
+                break;
+            case AbilityID.SkipTurn:
+                yield return HandleAbility_SkipTurn(caster);
+                break;
+            default:
+                break;
+        }
     }
 
-    protected virtual IEnumerator Coroutine_Setup()
+    private static IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
+        CharacterComponent target = EncounterManager.Instance.FindTargetForCharacter(caster);
+
+        if(target != null)
+        {
+            yield return new WaitForSeconds(1.0f);
+            target.Kill();
+        }
+        else
+        {
+            Debug.Log("target is null!");
+        }
         yield return null;
     }
 
-    public void Start()
+    private static IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
     {
-        StartCoroutine(Coroutine_Start());
-    }
-
-    protected virtual IEnumerator Coroutine_Start()
-    {
-        yield return null;
-    }
-
-    public void Perform()
-    {
-        StartCoroutine(Coroutine_Perform());
-    }
-
-    protected virtual IEnumerator Coroutine_Perform()
-    {
-        yield return null;
-    }
-
-    public void End()
-    {
-        StartCoroutine(Coroutine_End());
-    }
-
-    protected virtual IEnumerator Coroutine_End()
-    {
-        yield return null;
+        yield return new WaitForSeconds(1.0f);
     }
 }

@@ -6,6 +6,8 @@ using UnityEngine;
 public class CharacterComponent : MonoBehaviour
 {
     protected CharacterID _ID;
+    protected AbilityID _activeAbility = AbilityID.NONE;
+    protected CharacterComponent _activeTarget = null;
     protected CharacterModel _model;
     protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
@@ -99,6 +101,15 @@ public class CharacterComponent : MonoBehaviour
         yield return null;
     }
 
+    public void Kill()
+    {
+        _health = 0;
+        _activeTarget = null;
+        _activeAbility = AbilityID.NONE;
+
+        _animator.GoTo(AnimState.Dead);
+    }
+
     private void OnMouseOver()
     {
         _model.ToggleHighlight(true);
@@ -168,6 +179,31 @@ public class CharacterComponent : MonoBehaviour
         {
             GameObject.Destroy(decal.gameObject);
         }
+    }
+
+    public bool HasAbility(AbilityID abilityID)
+    {
+        return Constants.GetAllowedAbilities(_ID).Contains(abilityID);
+    }
+
+    public void SetActiveAbility(AbilityID abilityID)
+    {
+        _activeAbility = abilityID;
+    }
+
+    public AbilityID GetActiveAbility()
+    {
+        return _activeAbility;
+    }
+
+    public void SetTarget(CharacterComponent target)
+    {
+        _activeTarget = target;
+    }
+
+    public void ResetTarget()
+    {
+        _activeTarget = null;
     }
 
     public CharacterID GetID()

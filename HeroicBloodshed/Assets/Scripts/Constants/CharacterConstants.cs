@@ -105,7 +105,8 @@ public static partial class Constants
     {
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
-            AbilityID.SkipTurn //all characters have this by default
+            AbilityID.SkipTurn, //all characters have this by default
+            AbilityID.Attack
         };
 
         //eventually we will add dynamically abilities based on weapon type and team 
@@ -120,11 +121,12 @@ public static partial class Constants
             case CharacterID.HENCHMAN:
                 return TeamID.Enemy;
             case CharacterID.PLAYER_1:
+                return TeamID.Player;
             case CharacterID.PLAYER_2:
                 return TeamID.Player;
         }
 
-        return TeamID.Enemy;
+        return TeamID.None;
     }
 
     //helpers
@@ -163,5 +165,24 @@ public static partial class Constants
             default:
                 return Color.clear;
         }
+    }
+
+    public static TeamID GetOpposingTeam(CharacterComponent characterComponent)
+    {
+        return GetOpposingTeam(GetTeamByID(characterComponent.GetID()));
+    }
+
+    public static TeamID GetOpposingTeam(TeamID team)
+    {
+        if(team == TeamID.Player)
+        {
+            return TeamID.Enemy;
+        }
+        else if(team == TeamID.Enemy)
+        {
+            return TeamID.Player;
+        }
+
+        return TeamID.None;
     }
 }
