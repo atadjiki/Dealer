@@ -179,18 +179,12 @@ public class EncounterManager : MonoBehaviour
 
     public void FollowCharacter(CharacterComponent characterComponent)
     {
-        if (_model.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
-        {
-            _cameraRig.GoToCharacter(characterComponent);
-        }
+        _cameraRig.GoToCharacter(characterComponent);
     }
 
     public void UnfollowCharacter()
     {
-        if (_model.GetState() == EncounterState.WAIT_FOR_PLAYER_INPUT)
-        {
-            FollowCharacter(_model.GetCurrentCharacter());
-        }
+        FollowCharacter(_model.GetCurrentCharacter());
     }
 
     public IEnumerator SpawnCharacters(EncounterModel model)

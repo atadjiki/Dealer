@@ -31,8 +31,12 @@ public class CharacterAbility : MonoBehaviour
 
         if(target != null)
         {
+            EncounterManager.Instance.FollowCharacter(target);
             yield return new WaitForSeconds(1.0f);
             target.Kill();
+            yield return new WaitForSeconds(1.0f);
+            EncounterManager.Instance.UnfollowCharacter();
+            yield return new WaitForSeconds(1.0f);
         }
         else
         {
