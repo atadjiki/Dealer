@@ -5,15 +5,10 @@ using UnityEngine;
 
 using static Constants;
 
-public interface IEncounter
-{
-    public IEnumerator HandleInit();
-}
-
-public class EncounterModel : MonoBehaviour, IEncounter
+public class EncounterModel : MonoBehaviour
 {
     //event handling
-    public delegate void EncounterStateDelegate(EncounterModel model);
+    public delegate void EncounterStateDelegate();
     public EncounterStateDelegate OnStateChanged;
 
     //setup data
@@ -25,6 +20,8 @@ public class EncounterModel : MonoBehaviour, IEncounter
 
     //create a queue for each team each combat loop
     private Dictionary<TeamID, Queue<CharacterComponent>> _queues;
+
+    private Dictionary<TeamID, bool> _controlMap;
 
     private EncounterState _pendingState = EncounterState.INIT;
 
@@ -39,9 +36,11 @@ public class EncounterModel : MonoBehaviour, IEncounter
     //
     //state machine
 
-    public IEnumerator HandleInit()
+    public IEnumerator Setup(EncounterSetupData setupData)
     {
         Debug.Log("Encounter init " + this.name);
+
+        _setupData = setupData;
 
         yield return new WaitForFixedUpdate();
 
@@ -49,12 +48,15 @@ public class EncounterModel : MonoBehaviour, IEncounter
         _currentTeam = TeamID.Player; //the player always goes first
 
         _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
+        _controlMap = new Dictionary<TeamID, bool>();
 
         _cameraFollow = _setupData.CameraFollowTarget;
 
         foreach (EncounterTeamData teamData in _setupData.Teams)
         {
             _characterMap.Add(teamData.Team, new List<CharacterComponent>());
+
+            _controlMap.Add(teamData.Team, teamData.CPU);
 
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
@@ -76,8 +78,6 @@ public class EncounterModel : MonoBehaviour, IEncounter
                 }
             }
         }
-
-        yield return EncounterManager.Instance.SpawnCharacters(this);
     }
 
     public void TransitionState()
@@ -86,11 +86,6 @@ public class EncounterModel : MonoBehaviour, IEncounter
         {
             StartCoroutine(Coroutine_TransitionState());
         }
-        else
-        {
-            Debug.Log("Encounter is busy");
-        }
-
     }
 
     private IEnumerator Coroutine_TransitionState()
@@ -116,11 +111,8 @@ public class EncounterModel : MonoBehaviour, IEncounter
             case EncounterState.SELECT_CURRENT_CHARACTER:
                 yield return Coroutine_SelectCurrentCharacter();
                 break;
-            case EncounterState.WAIT_FOR_PLAYER_INPUT:
-                yield return Coroutine_WaitForInput();
-                break;
-            case EncounterState.CHOOSE_AI_ACTION:
-                yield return Coroutine_ChooseAIAction();
+            case EncounterState.CHOOSE_ACTION:
+                yield return Coroutine_ChooseAction();
                 break;
             case EncounterState.PERFORM_ACTION:
                 yield return Coroutine_PerformAction();
@@ -144,7 +136,7 @@ public class EncounterModel : MonoBehaviour, IEncounter
         //broadcast state change
         if (OnStateChanged != null)
         {
-            OnStateChanged.Invoke(this);
+            OnStateChanged.Invoke();
         }
 
         yield return null;
@@ -217,29 +209,20 @@ public class EncounterModel : MonoBehaviour, IEncounter
 
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
-        Debug.Log("Current Character: " + GetCurrentCharacter().GetID() + " - " + GetCurrentTeam());
-
-        switch(GetCurrentTeam())
+        if(GetCurrentCharacter().IsAlive())
         {
-            case TeamID.Player:
-                SetPendingState(EncounterState.WAIT_FOR_PLAYER_INPUT);
-                break;
-            default:
-                SetPendingState(EncounterState.CHOOSE_AI_ACTION);
-                break;
+            SetPendingState(EncounterState.CHOOSE_ACTION);
+        }
+        else
+        {
+            SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
         }
 
         yield return null;
     }
 
-    private IEnumerator Coroutine_WaitForInput()
-    {
-        SetPendingState(EncounterState.PERFORM_ACTION);
-        yield return null;
-    }
-
-    private IEnumerator Coroutine_ChooseAIAction()
-    {
+    private IEnumerator Coroutine_ChooseAction()
+    { 
         SetPendingState(EncounterState.PERFORM_ACTION);
         yield return null;
     }
@@ -253,8 +236,6 @@ public class EncounterModel : MonoBehaviour, IEncounter
     private IEnumerator Coroutine_DeselectCurrentCharacter()
     {
         PopCurrentCharacter();
-
-        Debug.Log(GetAllCharactersInTeamQueue(GetCurrentTeam()).Count + " characters left in queue for team " + GetCurrentTeam());
 
         SetPendingState(EncounterState.UPDATE);
         yield return null;
@@ -361,8 +342,16 @@ public class EncounterModel : MonoBehaviour, IEncounter
 
     //getters/setters
 
-    //data
-    public void SetSetupData(EncounterSetupData setupData) { _setupData = setupData; }
+    //control
+    public bool IsTeamCPUControlled(TeamID team)
+    {
+        return _controlMap[team];
+    }
+
+    public bool IsCurrentTeamCPU()
+    {
+        return _controlMap[GetCurrentTeam()];
+    }
 
     //state
     public EncounterState GetState() { return _pendingState; }
@@ -413,5 +402,9 @@ public class EncounterModel : MonoBehaviour, IEncounter
     {
         Debug.Log("Turn Count: " + (_turnCount + 1));
         return _turnCount++;
+    }
+
+    public void OnEncounterUpdate(EncounterModel model)
+    {
     }
 }

@@ -105,8 +105,9 @@ public static partial class Constants
     {
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
+            AbilityID.Attack,
             AbilityID.SkipTurn, //all characters have this by default
-            AbilityID.Attack
+
         };
 
         //eventually we will add dynamically abilities based on weapon type and team 

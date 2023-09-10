@@ -1,5 +1,10 @@
 public static partial class Constants
 {
+    public enum EncounterEvent
+    {
+        CHARACTER_KILLED,
+    }
+
     public enum EncounterState
     {
         INIT,
@@ -14,9 +19,7 @@ public static partial class Constants
          
         SELECT_CURRENT_CHARACTER,//select the next character in the current team queue
 
-        WAIT_FOR_PLAYER_INPUT,//if player turn, wait for input
-
-        CHOOSE_AI_ACTION,//if AIs turn, choose an action for them 
+        CHOOSE_ACTION,
 
         PERFORM_ACTION,//perform the chosen action
 
@@ -41,10 +44,8 @@ public static partial class Constants
                 return "Done";
             case EncounterState.SELECT_CURRENT_CHARACTER:
                 return "Selecting Next Character...";
-            case EncounterState.WAIT_FOR_PLAYER_INPUT:
-                return "Waiting For Input...";
-            case EncounterState.CHOOSE_AI_ACTION:
-                return "AI Choosing Action...";
+            case EncounterState.CHOOSE_ACTION:
+                return "Choosing action...";
             case EncounterState.PERFORM_ACTION:
                 return "Performing Action...";
             case EncounterState.DESELECT_CURRENT_CHARACTER:

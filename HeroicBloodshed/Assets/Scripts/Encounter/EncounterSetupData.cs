@@ -12,6 +12,7 @@ public struct EncounterTeamData
     public TeamID Team;
     public List<CharacterID> Characters; //who are we spawning?
     public List<CharacterMarker> Markers; //where are they spawning?
+    public bool CPU;
 }
 
 public class EncounterSetupData : MonoBehaviour

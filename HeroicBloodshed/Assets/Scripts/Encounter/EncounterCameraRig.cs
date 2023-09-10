@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using static Constants;
 
-public class EncounterCameraRig : MonoBehaviour
+public class EncounterCameraRig : EncounterEventReceiver
 {
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_DefaultCamera;
@@ -16,24 +17,61 @@ public class EncounterCameraRig : MonoBehaviour
     private static int _priorityInactive = 0;
     private static int _priorityActive = 10;
 
-    private void Awake()
+    public override IEnumerator Coroutine_Init(EncounterModel model)
     {
-        _cameraMap = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();  
-    }
+        _cameraMap = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
 
-    public void Setup(Transform defaultFollowTarget)
-    {
         GameObject defaultCameraObject = Instantiate(Prefab_DefaultCamera, this.transform);
         CM_Main = defaultCameraObject.GetComponent<CinemachineVirtualCamera>();
 
-        CM_Main.Follow = defaultFollowTarget;
+        CM_Main.Follow = model.GetCameraFollow();
         CM_Main.Priority = _priorityMain;
-        
+
         CinemachineFramingTransposer framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();
-        framingTransposer.m_CameraDistance = 12;
+        framingTransposer.m_CameraDistance = 10;
+
+        foreach(CharacterComponent character in model.GetAllCharacters())
+        {
+            RegisterCharacterCamera(character);
+        }
+
+        yield return null;
     }
 
-    public void RegisterCharacterCamera(CharacterComponent characterComponent)
+    public override IEnumerator Coroutine_StateUpdate(EncounterState stateID, EncounterModel model)
+    {
+        switch (stateID)
+        {
+            case EncounterState.BUILD_QUEUES:
+                {
+                    GoToMainCamera();
+                    break;
+                }
+            case EncounterState.SELECT_CURRENT_CHARACTER:
+                {
+                    CharacterComponent character = model.GetCurrentCharacter();
+                    if (character.IsAlive())
+                    {
+                        GoToCharacter(character);
+                    }
+
+                    break;
+                }
+            case EncounterState.DONE:
+                {
+                    GoToMainCamera();
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+        }
+
+        yield return null;
+    }
+
+    private void RegisterCharacterCamera(CharacterComponent characterComponent)
     {
         if(_cameraMap != null && !_cameraMap.ContainsKey(characterComponent))
         {
@@ -51,7 +89,7 @@ public class EncounterCameraRig : MonoBehaviour
         }
     }
 
-    public void UnregisterCharacterCamera(CharacterComponent characterComponent)
+    private void UnregisterCharacterCamera(CharacterComponent characterComponent)
     {
         if (_cameraMap != null && _cameraMap.ContainsKey(characterComponent))
         {
@@ -61,7 +99,7 @@ public class EncounterCameraRig : MonoBehaviour
         }
     }
 
-    public CinemachineVirtualCamera GetCharacterCamera(CharacterComponent characterComponent)
+    private CinemachineVirtualCamera GetCharacterCamera(CharacterComponent characterComponent)
     {
         if (_cameraMap != null && _cameraMap.ContainsKey(characterComponent))
         {
@@ -79,6 +117,8 @@ public class EncounterCameraRig : MonoBehaviour
         }
     }
 
+
+    //public interface
     public void GoToCharacter(CharacterComponent characterComponent)
     {
         CinemachineVirtualCamera CM_Character = GetCharacterCamera(characterComponent);

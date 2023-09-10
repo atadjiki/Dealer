@@ -44,15 +44,11 @@ public class CharacterComponent : MonoBehaviour
 
         _model.Setup(def);
 
-       // Debug.Log("Setup " + _model);
-
         yield return new WaitWhile(() => _model == null);
         
         _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
 
         yield return new WaitWhile(() => _weaponAnchor == null);
-
-      //  Debug.Log("Setup " + _weaponAnchor);
 
         if (def.AllowedWeapons.Length > 0)
         {
@@ -93,11 +89,6 @@ public class CharacterComponent : MonoBehaviour
             onSetupComplete.Invoke(this);
         }
 
-        if(EncounterManager.Instance != null)
-        {
-            EncounterManager.Instance.OnCharacterSpawned(this);
-        }
-
         yield return null;
     }
 
@@ -125,11 +116,6 @@ public class CharacterComponent : MonoBehaviour
         yield return DestroyModel();
 
         yield return DestroyWeapon();
-
-        if(EncounterManager.Instance != null)
-        {
-            EncounterManager.Instance.OnCharacterDespawned(this);
-        }
 
         yield return null;
     }

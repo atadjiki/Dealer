@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using static Constants;
 
-public class EncounterCanvas : MonoBehaviour, IEncounter
+public class EncounterCanvas : EncounterEventReceiver
 {
     //elements
     [Header("Elements")]
@@ -32,45 +32,40 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
         HideAll();
     }
 
-    public IEnumerator HandleInit()
+    public override IEnumerator Coroutine_Init(EncounterModel model)
     {
         Panel_PlayerTurn.SetActive(false);
 
         yield return Coroutine_PerformFadeToBlack();
     }
 
-    public void UpdateCanvas(EncounterModel model)
-    {
-        StartCoroutine(Coroutine_UpdateCanvas(model));
-    }
-
-    private IEnumerator Coroutine_UpdateCanvas(EncounterModel model)
+    public override IEnumerator Coroutine_StateUpdate(EncounterState stateID, EncounterModel model)
     {
         EncounterState state = model.GetState();
 
         switch (state)
         {
             case EncounterState.SETUP_COMPLETE:
-            {
-                yield return Coroutine_PerformFadeToClear();
-                break;
-            }
-            case EncounterState.WAIT_FOR_PLAYER_INPUT:
-            {
-                PopulatePlayerTurnPanel(model);
-                break;
-            }
-            case EncounterState.DONE:
-            {
-                model.OnStateChanged -= this.UpdateCanvas;
-                Destroy(this.gameObject);
-                yield break;
-            }
+                {
+                    yield return Coroutine_PerformFadeToClear();
+                    break;
+                }
+            case EncounterState.CHOOSE_ACTION:
+                {
+                    if(model.GetCurrentTeam() == TeamID.Player)
+                    {
+                        if (!model.IsCurrentTeamCPU())
+                        {
+                            PopulatePlayerTurnPanel(model);
+                        }
+                    }
+                    break;
+                }
             default:
-            {
-                HideAll();
-                break;
-            }
+                {
+                    HideAll();
+                    break;
+                }
         }
 
         Text_StateDetail.text = GetDisplayString(state);
@@ -96,8 +91,6 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
     {
         CharacterComponent character = model.GetCurrentCharacter();
 
-        Debug.Log(GetAllowedAbilities(character.GetID()).Count + " abilities counted");
-
         foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
         {
 
@@ -105,11 +98,6 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
             EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
             abilityButton.Populate(abilityID);
             abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
-
-            //if (GetAllowedAbilities(character.GetID()).IndexOf(abilityID) == 0)
-            //{
-            //    abilityButton.Select();
-            //}
         }
     }
 
@@ -198,7 +186,6 @@ public class EncounterCanvas : MonoBehaviour, IEncounter
 
     private IEnumerator Coroutine_PerformFadeBetween(Color to, Color from, float duration)
     {
-        Debug.Log("Fade from " + to.ToString() + " to " + from.ToString());
         Panel_Fade.color = to;
 
         float currentTime = 0;

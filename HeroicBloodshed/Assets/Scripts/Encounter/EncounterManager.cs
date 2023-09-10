@@ -20,6 +20,9 @@ public class EncounterManager : MonoBehaviour
     public static EncounterManager Instance { get { return _instance; } }
 
     private EncounterModel _model;
+
+    private List<EncounterEventReceiver> _eventReceivers;
+
     private EncounterCanvas _canvas;
     private EncounterCameraRig _cameraRig;
 
@@ -47,136 +50,172 @@ public class EncounterManager : MonoBehaviour
         StartCoroutine(Coroutine_LoadEncounter());
     }
 
-    private void EncounterStateCallback(EncounterModel model)
-    {
-        StartCoroutine(Coroutine_EncounterStateCallback(model));
-    }
-
     private IEnumerator Coroutine_LoadEncounter()
     {
+        _eventReceivers = new List<EncounterEventReceiver>();
+
         //create a canvas 
         GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, null);
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
         _canvas = canvasObject.GetComponent<EncounterCanvas>();
+        _eventReceivers.Add(_canvas);
 
         //create a camera rig
         GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, null);
         yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
         _cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
-        _cameraRig.Setup(_setupData.CameraFollowTarget);
+        _eventReceivers.Add(_cameraRig);
 
         //generate encounter and attach to handler
         _model = _setupData.gameObject.AddComponent<EncounterModel>();
         yield return new WaitWhile(() => _setupData.gameObject.GetComponent<EncounterModel>() == null);
-        _model.SetSetupData(_setupData);
 
         _model.OnStateChanged += this.EncounterStateCallback;
 
-        yield return _canvas.HandleInit();
-        yield return _model.HandleInit();
+        yield return _model.Setup(_setupData);
+
+        foreach (EncounterEventReceiver receiver in _eventReceivers)
+        {
+            yield return receiver.Coroutine_Init(_model);
+        }
+
+        yield return SpawnCharacters();
 
         _model.TransitionState();
 
         yield return null;
     }
 
-    public void SelectAbility(AbilityID abilityID)
+    private void EncounterStateCallback()
     {
-        Debug.Log("ability selected " + abilityID);
-
-        _model.OnAbilitySelected(abilityID);
-
-        _model.TransitionState();
+        StartCoroutine(Coroutine_EncounterStateCallback());
     }
 
-    private IEnumerator Coroutine_WaitForPlayerInput()
+    private IEnumerator Coroutine_EncounterStateCallback()
     {
-        Debug.Log("Waiting for player input");
+        EncounterState state = _model.GetState();
 
-        yield return null;
-    }
-
-    private IEnumerator Coroutine_EncounterStateCallback(EncounterModel model)
-    {
-        EncounterState state = model.GetState();
-
-        _canvas.UpdateCanvas(model);
+        foreach (EncounterEventReceiver receiver in _eventReceivers)
+        {
+            yield return receiver.Coroutine_StateUpdate(state, _model);
+        }
 
         switch (state)
         {
-            case EncounterState.BUILD_QUEUES:
-            {
-                _cameraRig.GoToMainCamera();
-                yield return new WaitForSeconds(1.0f);
-                break;
-            }
-            case EncounterState.PERFORM_ACTION:
-            {
-                CharacterComponent currentCharacter = _model.GetCurrentCharacter();
-                yield return CharacterAbility.Perform(currentCharacter);
-                break;
-            }
             case EncounterState.SELECT_CURRENT_CHARACTER:
-            {
-                CharacterComponent character = model.GetCurrentCharacter();
-                if(character.IsAlive())
                 {
-                    _cameraRig.GoToCharacter(character);
-                    character.CreateDecal();
+                    CharacterComponent character = _model.GetCurrentCharacter();
+                    if (character.IsAlive())
+                    {
+                        character.CreateDecal();
+                    }
+                    break;
                 }
-
-                break;
-            }
-            case EncounterState.WAIT_FOR_PLAYER_INPUT:
-            {
-                yield return Coroutine_WaitForPlayerInput();
-                yield break;
-            }
-            case EncounterState.CHOOSE_AI_ACTION:
-            {
-                yield return new WaitForSeconds(1.0f);
-                break;
-            }
+            case EncounterState.CHOOSE_ACTION:
+                {
+                    yield return Coroutine_ChooseAction();
+                    yield break;
+                }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
-            {
-                CharacterComponent character = model.GetCurrentCharacter();
-                character.DestroyDecal();
-                break;
-            }
-            case EncounterState.DONE:
-            {
-                _cameraRig.GoToMainCamera();
-                break;
-            }
+                {
+                    CharacterComponent character = _model.GetCurrentCharacter();
+                    character.DestroyDecal();
+                    break;
+                }
+            case EncounterState.PERFORM_ACTION:
+                {
+                    CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+                    yield return PerformAbility(currentCharacter);
+                    break;
+                }
             default:
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
 
-        model.TransitionState();
-
-        if(state == EncounterState.DONE)
+        if (_model != null && state != EncounterState.DONE)
         {
-            CleanUpCurrentEncounter();
+            _model.TransitionState();
         }
 
         yield return null;
     }
 
-    private void CleanUpCurrentEncounter()
+    private IEnumerator Coroutine_ChooseAction()
     {
-        if(_model != null)
-        {
-            _model.OnStateChanged -= this.EncounterStateCallback;
+        TeamID currentTeam = _model.GetCurrentTeam();
 
-            Destroy(_model.gameObject);
-            _model = null;
+        if (_model.IsCurrentTeamCPU())
+        {
+            if (FindRandomTarget() != null)
+            {
+                _model.OnAbilitySelected(AbilityID.Attack);
+            }
+            else
+            {
+                _model.OnAbilitySelected(AbilityID.SkipTurn);
+            }
+
+            //pretend like the CPU is thinking :)
+            yield return new WaitForSeconds(1.0f);
+
+            _model.TransitionState();
+        }
+
+        yield return null;
+    }
+
+    //Abilities
+    public IEnumerator PerformAbility(CharacterComponent caster)
+    {
+        AbilityID abilityID = caster.GetActiveAbility();
+
+        Debug.Log(caster.GetID() + " performing ability " + abilityID.ToString());
+
+        switch (abilityID)
+        {
+            case AbilityID.Attack:
+                yield return HandleAbility_Attack(caster);
+                break;
+            case AbilityID.SkipTurn:
+                yield return HandleAbility_SkipTurn(caster);
+                break;
+            default:
+                break;
         }
     }
 
+    private IEnumerator HandleAbility_Attack(CharacterComponent caster)
+    {
+        CharacterComponent target = FindRandomTarget();
+
+        if (target != null)
+        {
+            UnfollowCharacter();
+            yield return new WaitForSeconds(1.0f);
+           // FollowCharacter(target);
+          //  yield return new WaitForSeconds(1.0f);
+            target.Kill();
+            yield return new WaitForSeconds(1.0f);
+            UnfollowCharacter();
+            yield return new WaitForSeconds(1.0f);
+        }
+        else
+        {
+            Debug.Log("target is null!");
+        }
+        yield return null;
+    }
+
+    private IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
+    {
+        yield return new WaitForSeconds(1.0f);
+    }
+
+    //helpers
     public void FollowCharacter(CharacterComponent characterComponent)
     {
         _cameraRig.GoToCharacter(characterComponent);
@@ -184,64 +223,58 @@ public class EncounterManager : MonoBehaviour
 
     public void UnfollowCharacter()
     {
-        FollowCharacter(_model.GetCurrentCharacter());
+        _cameraRig.GoToMainCamera();
     }
 
-    public IEnumerator SpawnCharacters(EncounterModel model)
+    public void SelectAbility(AbilityID abilityID)
     {
-        foreach (CharacterComponent characterComponent in model.GetAllCharacters())
+        _model.OnAbilitySelected(abilityID);
+
+        _model.TransitionState();
+    }
+
+    private IEnumerator SpawnCharacters()
+    {
+        foreach (CharacterComponent characterComponent in _model.GetAllCharacters())
         {
             yield return characterComponent.SpawnCharacter();
         }
     }
 
-    public void OnCharacterSpawned(CharacterComponent characterComponent)
+    private IEnumerator DespawnCharacters()
     {
-        if (_cameraRig != null)
-        {
-            _cameraRig.RegisterCharacterCamera(characterComponent);
-        }
-    }
-
-    public IEnumerator DespawnCharacters(EncounterModel model)
-    {
-        foreach (CharacterComponent characterComponent in model.GetAllCharacters())
+        foreach (CharacterComponent characterComponent in _model.GetAllCharacters())
         {
             yield return characterComponent.PerformCleanup();
         }
     }
 
-    public void OnCharacterDespawned(CharacterComponent characterComponent)
+    private CharacterComponent FindRandomTarget()
     {
-        if (_cameraRig != null)
-        {
-            _cameraRig.UnregisterCharacterCamera(characterComponent);
-        }
-    }
+        CharacterComponent characterComponent = _model.GetCurrentCharacter();
 
-    //helpers
-    public CharacterComponent FindTargetForCharacter(CharacterComponent characterComponent)
-    {
         //get a list of this character's enemies in the encounter
         TeamID opposingTeam = GetOpposingTeam(characterComponent);
-        List<CharacterComponent> enemies =_model.GetAllCharactersInTeam(opposingTeam);
+        List<CharacterComponent> enemies = _model.GetAllCharactersInTeam(opposingTeam);
 
-        if(enemies.Count > 0)
+        if (enemies.Count > 0)
         {
             List<CharacterComponent> targets = new List<CharacterComponent>();
 
-            foreach(CharacterComponent enemy in enemies)
+            foreach (CharacterComponent enemy in enemies)
             {
-                if(enemy.IsAlive())
+                if (enemy.IsAlive())
                 {
                     targets.Add(enemy);
                 }
             }
 
-            CharacterComponent targetCharacter = targets[UnityEngine.Random.Range(0, targets.Count - 1)];
-            Debug.Log("Found target: " + targetCharacter.gameObject.name);
-            characterComponent.SetTarget(targetCharacter);
-            return targetCharacter;
+            if (targets.Count > 0)
+            {
+                CharacterComponent targetCharacter = targets[UnityEngine.Random.Range(0, targets.Count - 1)];
+                characterComponent.SetTarget(targetCharacter);
+                return targetCharacter;
+            }
         }
 
         return null;
