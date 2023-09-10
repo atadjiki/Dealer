@@ -177,7 +177,7 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator Coroutine_ChooseTarget()
     {
-        if (_model.IsCurrentTeamCPU())
+        if (_model.IsCurrentTeamCPU() || true)
         {
             CharacterComponent characterComponent = _model.GetCurrentCharacter();
 
