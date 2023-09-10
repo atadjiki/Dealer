@@ -44,6 +44,8 @@ public class EncounterCanvas : EncounterEventReceiver
     {
         EncounterState state = model.GetState();
 
+        HideAll();
+
         switch (state)
         {
             case EncounterState.SETUP_COMPLETE:
@@ -131,22 +133,41 @@ public class EncounterCanvas : EncounterEventReceiver
         Panel_CPUTurn.SetActive(false);
 
         //clear everything
+        ClearContainers();
+
+
+        //clear text
+        Text_StateDetail.text = string.Empty;
+    }
+
+    private void ClearContainers()
+    {
+        ClearPlayerTurnPanel();
+        ClearCPUTurnPanel();
+        ClearTargetPanel();
+    }
+
+    private void ClearPlayerTurnPanel()
+    {
         foreach (EncounterCanvasElement element in Panel_PlayerTurn.GetComponentsInChildren<EncounterCanvasElement>())
         {
             element.Clear();
         }
+    }
 
-        foreach (EncounterCanvasElement element in Panel_TargetSelection.GetComponentsInChildren<EncounterCanvasElement>())
-        {
-            element.Clear();
-        }
-
+    private void ClearCPUTurnPanel()
+    {
         foreach (EncounterCanvasElement element in Panel_CPUTurn.GetComponentsInChildren<EncounterCanvasElement>())
         {
             element.Clear();
         }
+    }
 
-        //clear text
-        Text_StateDetail.text = string.Empty;
+    private void ClearTargetPanel()
+    {
+        foreach (EncounterCanvasElement element in Panel_TargetSelection.GetComponentsInChildren<EncounterCanvasElement>())
+        {
+            element.Clear();
+        }
     }
 }

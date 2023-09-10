@@ -255,7 +255,7 @@ public class EncounterManager : MonoBehaviour
         _cameraRig.GoToMainCamera();
     }
 
-    public void SelectAbility(AbilityID abilityID)
+    public void OnAbilitySelected(AbilityID abilityID)
     {
         _model.OnAbilitySelected(abilityID);
 
@@ -266,7 +266,7 @@ public class EncounterManager : MonoBehaviour
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
-            _model.SetCurrentTarget(character);
+            _model.OnTargetSelected(character);
 
             _model.TransitionState();
         }

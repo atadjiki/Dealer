@@ -294,6 +294,20 @@ public class EncounterModel : MonoBehaviour
         }
     }
 
+    public bool IsAbilitySelected()
+    {
+        //check if the current character can support this before we accept
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        return (currentCharacter.GetActiveAbility() != AbilityID.NONE);
+
+    }
+
+    public void OnTargetSelected(CharacterComponent target)
+    {
+        GetCurrentCharacter().SetTarget(target);
+    }
+
     //
     //helpers
 
@@ -414,11 +428,6 @@ public class EncounterModel : MonoBehaviour
     public CharacterComponent GetCurrentTarget()
     {
         return GetCurrentCharacter().GetActiveTarget();
-    }
-
-    public void SetCurrentTarget(CharacterComponent target)
-    {
-        GetCurrentCharacter().SetTarget(target);
     }
 
     public bool AreTargetsAvailable()

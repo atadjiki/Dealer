@@ -207,6 +207,17 @@ public class CharacterComponent : MonoBehaviour
         _activeTarget = null;
     }
 
+    public void ResetAbility()
+    {
+        _activeAbility = AbilityID.NONE;
+    }
+
+    public void ResetAbilityState()
+    {
+        _activeAbility = AbilityID.NONE;
+        _activeTarget = null;
+    }
+
     public CharacterID GetID()
     {
         return _ID;

@@ -22,7 +22,7 @@ public class EncounterAbilityList : EncounterCanvasItemContainer
     {
         if (EncounterManager.Instance != null)
         {
-            EncounterManager.Instance.SelectAbility(button.GetAbilityID());
+            EncounterManager.Instance.OnAbilitySelected(button.GetAbilityID());
         }
     }
 }
