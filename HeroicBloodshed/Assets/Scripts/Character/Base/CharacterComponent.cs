@@ -9,6 +9,7 @@ public class CharacterComponent : MonoBehaviour
     protected AbilityID _activeAbility = AbilityID.NONE;
     protected CharacterComponent _activeTarget = null;
     protected CharacterModel _model;
+    protected CharacterOverheadAnchor _overheadAnchor;
     protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
@@ -68,6 +69,10 @@ public class CharacterComponent : MonoBehaviour
 
             _weapon.SetID(weaponID);
         }
+
+        _overheadAnchor = modelPrefab.GetComponentInChildren<CharacterOverheadAnchor>();
+
+        yield return new WaitWhile(() => _overheadAnchor == null);
 
         _animator = modelPrefab.GetComponent<CharacterAnimator>();
 
@@ -232,5 +237,10 @@ public class CharacterComponent : MonoBehaviour
         _health -= Mathf.Abs(amount);
 
         _health = Mathf.Clamp(_health, 0, _health);
+    }
+
+    public virtual CharacterOverheadAnchor GetOverheadAnchor()
+    {
+        return _overheadAnchor;
     }
 }
