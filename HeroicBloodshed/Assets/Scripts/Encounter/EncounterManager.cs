@@ -103,35 +103,40 @@ public class EncounterManager : MonoBehaviour
         switch (state)
         {
             case EncounterState.SELECT_CURRENT_CHARACTER:
+            {
+                CharacterComponent character = _model.GetCurrentCharacter();
+                if (character.IsAlive())
                 {
-                    CharacterComponent character = _model.GetCurrentCharacter();
-                    if (character.IsAlive())
-                    {
-                        character.CreateDecal();
-                    }
-                    break;
+                    character.CreateDecal();
                 }
+                break;
+            }
             case EncounterState.CHOOSE_ACTION:
-                {
-                    yield return Coroutine_ChooseAction();
-                    yield break;
-                }
+            {
+                yield return Coroutine_ChooseAction();
+                yield break;
+            }
+            case EncounterState.CHOOSE_TARGET:
+            {
+                yield return Coroutine_ChooseTarget();
+                break;
+            }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
-                {
-                    CharacterComponent character = _model.GetCurrentCharacter();
-                    character.DestroyDecal();
-                    break;
-                }
+            {
+                CharacterComponent character = _model.GetCurrentCharacter();
+                character.DestroyDecal();
+                break;
+            }
             case EncounterState.PERFORM_ACTION:
-                {
-                    CharacterComponent currentCharacter = _model.GetCurrentCharacter();
-                    yield return PerformAbility(currentCharacter);
-                    break;
-                }
+            {
+                CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+                yield return PerformAbility(currentCharacter);
+                break;
+            }
             default:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
 
         yield return new WaitForSeconds(0.25f);
@@ -144,13 +149,27 @@ public class EncounterManager : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator Coroutine_ChooseTarget()
+    {
+        CharacterComponent characterComponent = _model.GetCurrentCharacter();
+
+        List<CharacterComponent> enemies = _model.GetTargetCandidates();
+
+        if (enemies.Count > 0)
+        {
+            CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
+            characterComponent.SetTarget(targetCharacter);
+        }
+
+        yield return null;
+    }
+
     private IEnumerator Coroutine_ChooseAction()
     {
-        TeamID currentTeam = _model.GetCurrentTeam();
-
         if (_model.IsCurrentTeamCPU())
         {
-            if (FindRandomTarget() != null)
+            //if there are enemies to attack
+            if (_model.AreTargetsAvailable())
             {
                 _model.OnAbilitySelected(AbilityID.Attack);
             }
@@ -190,14 +209,12 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
-        CharacterComponent target = FindRandomTarget();
+        CharacterComponent target = caster.GetActiveTarget();
 
         if (target != null)
         {
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
-           // FollowCharacter(target);
-          //  yield return new WaitForSeconds(1.0f);
             target.Kill();
             yield return new WaitForSeconds(1.0f);
             UnfollowCharacter();
@@ -247,36 +264,5 @@ public class EncounterManager : MonoBehaviour
         {
             yield return characterComponent.PerformCleanup();
         }
-    }
-
-    private CharacterComponent FindRandomTarget()
-    {
-        CharacterComponent characterComponent = _model.GetCurrentCharacter();
-
-        //get a list of this character's enemies in the encounter
-        TeamID opposingTeam = GetOpposingTeam(characterComponent);
-        List<CharacterComponent> enemies = _model.GetAllCharactersInTeam(opposingTeam);
-
-        if (enemies.Count > 0)
-        {
-            List<CharacterComponent> targets = new List<CharacterComponent>();
-
-            foreach (CharacterComponent enemy in enemies)
-            {
-                if (enemy.IsAlive())
-                {
-                    targets.Add(enemy);
-                }
-            }
-
-            if (targets.Count > 0)
-            {
-                CharacterComponent targetCharacter = targets[UnityEngine.Random.Range(0, targets.Count - 1)];
-                characterComponent.SetTarget(targetCharacter);
-                return targetCharacter;
-            }
-        }
-
-        return null;
     }
 }

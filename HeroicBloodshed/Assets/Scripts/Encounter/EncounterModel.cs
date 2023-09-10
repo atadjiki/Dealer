@@ -114,6 +114,9 @@ public class EncounterModel : MonoBehaviour
             case EncounterState.CHOOSE_ACTION:
                 yield return Coroutine_ChooseAction();
                 break;
+            case EncounterState.CHOOSE_TARGET:
+                yield return Coroutine_ChooseTarget();
+                break;
             case EncounterState.PERFORM_ACTION:
                 yield return Coroutine_PerformAction();
                 break;
@@ -223,6 +226,12 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_ChooseAction()
     { 
+        SetPendingState(EncounterState.CHOOSE_TARGET);
+        yield return null;
+    }
+
+    private IEnumerator Coroutine_ChooseTarget()
+    {
         SetPendingState(EncounterState.PERFORM_ACTION);
         yield return null;
     }
@@ -372,6 +381,28 @@ public class EncounterModel : MonoBehaviour
             return null;
         }
 
+    }
+
+    public bool AreTargetsAvailable()
+    {
+        return GetTargetCandidates().Count > 0;
+    }
+
+    public List<CharacterComponent> GetTargetCandidates()
+    {
+        TeamID opposingTeam = GetOpposingTeam(GetCurrentTeam());
+
+        List<CharacterComponent> candidates = new List<CharacterComponent>();
+
+        foreach (CharacterComponent character in GetAllCharactersInTeam(opposingTeam))
+        {
+            if(character.IsAlive())
+            {
+                candidates.Add(character);
+            }
+        }
+
+        return candidates;
     }
 
     public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) { return _characterMap[teamID]; }

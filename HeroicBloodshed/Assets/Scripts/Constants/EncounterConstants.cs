@@ -21,6 +21,8 @@ public static partial class Constants
 
         CHOOSE_ACTION,
 
+        CHOOSE_TARGET,
+
         PERFORM_ACTION,//perform the chosen action
 
         DESELECT_CURRENT_CHARACTER,//deselect current character and pop them from their team's queue
@@ -46,6 +48,8 @@ public static partial class Constants
                 return "Selecting Next Character...";
             case EncounterState.CHOOSE_ACTION:
                 return "Choosing action...";
+            case EncounterState.CHOOSE_TARGET:
+                return "Choosing target";
             case EncounterState.PERFORM_ACTION:
                 return "Performing Action...";
             case EncounterState.DESELECT_CURRENT_CHARACTER:

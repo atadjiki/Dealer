@@ -187,6 +187,11 @@ public class CharacterComponent : MonoBehaviour
         _activeTarget = target;
     }
 
+    public CharacterComponent GetActiveTarget()
+    {
+        return _activeTarget;
+    }
+
     public void ResetTarget()
     {
         _activeTarget = null;
