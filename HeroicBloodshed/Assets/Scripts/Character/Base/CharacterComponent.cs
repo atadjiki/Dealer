@@ -108,12 +108,17 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnMouseOver()
     {
-        _model.ToggleHighlight(true);
+        ToggleHighlight(true);
     }
 
     private void OnMouseExit()
     {
-        _model.ToggleHighlight(false);
+        ToggleHighlight(false);
+    }
+
+    public void ToggleHighlight(bool flag)
+    {
+        _model.ToggleHighlight(flag);
     }
 
     public virtual IEnumerator PerformCleanup()

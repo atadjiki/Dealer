@@ -9,6 +9,7 @@ public class EncounterCanvas : EncounterEventReceiver
 {
     [Header("Groups")]
     [SerializeField] private GameObject Panel_PlayerTurn;
+    [SerializeField] private GameObject Panel_TargetSelection;
     [SerializeField] private GameObject Panel_CPUTurn;
 
     //list elements
@@ -36,8 +37,6 @@ public class EncounterCanvas : EncounterEventReceiver
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {
-        Panel_PlayerTurn.SetActive(false);
-
         yield return FadePanel.Coroutine_PerformFadeToBlack();
     }
 
@@ -63,8 +62,20 @@ public class EncounterCanvas : EncounterEventReceiver
                     }
                     break;
                 }
+            case EncounterState.CHOOSE_TARGET:
+                {
+                    if (model.GetCurrentTeam() == TeamID.Player)
+                    {
+                        if (!model.IsCurrentTeamCPU())
+                        {
+                            PopulateTargetSelectionMode(model);
+                        }
+                    }
+                    break;
+                }
             case EncounterState.TEAM_UPDATED:
                 {
+                    yield return new WaitForSeconds(1.0f);
                     if (model.IsCurrentTeamCPU())
                     {
                         PopulateCPUTurnPanel(model);
@@ -103,13 +114,29 @@ public class EncounterCanvas : EncounterEventReceiver
         }
     }
 
+    private void PopulateTargetSelectionMode(EncounterModel model)
+    {
+        Panel_TargetSelection.SetActive(true);
+
+        foreach (EncounterCanvasElement element in Panel_TargetSelection.GetComponentsInChildren<EncounterCanvasElement>())
+        {
+            element.Populate(model);
+        }
+    }
+
     private void HideAll()
     {
         Panel_PlayerTurn.SetActive(false);
+        Panel_TargetSelection.SetActive(false);
         Panel_CPUTurn.SetActive(false);
 
         //clear everything
         foreach (EncounterCanvasElement element in Panel_PlayerTurn.GetComponentsInChildren<EncounterCanvasElement>())
+        {
+            element.Clear();
+        }
+
+        foreach (EncounterCanvasElement element in Panel_TargetSelection.GetComponentsInChildren<EncounterCanvasElement>())
         {
             element.Clear();
         }

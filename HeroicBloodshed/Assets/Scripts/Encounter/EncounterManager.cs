@@ -113,7 +113,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.TEAM_UPDATED:
             {
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(3.0f);
                 break;
             }
             case EncounterState.CHOOSE_ACTION:
@@ -143,6 +143,8 @@ public class EncounterManager : MonoBehaviour
                 break;
             }
         }
+
+        yield return new WaitForSeconds(0.25f);
 
         if (_model != null && state != EncounterState.DONE)
         {
@@ -177,7 +179,7 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator Coroutine_ChooseTarget()
     {
-        if (_model.IsCurrentTeamCPU() || true)
+        if (_model.IsCurrentTeamCPU())
         {
             CharacterComponent characterComponent = _model.GetCurrentCharacter();
 
@@ -258,6 +260,16 @@ public class EncounterManager : MonoBehaviour
         _model.OnAbilitySelected(abilityID);
 
         _model.TransitionState();
+    }
+
+    public void SelectTarget(CharacterComponent character)
+    {
+        if(_model.GetState() == EncounterState.CHOOSE_TARGET)
+        {
+            _model.SetCurrentTarget(character);
+
+            _model.TransitionState();
+        }
     }
 
     private IEnumerator SpawnCharacters()

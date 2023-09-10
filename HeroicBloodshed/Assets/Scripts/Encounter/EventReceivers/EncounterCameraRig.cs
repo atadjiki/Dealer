@@ -47,6 +47,16 @@ public class EncounterCameraRig : EncounterEventReceiver
                     GoToMainCamera();
                     break;
                 }
+            case EncounterState.TEAM_UPDATED:
+                {
+                    GoToMainCamera();
+                    break;
+                }
+            case EncounterState.CHOOSE_TARGET:
+                {
+                    GoToMainCamera();
+                    break;
+                }
             case EncounterState.SELECT_CURRENT_CHARACTER:
                 {
                     CharacterComponent character = model.GetCurrentCharacter();

@@ -411,6 +411,16 @@ public class EncounterModel : MonoBehaviour
 
     }
 
+    public CharacterComponent GetCurrentTarget()
+    {
+        return GetCurrentCharacter().GetActiveTarget();
+    }
+
+    public void SetCurrentTarget(CharacterComponent target)
+    {
+        GetCurrentCharacter().SetTarget(target);
+    }
+
     public bool AreTargetsAvailable()
     {
         return GetTargetCandidates().Count > 0;
