@@ -20,6 +20,6 @@ public class EncounterPlayerQueueItem: EncounterCharacterQueueItem
         TeamID team = GetTeamByID(characterID);
         Text_Name.text = GetDisplayString(characterID);
 
-        Image_Portrait.color = GetColorByTeam(team);
+        Image_Portrait.color = GetColorByTeam(team, 0.25f);
     }
 }

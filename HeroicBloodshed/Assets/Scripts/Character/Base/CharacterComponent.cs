@@ -152,7 +152,7 @@ public class CharacterComponent : MonoBehaviour
 
             if (decal != null)
             {
-                decal.SetColorByTeam(GetTeamByID(_ID));
+                decal.SetColor(GetTeamByID(GetID()));
             }
         }
     }

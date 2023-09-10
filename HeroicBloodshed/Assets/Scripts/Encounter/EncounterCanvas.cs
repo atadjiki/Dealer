@@ -12,6 +12,7 @@ public class EncounterCanvas : EncounterEventReceiver
     [SerializeField] private Image Panel_Fade;
     [SerializeField] private GameObject Panel_PlayerTurn;
     [SerializeField] private GameObject Panel_CPUTurn;
+    [SerializeField] private GameObject Panel_Overheads;
 
     //the containers for prefabs to be spawned in
     [Header("Containers")]
@@ -34,6 +35,7 @@ public class EncounterCanvas : EncounterEventReceiver
     [SerializeField] private GameObject Prefab_PlayerQueue_Item;
     [SerializeField] private GameObject Prefab_EnemyQueue_Item;
     [SerializeField] private GameObject Prefab_Ability_Button;
+    [SerializeField] private GameObject Prefab_CharacterOverhead;
 
     private void Awake()
     {
@@ -69,9 +71,9 @@ public class EncounterCanvas : EncounterEventReceiver
                     }
                     break;
                 }
-            case EncounterState.UPDATE:
+            case EncounterState.TEAM_UPDATED:
                 {
-                    if(model.IsCurrentTeamCPU())
+                    if (model.IsCurrentTeamCPU())
                     {
                         PopulateCPUTurnPanel(model);
                     }
@@ -95,7 +97,7 @@ public class EncounterCanvas : EncounterEventReceiver
 
         Text_TeamBanner.text = (model.GetCurrentTeam() + " turn").ToLower();
 
-        Panel_TeamBanner.color = GetColorByTeam(model.GetCurrentTeam());
+        Panel_TeamBanner.color = GetColorByTeam(model.GetCurrentTeam(), 0.25f);
     }
 
     private void PopulatePlayerTurnPanel(EncounterModel model)
@@ -103,7 +105,7 @@ public class EncounterCanvas : EncounterEventReceiver
         Panel_PlayerTurn.SetActive(true);
 
         Text_Info_CurrentTeam.text = (model.GetCurrentTeam().ToString() + " turn").ToLower(); ;
-        Text_Info_CurrentTeam.color = Constants.GetColorByTeam(model.GetCurrentTeam());
+        Text_Info_CurrentTeam.color = Constants.GetColorByTeam(model.GetCurrentTeam(), 0.25f);
 
         Text_Info_TurnCount.text = ("Turn " + model.GetTurnCount().ToString()).ToLower();
 

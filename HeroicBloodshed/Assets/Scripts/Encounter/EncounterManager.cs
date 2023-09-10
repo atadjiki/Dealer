@@ -111,6 +111,11 @@ public class EncounterManager : MonoBehaviour
                 }
                 break;
             }
+            case EncounterState.TEAM_UPDATED:
+            {
+                yield return new WaitForSeconds(1.5f);
+                break;
+            }
             case EncounterState.CHOOSE_ACTION:
             {
                 yield return Coroutine_ChooseAction();
@@ -119,7 +124,7 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.CHOOSE_TARGET:
             {
                 yield return Coroutine_ChooseTarget();
-                break;
+                yield break;
             }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
@@ -138,8 +143,6 @@ public class EncounterManager : MonoBehaviour
                 break;
             }
         }
-
-        yield return new WaitForSeconds(0.25f);
 
         if (_model != null && state != EncounterState.DONE)
         {
@@ -174,14 +177,21 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator Coroutine_ChooseTarget()
     {
-        CharacterComponent characterComponent = _model.GetCurrentCharacter();
-
-        List<CharacterComponent> enemies = _model.GetTargetCandidates();
-
-        if (enemies.Count > 0)
+        if (_model.IsCurrentTeamCPU())
         {
-            CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
-            characterComponent.SetTarget(targetCharacter);
+            CharacterComponent characterComponent = _model.GetCurrentCharacter();
+
+            List<CharacterComponent> enemies = _model.GetTargetCandidates();
+
+            if (enemies.Count > 0)
+            {
+                CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
+                characterComponent.SetTarget(targetCharacter);
+            }
+
+            yield return new WaitForSeconds(1.0f);
+
+            _model.TransitionState();
         }
 
         yield return null;

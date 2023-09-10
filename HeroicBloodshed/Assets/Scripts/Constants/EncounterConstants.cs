@@ -1,13 +1,10 @@
 public static partial class Constants
 {
-    public enum EncounterEvent
-    {
-        CHARACTER_KILLED,
-    }
-
     public enum EncounterState
     {
         INIT,
+
+        INTRO,
 
         SETUP_COMPLETE,//waiting for encounter to begin
 
@@ -16,6 +13,8 @@ public static partial class Constants
         CHECK_CONDITIONS,//check queues to see if the encounter can be declared Done
 
         DONE,//the encounter is done and we can exit
+
+        TEAM_UPDATED,
          
         SELECT_CURRENT_CHARACTER,//select the next character in the current team queue
 
@@ -57,7 +56,7 @@ public static partial class Constants
             case EncounterState.UPDATE:
                 return "Updating...";
             default:
-                return state.ToString();
+                return string.Empty;
 
         }
     }

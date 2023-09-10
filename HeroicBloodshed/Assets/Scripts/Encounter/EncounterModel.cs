@@ -21,8 +21,6 @@ public class EncounterModel : MonoBehaviour
     //create a queue for each team each combat loop
     private Dictionary<TeamID, Queue<CharacterComponent>> _queues;
 
-    private Dictionary<TeamID, bool> _controlMap;
-
     private EncounterState _pendingState = EncounterState.INIT;
 
     private bool _busy = false;
@@ -48,15 +46,12 @@ public class EncounterModel : MonoBehaviour
         _currentTeam = TeamID.Player; //the player always goes first
 
         _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
-        _controlMap = new Dictionary<TeamID, bool>();
 
         _cameraFollow = _setupData.CameraFollowTarget;
 
         foreach (EncounterTeamData teamData in _setupData.Teams)
         {
             _characterMap.Add(teamData.Team, new List<CharacterComponent>());
-
-            _controlMap.Add(teamData.Team, teamData.CPU);
 
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
@@ -107,6 +102,9 @@ public class EncounterModel : MonoBehaviour
                 break;
             case EncounterState.CHECK_CONDITIONS:
                 yield return Coroutine_CheckConditions();
+                break;
+            case EncounterState.TEAM_UPDATED:
+                yield return Coroutine_TeamUpdated();
                 break;
             case EncounterState.SELECT_CURRENT_CHARACTER:
                 yield return Coroutine_SelectCurrentCharacter();
@@ -210,6 +208,12 @@ public class EncounterModel : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator Coroutine_TeamUpdated()
+    {
+        SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
+        yield return null;
+    }
+
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
         if(GetCurrentCharacter().IsAlive())
@@ -263,7 +267,7 @@ public class EncounterModel : MonoBehaviour
         else if(IsCurrentTeamQueueEmpty())
         {
             IncrementTeam();
-            SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
+            SetPendingState(EncounterState.TEAM_UPDATED);
         }
         //if we still have characters left in the current team's queue, do nothing here
         else
@@ -352,14 +356,10 @@ public class EncounterModel : MonoBehaviour
     //getters/setters
 
     //control
-    public bool IsTeamCPUControlled(TeamID team)
-    {
-        return _controlMap[team];
-    }
-
     public bool IsCurrentTeamCPU()
     {
-        return _controlMap[GetCurrentTeam()];
+        return (GetCurrentTeam() == TeamID.Enemy || _setupData.IsPlayerCPU);
+ 
     }
 
     //state

@@ -155,17 +155,26 @@ public static partial class Constants
         return CharacterID.NONE;
     }
 
-    public static Color GetColorByTeam(TeamID teamID)
+    public static Color GetColorByTeam(TeamID teamID, float opacity)
     {
+        Color teamColor;
+
         switch(teamID)
         {
             case TeamID.Player:
-                return Color.blue;
+                teamColor = Color.blue;
+                break;
             case TeamID.Enemy:
-                return Color.red;
+                teamColor = Color.red;
+                break;
             default:
-                return Color.clear;
+                teamColor = Color.clear;
+                break;
         }
+
+        teamColor.a = opacity;
+
+        return teamColor;
     }
 
     public static TeamID GetOpposingTeam(CharacterComponent characterComponent)

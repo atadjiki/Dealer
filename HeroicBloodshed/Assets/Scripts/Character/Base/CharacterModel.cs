@@ -16,7 +16,7 @@ public class CharacterModel : MonoBehaviour
     {
         Constants.TeamID team = Constants.GetTeamByID(definition.ID);
 
-        Color teamColor = Constants.GetColorByTeam(team);
+        Color teamColor = Constants.GetColorByTeam(team, 0.75f);
 
         SetupOutline(teamColor);
 
