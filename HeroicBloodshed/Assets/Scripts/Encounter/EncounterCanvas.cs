@@ -11,6 +11,7 @@ public class EncounterCanvas : EncounterEventReceiver
     [Header("Elements")]
     [SerializeField] private Image Panel_Fade;
     [SerializeField] private GameObject Panel_PlayerTurn;
+    [SerializeField] private GameObject Panel_CPUTurn;
 
     //the containers for prefabs to be spawned in
     [Header("Containers")]
@@ -18,8 +19,15 @@ public class EncounterCanvas : EncounterEventReceiver
     [SerializeField] private GameObject Panel_EnemyQueue;
     [SerializeField] private GameObject Panel_AbilityList;
 
-    [SerializeField] private TextMeshProUGUI Text_CurrentTeam;
-    [SerializeField] private TextMeshProUGUI Text_TurnCount;
+    //cpu turn banner
+    [SerializeField] private Image Panel_TeamBanner;
+    [SerializeField] private TextMeshProUGUI Text_TeamBanner;
+
+    //info bar
+    [SerializeField] private TextMeshProUGUI Text_Info_CurrentTeam;
+    [SerializeField] private TextMeshProUGUI Text_Info_TurnCount;
+
+    //state detail
     [SerializeField] private TextMeshProUGUI Text_StateDetail;
 
     [Header("Prefabs")]
@@ -61,6 +69,14 @@ public class EncounterCanvas : EncounterEventReceiver
                     }
                     break;
                 }
+            case EncounterState.UPDATE:
+                {
+                    if(model.IsCurrentTeamCPU())
+                    {
+                        PopulateCPUTurnPanel(model);
+                    }
+                    break;
+                }
             default:
                 {
                     HideAll();
@@ -73,14 +89,23 @@ public class EncounterCanvas : EncounterEventReceiver
         yield return null;
     }
 
+    private void PopulateCPUTurnPanel(EncounterModel model)
+    {
+        Panel_CPUTurn.SetActive(true);
+
+        Text_TeamBanner.text = (model.GetCurrentTeam() + " turn").ToLower();
+
+        Panel_TeamBanner.color = GetColorByTeam(model.GetCurrentTeam());
+    }
+
     private void PopulatePlayerTurnPanel(EncounterModel model)
     {
         Panel_PlayerTurn.SetActive(true);
 
-        Text_CurrentTeam.text = (model.GetCurrentTeam().ToString() + " turn").ToLower(); ;
-        Text_CurrentTeam.color = Constants.GetColorByTeam(model.GetCurrentTeam());
+        Text_Info_CurrentTeam.text = (model.GetCurrentTeam().ToString() + " turn").ToLower(); ;
+        Text_Info_CurrentTeam.color = Constants.GetColorByTeam(model.GetCurrentTeam());
 
-        Text_TurnCount.text = ("Turn " + model.GetTurnCount().ToString()).ToLower();
+        Text_Info_TurnCount.text = ("Turn " + model.GetTurnCount().ToString()).ToLower();
 
         PopulateAbilityList(model);
 
@@ -158,6 +183,7 @@ public class EncounterCanvas : EncounterEventReceiver
     private void HideAll()
     {
         Panel_PlayerTurn.SetActive(false);
+        Panel_CPUTurn.SetActive(false);
 
         //first, make sure queues are empty
         DestroyTransformChildren(Panel_PlayerQueue.transform);
@@ -168,8 +194,8 @@ public class EncounterCanvas : EncounterEventReceiver
 
         //clear text
         Text_StateDetail.text = string.Empty;
-        Text_TurnCount.text = string.Empty;
-        Text_CurrentTeam.text = string.Empty;
+        Text_Info_TurnCount.text = string.Empty;
+        Text_Info_CurrentTeam.text = string.Empty;
     }
 
     private IEnumerator Coroutine_PerformFadeToBlack()

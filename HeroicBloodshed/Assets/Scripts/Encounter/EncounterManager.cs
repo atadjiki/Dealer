@@ -149,21 +149,6 @@ public class EncounterManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator Coroutine_ChooseTarget()
-    {
-        CharacterComponent characterComponent = _model.GetCurrentCharacter();
-
-        List<CharacterComponent> enemies = _model.GetTargetCandidates();
-
-        if (enemies.Count > 0)
-        {
-            CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
-            characterComponent.SetTarget(targetCharacter);
-        }
-
-        yield return null;
-    }
-
     private IEnumerator Coroutine_ChooseAction()
     {
         if (_model.IsCurrentTeamCPU())
@@ -182,6 +167,21 @@ public class EncounterManager : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
 
             _model.TransitionState();
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator Coroutine_ChooseTarget()
+    {
+        CharacterComponent characterComponent = _model.GetCurrentCharacter();
+
+        List<CharacterComponent> enemies = _model.GetTargetCandidates();
+
+        if (enemies.Count > 0)
+        {
+            CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
+            characterComponent.SetTarget(targetCharacter);
         }
 
         yield return null;
