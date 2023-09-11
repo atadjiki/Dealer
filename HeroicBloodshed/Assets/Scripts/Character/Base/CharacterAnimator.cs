@@ -38,4 +38,17 @@ public class CharacterAnimator : MonoBehaviour
 
         _animator.CrossFade(anim.ToString(), 0.0f);
     }
+
+    public void PerformOneOff(AnimState state, float time)
+    {
+        StartCoroutine(Coroutine_PerformOneOff(state, time));
+    }
+
+    private IEnumerator Coroutine_PerformOneOff(AnimState state, float time)
+    {
+        GoTo(state);
+        yield return new WaitForSeconds(time);
+        GoTo(AnimState.Idle);
+        yield return null;
+    }
 }

@@ -227,7 +227,7 @@ public class EncounterManager : MonoBehaviour
         {
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
-            target.SubtractHealth(1);
+            target.HandleDamage(UnityEngine.Random.Range(1, 2));
             yield return new WaitForSeconds(1.0f);
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);

@@ -6,6 +6,7 @@ public static partial class Constants
         Walking,
         Running,
         Attack_Single,
+        Hit,
         Dead,
     }
 
@@ -25,6 +26,7 @@ public static partial class Constants
         Anim_Character_Pistol_Walking,
         Anim_Character_Pistol_Running,
         Anim_Character_Pistol_Attack_Single,
+        Anim_Character_Pistol_Hit,
 
         //death
         Anim_Character_Death
@@ -66,6 +68,8 @@ public static partial class Constants
                 return AnimID.Anim_Character_Pistol_Running;
             case AnimState.Attack_Single:
                 return AnimID.Anim_Character_Pistol_Attack_Single;
+            case AnimState.Hit:
+                return AnimID.Anim_Character_Pistol_Hit;
 
             default:
                 return AnimID.Anim_Character_Pistol_Idle;

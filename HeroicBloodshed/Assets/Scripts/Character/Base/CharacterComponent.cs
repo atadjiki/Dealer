@@ -212,16 +212,20 @@ public class CharacterComponent : MonoBehaviour
         return _health > 0;
     }
 
-    public virtual void SubtractHealth(int amount)
+    public virtual void HandleDamage(int amount)
     {
         _health -= Mathf.Abs(amount);
 
         _health = Mathf.Clamp(_health, 0, _health);
 
-        if(_health < 1)
+        if(IsDead())
         {
             Kill();
-        }    
+        }
+        else
+        {
+            _animator.PerformOneOff(AnimState.Hit, 0.25f);
+        }
     }
 
     public virtual CharacterOverheadAnchor GetOverheadAnchor()
