@@ -161,11 +161,11 @@ public class EncounterManager : MonoBehaviour
             //if there are enemies to attack
             if (_model.AreTargetsAvailable())
             {
-                _model.OnAbilitySelected(AbilityID.Attack);
+                _model.SetActiveAbility(AbilityID.Attack);
             }
             else
             {
-                _model.OnAbilitySelected(AbilityID.SkipTurn);
+                _model.SetActiveAbility(AbilityID.SkipTurn);
             }
 
             //pretend like the CPU is thinking :)
@@ -188,7 +188,7 @@ public class EncounterManager : MonoBehaviour
             if (enemies.Count > 0)
             {
                 CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
-                characterComponent.SetTarget(targetCharacter);
+                _model.SetTarget(targetCharacter);
             }
 
             yield return new WaitForSeconds(1.0f);
@@ -202,7 +202,7 @@ public class EncounterManager : MonoBehaviour
     //Abilities
     public IEnumerator PerformAbility(CharacterComponent caster)
     {
-        AbilityID abilityID = caster.GetActiveAbility();
+        AbilityID abilityID = _model.GetActiveAbility();
 
         Debug.Log(caster.GetID() + " performing ability " + abilityID.ToString());
 
@@ -221,13 +221,13 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
-        CharacterComponent target = caster.GetActiveTarget();
+        CharacterComponent target = _model.GetActiveTarget();
 
         if (target != null)
         {
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
-            target.Kill();
+            target.SubtractHealth(1);
             yield return new WaitForSeconds(1.0f);
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
@@ -255,9 +255,16 @@ public class EncounterManager : MonoBehaviour
         _cameraRig.GoToMainCamera();
     }
 
+    public void OnAbilityCancelled()
+    {
+        _model.CancelActiveAbility();
+
+        _model.TransitionState();
+    }
+
     public void OnAbilitySelected(AbilityID abilityID)
     {
-        _model.OnAbilitySelected(abilityID);
+        _model.SetActiveAbility(abilityID);
 
         _model.TransitionState();
     }
@@ -266,7 +273,7 @@ public class EncounterManager : MonoBehaviour
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
-            _model.OnTargetSelected(character);
+            _model.SetTarget(character);
 
             _model.TransitionState();
         }

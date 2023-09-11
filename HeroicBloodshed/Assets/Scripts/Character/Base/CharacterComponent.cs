@@ -6,8 +6,6 @@ using UnityEngine;
 public class CharacterComponent : MonoBehaviour
 {
     protected CharacterID _ID;
-    protected AbilityID _activeAbility = AbilityID.NONE;
-    protected CharacterComponent _activeTarget = null;
     protected CharacterModel _model;
     protected CharacterOverheadAnchor _overheadAnchor;
     protected CharacterWeaponAnchor _weaponAnchor;
@@ -100,9 +98,6 @@ public class CharacterComponent : MonoBehaviour
     public void Kill()
     {
         _health = 0;
-        _activeTarget = null;
-        _activeAbility = AbilityID.NONE;
-
         _animator.GoTo(AnimState.Dead);
     }
 
@@ -182,42 +177,6 @@ public class CharacterComponent : MonoBehaviour
         return Constants.GetAllowedAbilities(_ID).Contains(abilityID);
     }
 
-    public void SetActiveAbility(AbilityID abilityID)
-    {
-        _activeAbility = abilityID;
-    }
-
-    public AbilityID GetActiveAbility()
-    {
-        return _activeAbility;
-    }
-
-    public void SetTarget(CharacterComponent target)
-    {
-        _activeTarget = target;
-    }
-
-    public CharacterComponent GetActiveTarget()
-    {
-        return _activeTarget;
-    }
-
-    public void ResetTarget()
-    {
-        _activeTarget = null;
-    }
-
-    public void ResetAbility()
-    {
-        _activeAbility = AbilityID.NONE;
-    }
-
-    public void ResetAbilityState()
-    {
-        _activeAbility = AbilityID.NONE;
-        _activeTarget = null;
-    }
-
     public CharacterID GetID()
     {
         return _ID;
@@ -226,6 +185,11 @@ public class CharacterComponent : MonoBehaviour
     public virtual void SetHealth(int health)
     {
         _health = health;
+
+        if(_health < 1)
+        {
+            Kill();
+        }
     }
 
     public virtual int GetHealth()
@@ -253,6 +217,11 @@ public class CharacterComponent : MonoBehaviour
         _health -= Mathf.Abs(amount);
 
         _health = Mathf.Clamp(_health, 0, _health);
+
+        if(_health < 1)
+        {
+            Kill();
+        }    
     }
 
     public virtual CharacterOverheadAnchor GetOverheadAnchor()

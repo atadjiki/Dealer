@@ -44,8 +44,6 @@ public class EncounterCanvas : EncounterEventReceiver
     {
         EncounterState state = model.GetState();
 
-        HideAll();
-
         switch (state)
         {
             case EncounterState.SETUP_COMPLETE:
@@ -98,6 +96,8 @@ public class EncounterCanvas : EncounterEventReceiver
 
     private void PopulatePlayerTurnPanel(EncounterModel model)
     {
+        Panel_CPUTurn.SetActive(false);
+        Panel_TargetSelection.SetActive(false);
         Panel_PlayerTurn.SetActive(true);
 
         foreach (EncounterCanvasElement element in Panel_PlayerTurn.GetComponentsInChildren<EncounterCanvasElement>())
@@ -108,6 +108,8 @@ public class EncounterCanvas : EncounterEventReceiver
 
     private void PopulateCPUTurnPanel(EncounterModel model)
     {
+        Panel_PlayerTurn.SetActive(false);
+        Panel_TargetSelection.SetActive(false);
         Panel_CPUTurn.SetActive(true);
 
         foreach (EncounterCanvasElement element in Panel_CPUTurn.GetComponentsInChildren<EncounterCanvasElement>())
@@ -118,6 +120,8 @@ public class EncounterCanvas : EncounterEventReceiver
 
     private void PopulateTargetSelectionMode(EncounterModel model)
     {
+        Panel_CPUTurn.SetActive(false);
+        Panel_PlayerTurn.SetActive(false);
         Panel_TargetSelection.SetActive(true);
 
         foreach (EncounterCanvasElement element in Panel_TargetSelection.GetComponentsInChildren<EncounterCanvasElement>())
@@ -132,11 +136,8 @@ public class EncounterCanvas : EncounterEventReceiver
         Panel_TargetSelection.SetActive(false);
         Panel_CPUTurn.SetActive(false);
 
-        //clear everything
         ClearContainers();
 
-
-        //clear text
         Text_StateDetail.text = string.Empty;
     }
 

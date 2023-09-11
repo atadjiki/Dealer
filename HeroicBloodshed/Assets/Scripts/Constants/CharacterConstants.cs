@@ -84,6 +84,30 @@ public static partial class Constants
         Attack,
     }
 
+    public enum TargetType
+    {
+        Enemy,
+        Ally,
+        None,
+    }
+
+    public static TargetType GetTargetType(AbilityID abilityID)
+    {
+        switch(abilityID)
+        {
+            case AbilityID.Attack:
+                return TargetType.Enemy;
+            case AbilityID.Heal:
+                return TargetType.Ally;
+            case AbilityID.Reload:
+                return TargetType.None;
+            case AbilityID.SkipTurn:
+                return TargetType.None;
+            default:
+                return TargetType.None;
+        }
+    }
+
     public static string GetDisplayString(AbilityID abilityID)
     {
         switch(abilityID)

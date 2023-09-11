@@ -7,6 +7,8 @@ public class EncounterCharacterQueue : EncounterCanvasItemContainer
 {
     [SerializeField] protected TeamID _team = TeamID.None;
 
+    [SerializeField] protected bool SelectFirstItem = false;
+
     public override void Populate(EncounterModel model)
     {
         //add a portrait for each character in the player queue

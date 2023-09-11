@@ -29,6 +29,9 @@ public class EncounterModel : MonoBehaviour
 
     private TeamID _currentTeam;
 
+    private AbilityID _activeAbility = AbilityID.NONE;
+    private CharacterComponent _activeTarget = null;
+
     private Transform _cameraFollow;
 
     //
@@ -114,6 +117,9 @@ public class EncounterModel : MonoBehaviour
                 break;
             case EncounterState.CHOOSE_TARGET:
                 yield return Coroutine_ChooseTarget();
+                break;
+            case EncounterState.CANCEL_ACTION:
+                yield return Coroutine_CancelAction();
                 break;
             case EncounterState.PERFORM_ACTION:
                 yield return Coroutine_PerformAction();
@@ -229,14 +235,35 @@ public class EncounterModel : MonoBehaviour
     }
 
     private IEnumerator Coroutine_ChooseAction()
-    { 
-        SetPendingState(EncounterState.CHOOSE_TARGET);
+    {
+        //check if we need to choose a target for this action
+        AbilityID abilityID = GetActiveAbility();
+
+        switch(GetTargetType(abilityID))
+        {
+            case TargetType.None:
+                SetPendingState(EncounterState.PERFORM_ACTION);
+                break;
+            case TargetType.Enemy:
+                SetPendingState(EncounterState.CHOOSE_TARGET);
+                break;
+            case TargetType.Ally:
+                SetPendingState(EncounterState.CHOOSE_TARGET);
+                break;
+        }
+
         yield return null;
     }
 
     private IEnumerator Coroutine_ChooseTarget()
     {
         SetPendingState(EncounterState.PERFORM_ACTION);
+        yield return null;
+    }
+
+    private IEnumerator Coroutine_CancelAction()
+    {
+        SetPendingState(EncounterState.CHOOSE_ACTION);
         yield return null;
     }
 
@@ -278,34 +305,9 @@ public class EncounterModel : MonoBehaviour
         yield return null;
     }
 
-    //game events
-    public void OnAbilitySelected(AbilityID abilityID)
-    {
-        //check if the current character can support this before we accept
-        CharacterComponent currentCharacter = GetCurrentCharacter();
-
-        if(currentCharacter.HasAbility(abilityID))
-        {
-            currentCharacter.SetActiveAbility(abilityID);
-        }
-        else
-        {
-            Debug.Log("character doesnt support this ability!");
-        }
-    }
-
     public bool IsAbilitySelected()
     {
-        //check if the current character can support this before we accept
-        CharacterComponent currentCharacter = GetCurrentCharacter();
-
-        return (currentCharacter.GetActiveAbility() != AbilityID.NONE);
-
-    }
-
-    public void OnTargetSelected(CharacterComponent target)
-    {
-        GetCurrentCharacter().SetTarget(target);
+        return GetActiveAbility() != AbilityID.NONE;
     }
 
     //
@@ -397,6 +399,40 @@ public class EncounterModel : MonoBehaviour
 
     //getters/setters
 
+    //ability
+    public void SetActiveAbility(AbilityID abilityID)
+    {
+        Debug.Log("Selected ability: " + abilityID);
+        _activeAbility = abilityID;
+    }
+
+    public AbilityID GetActiveAbility()
+    {
+        return _activeAbility;
+    }
+
+    public void SetTarget(CharacterComponent target)
+    {
+        if(target != null)
+        {
+            Debug.Log("Selected target: " + target.gameObject.name);
+        }
+        _activeTarget = target;
+    }
+
+    public CharacterComponent GetActiveTarget()
+    {
+        return _activeTarget;
+    }
+
+    public void CancelActiveAbility()
+    {
+        _activeAbility = AbilityID.NONE;
+        _activeTarget = null;
+
+        SetPendingState(EncounterState.CANCEL_ACTION);
+    }
+
     //control
     public bool IsCurrentTeamCPU()
     {
@@ -423,11 +459,6 @@ public class EncounterModel : MonoBehaviour
             return null;
         }
 
-    }
-
-    public CharacterComponent GetCurrentTarget()
-    {
-        return GetCurrentCharacter().GetActiveTarget();
     }
 
     public bool AreTargetsAvailable()
@@ -459,8 +490,7 @@ public class EncounterModel : MonoBehaviour
     public void PopCurrentCharacter()
     {
         CharacterComponent dequedCharacter = _queues[_currentTeam].Dequeue();
-        dequedCharacter.SetActiveAbility(AbilityID.NONE);
-        dequedCharacter.ResetTarget();
+        CancelActiveAbility();
     }
 
     //teams
