@@ -25,6 +25,11 @@ public class CharacterAnimator : MonoBehaviour
 
     public void GoTo(AnimState state)
     {
+        GoTo(state, 0);
+    }
+
+    public void GoTo(AnimState state, float transitionTime)
+    {
         AnimID anim;
 
         if (state == AnimState.Dead)
@@ -36,19 +41,6 @@ public class CharacterAnimator : MonoBehaviour
             anim = GetAnimByWeaponType(_weaponID, state);
         }
 
-        _animator.CrossFade(anim.ToString(), 0.0f);
-    }
-
-    public void PerformOneOff(AnimState state, float time)
-    {
-        StartCoroutine(Coroutine_PerformOneOff(state, time));
-    }
-
-    private IEnumerator Coroutine_PerformOneOff(AnimState state, float time)
-    {
-        GoTo(state);
-        yield return new WaitForSeconds(time);
-        GoTo(AnimState.Idle);
-        yield return null;
+        _animator.CrossFade(anim.ToString(), transitionTime);
     }
 }

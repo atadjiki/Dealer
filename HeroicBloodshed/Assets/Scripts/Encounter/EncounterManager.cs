@@ -223,12 +223,14 @@ public class EncounterManager : MonoBehaviour
     {
         CharacterComponent target = _model.GetActiveTarget();
 
+        caster.FireWeaponAt(target);
+
         if (target != null)
         {
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
-            target.HandleDamage(UnityEngine.Random.Range(1, 2));
-            yield return new WaitForSeconds(1.0f);
+            
+            yield return target.HandleDamage(UnityEngine.Random.Range(1, 4));
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
         }

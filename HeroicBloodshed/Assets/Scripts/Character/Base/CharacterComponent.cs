@@ -212,7 +212,18 @@ public class CharacterComponent : MonoBehaviour
         return _health > 0;
     }
 
-    public virtual void HandleDamage(int amount)
+    public void FireWeaponAt(CharacterComponent target)
+    {
+        StartCoroutine(Coroutine_FireWeaponAt(target));
+    }
+
+    private IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
+    {
+        _animator.GoTo(AnimState.Attack_Single);
+        yield return null;
+    }
+
+    public virtual IEnumerator HandleDamage(int amount)
     {
         _health -= Mathf.Abs(amount);
 
@@ -220,11 +231,17 @@ public class CharacterComponent : MonoBehaviour
 
         if(IsDead())
         {
+            EncounterManager.Instance.FollowCharacter(this);
+            yield return new WaitForSeconds(1.0f);
             Kill();
+            yield return new WaitForSeconds(1.0f);
+            EncounterManager.Instance.UnfollowCharacter();
+            yield return new WaitForSeconds(1.0f);
+
         }
         else
         {
-            _animator.PerformOneOff(AnimState.Hit, 0.25f);
+            _animator.GoTo(AnimState.Hit);
         }
     }
 
