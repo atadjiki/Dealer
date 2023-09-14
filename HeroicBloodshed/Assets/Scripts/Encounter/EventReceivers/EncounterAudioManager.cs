@@ -30,6 +30,7 @@ public class EncounterAudioManager : EncounterEventReceiver
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {
+        Source_Music.volume = 0;
         Source_Music.loop = true;
         Source_Music.clip = Track_Music;
         yield return null;
@@ -40,6 +41,7 @@ public class EncounterAudioManager : EncounterEventReceiver
         switch(stateID)
         {
             case Constants.EncounterState.SETUP_COMPLETE:
+                Source_Music.Play();
                 ToggleMusic(true);
                 break;
             case Constants.EncounterState.DONE:
@@ -54,13 +56,45 @@ public class EncounterAudioManager : EncounterEventReceiver
 
     public void ToggleMusic(bool flag)
     {
+        StopAllCoroutines();
+
         if(flag)
         {
-            Source_Music.Play();
+            StartCoroutine(Coroutine_ToggleMusic(true));
         }
         else
         {
-            Source_Music.Stop();
+            StartCoroutine(Coroutine_ToggleMusic(false));
+        }
+    }
+
+    private IEnumerator Coroutine_ToggleMusic(bool flag)
+    {
+
+        float currentVolume;
+        float targetVolume;
+
+        if(flag)
+        {
+            currentVolume = 0;
+            targetVolume = 1; 
+        }
+        else
+        {
+            currentVolume = 1;
+            targetVolume = 0;
+        }
+
+        Source_Music.volume = currentVolume;
+
+        float time = 0;
+        float duration = 3.0f;
+
+        while(time < duration)
+        {
+            time += Time.deltaTime;
+            Source_Music.volume = Mathf.Lerp(currentVolume, targetVolume, time / duration);
+            yield return null;
         }
     }
 

@@ -41,6 +41,7 @@ public class CharacterAnimator : MonoBehaviour
             anim = GetAnimByWeaponType(_weaponID, state);
         }
 
+        Debug.Log("Animation: " + anim.ToString());
         _animator.CrossFade(anim.ToString(), transitionTime);
     }
 }

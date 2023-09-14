@@ -224,7 +224,7 @@ public class CharacterComponent : MonoBehaviour
     public IEnumerator Coroutine_RotateTowards(CharacterComponent target)
     {
         float currentTime = 0;
-        float duration = 0.5f;
+        float duration = 0.25f;
 
         Quaternion casterRotation = this.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
@@ -233,15 +233,22 @@ public class CharacterComponent : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             transform.rotation = Quaternion.Slerp(casterRotation, targetRotation, currentTime / duration);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
             yield return null;
         }
 
         transform.rotation = targetRotation;
     }
 
-    public virtual IEnumerator Coroutine_HandleDamage(int amount)
+    public virtual IEnumerator Coroutine_HandleDamage(CharacterComponent caster)
     {
-        _health -= Mathf.Abs(amount);
+        //calculate how much damage we should deal
+        WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
+        int damage = weaponDef.GetRandomDamage();
+
+        Debug.Log("Dealing " + damage + " damage");
+
+        _health -= Mathf.Abs(damage);
 
         _health = Mathf.Clamp(_health, 0, _health);
 
@@ -256,7 +263,7 @@ public class CharacterComponent : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
             _animator.GoTo(AnimState.Hit);
         }
     }
@@ -264,5 +271,10 @@ public class CharacterComponent : MonoBehaviour
     public virtual CharacterOverheadAnchor GetOverheadAnchor()
     {
         return _overheadAnchor;
+    }
+
+    public WeaponID GetWeaponID()
+    {
+        return _weapon.GetID();
     }
 }

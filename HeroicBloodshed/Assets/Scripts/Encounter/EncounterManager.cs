@@ -57,19 +57,19 @@ public class EncounterManager : MonoBehaviour
         _eventReceivers = new List<EncounterEventReceiver>();
 
         //create a canvas 
-        GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, null);
+        GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, this.transform);
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
         _canvas = canvasObject.GetComponent<EncounterCanvas>();
         _eventReceivers.Add(_canvas);
 
         //create a camera rig
-        GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, null);
+        GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, this.transform);
         yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
         _cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
         _eventReceivers.Add(_cameraRig);
 
         //create audio manager
-        GameObject audioManagerObject = Instantiate(Prefab_EncounterAudioManager, null);
+        GameObject audioManagerObject = Instantiate(Prefab_EncounterAudioManager, this.transform);
         yield return new WaitWhile(() => audioManagerObject.GetComponent<EncounterAudioManager>() == null);
         _audioManager= audioManagerObject.GetComponent<EncounterAudioManager>();
         _eventReceivers.Add(_audioManager);
@@ -234,7 +234,7 @@ public class EncounterManager : MonoBehaviour
             target.ToggleHighlight(false);
             UnfollowCharacter();
             yield return caster.Coroutine_FireWeaponAt(target);
-            yield return target.Coroutine_HandleDamage(UnityEngine.Random.Range(1, 3));
+            yield return target.Coroutine_HandleDamage(caster);
             UnfollowCharacter();
         }
         else
@@ -283,8 +283,6 @@ public class EncounterManager : MonoBehaviour
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
-            character.ToggleHighlight(true);
-
             _model.SetTarget(character);
 
             _model.TransitionState();
