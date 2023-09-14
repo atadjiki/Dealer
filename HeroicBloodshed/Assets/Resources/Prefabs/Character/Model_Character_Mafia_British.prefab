@@ -429,6 +429,50 @@ Transform:
   m_Father: {fileID: 5402662730310515917}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2015995727201127950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3691774136842422066}
+  - component: {fileID: 6311182416185587940}
+  m_Layer: 3
+  m_Name: WeaponAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3691774136842422066
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015995727201127950}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6310381648214432085}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &6311182416185587940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015995727201127950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d5f961533164558a936c988a98ee8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2020977899681457909
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,7 +1788,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6310381648214432085}
-  - component: {fileID: 2457144786955398718}
   m_Layer: 3
   m_Name: Hand_R
   m_TagString: Untagged
@@ -1767,21 +1810,10 @@ Transform:
   - {fileID: 6891556339327587921}
   - {fileID: 8598776276606111661}
   - {fileID: 6708949923233118573}
+  - {fileID: 3691774136842422066}
   m_Father: {fileID: 1561902601152985945}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2457144786955398718
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7412675839493838675}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6d5f961533164558a936c988a98ee8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7483626337818768222
 GameObject:
   m_ObjectHideFlags: 0

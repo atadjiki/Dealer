@@ -217,7 +217,6 @@ public class CharacterComponent : MonoBehaviour
         yield return Coroutine_RotateTowards(target);
         yield return new WaitForSeconds(0.25f);
         _weapon.OnAttack();
-        EncounterManager.Instance.OnGunshot(_weapon.GetID());
         _animator.GoTo(AnimState.Attack_Single);
     }
 

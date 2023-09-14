@@ -4,25 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-[Serializable]
-public struct WeaponSoundBank
-{
-    public WeaponID ID;
-    public List<AudioClip> SoundBank;
-
-    public AudioClip GetRandom()
-    {
-        return SoundBank[UnityEngine.Random.Range(0, SoundBank.Count - 1)];
-    }
-}
 public class EncounterAudioManager : EncounterEventReceiver
 {
     [Header("Soundtrack")]
     [SerializeField] private AudioClip Track_Music;
-
-    [Header("SFX")]
-    [Header("Handgun")]
-    [SerializeField] private WeaponSoundBank[] WeaponSoundBanks;
 
     [Header("Sources")]
     [SerializeField] private AudioSource Source_Music;
@@ -95,17 +80,6 @@ public class EncounterAudioManager : EncounterEventReceiver
             time += Time.deltaTime;
             Source_Music.volume = Mathf.Lerp(currentVolume, targetVolume, time / duration);
             yield return null;
-        }
-    }
-
-    public void PlayWeaponSFX(WeaponID weaponID)
-    {
-        foreach (WeaponSoundBank soundBank in WeaponSoundBanks)
-        {
-            if (soundBank.ID == weaponID)
-            {
-                Source_SFX.PlayOneShot(soundBank.GetRandom());
-            }
         }
     }
 }

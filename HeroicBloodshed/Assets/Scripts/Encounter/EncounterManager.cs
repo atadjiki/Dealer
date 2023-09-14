@@ -267,11 +267,6 @@ public class EncounterManager : MonoBehaviour
         _model.TransitionState();
     }
 
-    public void OnGunshot(WeaponID weaponID)
-    {
-        _audioManager.PlayWeaponSFX(weaponID);
-    }
-
     public void OnAbilitySelected(AbilityID abilityID)
     {
         _model.SetActiveAbility(abilityID);
