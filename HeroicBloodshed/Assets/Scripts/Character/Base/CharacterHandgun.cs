@@ -4,17 +4,31 @@ using UnityEngine;
 
 public class CharacterHandgun : CharacterWeapon
 {
-    [SerializeField] private Transform Transform_Muzzle;
-
-    [SerializeField] private GameObject Prefab_Muzzle_FX;
+    [SerializeField] private GameObject[] Prefabs_Muzzle_FX;
 
     [SerializeField] private List<AudioClip> SoundBank_Gunshot;
+
+    private WeaponMuzzleAnchor _muzzleAnchor;
+
+    private void Awake()
+    {
+        _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
+    }
 
     public override void OnAttack()
     {
         base.OnAttack();
 
+        PlayVFX();
         PlaySFX();
+    }
+
+    private void PlayVFX()
+    {
+        foreach(GameObject prefab in Prefabs_Muzzle_FX)
+        {
+            Instantiate<GameObject>(prefab, _muzzleAnchor.transform);
+        }
     }
 
     private void PlaySFX()

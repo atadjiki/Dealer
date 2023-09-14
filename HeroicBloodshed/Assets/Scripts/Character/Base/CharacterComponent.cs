@@ -216,6 +216,7 @@ public class CharacterComponent : MonoBehaviour
     {
         yield return Coroutine_RotateTowards(target);
         yield return new WaitForSeconds(0.25f);
+        _weapon.OnAttack();
         _animator.GoTo(AnimState.Attack_Single);
     }
 
@@ -230,6 +231,8 @@ public class CharacterComponent : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, speed * Time.deltaTime);
             yield return null;
         }
+
+        transform.rotation = targetRotation;
     }
 
     public virtual IEnumerator HandleDamage(int amount)
@@ -240,9 +243,8 @@ public class CharacterComponent : MonoBehaviour
 
         if(IsDead())
         {
-            yield return new WaitForSeconds(1.0f);
-            EncounterManager.Instance.FollowCharacter(this);
             Kill();
+            EncounterManager.Instance.FollowCharacter(this);
             yield return new WaitForSeconds(1.0f);
             EncounterManager.Instance.UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
@@ -250,7 +252,7 @@ public class CharacterComponent : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
             _animator.GoTo(AnimState.Hit);
         }
     }

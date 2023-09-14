@@ -18,6 +18,5 @@ public class CharacterWeapon : MonoBehaviour
     }
     public virtual void OnAttack()
     {
-        //play sound effects, etc here
     }
 }
