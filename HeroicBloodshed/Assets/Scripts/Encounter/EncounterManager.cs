@@ -152,8 +152,6 @@ public class EncounterManager : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.25f);
-
         if (_model != null && state != EncounterState.DONE)
         {
             _model.TransitionState();
@@ -236,9 +234,8 @@ public class EncounterManager : MonoBehaviour
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
             yield return caster.Coroutine_FireWeaponAt(target);
-            yield return target.HandleDamage(UnityEngine.Random.Range(1, 3));
+            yield return target.Coroutine_HandleDamage(UnityEngine.Random.Range(1, 3));
             UnfollowCharacter();
-            yield return new WaitForSeconds(1.0f);
         }
         else
         {
@@ -268,6 +265,11 @@ public class EncounterManager : MonoBehaviour
         _model.CancelActiveAbility();
 
         _model.TransitionState();
+    }
+
+    public void OnGunshot(WeaponID weaponID)
+    {
+        _audioManager.PlayWeaponSFX(weaponID);
     }
 
     public void OnAbilitySelected(AbilityID abilityID)

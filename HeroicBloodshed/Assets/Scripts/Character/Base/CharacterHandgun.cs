@@ -6,8 +6,6 @@ public class CharacterHandgun : CharacterWeapon
 {
     [SerializeField] private GameObject[] Prefabs_Muzzle_FX;
 
-    [SerializeField] private List<AudioClip> SoundBank_Gunshot;
-
     private WeaponMuzzleAnchor _muzzleAnchor;
 
     private void Awake()
@@ -20,22 +18,13 @@ public class CharacterHandgun : CharacterWeapon
         base.OnAttack();
 
         PlayVFX();
-        PlaySFX();
     }
 
     private void PlayVFX()
     {
-        foreach(GameObject prefab in Prefabs_Muzzle_FX)
+        if(Prefabs_Muzzle_FX.Length > 0)
         {
-            Instantiate<GameObject>(prefab, _muzzleAnchor.transform);
-        }
-    }
-
-    private void PlaySFX()
-    {
-        if(SoundBank_Gunshot.Count > 0)
-        {
-            AudioSource.PlayClipAtPoint(SoundBank_Gunshot[Random.Range(0, SoundBank_Gunshot.Count - 1)], this.transform.position);
+            Instantiate<GameObject>(Prefabs_Muzzle_FX[Random.Range(0,Prefabs_Muzzle_FX.Length -1) ], _muzzleAnchor.transform);
         }
     }
 }

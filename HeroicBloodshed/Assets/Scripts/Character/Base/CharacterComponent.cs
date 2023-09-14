@@ -217,6 +217,7 @@ public class CharacterComponent : MonoBehaviour
         yield return Coroutine_RotateTowards(target);
         yield return new WaitForSeconds(0.25f);
         _weapon.OnAttack();
+        EncounterManager.Instance.OnGunshot(_weapon.GetID());
         _animator.GoTo(AnimState.Attack_Single);
     }
 
@@ -235,7 +236,7 @@ public class CharacterComponent : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
-    public virtual IEnumerator HandleDamage(int amount)
+    public virtual IEnumerator Coroutine_HandleDamage(int amount)
     {
         _health -= Mathf.Abs(amount);
 
