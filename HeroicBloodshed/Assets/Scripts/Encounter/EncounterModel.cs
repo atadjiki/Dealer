@@ -283,8 +283,7 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_UpdateEncounter()
     {
-        //if all queues are empty, rebuild them for the next loop
-        if(AreAllQueuesEmpty())
+        if(AreAllQueuesEmpty() || IsOpposingTeamDead())
         { 
             IncrementTurnCount();
             ResetTeam();
@@ -337,6 +336,24 @@ public class EncounterModel : MonoBehaviour
         foreach(Queue<CharacterComponent> queue in _queues.Values)
         {
             if(queue.Count != 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public bool IsOpposingTeamDead()
+    {
+        return IsTeamDead(GetOpposingTeam(GetCurrentTeam()));
+    }
+
+    public bool IsTeamDead(TeamID team)
+    {
+        foreach(CharacterComponent character in GetAllCharactersInTeam(team))
+        {
+            if(character.IsAlive())
             {
                 return false;
             }
@@ -416,6 +433,8 @@ public class EncounterModel : MonoBehaviour
         if(target != null)
         {
             Debug.Log("Selected target: " + target.gameObject.name);
+            target.ToggleHighlight(true);
+
         }
         _activeTarget = target;
     }
@@ -510,9 +529,5 @@ public class EncounterModel : MonoBehaviour
     {
         Debug.Log("Turn Count: " + (_turnCount + 1));
         return _turnCount++;
-    }
-
-    public void OnEncounterUpdate(EncounterModel model)
-    {
     }
 }

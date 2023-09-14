@@ -121,7 +121,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.TEAM_UPDATED:
             {
-                yield return new WaitForSeconds(3.0f);
+                yield return new WaitForSeconds(1.5f);
                 break;
             }
             case EncounterState.CHOOSE_ACTION:
@@ -231,8 +231,8 @@ public class EncounterManager : MonoBehaviour
 
         if (target != null)
         {
+            target.ToggleHighlight(false);
             UnfollowCharacter();
-            yield return new WaitForSeconds(1.0f);
             yield return caster.Coroutine_FireWeaponAt(target);
             yield return target.Coroutine_HandleDamage(UnityEngine.Random.Range(1, 3));
             UnfollowCharacter();
@@ -283,6 +283,8 @@ public class EncounterManager : MonoBehaviour
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
+            character.ToggleHighlight(true);
+
             _model.SetTarget(character);
 
             _model.TransitionState();

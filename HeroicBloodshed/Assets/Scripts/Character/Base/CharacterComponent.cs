@@ -223,13 +223,16 @@ public class CharacterComponent : MonoBehaviour
 
     public IEnumerator Coroutine_RotateTowards(CharacterComponent target)
     {
-        float speed = 120.0f;
+        float currentTime = 0;
+        float duration = 0.5f;
 
+        Quaternion casterRotation = this.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
 
-        while (Quaternion.Angle(transform.rotation, targetRotation) > 1.0f)
-        { 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, speed * Time.deltaTime);
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(casterRotation, targetRotation, currentTime / duration);
             yield return null;
         }
 
