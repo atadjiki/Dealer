@@ -14,6 +14,7 @@ public class EncounterManager : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_EncounterCameraRig;
     [SerializeField] private GameObject Prefab_EncounterCanvas;
+    [SerializeField] private GameObject Prefab_EncounterAudioManager;
 
     private static EncounterManager _instance;
 
@@ -25,6 +26,7 @@ public class EncounterManager : MonoBehaviour
 
     private EncounterCanvas _canvas;
     private EncounterCameraRig _cameraRig;
+    private EncounterAudioManager _audioManager;
 
     private void Awake()
     {
@@ -65,6 +67,12 @@ public class EncounterManager : MonoBehaviour
         yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
         _cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
         _eventReceivers.Add(_cameraRig);
+
+        //create audio manager
+        GameObject audioManagerObject = Instantiate(Prefab_EncounterAudioManager, null);
+        yield return new WaitWhile(() => audioManagerObject.GetComponent<EncounterAudioManager>() == null);
+        _audioManager= audioManagerObject.GetComponent<EncounterAudioManager>();
+        _eventReceivers.Add(_audioManager);
 
         //generate encounter and attach to handler
         _model = _setupData.gameObject.AddComponent<EncounterModel>();
