@@ -130,6 +130,7 @@ public static partial class Constants
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
             AbilityID.Attack,
+            AbilityID.Reload,
             AbilityID.SkipTurn, //all characters have this by default
 
         };

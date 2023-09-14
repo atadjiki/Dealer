@@ -212,15 +212,24 @@ public class CharacterComponent : MonoBehaviour
         return _health > 0;
     }
 
-    public void FireWeaponAt(CharacterComponent target)
+    public IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
     {
-        StartCoroutine(Coroutine_FireWeaponAt(target));
+        yield return Coroutine_RotateTowards(target);
+        yield return new WaitForSeconds(0.25f);
+        _animator.GoTo(AnimState.Attack_Single);
     }
 
-    private IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
+    public IEnumerator Coroutine_RotateTowards(CharacterComponent target)
     {
-        _animator.GoTo(AnimState.Attack_Single);
-        yield return null;
+        float speed = 120.0f;
+
+        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
+
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 1.0f)
+        { 
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, speed * Time.deltaTime);
+            yield return null;
+        }
     }
 
     public virtual IEnumerator HandleDamage(int amount)
@@ -231,8 +240,8 @@ public class CharacterComponent : MonoBehaviour
 
         if(IsDead())
         {
-            EncounterManager.Instance.FollowCharacter(this);
             yield return new WaitForSeconds(1.0f);
+            EncounterManager.Instance.FollowCharacter(this);
             Kill();
             yield return new WaitForSeconds(1.0f);
             EncounterManager.Instance.UnfollowCharacter();
@@ -241,6 +250,7 @@ public class CharacterComponent : MonoBehaviour
         }
         else
         {
+            yield return new WaitForSeconds(1.0f);
             _animator.GoTo(AnimState.Hit);
         }
     }

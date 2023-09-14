@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public static partial class Constants
 {
     public enum AnimState
@@ -5,6 +7,7 @@ public static partial class Constants
         Idle,
         Walking,
         Running,
+        Reload,
         Attack_Single,
         Hit,
         Dead,
@@ -26,7 +29,10 @@ public static partial class Constants
         Anim_Character_Pistol_Walking,
         Anim_Character_Pistol_Running,
         Anim_Character_Pistol_Attack_Single,
-        Anim_Character_Pistol_Hit,
+        Anim_Character_Pistol_Hit_Light,
+        Anim_Character_Pistol_Hit_Medium,
+        Anim_Character_Pistol_Hit_Heavy,
+        Anim_Character_Pistol_Hit_Reload,
 
         //death
         Anim_Character_Death
@@ -69,12 +75,25 @@ public static partial class Constants
             case AnimState.Attack_Single:
                 return AnimID.Anim_Character_Pistol_Attack_Single;
             case AnimState.Hit:
-                return AnimID.Anim_Character_Pistol_Hit;
+                int index = Random.Range(0, 3);
 
+                if(index == 0)
+                {
+                    return AnimID.Anim_Character_Pistol_Hit_Light;
+                }
+                else if(index == 1)
+                {
+                    return AnimID.Anim_Character_Pistol_Hit_Medium;
+                }
+                else
+                {
+                    return AnimID.Anim_Character_Pistol_Hit_Heavy;
+                }
+            case AnimState.Reload:
+                return AnimID.Anim_Character_Pistol_Hit_Reload;
             default:
                 return AnimID.Anim_Character_Pistol_Idle;
         }
-
     }
 
 }

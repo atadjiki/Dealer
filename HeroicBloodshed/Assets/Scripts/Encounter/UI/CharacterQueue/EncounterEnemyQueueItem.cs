@@ -26,6 +26,7 @@ public class EncounterEnemyQueueItem : EncounterCharacterQueueItem, IPointerClic
     {
         if(_characterComponent.IsAlive())
         {
+            EncounterManager.Instance.OnEnemyHighlighted(_characterComponent);
             _characterComponent.ToggleHighlight(true);
             SetHighlight(true);
         }

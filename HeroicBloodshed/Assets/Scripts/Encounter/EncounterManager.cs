@@ -223,14 +223,12 @@ public class EncounterManager : MonoBehaviour
     {
         CharacterComponent target = _model.GetActiveTarget();
 
-        caster.FireWeaponAt(target);
-
         if (target != null)
         {
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
-            
-            yield return target.HandleDamage(UnityEngine.Random.Range(1, 4));
+            yield return caster.Coroutine_FireWeaponAt(target);
+            yield return target.HandleDamage(UnityEngine.Random.Range(1, 3));
             UnfollowCharacter();
             yield return new WaitForSeconds(1.0f);
         }
@@ -279,6 +277,13 @@ public class EncounterManager : MonoBehaviour
 
             _model.TransitionState();
         }
+    }
+
+    public void OnEnemyHighlighted(CharacterComponent target)
+    {
+        CharacterComponent caster = _model.GetCurrentCharacter();
+
+        StartCoroutine(caster.Coroutine_RotateTowards(target));
     }
 
     private IEnumerator SpawnCharacters()
