@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using static Constants;
 
 public struct CharacterDefinition
@@ -11,6 +12,22 @@ public struct CharacterDefinition
     public WeaponID[] AllowedWeapons;
 
     public int BaseHealth;
+
+    public int CritChance;
+
+    public bool RollCritChance()
+    {
+        float roll = UnityEngine.Random.Range(0, 99);
+
+        if(CritChance > roll)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     //yep these are hardcoded :)
     public static CharacterDefinition Get(CharacterID uniqueID)
@@ -31,7 +48,8 @@ public struct CharacterDefinition
                             WeaponID.Revolver,
                         },
 
-                        BaseHealth = 10,
+                        BaseHealth = 12,
+                        CritChance = 30,
                     };
                 }
             case CharacterID.PLAYER_2:
@@ -48,7 +66,8 @@ public struct CharacterDefinition
                         WeaponID.Revolver,
                         },
 
-                        BaseHealth = 10,
+                        BaseHealth = 12,
+                        CritChance = 30,
                     };
                 }
             case CharacterID.HENCHMAN:
@@ -68,6 +87,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 4,
+                        CritChance = 0,
                     };
                 }
             default:
@@ -84,6 +104,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 1,
+                        CritChance = 0,
                     };
                 }
         }

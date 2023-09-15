@@ -227,15 +227,21 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
+        CharacterDefinition characterDef = CharacterDefinition.Get(caster.GetID());
+        WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
+
         CharacterComponent target = _model.GetActiveTarget();
 
         if (target != null)
         {
             target.ToggleHighlight(false);
-            UnfollowCharacter();
+
+            //calculate damage
+            bool crit = characterDef.RollCritChance();
+            int damage = weaponDef.CalculateDamage(crit);
+
             yield return caster.Coroutine_FireWeaponAt(target);
-            yield return target.Coroutine_HandleDamage(caster);
-            UnfollowCharacter();
+            yield return target.Coroutine_HandleDamage(damage);
         }
         else
         {

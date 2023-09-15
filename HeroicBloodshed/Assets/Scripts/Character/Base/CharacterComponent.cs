@@ -239,14 +239,9 @@ public class CharacterComponent : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
-    public virtual IEnumerator Coroutine_HandleDamage(CharacterComponent caster)
+    public virtual IEnumerator Coroutine_HandleDamage(int damage)
     {
         //calculate how much damage we should deal
-        WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
-        int damage = weaponDef.GetRandomDamage();
-
-        Debug.Log("Dealing " + damage + " damage");
-
         _health -= Mathf.Abs(damage);
 
         _health = Mathf.Clamp(_health, 0, _health);

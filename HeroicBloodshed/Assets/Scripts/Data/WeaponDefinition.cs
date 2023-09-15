@@ -1,18 +1,43 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using static Constants;
 
 public struct WeaponDefinition
 {
     public WeaponID ID;
 
-    public Tuple<int,int> BaseDamage;
+    public int BaseDamage;
+
+    public int CritDamage;
+
+    public int Spread;
 
     public int Ammo;
 
-    public int GetRandomDamage()
+    public float PlusOneThreshold; //0-1
+
+    public int CalculateDamage(bool IsCrit = false)
     {
-        return UnityEngine.Random.Range(BaseDamage.Item1, BaseDamage.Item2);
+        //first, get a random amount of damage by applying the spread to the base damage
+        int TotalDamage = UnityEngine.Random.Range(BaseDamage - Spread, BaseDamage + Spread + 1);
+
+        //if our threshold is higher than the chance, award an extra point of damage 
+        float PlusOneChance = UnityEngine.Random.Range(0, 1);
+        if(PlusOneThreshold > PlusOneChance)
+        {
+            TotalDamage += 1;
+        }
+
+        //if shot is a crit, add the additional damage to the total 
+        if(IsCrit)
+        {
+            Debug.Log("Critical Hit!");
+            TotalDamage += CritDamage;
+        }
+
+        Debug.Log("Damage: " + TotalDamage);
+        return TotalDamage;
     }
 
     //yep these are hardcoded :)
@@ -24,23 +49,32 @@ public struct WeaponDefinition
                 return new WeaponDefinition()
                 {
                     ID = WeaponID.Pistol,
-                    BaseDamage = new Tuple<int, int>(3, 5),
-                    Ammo = 3
+                    BaseDamage = 3,
+                    CritDamage = 2,
+                    Spread = 1,
+                    Ammo = 3,
+                    PlusOneThreshold = 0,
                 };
             case WeaponID.Revolver:
                 return new WeaponDefinition()
                 {
                     ID = WeaponID.Revolver,
-                    BaseDamage = new Tuple<int, int>(3, 5),
-                    Ammo = 3
+                    BaseDamage = 3,
+                    CritDamage = 2,
+                    Spread = 1,
+                    Ammo = 3,
+                    PlusOneThreshold = 0,
                 };
             default:
                 {
                     return new WeaponDefinition()
                     {
                         ID = WeaponID.None,
-                        BaseDamage = new Tuple<int, int>(0,0),
-                        Ammo = 0
+                        BaseDamage = 0,
+                        CritDamage = 0,
+                        Spread = 0,
+                        Ammo = 0,
+                        PlusOneThreshold = 0,
                     };
                 }
         }
