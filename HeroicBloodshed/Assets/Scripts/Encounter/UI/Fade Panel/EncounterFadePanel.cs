@@ -7,6 +7,16 @@ public class EncounterFadePanel : MonoBehaviour
 {
     [SerializeField] private Image Panel_Fade;
 
+    public void FadeToBlack()
+    {
+        StartCoroutine(Coroutine_PerformFadeToBlack());
+    }
+
+    public void FadeToClear()
+    {
+        StartCoroutine(Coroutine_PerformFadeToClear());
+    }
+
     public IEnumerator Coroutine_PerformFadeToBlack()
     {
         StopCoroutine("Coroutine_PerformFadeToClear");

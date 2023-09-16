@@ -65,7 +65,7 @@ public class CharacterComponent : MonoBehaviour
 
         //    Debug.Log("Setup " + _weapon);
 
-            _weapon.SetID(weaponID);
+            _weapon.Setup(weaponID);
         }
 
         _overheadAnchor = modelPrefab.GetComponentInChildren<CharacterOverheadAnchor>();
@@ -270,5 +270,10 @@ public class CharacterComponent : MonoBehaviour
     public WeaponID GetWeaponID()
     {
         return _weapon.GetID();
+    }
+
+    public int GetRemainingAmmo()
+    {
+        return _weapon.GetRemainingAmmo();
     }
 }

@@ -6,10 +6,12 @@ using UnityEngine;
 public class CharacterWeapon : MonoBehaviour
 {
     private WeaponID _ID;
+    protected int _ammo = 0;
 
-    public void SetID(WeaponID ID)
+    public void Setup(WeaponID ID)
     {
         _ID = ID;
+        Reload();
     }
 
     public WeaponID GetID()
@@ -18,5 +20,27 @@ public class CharacterWeapon : MonoBehaviour
     }
     public virtual void OnAttack()
     {
+    }
+
+    public int GetRemainingAmmo()
+    {
+        return _ammo;
+    }
+
+    public int GetMaxAmmo()
+    {
+        WeaponDefinition weaponDefinition = WeaponDefinition.Get(GetID());
+
+        return weaponDefinition.Ammo;
+    }
+
+    public bool HasAmmo()
+    {
+        return _ammo > 0;
+    }
+
+    public void Reload()
+    {
+        _ammo = GetMaxAmmo();
     }
 }

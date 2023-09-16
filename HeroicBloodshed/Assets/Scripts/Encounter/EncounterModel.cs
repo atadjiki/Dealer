@@ -530,4 +530,19 @@ public class EncounterModel : MonoBehaviour
         Debug.Log("Turn Count: " + (_turnCount + 1));
         return _turnCount++;
     }
+
+    public int GetDeadCount(TeamID team)
+    {
+        int count = 0;
+
+        foreach(CharacterComponent character in GetAllCharactersInTeam(team))
+        {
+            if(character.IsDead())
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
 }

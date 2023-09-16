@@ -24,7 +24,7 @@ public class EncounterManager : MonoBehaviour
 
     private List<EncounterEventReceiver> _eventReceivers;
 
-    private EncounterCanvas _canvas;
+    private EncounterCanvasManager _canvas;
     private EncounterCameraRig _cameraRig;
     private EncounterAudioManager _audioManager;
 
@@ -58,8 +58,8 @@ public class EncounterManager : MonoBehaviour
 
         //create a canvas 
         GameObject canvasObject = Instantiate(Prefab_EncounterCanvas, this.transform);
-        yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvas>() == null);
-        _canvas = canvasObject.GetComponent<EncounterCanvas>();
+        yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvasManager>() == null);
+        _canvas = canvasObject.GetComponent<EncounterCanvasManager>();
         _eventReceivers.Add(_canvas);
 
         //create a camera rig

@@ -17,6 +17,19 @@ public static partial class Constants
         Pistol,
     }
 
+    public static string GetDisplayString(WeaponID weapon)
+    {
+        switch(weapon)
+        {
+            case WeaponID.Pistol:
+                return "Pistol";
+            case WeaponID.Revolver:
+                return "Revolver";
+            default:
+                return weapon.ToString();
+        }
+    }
+
     public enum ModelID
     {
         NONE,
