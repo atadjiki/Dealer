@@ -8,6 +8,7 @@ using static Constants;
 public class EncounterCanvasManager : EncounterEventReceiver
 {
     [Header("Prefabs")]
+    [SerializeField] private GameObject Prefab_Overheads;
     [SerializeField] private GameObject Prefab_CurrentCharacter;
     [SerializeField] private GameObject Prefab_AbilitySelect;
     [SerializeField] private GameObject Prefab_TargetSelect;
@@ -19,16 +20,11 @@ public class EncounterCanvasManager : EncounterEventReceiver
     //collection
     private List<EncounterUIElement> _elements;
 
-
-    public override IEnumerator Coroutine_Init(EncounterModel model)
-    {
-        yield break;
-    }
-
     private void Awake()
     {
         _elements = new List<EncounterUIElement>();
 
+        GenerateUIElement(Prefab_Overheads);
         GenerateUIElement(Prefab_CurrentCharacter);
         GenerateUIElement(Prefab_AbilitySelect);
         GenerateUIElement(Prefab_TargetSelect);
@@ -38,49 +34,16 @@ public class EncounterCanvasManager : EncounterEventReceiver
         GenerateUIElement(Prefab_LoseDialog);
     }
 
+    public override IEnumerator Coroutine_Init(EncounterModel model)
+    {
+        yield return null;
+    }
+
     public override IEnumerator Coroutine_StateUpdate(EncounterState stateID, EncounterModel model)
     {
         foreach(EncounterUIElement element in _elements)
         {
             element.HandleStateUpdate(stateID, model);
-        }
-
-        switch (stateID)
-        {
-            case EncounterState.CHOOSE_ACTION:
-                {
-                    if(model.GetCurrentTeam() == TeamID.Player)
-                    {
-                        if (!model.IsCurrentTeamCPU())
-                        {
-
-                        }
-                    }
-                    break;
-                }
-            case EncounterState.CHOOSE_TARGET:
-                {
-                    if (model.GetCurrentTeam() == TeamID.Player)
-                    {
-                        if (!model.IsCurrentTeamCPU())
-                        {
-
-                        }
-                    }
-                    break;
-                }
-            case EncounterState.TEAM_UPDATED:
-                {
-                    if (model.IsCurrentTeamCPU())
-                    {
-
-                    }
-                    break;
-                }
-            default:
-                {
-                    break;
-                }
         }
 
         yield return null;

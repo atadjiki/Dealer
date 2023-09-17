@@ -82,12 +82,13 @@ public class EncounterManager : MonoBehaviour
 
         yield return _model.Setup(_setupData);
 
+        yield return SpawnCharacters();
+
         foreach (EncounterEventReceiver receiver in _eventReceivers)
         {
             yield return receiver.Coroutine_Init(_model);
         }
 
-        yield return SpawnCharacters();
 
         _model.TransitionState();
 
