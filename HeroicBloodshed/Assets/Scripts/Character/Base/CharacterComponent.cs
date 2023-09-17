@@ -101,16 +101,20 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnMouseOver()
     {
-        EncounterState state = EncounterManager.Instance.GetCurrentState();
-        if (state == EncounterState.CHOOSE_TARGET || state == EncounterState.CHOOSE_ACTION)
-        {
-            ToggleHighlight(true);
-        }
+        ToggleHighlight(true);
     }
 
     private void OnMouseExit()
     {
         ToggleHighlight(false);
+    }
+
+    private void OnMouseDown()
+    {
+        if (EncounterManager.Instance != null)
+        {
+            EncounterManager.Instance.SelectTarget(this);
+        }
     }
 
     public void ToggleHighlight(bool flag)
@@ -241,7 +245,9 @@ public class CharacterComponent : MonoBehaviour
 
     public IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
     {
+        //rotate and pause momentarily
         yield return Coroutine_RotateTowards(target);
+        yield return new WaitForSeconds(0.5f);
         _weapon.OnAttack();
         _animator.GoTo(AnimState.Attack_Single);
     }
@@ -284,17 +290,11 @@ public class CharacterComponent : MonoBehaviour
         if(IsDead())
         {
             Kill();
-            EncounterManager.Instance.FollowCharacter(this);
-            yield return new WaitForSeconds(1.0f);
-            EncounterManager.Instance.UnfollowCharacter();
-            yield return new WaitForSeconds(1.0f);
-
+            yield return new WaitForSeconds(0.5f);
         }
         else
         {
-            yield return new WaitForSeconds(0.25f);
-
-            if(damageInfo.ActualDamage < damageInfo.BaseDamage)
+            if (damageInfo.ActualDamage < damageInfo.BaseDamage)
             {
                 _animator.GoTo(AnimState.Hit_Light);
             }
@@ -307,7 +307,7 @@ public class CharacterComponent : MonoBehaviour
                 _animator.GoTo(AnimState.Hit_Heavy);
             }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

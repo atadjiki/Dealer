@@ -8,7 +8,7 @@ public class UIHelper : MonoBehaviour
     {
         for (int i = 0; i < container.childCount; i++)
         {
-            DestroyImmediate(container.GetChild(i).gameObject);
+            Destroy(container.GetChild(i).gameObject);
         }
     }
 }

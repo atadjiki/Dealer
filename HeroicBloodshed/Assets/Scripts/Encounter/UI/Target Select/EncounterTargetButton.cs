@@ -8,20 +8,11 @@ using UnityEngine.EventSystems;
 
 public class EncounterTargetButton : Button, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private TextMeshProUGUI Text_Name;
-
     private CharacterComponent _character;
-
-    protected override void Awake()
-    {
-        Text_Name = GetComponentInChildren<TextMeshProUGUI>();
-    }
 
     public void Populate(CharacterComponent characterComponent)
     {
         _character = characterComponent;
-
-        Text_Name.text = GetDisplayString(_character.GetID());
 
         this.interactable = characterComponent.IsAlive();
     }
@@ -33,7 +24,12 @@ public class EncounterTargetButton : Button, IPointerEnterHandler, IPointerExitH
         if (_character != null && _character.IsAlive())
         {
             _character.ToggleHighlight(true);
+
+            //follow character
             EncounterManager.Instance.FollowCharacter(_character);
+
+            //rotate caster towards target
+            EncounterManager.Instance.OnEnemyHighlighted(_character);
         }
     }
 

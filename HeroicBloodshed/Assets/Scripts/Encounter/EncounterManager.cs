@@ -239,19 +239,18 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
-        UnfollowCharacter();
-
-        yield return new WaitForSeconds(1.0f);
-
-        CharacterDefinition characterDef = CharacterDefinition.Get(caster.GetID());
-        WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
-
         CharacterComponent target = _model.GetActiveTarget();
+        yield return new WaitForSeconds(0.25f);
 
         if (target != null)
         {
-            target.ToggleHighlight(false);
+            UnfollowCharacter();
+            yield return target.Coroutine_RotateTowards(caster);
 
+            CharacterDefinition characterDef = CharacterDefinition.Get(caster.GetID());
+            WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
+
+            target.ToggleHighlight(false);
             //calculate damage
             bool crit = characterDef.RollCritChance();
             DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
@@ -263,6 +262,10 @@ public class EncounterManager : MonoBehaviour
         {
             Debug.Log("target is null!");
         }
+
+        UnfollowCharacter();
+        yield return new WaitForSeconds(1f);
+
         yield return null;
     }
 
@@ -293,6 +296,8 @@ public class EncounterManager : MonoBehaviour
 
     public void OnAbilityCancelled()
     {
+        FollowCharacter(_model.GetCurrentCharacter());
+
         _model.CancelActiveAbility();
 
         _model.TransitionState();

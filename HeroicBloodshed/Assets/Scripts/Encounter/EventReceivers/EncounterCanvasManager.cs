@@ -8,13 +8,7 @@ using static Constants;
 public class EncounterCanvasManager : EncounterEventReceiver
 {
     [Header("Prefabs")]
-    [SerializeField] private GameObject Prefab_CurrentCharacter;
-    [SerializeField] private GameObject Prefab_AbilitySelect;
-    [SerializeField] private GameObject Prefab_TargetSelect;
-    [SerializeField] private GameObject Prefab_TeamBanner;
-    [SerializeField] private GameObject Prefab_StateDetail;
-    [SerializeField] private GameObject Prefab_WinDialog;
-    [SerializeField] private GameObject Prefab_LoseDialog;
+    [SerializeField] private List<GameObject> CanvasPrefabs;
  
     //collection
     private List<EncounterUIElement> _elements;
@@ -23,13 +17,10 @@ public class EncounterCanvasManager : EncounterEventReceiver
     {
         _elements = new List<EncounterUIElement>();
 
-        GenerateUIElement(Prefab_CurrentCharacter);
-        GenerateUIElement(Prefab_AbilitySelect);
-        GenerateUIElement(Prefab_TargetSelect);
-        GenerateUIElement(Prefab_TeamBanner);
-        GenerateUIElement(Prefab_StateDetail);
-        GenerateUIElement(Prefab_WinDialog);
-        GenerateUIElement(Prefab_LoseDialog);
+        foreach(GameObject prefab in CanvasPrefabs)
+        {
+            GenerateUIElement(prefab);
+        }
     }
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
