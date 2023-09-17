@@ -13,21 +13,29 @@ public class EncounterCanvasManager : EncounterEventReceiver
     [SerializeField] private GameObject Prefab_TargetSelect;
     [SerializeField] private GameObject Prefab_TeamBanner;
     [SerializeField] private GameObject Prefab_StateDetail;
-
+    [SerializeField] private GameObject Prefab_WinDialog;
+    [SerializeField] private GameObject Prefab_LoseDialog;
+ 
     //collection
     private List<EncounterUIElement> _elements;
 
+
     public override IEnumerator Coroutine_Init(EncounterModel model)
+    {
+        yield break;
+    }
+
+    private void Awake()
     {
         _elements = new List<EncounterUIElement>();
 
-        GenerateUIElement(Prefab_CurrentCharacter, model);
-        GenerateUIElement(Prefab_AbilitySelect, model);
-        GenerateUIElement(Prefab_TargetSelect, model);
-        GenerateUIElement(Prefab_TeamBanner, model);
-        GenerateUIElement(Prefab_StateDetail, model);
-
-        yield break;
+        GenerateUIElement(Prefab_CurrentCharacter);
+        GenerateUIElement(Prefab_AbilitySelect);
+        GenerateUIElement(Prefab_TargetSelect);
+        GenerateUIElement(Prefab_TeamBanner);
+        GenerateUIElement(Prefab_StateDetail);
+        GenerateUIElement(Prefab_WinDialog);
+        GenerateUIElement(Prefab_LoseDialog);
     }
 
     public override IEnumerator Coroutine_StateUpdate(EncounterState stateID, EncounterModel model)
@@ -78,7 +86,7 @@ public class EncounterCanvasManager : EncounterEventReceiver
         yield return null;
     }
 
-    private void GenerateUIElement(GameObject prefab, EncounterModel model)
+    private void GenerateUIElement(GameObject prefab)
     {
         GameObject gameObject = Instantiate<GameObject>(prefab);
         EncounterUIElement component = gameObject.GetComponent<EncounterUIElement>();

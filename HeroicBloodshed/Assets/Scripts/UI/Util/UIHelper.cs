@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIHelper : MonoBehaviour
 {
-    public void ClearTransformChildren(Transform container)
+    public static void ClearTransformChildren(Transform container)
     {
         for (int i = 0; i < container.childCount; i++)
         {

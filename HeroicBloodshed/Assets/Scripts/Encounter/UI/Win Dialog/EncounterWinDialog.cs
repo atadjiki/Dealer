@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static Constants;
 
-public class EncounterWinDialog : MonoBehaviour
+public class EncounterWinDialog : EncounterUIElement
 { 
     [Header("Variables")]
     [SerializeField] private Button Button_Exit;
@@ -19,7 +20,7 @@ public class EncounterWinDialog : MonoBehaviour
         Button_Exit.onClick.AddListener(() => OnExitButtonPressed());  
     }
 
-    private void Populate(EncounterModel model)
+    public override void Populate(EncounterModel model)
     {
         //player casualties
         int casualties = model.GetDeadCount(Constants.TeamID.Player);
@@ -32,6 +33,31 @@ public class EncounterWinDialog : MonoBehaviour
         //turns taken
         int turnCount = model.GetTurnCount();
         GenerateDetailItem("Turns Taken", turnCount.ToString());
+    }
+
+    public override void HandleStateUpdate(Constants.EncounterState stateID, EncounterModel model)
+    {
+        switch (stateID)
+        {
+            case EncounterState.DONE:
+                {
+                    if (model.DidPlayerWin())
+                    {
+                        Populate(model);
+                        Show();
+                    }
+                    else
+                    {
+                        Hide();
+                    }
+                    break;
+                }
+            default:
+                {
+                    Hide();
+                    break;
+                }
+        }
     }
 
     private void GenerateDetailItem(string detail, string value)

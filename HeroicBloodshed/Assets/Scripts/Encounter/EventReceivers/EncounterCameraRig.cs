@@ -17,6 +17,9 @@ public class EncounterCameraRig : EncounterEventReceiver
     private static int _priorityInactive = 0;
     private static int _priorityActive = 10;
 
+    private static int _zoomDefault = 10;
+    private static int _zoomCharacter = 9;
+
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {
         _cameraMap = new Dictionary<CharacterComponent, CinemachineVirtualCamera>();
@@ -28,7 +31,7 @@ public class EncounterCameraRig : EncounterEventReceiver
         CM_Main.Priority = _priorityMain;
 
         CinemachineFramingTransposer framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();
-        framingTransposer.m_CameraDistance = 10;
+        framingTransposer.m_CameraDistance = _zoomDefault;
 
         foreach(CharacterComponent character in model.GetAllCharacters())
         {
@@ -93,7 +96,7 @@ public class EncounterCameraRig : EncounterEventReceiver
             CM_Character.Priority = _priorityInactive;
 
             CinemachineFramingTransposer framingTransposer = CM_Character.AddCinemachineComponent<CinemachineFramingTransposer>();
-            framingTransposer.m_CameraDistance = 6;
+            framingTransposer.m_CameraDistance = _zoomCharacter;
 
             _cameraMap.Add(characterComponent, CM_Character);
         }

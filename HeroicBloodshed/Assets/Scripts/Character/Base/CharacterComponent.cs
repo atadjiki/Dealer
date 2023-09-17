@@ -103,7 +103,11 @@ public class CharacterComponent : MonoBehaviour
 
     private void OnMouseOver()
     {
-        ToggleHighlight(true);
+        EncounterState state = EncounterManager.Instance.GetCurrentState();
+        if (state == EncounterState.CHOOSE_TARGET || state == EncounterState.CHOOSE_ACTION)
+        {
+            ToggleHighlight(true);
+        }
     }
 
     private void OnMouseExit()
@@ -215,7 +219,6 @@ public class CharacterComponent : MonoBehaviour
     public IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
     {
         yield return Coroutine_RotateTowards(target);
-        yield return new WaitForSeconds(0.25f);
         _weapon.OnAttack();
         _animator.GoTo(AnimState.Attack_Single);
     }
@@ -223,7 +226,7 @@ public class CharacterComponent : MonoBehaviour
     public IEnumerator Coroutine_RotateTowards(CharacterComponent target)
     {
         float currentTime = 0;
-        float duration = 0.25f;
+        float duration = 0.15f;
 
         Quaternion casterRotation = this.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
@@ -239,10 +242,19 @@ public class CharacterComponent : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
-    public virtual IEnumerator Coroutine_HandleDamage(int damage)
+    public virtual IEnumerator Coroutine_PerformReload()
+    {
+        _weapon.Reload();
+
+        _animator.GoTo(AnimState.Reload);
+
+        yield return new WaitForSeconds(1.0f);
+    }
+
+    public virtual IEnumerator Coroutine_HandleDamage(DamageInfo damageInfo)
     {
         //calculate how much damage we should deal
-        _health -= Mathf.Abs(damage);
+        _health -= Mathf.Abs(damageInfo.ActualDamage);
 
         _health = Mathf.Clamp(_health, 0, _health);
 
@@ -258,7 +270,21 @@ public class CharacterComponent : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(0.25f);
-            _animator.GoTo(AnimState.Hit);
+
+            if(damageInfo.ActualDamage < damageInfo.BaseDamage)
+            {
+                _animator.GoTo(AnimState.Hit_Light);
+            }
+            else if(damageInfo.ActualDamage == damageInfo.BaseDamage)
+            {
+                _animator.GoTo(AnimState.Hit_Medium);
+            }
+            else
+            {
+                _animator.GoTo(AnimState.Hit_Heavy);
+            }
+
+            yield return new WaitForSeconds(1.0f);
         }
     }
 

@@ -15,16 +15,16 @@ public class EncounterUIAbilitySelect : EncounterUIElement
 
         foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
         {
-            StartCoroutine(GenerateAbilityButton(abilityID));
+            StartCoroutine(GenerateAbilityButton(abilityID, character));
         }
     }
 
-    private IEnumerator GenerateAbilityButton(AbilityID abilityID)
+    private IEnumerator GenerateAbilityButton(AbilityID abilityID, CharacterComponent character)
     {
         GameObject ButtonObject = Instantiate(Prefab_Item, Container);
         EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
         yield return new WaitUntil(() => abilityButton != null);
-        abilityButton.Populate(abilityID);
+        abilityButton.Populate(abilityID, character);
         abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
     }
 
@@ -62,5 +62,12 @@ public class EncounterUIAbilitySelect : EncounterUIElement
         {
             EncounterManager.Instance.OnAbilitySelected(button.GetAbilityID());
         }
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+
+        UIHelper.ClearTransformChildren(Container);
     }
 }

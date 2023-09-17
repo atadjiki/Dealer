@@ -164,10 +164,18 @@ public class EncounterManager : MonoBehaviour
     {
         if (_model.IsCurrentTeamCPU())
         {
-            //if there are enemies to attack
+            CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+
             if (_model.AreTargetsAvailable())
             {
-                _model.SetActiveAbility(AbilityID.Attack);
+                if(currentCharacter.GetRemainingAmmo() == 0)
+                {
+                    _model.SetActiveAbility(AbilityID.Reload);
+                }
+                else
+                {
+                    _model.SetActiveAbility(AbilityID.Attack);
+                }
             }
             else
             {
@@ -217,6 +225,9 @@ public class EncounterManager : MonoBehaviour
             case AbilityID.Attack:
                 yield return HandleAbility_Attack(caster);
                 break;
+            case AbilityID.Reload:
+                yield return HandleAbility_Reload(caster);
+                break;
             case AbilityID.SkipTurn:
                 yield return HandleAbility_SkipTurn(caster);
                 break;
@@ -227,6 +238,10 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator HandleAbility_Attack(CharacterComponent caster)
     {
+        UnfollowCharacter();
+
+        yield return new WaitForSeconds(1.0f);
+
         CharacterDefinition characterDef = CharacterDefinition.Get(caster.GetID());
         WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
 
@@ -238,16 +253,25 @@ public class EncounterManager : MonoBehaviour
 
             //calculate damage
             bool crit = characterDef.RollCritChance();
-            int damage = weaponDef.CalculateDamage(crit);
+            DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
 
             yield return caster.Coroutine_FireWeaponAt(target);
-            yield return target.Coroutine_HandleDamage(damage);
+            yield return target.Coroutine_HandleDamage(damageInfo);
         }
         else
         {
             Debug.Log("target is null!");
         }
         yield return null;
+    }
+
+    private IEnumerator HandleAbility_Reload(CharacterComponent caster)
+    {
+        FollowCharacter(caster);
+
+        yield return caster.Coroutine_PerformReload();
+
+        UnfollowCharacter();
     }
 
     private IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
@@ -311,5 +335,15 @@ public class EncounterManager : MonoBehaviour
         {
             yield return characterComponent.PerformCleanup();
         }
+    }
+
+    public EncounterState GetCurrentState()
+    {
+        if(_model != null)
+        {
+            return _model.GetState();
+        }
+
+        return EncounterState.DONE;
     }
 }

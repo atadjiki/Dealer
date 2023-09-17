@@ -12,4 +12,10 @@ public class EncounterUIStateDetail : EncounterUIElement
     {
         Text_Detail.text = GetDisplayString(model.GetState());
     }
+
+    public override void HandleStateUpdate(EncounterState stateID, EncounterModel model)
+    {
+        Show();
+        Populate(model);
+    }
 }

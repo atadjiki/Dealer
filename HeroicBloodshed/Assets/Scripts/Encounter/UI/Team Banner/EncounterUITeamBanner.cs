@@ -10,19 +10,34 @@ public class EncounterUITeamBanner : EncounterUIElement
     [SerializeField] private Image Panel_Backing;
     [SerializeField] private TextMeshProUGUI Text_Team;
 
-    [SerializeField] private float DestroyAfter = 3.0f;
-
     public override void Populate(EncounterModel model)
     {
         Panel_Backing.color = GetColorByTeam(model.GetCurrentTeam(), 0.25f);
         Text_Team.text = (model.GetCurrentTeam() + " turn").ToLower();
-
-        StartCoroutine(DestroyAfterSeconds(DestroyAfter));
     }
 
-    private IEnumerator DestroyAfterSeconds(float duration)
+    public override void HandleStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        yield return new WaitForSeconds(duration);
-        GameObject.Destroy(this.gameObject);
+        switch (stateID)
+        {
+            case EncounterState.TEAM_UPDATED:
+                {
+                    if (model.IsCurrentTeamCPU())
+                    {
+                        Populate(model);
+                        Show();
+                    }
+                    else
+                    {
+                        Hide();
+                    }
+                    break;
+                }
+            default:
+                {
+                    Hide();
+                    break;
+                }
+        }
     }
 }

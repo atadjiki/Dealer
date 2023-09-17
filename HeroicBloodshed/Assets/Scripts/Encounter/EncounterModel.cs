@@ -545,4 +545,14 @@ public class EncounterModel : MonoBehaviour
 
         return count;
     }
+
+    public bool DidPlayerWin()
+    {
+        if(IsTeamDead(TeamID.Player))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

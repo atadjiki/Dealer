@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
+public struct DamageInfo
+{
+    public int ActualDamage;
+    public int BaseDamage;
+}
+
 public struct WeaponDefinition
 {
     public WeaponID ID;
@@ -17,8 +23,10 @@ public struct WeaponDefinition
 
     public float PlusOneThreshold; //0-1
 
-    public int CalculateDamage(bool IsCrit = false)
+    public DamageInfo CalculateDamage(bool IsCrit = false)
     {
+        DamageInfo damageInfo = new DamageInfo();
+
         //first, get a random amount of damage by applying the spread to the base damage
         int TotalDamage = UnityEngine.Random.Range(BaseDamage - Spread, BaseDamage + Spread + 1);
 
@@ -37,7 +45,10 @@ public struct WeaponDefinition
         }
 
         Debug.Log("Damage: " + TotalDamage);
-        return TotalDamage;
+        damageInfo.ActualDamage = TotalDamage;
+        damageInfo.BaseDamage = BaseDamage;
+
+        return damageInfo;
     }
 
     //yep these are hardcoded :)

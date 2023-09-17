@@ -60,4 +60,11 @@ public class EncounterUICurrentCharacter : EncounterUIElement
                 }
         }
     }
+
+    public override void Hide()
+    {
+        base.Hide();
+
+        UIHelper.ClearTransformChildren(Container_Ammo.transform);
+    }
 }

@@ -143,14 +143,38 @@ public static partial class Constants
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
             AbilityID.Attack,
-            AbilityID.Reload,
             AbilityID.SkipTurn, //all characters have this by default
-
+            AbilityID.Reload,
         };
 
         //eventually we will add dynamically abilities based on weapon type and team 
 
         return CharacterAbilities;
+    }
+
+    public static bool ValidateAbility(AbilityID abilityID, CharacterComponent characterComponent)
+    {
+        if(!GetAllowedAbilities(characterComponent.GetID()).Contains(abilityID))
+        {
+            return false;
+        }
+
+        if(abilityID == AbilityID.Attack)
+        {
+            if(characterComponent.GetRemainingAmmo() == 0)
+            {
+                return false;
+            }
+        }
+        else if(abilityID == AbilityID.Reload)
+        {
+            if(characterComponent.GetRemainingAmmo() > 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static TeamID GetTeamByID(CharacterID ID)

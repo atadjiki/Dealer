@@ -15,10 +15,12 @@ public class EncounterAbilityButton : Button
         Text_Title = GetComponentInChildren<TextMeshProUGUI>();
     }
 
-    public void Populate(AbilityID abilityID)
+    public void Populate(AbilityID abilityID, CharacterComponent character)
     {
         Text_Title.text = GetDisplayString(abilityID);
         _abilityID = abilityID;
+
+        this.interactable = ValidateAbility(abilityID, character);
     }
 
     public AbilityID GetAbilityID()

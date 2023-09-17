@@ -9,7 +9,9 @@ public static partial class Constants
         Running,
         Reload,
         Attack_Single,
-        Hit,
+        Hit_Light,
+        Hit_Medium,
+        Hit_Heavy,
         Dead,
     }
 
@@ -74,21 +76,12 @@ public static partial class Constants
                 return AnimID.Anim_Character_Pistol_Running;
             case AnimState.Attack_Single:
                 return AnimID.Anim_Character_Pistol_Attack_Single;
-            case AnimState.Hit:
-                int index = Random.Range(0, 3);
-
-                if(index == 0)
-                {
-                    return AnimID.Anim_Character_Pistol_Hit_Light;
-                }
-                else if(index == 1)
-                {
-                    return AnimID.Anim_Character_Pistol_Hit_Medium;
-                }
-                else
-                {
-                    return AnimID.Anim_Character_Pistol_Hit_Heavy;
-                }
+            case AnimState.Hit_Light:
+                return AnimID.Anim_Character_Pistol_Hit_Light;
+            case AnimState.Hit_Medium:
+                return AnimID.Anim_Character_Pistol_Hit_Medium;
+            case AnimState.Hit_Heavy:
+                return AnimID.Anim_Character_Pistol_Hit_Heavy;
             case AnimState.Reload:
                 return AnimID.Anim_Character_Pistol_Hit_Reload;
             default:

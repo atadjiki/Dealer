@@ -48,7 +48,7 @@ public struct CharacterDefinition
                             WeaponID.Revolver,
                         },
 
-                        BaseHealth = 12,
+                        BaseHealth = 16,
                         CritChance = 30,
                     };
                 }
@@ -66,7 +66,7 @@ public struct CharacterDefinition
                         WeaponID.Revolver,
                         },
 
-                        BaseHealth = 12,
+                        BaseHealth = 16,
                         CritChance = 30,
                     };
                 }
