@@ -302,4 +302,9 @@ public class CharacterComponent : MonoBehaviour
     {
         return _weapon.GetRemainingAmmo();
     }
+
+    public TeamID GetTeam()
+    {
+        return GetTeamByID(GetID());
+    }
 }

@@ -43,9 +43,11 @@ public class EncounterOverheads : EncounterUIElement
 
             Vector3 screenPos = Camera.main.WorldToScreenPoint(character.GetOverheadAnchor().transform.position);
 
-            screenPos.y += 25f;
+            screenPos.y += 35f;
 
             rectTransform.position = screenPos;
+
+            uiPanel.Populate(character);
         }
     }
 
