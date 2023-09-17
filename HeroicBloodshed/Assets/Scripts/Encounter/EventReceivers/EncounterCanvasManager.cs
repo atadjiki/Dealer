@@ -8,7 +8,6 @@ using static Constants;
 public class EncounterCanvasManager : EncounterEventReceiver
 {
     [Header("Prefabs")]
-    [SerializeField] private GameObject Prefab_Overheads;
     [SerializeField] private GameObject Prefab_CurrentCharacter;
     [SerializeField] private GameObject Prefab_AbilitySelect;
     [SerializeField] private GameObject Prefab_TargetSelect;
@@ -24,7 +23,6 @@ public class EncounterCanvasManager : EncounterEventReceiver
     {
         _elements = new List<EncounterUIElement>();
 
-        GenerateUIElement(Prefab_Overheads);
         GenerateUIElement(Prefab_CurrentCharacter);
         GenerateUIElement(Prefab_AbilitySelect);
         GenerateUIElement(Prefab_TargetSelect);
@@ -44,6 +42,21 @@ public class EncounterCanvasManager : EncounterEventReceiver
         foreach(EncounterUIElement element in _elements)
         {
             element.HandleStateUpdate(stateID, model);
+        }
+
+        if(stateID == EncounterState.SETUP_COMPLETE)
+        {
+            foreach(CharacterComponent character in model.GetAllCharacters())
+            {
+                character.CreateEncounterOverhead();
+            }
+        }
+        else if(stateID == EncounterState.DONE)
+        {
+            foreach (CharacterComponent character in model.GetAllCharacters())
+            {
+                character.DestroyEncounterOverhead();
+            }
         }
 
         yield return null;

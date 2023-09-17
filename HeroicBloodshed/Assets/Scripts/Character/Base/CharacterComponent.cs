@@ -63,12 +63,10 @@ public class CharacterComponent : MonoBehaviour
 
             yield return new WaitWhile(() => _weapon == null);
 
-        //    Debug.Log("Setup " + _weapon);
-
             _weapon.Setup(weaponID);
         }
 
-        _overheadAnchor = modelPrefab.GetComponentInChildren<CharacterOverheadAnchor>();
+        _overheadAnchor = GetComponentInChildren<CharacterOverheadAnchor>();
 
         yield return new WaitWhile(() => _overheadAnchor == null);
 
@@ -173,6 +171,31 @@ public class CharacterComponent : MonoBehaviour
         if(decal != null)
         {
             GameObject.Destroy(decal.gameObject);
+        }
+    }
+
+    public virtual void CreateEncounterOverhead()
+    {
+        GameObject overheadPrefab = Instantiate(Resources.Load<GameObject>(PrefabPaths.Path_Character_Encounter_Overhead), null);
+
+        if (overheadPrefab != null)
+        {
+            EncounterCharacterUI overhead = overheadPrefab.GetComponent<EncounterCharacterUI>();
+
+            if (overhead != null)
+            {
+                overhead.Setup(this);
+            }
+        }
+    }
+
+    public virtual void DestroyEncounterOverhead()
+    {
+        EncounterCharacterUI characterUI = GetComponentInChildren<EncounterCharacterUI>();
+
+        if (characterUI != null)
+        {
+            GameObject.Destroy(characterUI.gameObject);
         }
     }
 
@@ -288,11 +311,6 @@ public class CharacterComponent : MonoBehaviour
         }
     }
 
-    public virtual CharacterOverheadAnchor GetOverheadAnchor()
-    {
-        return _overheadAnchor;
-    }
-
     public WeaponID GetWeaponID()
     {
         return _weapon.GetID();
@@ -303,8 +321,18 @@ public class CharacterComponent : MonoBehaviour
         return _weapon.GetRemainingAmmo();
     }
 
+    public bool IsAmmoFull()
+    {
+        return _weapon.GetRemainingAmmo() == _weapon.GetMaxAmmo();
+    }
+
     public TeamID GetTeam()
     {
         return GetTeamByID(GetID());
+    }
+
+    public CharacterOverheadAnchor GetOverheadAnchor()
+    {
+        return _overheadAnchor;
     }
 }

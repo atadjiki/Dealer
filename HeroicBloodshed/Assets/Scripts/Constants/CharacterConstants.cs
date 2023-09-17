@@ -168,7 +168,7 @@ public static partial class Constants
         }
         else if(abilityID == AbilityID.Reload)
         {
-            if(characterComponent.GetRemainingAmmo() > 0)
+            if(characterComponent.IsAmmoFull())
             {
                 return false;
             }

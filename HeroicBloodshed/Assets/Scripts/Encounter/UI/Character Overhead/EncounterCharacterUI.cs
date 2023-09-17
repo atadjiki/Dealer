@@ -13,25 +13,49 @@ public class EncounterCharacterUI : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI Text_Health;
 
-    [SerializeField] private List<GameObject> HealthbarItems;
+    [SerializeField] private List<Image> HealthbarItems;
 
-    public void Populate(CharacterComponent character)
+    private CharacterComponent _character;
+
+    private RectTransform _rectTransform;
+
+    public void Setup(CharacterComponent character)
     {
-        int health = character.GetHealth();
-        int baseHealth = character.GetBaseHealth();
+        _character = character;
+        _rectTransform = Panel_Backing.GetComponent<RectTransform>();
 
-        int itemTotal = HealthbarItems.Count;
-        int itemCount = itemTotal * (health / baseHealth);
+        StartCoroutine(Coroutine_Update());
+    }
 
-        for (int i = 0; i < itemTotal -1; i++)
+    private IEnumerator Coroutine_Update()
+    {
+        while(_character.IsAlive())
         {
-            HealthbarItems[i].SetActive(i <= itemCount);
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(_character.GetOverheadAnchor().transform.position);
+
+            _rectTransform.position = screenPos;
+
+            float health = _character.GetHealth();
+            float baseHealth = _character.GetBaseHealth();
+
+            float total = HealthbarItems.Count;
+
+            int threshold = Mathf.RoundToInt(total * health / baseHealth);
+
+            for (int i = 0; i < HealthbarItems.Count; i++)
+            {
+                HealthbarItems[i].enabled = (i < threshold);
+            }
+
+            Text_Health.text = health + "/" + baseHealth;
+            Text_Name.text = GetDisplayString(_character.GetID());
+
+            Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
+            Panel_Backing.gameObject.SetActive(true);
+
+            yield return null;
         }
 
-        Text_Health.text = health + "/" + baseHealth;
-        Text_Name.text = GetDisplayString(character.GetID());
-
-        Panel_Backing.color = GetColorByTeam(character.GetTeam(), 0.3f);
-        Panel_Backing.gameObject.SetActive(character.IsAlive());
+        Panel_Backing.gameObject.SetActive(false);
     }
 }

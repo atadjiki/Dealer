@@ -34,7 +34,7 @@ public static partial class Constants
         Anim_Character_Pistol_Hit_Light,
         Anim_Character_Pistol_Hit_Medium,
         Anim_Character_Pistol_Hit_Heavy,
-        Anim_Character_Pistol_Hit_Reload,
+        Anim_Character_Pistol_Reload,
 
         //death
         Anim_Character_Death
@@ -83,7 +83,7 @@ public static partial class Constants
             case AnimState.Hit_Heavy:
                 return AnimID.Anim_Character_Pistol_Hit_Heavy;
             case AnimState.Reload:
-                return AnimID.Anim_Character_Pistol_Hit_Reload;
+                return AnimID.Anim_Character_Pistol_Reload;
             default:
                 return AnimID.Anim_Character_Pistol_Idle;
         }
