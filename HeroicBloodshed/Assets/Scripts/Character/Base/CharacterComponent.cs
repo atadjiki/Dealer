@@ -11,6 +11,7 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
+    protected EncounterCharacterUI _encounterUI;
     protected int _health = 0;
     protected int _baseHealth = 0;
 
@@ -184,22 +185,20 @@ public class CharacterComponent : MonoBehaviour
 
         if (overheadPrefab != null)
         {
-            EncounterCharacterUI overhead = overheadPrefab.GetComponent<EncounterCharacterUI>();
+            _encounterUI = overheadPrefab.GetComponent<EncounterCharacterUI>();
 
-            if (overhead != null)
+            if (_encounterUI != null)
             {
-                overhead.Setup(this);
+                _encounterUI.Setup(this);
             }
         }
     }
 
     public virtual void DestroyEncounterOverhead()
     {
-        EncounterCharacterUI characterUI = GetComponentInChildren<EncounterCharacterUI>();
-
-        if (characterUI != null)
+        if (_encounterUI != null)
         {
-            GameObject.Destroy(characterUI.gameObject);
+            GameObject.Destroy(_encounterUI.gameObject);
         }
     }
 

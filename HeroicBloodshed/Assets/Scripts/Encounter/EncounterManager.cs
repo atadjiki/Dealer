@@ -152,8 +152,8 @@ public class EncounterManager : MonoBehaviour
                 foreach(CharacterComponent character in _model.GetAllCharacters())
                 {
                     character.DestroyEncounterOverhead();
-                    character.DestroyDecal();
                 }
+                _model.OnStateChanged -= EncounterStateCallback;
                 break;
             }
             default:
