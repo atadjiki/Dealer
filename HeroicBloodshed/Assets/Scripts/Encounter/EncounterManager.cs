@@ -147,13 +147,22 @@ public class EncounterManager : MonoBehaviour
                 yield return PerformAbility(currentCharacter);
                 break;
             }
+            case EncounterState.DONE:
+            {
+                foreach(CharacterComponent character in _model.GetAllCharacters())
+                {
+                    character.DestroyEncounterOverhead();
+                    character.DestroyDecal();
+                }
+                break;
+            }
             default:
             {
                 break;
             }
         }
 
-        if (_model != null && state != EncounterState.DONE)
+        if (_model != null)
         {
             _model.TransitionState();
         }
@@ -224,8 +233,10 @@ public class EncounterManager : MonoBehaviour
 
         Debug.Log(casterName + " " + abilityString + "...");
 
-        _canvas.ShowEventBanner(casterName + " " + abilityString);
-        yield return new WaitForSeconds(0.5f);
+        UnfollowCharacter();
+
+        _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
+        yield return new WaitForSeconds(1.0f);
 
         switch (abilityID)
         {

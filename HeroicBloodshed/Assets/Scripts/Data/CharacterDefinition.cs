@@ -78,7 +78,6 @@ public struct CharacterDefinition
                         AllowedModels = new ModelID[]
                         {
                             ModelID.MAFIA_BRITISH,
-                            ModelID.MAFIA_ITALIAN,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -88,6 +87,26 @@ public struct CharacterDefinition
 
                         BaseHealth = 4,
                         CritChance = 0,
+                    };
+                }
+
+            case CharacterID.GOON:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                            ModelID.MAFIA_ITALIAN,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                            WeaponID.Pistol,
+                            WeaponID.Revolver,
+                        },
+
+                        BaseHealth = 7,
+                        CritChance = 15,
                     };
                 }
             default:

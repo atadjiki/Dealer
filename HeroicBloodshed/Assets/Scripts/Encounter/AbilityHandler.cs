@@ -25,8 +25,18 @@ public class AbilityHandler : MonoBehaviour
         yield return Coroutine_FireWeaponAt(caster, target);
         yield return Coroutine_HandleDamage(target, damageInfo);
 
-        EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", 1.0f);
+        if (target.IsDead())
+        {
+            EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", 2.0f);
+            EncounterManager.Instance.FollowCharacter(target);
+            yield return new WaitForSeconds(2.0f);
+        }
+        else
+        {
+            EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", 1.0f);
+            yield return new WaitForSeconds(1.0f);
 
+        }
         yield return new WaitForSeconds(1.0f);
     }
 

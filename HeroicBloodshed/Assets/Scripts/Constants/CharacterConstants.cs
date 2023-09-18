@@ -49,6 +49,7 @@ public static partial class Constants
 
         //Enemy
         HENCHMAN,
+        GOON,
 
         //Player
         PLAYER_1,
@@ -61,6 +62,8 @@ public static partial class Constants
         {
             case CharacterID.HENCHMAN:
                 return "Henchman";
+            case CharacterID.GOON:
+                return "Goon";
             case CharacterID.PLAYER_1:
                 return "Mulder";
             case CharacterID.PLAYER_2:
@@ -76,6 +79,7 @@ public static partial class Constants
 
         //Enemy
         HENCHMAN,
+        GOON,
     }
 
     public enum PlayerID
@@ -198,6 +202,7 @@ public static partial class Constants
     {
         switch (ID)
         {
+            case CharacterID.GOON:
             case CharacterID.HENCHMAN:
                 return TeamID.Enemy;
             case CharacterID.PLAYER_1:
@@ -216,6 +221,8 @@ public static partial class Constants
         {
             case EnemyID.HENCHMAN:
                 return CharacterID.HENCHMAN;
+            case EnemyID.GOON:
+                return CharacterID.GOON;
         }
 
         return CharacterID.NONE;
