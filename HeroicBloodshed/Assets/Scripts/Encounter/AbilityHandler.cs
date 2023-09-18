@@ -42,13 +42,14 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator HandleAbility_Reload(CharacterComponent caster)
     {
-        yield return Coroutine_PerformReload(caster);
+        caster.PerformAbility(AbilityID.Reload);
         yield return new WaitForSeconds(1.0f);
     }
 
     public static IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
     {
         //maybe have some anim play here
+        caster.PerformAbility(AbilityID.SkipTurn);
         yield return new WaitForSeconds(1.0f);
     }
 
@@ -59,7 +60,7 @@ public class AbilityHandler : MonoBehaviour
         //rotate and pause momentarily
         yield return Coroutine_RotateTowards(caster, target);
         yield return new WaitForSeconds(0.5f);
-        caster.PerformAttack();
+        caster.PerformAbility(AbilityID.Attack);
     }
 
     public static IEnumerator Coroutine_RotateTowards(CharacterComponent caster, CharacterComponent target)
@@ -79,12 +80,6 @@ public class AbilityHandler : MonoBehaviour
         }
 
         caster.transform.rotation = targetRotation;
-    }
-
-    public static IEnumerator Coroutine_PerformReload(CharacterComponent caster)
-    {
-        caster.PerformReload();
-        yield return null;
     }
 
     public static IEnumerator Coroutine_HandleDamage(CharacterComponent target, DamageInfo damageInfo)

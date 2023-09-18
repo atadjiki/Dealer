@@ -56,6 +56,13 @@ public static partial class Constants
         PLAYER_2,
     }
 
+    public enum CharacterAudioType
+    {
+        Confirm,
+        Await,
+        Death
+    };
+
     public static string GetDisplayString(CharacterID characterID)
     {
         switch(characterID)

@@ -11,14 +11,14 @@ public class CharacterWeapon : MonoBehaviour
     public void Setup(WeaponID ID)
     {
         _ID = ID;
-        Reload();
+        _ammo = GetMaxAmmo();
     }
 
     public WeaponID GetID()
     {
         return _ID;
     }
-    public virtual void OnAttack()
+    public virtual void OnAbility(AbilityID ability)
     {
     }
 
@@ -37,10 +37,5 @@ public class CharacterWeapon : MonoBehaviour
     public bool HasAmmo()
     {
         return _ammo > 0;
-    }
-
-    public void Reload()
-    {
-        _ammo = GetMaxAmmo();
     }
 }

@@ -116,7 +116,7 @@ public class EncounterManager : MonoBehaviour
                 CharacterComponent character = _model.GetCurrentCharacter();
                 if (character.IsAlive())
                 {
-                    character.CreateDecal();
+                    character.PerformSelect();
                 }
                 break;
             }
@@ -232,6 +232,8 @@ public class EncounterManager : MonoBehaviour
         string abilityString = GetEventString(abilityID);
 
         Debug.Log(casterName + " " + abilityString + "...");
+
+        caster.PlayAudio(CharacterAudioType.Confirm);
 
         UnfollowCharacter();
 

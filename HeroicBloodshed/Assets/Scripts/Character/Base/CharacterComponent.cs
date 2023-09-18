@@ -11,6 +11,7 @@ public class CharacterComponent : MonoBehaviour
     protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
+    protected CharacterAudioSource _audioSource;
     protected EncounterCharacterUI _encounterUI;
     protected int _health = 0;
     protected int _baseHealth = 0;
@@ -45,7 +46,7 @@ public class CharacterComponent : MonoBehaviour
         _model.Setup(def);
 
         yield return new WaitWhile(() => _model == null);
-        
+
         _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
 
         yield return new WaitWhile(() => _weaponAnchor == null);
@@ -77,6 +78,10 @@ public class CharacterComponent : MonoBehaviour
 
         _animator.Setup(AnimState.Idle, _weapon.GetID());
 
+        _audioSource = GetComponentInChildren<CharacterAudioSource>();
+
+        yield return new WaitWhile(() => _audioSource == null);
+
         _collider = this.gameObject.AddComponent<CapsuleCollider>();
 
         yield return new WaitWhile(() => _collider == null);
@@ -98,6 +103,7 @@ public class CharacterComponent : MonoBehaviour
     {
         _health = 0;
         _animator.GoTo(AnimState.Dead);
+        _audioSource.Play(CharacterAudioType.Death);
     }
 
     private void OnMouseOver()
@@ -140,7 +146,7 @@ public class CharacterComponent : MonoBehaviour
 
         GameObject.Destroy(modelObject);
 
-        yield return new WaitUntil( () => modelObject == null );
+        yield return new WaitUntil(() => modelObject == null);
     }
 
     protected virtual IEnumerator DestroyWeapon()
@@ -173,7 +179,7 @@ public class CharacterComponent : MonoBehaviour
     {
         CharacterDecal decal = GetComponentInChildren<CharacterDecal>();
 
-        if(decal != null)
+        if (decal != null)
         {
             GameObject.Destroy(decal.gameObject);
         }
@@ -216,7 +222,7 @@ public class CharacterComponent : MonoBehaviour
     {
         _health = health;
 
-        if(_health < 1)
+        if (_health < 1)
         {
             Kill();
         }
@@ -267,21 +273,33 @@ public class CharacterComponent : MonoBehaviour
         return _overheadAnchor;
     }
 
-    public void PerformAttack()
+    public void PerformSelect()
     {
-        _weapon.OnAttack();
-        _animator.GoTo(AnimState.Attack_Single);
+        CreateDecal();
+        _audioSource.Play(CharacterAudioType.Await);
     }
 
-    public void PerformReload()
+    public void PerformAbility(AbilityID abilityID)
     {
-        _weapon.Reload();
-        _animator.GoTo(AnimState.Reload);
-    }
-
-    public void PerformSkip()
-    {
-
+        switch(abilityID)
+        {
+            case AbilityID.Attack:
+            {
+                _weapon.OnAbility(AbilityID.Attack);
+                _animator.GoTo(AnimState.Attack_Single);
+                break;
+            }
+            case AbilityID.Reload:
+            {
+                _weapon.OnAbility(AbilityID.Reload);
+                _animator.GoTo(AnimState.Reload);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
     }
 
     public void PerformDamageHit(DamageInfo damageInfo)
@@ -298,5 +316,10 @@ public class CharacterComponent : MonoBehaviour
         {
             _animator.GoTo(AnimState.Hit_Heavy);
         }
+    }
+
+    public void PlayAudio(CharacterAudioType audioType)
+    {
+        _audioSource.Play(audioType);
     }
 }

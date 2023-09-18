@@ -16,6 +16,7 @@ public class EncounterAudioManager : EncounterEventReceiver
     [Header("Sources")]
     [SerializeField] private AudioSource Source_Music;
     [SerializeField] private AudioSource Source_SFX;
+    [SerializeField] private AudioSource Source_Voice;
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {
