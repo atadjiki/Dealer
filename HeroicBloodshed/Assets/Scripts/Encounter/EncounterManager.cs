@@ -230,72 +230,18 @@ public class EncounterManager : MonoBehaviour
         switch (abilityID)
         {
             case AbilityID.Attack:
-                yield return HandleAbility_Attack(caster);
+                CharacterComponent target = _model.GetActiveTarget();
+                yield return AbilityHandler.HandleAbility_Attack(caster, target);
                 break;
             case AbilityID.Reload:
-                yield return HandleAbility_Reload(caster);
+                yield return AbilityHandler.HandleAbility_Reload(caster);
                 break;
             case AbilityID.SkipTurn:
-                yield return HandleAbility_SkipTurn(caster);
+                yield return AbilityHandler.HandleAbility_SkipTurn(caster);
                 break;
             default:
                 break;
         }
-    }
-
-    private IEnumerator HandleAbility_Attack(CharacterComponent caster)
-    {
-        CharacterComponent target = _model.GetActiveTarget();
-        yield return new WaitForSeconds(0.25f);
-
-        if (target != null)
-        {
-            UnfollowCharacter();
-            yield return target.Coroutine_RotateTowards(caster);
-
-            CharacterDefinition characterDef = CharacterDefinition.Get(caster.GetID());
-            WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
-
-            target.ToggleHighlight(false);
-            //calculate damage
-            bool crit = characterDef.RollCritChance();
-            DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
-
-            if(crit)
-            {
-                yield return new WaitForSeconds(0.25f);
-                _canvas.ShowEventBanner("Critical Hit!", 1.0f);
-                yield return new WaitForSeconds(0.5f);
-            }
-
-            yield return caster.Coroutine_FireWeaponAt(target);
-            yield return target.Coroutine_HandleDamage(damageInfo);
-
-            _canvas.ShowEventBanner(damageInfo.ActualDamage + " Damage!", 1.0f);
-        }
-        else
-        {
-            Debug.Log("target is null!");
-        }
-
-        UnfollowCharacter();
-        yield return new WaitForSeconds(1f);
-
-        yield return null;
-    }
-
-    private IEnumerator HandleAbility_Reload(CharacterComponent caster)
-    {
-        FollowCharacter(caster);
-
-        yield return caster.Coroutine_PerformReload();
-
-        UnfollowCharacter();
-    }
-
-    private IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
-    {
-        yield return new WaitForSeconds(1.0f);
     }
 
     //helpers
@@ -339,7 +285,7 @@ public class EncounterManager : MonoBehaviour
     {
         CharacterComponent caster = _model.GetCurrentCharacter();
 
-        StartCoroutine(caster.Coroutine_RotateTowards(target));
+        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(caster, target));
     }
 
     private IEnumerator SpawnCharacters()
@@ -366,5 +312,10 @@ public class EncounterManager : MonoBehaviour
         }
 
         return EncounterState.DONE;
+    }
+
+    public void RequestEventBanner(string message, float duration)
+    {
+        _canvas.ShowEventBanner(message, duration);
     }
 }

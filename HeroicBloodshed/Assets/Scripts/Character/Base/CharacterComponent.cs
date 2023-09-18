@@ -243,74 +243,6 @@ public class CharacterComponent : MonoBehaviour
         return _health > 0;
     }
 
-    public IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
-    {
-        //rotate and pause momentarily
-        yield return Coroutine_RotateTowards(target);
-        yield return new WaitForSeconds(0.5f);
-        _weapon.OnAttack();
-        _animator.GoTo(AnimState.Attack_Single);
-    }
-
-    public IEnumerator Coroutine_RotateTowards(CharacterComponent target)
-    {
-        float currentTime = 0;
-        float duration = 0.15f;
-
-        Quaternion casterRotation = this.transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
-
-        while (currentTime < duration)
-        {
-            currentTime += Time.deltaTime;
-            transform.rotation = Quaternion.Slerp(casterRotation, targetRotation, currentTime / duration);
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-            yield return null;
-        }
-
-        transform.rotation = targetRotation;
-    }
-
-    public virtual IEnumerator Coroutine_PerformReload()
-    {
-        _weapon.Reload();
-
-        _animator.GoTo(AnimState.Reload);
-
-        yield return new WaitForSeconds(1.0f);
-    }
-
-    public virtual IEnumerator Coroutine_HandleDamage(DamageInfo damageInfo)
-    {
-        //calculate how much damage we should deal
-        _health -= Mathf.Abs(damageInfo.ActualDamage);
-
-        _health = Mathf.Clamp(_health, 0, _health);
-
-        if(IsDead())
-        {
-            Kill();
-            yield return new WaitForSeconds(0.5f);
-        }
-        else
-        {
-            if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-            {
-                _animator.GoTo(AnimState.Hit_Light);
-            }
-            else if(damageInfo.ActualDamage == damageInfo.BaseDamage)
-            {
-                _animator.GoTo(AnimState.Hit_Medium);
-            }
-            else
-            {
-                _animator.GoTo(AnimState.Hit_Heavy);
-            }
-
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
     public WeaponID GetWeaponID()
     {
         return _weapon.GetID();
@@ -334,5 +266,38 @@ public class CharacterComponent : MonoBehaviour
     public CharacterOverheadAnchor GetOverheadAnchor()
     {
         return _overheadAnchor;
+    }
+
+    public void PerformAttack()
+    {
+        _weapon.OnAttack();
+        _animator.GoTo(AnimState.Attack_Single);
+    }
+
+    public void PerformReload()
+    {
+        _weapon.Reload();
+        _animator.GoTo(AnimState.Reload);
+    }
+
+    public void PerformSkip()
+    {
+
+    }
+
+    public void PerformDamageHit(DamageInfo damageInfo)
+    {
+        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Light);
+        }
+        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Medium);
+        }
+        else
+        {
+            _animator.GoTo(AnimState.Hit_Heavy);
+        }
     }
 }
