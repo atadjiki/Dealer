@@ -202,7 +202,7 @@ public class EncounterManager : MonoBehaviour
 
             if (enemies.Count > 0)
             {
-                CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count - 1)];
+                CharacterComponent targetCharacter = enemies[UnityEngine.Random.Range(0, enemies.Count)];
                 _model.SetTarget(targetCharacter);
             }
 
@@ -219,7 +219,13 @@ public class EncounterManager : MonoBehaviour
     {
         AbilityID abilityID = _model.GetActiveAbility();
 
-        Debug.Log(caster.GetID() + " performing ability " + abilityID.ToString());
+        string casterName = GetDisplayString(caster.GetID());
+        string abilityString = GetEventString(abilityID);
+
+        Debug.Log(casterName + " " + abilityString + "...");
+
+        _canvas.ShowEventBanner(casterName + " " + abilityString);
+        yield return new WaitForSeconds(0.5f);
 
         switch (abilityID)
         {
@@ -255,8 +261,17 @@ public class EncounterManager : MonoBehaviour
             bool crit = characterDef.RollCritChance();
             DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
 
+            if(crit)
+            {
+                yield return new WaitForSeconds(0.25f);
+                _canvas.ShowEventBanner("Critical Hit!", 1.0f);
+                yield return new WaitForSeconds(0.5f);
+            }
+
             yield return caster.Coroutine_FireWeaponAt(target);
             yield return target.Coroutine_HandleDamage(damageInfo);
+
+            _canvas.ShowEventBanner(damageInfo.ActualDamage + " Damage!", 1.0f);
         }
         else
         {

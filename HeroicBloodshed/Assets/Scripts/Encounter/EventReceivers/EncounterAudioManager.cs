@@ -6,8 +6,12 @@ using static Constants;
 
 public class EncounterAudioManager : EncounterEventReceiver
 {
+    private enum EncounterMusicTrack { Gameplay, Win, Loss}
+
     [Header("Soundtrack")]
-    [SerializeField] private AudioClip Track_Music;
+    [SerializeField] private AudioClip Track_Gameplay;
+    [SerializeField] private AudioClip Track_Win;
+    [SerializeField] private AudioClip Track_Loss;
 
     [Header("Sources")]
     [SerializeField] private AudioSource Source_Music;
@@ -15,9 +19,6 @@ public class EncounterAudioManager : EncounterEventReceiver
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {
-        Source_Music.volume = 0;
-        Source_Music.loop = true;
-        Source_Music.clip = Track_Music;
         yield return null;
     }
 
@@ -26,17 +27,48 @@ public class EncounterAudioManager : EncounterEventReceiver
         switch(stateID)
         {
             case Constants.EncounterState.SETUP_COMPLETE:
-                Source_Music.Play();
-                ToggleMusic(true);
+               yield return PlayTrack(EncounterMusicTrack.Gameplay);
                 break;
             case Constants.EncounterState.DONE:
-                ToggleMusic(false);
+                if(model.DidPlayerWin())
+                {
+                    yield return PlayTrack(EncounterMusicTrack.Win);
+                }
+                else
+                {
+                    yield return PlayTrack(EncounterMusicTrack.Loss);
+                }
+
                 break;
             default:
                 break;
         }
 
         yield return null;
+    }
+
+    private IEnumerator PlayTrack(EncounterMusicTrack track)
+    {
+        yield return Coroutine_ToggleMusic(false);
+
+        switch(track)
+        {
+            case EncounterMusicTrack.Gameplay:
+                Source_Music.loop = true;
+                Source_Music.clip = Track_Gameplay;
+                break;
+            case EncounterMusicTrack.Win:
+                Source_Music.loop = false;
+                Source_Music.clip = Track_Win;
+                break;
+            case EncounterMusicTrack.Loss:
+                Source_Music.loop = false;
+                Source_Music.clip = Track_Loss;
+                break;
+        }
+
+        Source_Music.Play();
+        yield return Coroutine_ToggleMusic(true);
     }
 
     public void ToggleMusic(bool flag)
@@ -73,7 +105,7 @@ public class EncounterAudioManager : EncounterEventReceiver
         Source_Music.volume = currentVolume;
 
         float time = 0;
-        float duration = 3.0f;
+        float duration = 0.5f;
 
         while(time < duration)
         {

@@ -31,7 +31,7 @@ public class CharacterComponent : MonoBehaviour
         _health = def.BaseHealth;
         _baseHealth = def.BaseHealth;
 
-        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length - 1)];
+        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length)];
 
         ResourceRequest modelRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetCharacterModel(modelID));
 
@@ -51,7 +51,7 @@ public class CharacterComponent : MonoBehaviour
 
         if (def.AllowedWeapons.Length > 0)
         {
-            WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length - 1)];
+            WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length)];
 
             ResourceRequest weaponRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetWeaponByID(weaponID));
 

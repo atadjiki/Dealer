@@ -53,6 +53,18 @@ public class EncounterCanvasManager : EncounterEventReceiver
         yield return null;
     }
 
+    public void ShowEventBanner(string message, float duration = 1.5f)
+    {
+        foreach(EncounterUIElement uIElement in _elements)
+        {
+            if(uIElement is EncounterEventBanner)
+            {
+                EncounterEventBanner eventBanner = (EncounterEventBanner) uIElement;
+                eventBanner.DisplayMessage(message, duration);
+            }
+        }
+    }
+
     private void GenerateUIElement(GameObject prefab)
     {
         GameObject gameObject = Instantiate<GameObject>(prefab);

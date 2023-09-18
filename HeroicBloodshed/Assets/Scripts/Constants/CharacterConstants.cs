@@ -138,6 +138,23 @@ public static partial class Constants
         }
     }
 
+    public static string GetEventString(AbilityID abilityID)
+    {
+        switch (abilityID)
+        {
+            case AbilityID.Attack:
+                return "Attacking";
+            case AbilityID.Heal:
+                return "Healing";
+            case AbilityID.Reload:
+                return "Reloading";
+            case AbilityID.SkipTurn:
+                return "Skipping Turn";
+            default:
+                return abilityID.ToString();
+        }
+    }
+
     public static List<AbilityID> GetAllowedAbilities(CharacterID characterID)
     {
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
