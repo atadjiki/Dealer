@@ -101,12 +101,11 @@ public struct CharacterDefinition
                         },
                         AllowedWeapons = new WeaponID[]
                         {
-                            WeaponID.Pistol,
-                            WeaponID.Revolver,
+                            WeaponID.SMG,
                         },
 
-                        BaseHealth = 9,
-                        CritChance = 15,
+                        BaseHealth = 7,
+                        CritChance = 0,
                     };
                 }
             default:

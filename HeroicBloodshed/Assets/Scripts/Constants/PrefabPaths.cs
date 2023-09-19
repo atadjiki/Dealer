@@ -7,6 +7,7 @@ public class PrefabPaths
 
     public static string Path_Weapon_Revolver = "Prefabs/Weapons/Model_Weapon_Revolver";
     public static string Path_Weapon_Pistol = "Prefabs/Weapons/Model_Weapon_Pistol";
+    public static string Path_Weapon_SMG = "Prefabs/Weapons/Model_Weapon_SMG";
 
     public static string Path_Model_Character_Mafia_Italian = "Prefabs/Character/Model_Character_Mafia_Italian";
     public static string Path_Model_Character_Mafia_British = "Prefabs/Character/Model_Character_Mafia_British";
@@ -21,6 +22,8 @@ public class PrefabPaths
                 return Path_Weapon_Revolver;
             case WeaponID.Pistol:
                 return Path_Weapon_Pistol;
+            case WeaponID.SMG:
+                return Path_Weapon_SMG;
             default:
                 return null;
         }

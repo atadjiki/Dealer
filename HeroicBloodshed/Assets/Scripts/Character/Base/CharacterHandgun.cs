@@ -59,9 +59,9 @@ public class CharacterHandgun : CharacterWeapon
 
     private void PlayMuzzleFX()
     {
-        if(Prefabs_Muzzle_FX.Length > 0)
+        foreach(GameObject muzzlePrefab in Prefabs_Muzzle_FX)
         {
-            Instantiate<GameObject>(Prefabs_Muzzle_FX[UnityEngine.Random.Range(0,Prefabs_Muzzle_FX.Length -1) ], _muzzleAnchor.transform);
+            Instantiate<GameObject>(muzzlePrefab, _muzzleAnchor.transform);
         }
     }
 }

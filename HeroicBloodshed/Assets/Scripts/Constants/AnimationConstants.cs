@@ -57,6 +57,7 @@ public static partial class Constants
         {
             case WeaponID.Pistol:
             case WeaponID.Revolver:
+            case WeaponID.SMG:
                 return GetPistolAnim(state);
 
             default:

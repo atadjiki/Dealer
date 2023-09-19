@@ -56,6 +56,16 @@ public struct WeaponDefinition
     {
         switch (uniqueID)
         {
+            case WeaponID.SMG:
+                return new WeaponDefinition()
+                {
+                    ID = WeaponID.SMG,
+                    BaseDamage = 3,
+                    CritDamage = 0,
+                    Spread = 2,
+                    Ammo = 2,
+                    PlusOneThreshold = 0.25f,
+                };
             case WeaponID.Pistol:
                 return new WeaponDefinition()
                 {

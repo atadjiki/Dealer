@@ -15,6 +15,7 @@ public static partial class Constants
         None,
         Revolver,
         Pistol,
+        SMG,
     }
 
     public static string GetDisplayString(WeaponID weapon)
@@ -25,6 +26,8 @@ public static partial class Constants
                 return "Pistol";
             case WeaponID.Revolver:
                 return "Revolver";
+            case WeaponID.SMG:
+                return "Machine-Pistol";
             default:
                 return weapon.ToString();
         }
