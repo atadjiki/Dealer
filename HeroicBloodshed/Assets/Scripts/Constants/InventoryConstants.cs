@@ -3,24 +3,6 @@ using System.Collections.Generic;
 public static partial class Constants
 {
     //who does this inventory belong to?
-    public enum OwnerID
-    {
-        Player_Stash,
-        Player_Bag
-    }
-
-    public enum InventoryItemID
-    {
-        //DRUGS
-
-        //None,
-        //Heroin,
-        Cocaine,
-        //Ecstasy,
-        //LSD,
-        //Mushrooms,
-        //Amphetamines
-    }
 
     public static string GetIconResourcePathByID(InventoryItemID ID)
     {
