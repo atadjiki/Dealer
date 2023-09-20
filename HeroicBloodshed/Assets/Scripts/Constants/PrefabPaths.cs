@@ -2,8 +2,11 @@ using static Constants;
 
 public class PrefabPaths
 {
+    public static string Prefix_Prefabs = "Prefabs/";
+
     public static string Path_Character_Decal = "Prefabs/Decals/Decal_Character";
-    public static string Path_Character_Encounter_Overhead = "Prefabs/Encounter/UI/EncounterCharacterOverheads/EncounterCharacterUI";
+
+    public static string Path_Character_Encounter_Overhead = "Prefabs/Encounter/UI/Encounter_CurrentCharacter_Canvas";
 
     public static string Path_Weapon_Revolver = "Prefabs/Weapons/Model_Weapon_Revolver";
     public static string Path_Weapon_Pistol = "Prefabs/Weapons/Model_Weapon_Pistol";
