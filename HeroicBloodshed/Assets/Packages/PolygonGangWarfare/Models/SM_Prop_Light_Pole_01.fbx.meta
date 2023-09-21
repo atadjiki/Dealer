@@ -1,89 +1,20 @@
 fileFormatVersion: 2
-guid: ea330ee56fbcd144d87f8c454061f772
-timeCreated: 1562806848
-licenseType: Store
+guid: ec5ac27266f8349d28b00f104cfb1770
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: pCube740
-    100002: pCube741
-    100004: pCube742
-    100006: pCube743
-    100008: pCube744
-    100010: pCube745
-    100012: pCube746
-    100014: pCylinder120
-    100016: pCylinder121
-    100018: pCylinder122
-    100020: pCylinder123
-    100022: pCylinder124
-    100024: pCylinder125
-    100026: pCylinder126
-    100028: pCylinder127
-    100030: //RootNode
-    100032: SM_Prop_Light_Pole_01
-    100034: transform138
-    100036: transform139
-    100038: transform140
-    100040: transform141
-    100042: transform142
-    100044: transform143
-    100046: transform144
-    100048: transform145
-    100050: transform146
-    100052: transform147
-    100054: transform148
-    100056: transform149
-    100058: transform150
-    100060: transform151
-    100062: transform152
-    400000: pCube740
-    400002: pCube741
-    400004: pCube742
-    400006: pCube743
-    400008: pCube744
-    400010: pCube745
-    400012: pCube746
-    400014: pCylinder120
-    400016: pCylinder121
-    400018: pCylinder122
-    400020: pCylinder123
-    400022: pCylinder124
-    400024: pCylinder125
-    400026: pCylinder126
-    400028: pCylinder127
-    400030: //RootNode
-    400032: SM_Prop_Light_Pole_01
-    400034: transform138
-    400036: transform139
-    400038: transform140
-    400040: transform141
-    400042: transform142
-    400044: transform143
-    400046: transform144
-    400048: transform145
-    400050: transform146
-    400052: transform147
-    400054: transform148
-    400056: transform149
-    400058: transform150
-    400060: transform151
-    400062: transform152
-    2300000: SM_Prop_Light_Pole_01
-    2300002: //RootNode
-    3300000: SM_Prop_Light_Pole_01
-    3300002: //RootNode
-    4300000: SM_Prop_Light_Pole_01
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -91,12 +22,15 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 0
   meshes:
@@ -104,26 +38,49 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
-    weldVertices: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
-    normalSmoothAngle: 5
-    normalImportMode: 1
+    normalSmoothAngle: 60
+    normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
-  copyAvatar: 0
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -133,14 +90,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
