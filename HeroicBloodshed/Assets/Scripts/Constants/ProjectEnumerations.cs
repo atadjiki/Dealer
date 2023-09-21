@@ -180,25 +180,4 @@ public static partial class Constants
         //Mushrooms,
         //Amphetamines
     }
-
-    public enum PrefabCategory
-    {
-        Character,
-        Decals,
-        Encounter,
-        Lighting,
-        Markers,
-        Player,
-        Safehouse,
-        UI,
-        Weapons
-    }
-
-    public enum SpriteCategory
-    {
-        Cursor,
-        Icons,
-        Images,
-        TV
-    }
 }

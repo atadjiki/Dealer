@@ -35,7 +35,7 @@ public class CharacterComponent : MonoBehaviour
 
         ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length)];
 
-        ResourceRequest modelRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetCharacterModel(modelID));
+        ResourceRequest modelRequest = Resources.LoadAsync<GameObject>(GetResourcePath(modelID));
 
         yield return new WaitUntil(() => modelRequest.isDone);
 
@@ -55,7 +55,7 @@ public class CharacterComponent : MonoBehaviour
         {
             WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length)];
 
-            ResourceRequest weaponRequest = Resources.LoadAsync<GameObject>(PrefabPaths.GetWeaponByID(weaponID));
+            ResourceRequest weaponRequest = Resources.LoadAsync<GameObject>(GetResourcePath(weaponID));
 
             yield return new WaitUntil(() => weaponRequest.isDone);
 
@@ -162,7 +162,7 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void CreateDecal()
     {
-        GameObject decalPrefab = Instantiate(Resources.Load<GameObject>(PrefabPaths.Path_Character_Decal), this.transform);
+        GameObject decalPrefab = Instantiate(Resources.Load<GameObject>(GetResourcePath(ResourceID.Decal_Character)), this.transform);
 
         if (decalPrefab != null)
         {
@@ -187,7 +187,7 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void CreateEncounterOverhead()
     {
-        GameObject overheadPrefab = Instantiate(Resources.Load<GameObject>(PrefabPaths.Path_Character_Encounter_Overhead), null);
+        GameObject overheadPrefab = Instantiate(Resources.Load<GameObject>(GetResourcePath(ResourceID.Encounter_CharacterUI_Canvas)), null);
 
         if (overheadPrefab != null)
         {

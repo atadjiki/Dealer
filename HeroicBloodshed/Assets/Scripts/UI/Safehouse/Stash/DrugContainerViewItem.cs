@@ -25,7 +25,7 @@ public class DrugContainerViewItem : MonoBehaviour
 
     public void Setup(InventoryItemID itemID)
     {
-        Sprite sprite = Instantiate(Resources.Load<Sprite>(GetIconResourcePathByID(InventoryItemID.Cocaine)));
+        Sprite sprite = Instantiate(Resources.Load<Sprite>(GetResourcePath(ResourceID.Icon_White_Square)));
 
         Image_Icon.sprite = sprite;
 
