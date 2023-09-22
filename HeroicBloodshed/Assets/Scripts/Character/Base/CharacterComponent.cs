@@ -35,7 +35,7 @@ public class CharacterComponent : MonoBehaviour
 
         ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length)];
 
-        ResourceRequest modelRequest = Resources.LoadAsync<GameObject>(GetResourcePath(modelID));
+        ResourceRequest modelRequest = GetPrefab(modelID);
 
         yield return new WaitUntil(() => modelRequest.isDone);
 
@@ -55,7 +55,7 @@ public class CharacterComponent : MonoBehaviour
         {
             WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length)];
 
-            ResourceRequest weaponRequest = Resources.LoadAsync<GameObject>(GetResourcePath(weaponID));
+            ResourceRequest weaponRequest = GetPrefab(weaponID);
 
             yield return new WaitUntil(() => weaponRequest.isDone);
 
@@ -162,7 +162,16 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void CreateDecal()
     {
-        GameObject decalPrefab = Instantiate(Resources.Load<GameObject>(GetResourcePath(ResourceID.Decal_Character)), this.transform);
+        StartCoroutine(Coroutine_CreateDecal());
+    }
+
+    private IEnumerator Coroutine_CreateDecal()
+    {
+        ResourceRequest request = GetPrefab(PrefabID.Character_Decal);
+
+        yield return new WaitUntil(() => request.isDone);
+
+        GameObject decalPrefab = Instantiate((GameObject) request.asset, this.transform);
 
         if (decalPrefab != null)
         {
@@ -187,7 +196,16 @@ public class CharacterComponent : MonoBehaviour
 
     public virtual void CreateEncounterOverhead()
     {
-        GameObject overheadPrefab = Instantiate(Resources.Load<GameObject>(GetResourcePath(ResourceID.Encounter_CharacterUI_Canvas)), null);
+        StartCoroutine(Coroutine_CreateEncounterOverhead());
+    }
+
+    private IEnumerator Coroutine_CreateEncounterOverhead()
+    {
+        ResourceRequest request = GetPrefab(PrefabID.Encounter_UI_CharacterUI_Canvas);
+
+        yield return new WaitUntil(() => request.isDone);
+
+        GameObject overheadPrefab = Instantiate((GameObject) request.asset, null);
 
         if (overheadPrefab != null)
         {
