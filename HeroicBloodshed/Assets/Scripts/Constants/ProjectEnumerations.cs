@@ -23,6 +23,19 @@ public static partial class Constants
         PLAYER_2,
     }
 
+    public enum ModelID
+    {
+        NONE,
+
+        //dea
+        DEA_MALE,
+        DEA_FEMALE,
+
+        //mafia
+        MAFIA_BRITISH,
+        MAFIA_ITALIAN,
+    }
+
     public enum PlayerID
     {
         NONE,
@@ -39,19 +52,6 @@ public static partial class Constants
         //Enemy
         HENCHMAN,
         GOON,
-    }
-
-    public enum ModelID
-    {
-        NONE,
-
-        //dea
-        DEA_MALE,
-        DEA_FEMALE,
-
-        //mafia
-        MAFIA_BRITISH,
-        MAFIA_ITALIAN,
     }
 
     public enum AbilityID

@@ -17,9 +17,6 @@ public struct WeaponSoundBank
 
 public class CharacterHandgun : CharacterWeapon
 {
-    [Header("VFX")]
-    [SerializeField] private GameObject[] Prefabs_Muzzle_FX;
-
     [Header("SFX")]
     [SerializeField] private WeaponSoundBank Soundbank_Fire;
     [SerializeField] private WeaponSoundBank Soundbank_Reload;
@@ -27,10 +24,35 @@ public class CharacterHandgun : CharacterWeapon
     private WeaponMuzzleAnchor _muzzleAnchor;
     private AudioSource _audioSource;
 
+    private List<GameObject> VFX_Muzzle_Prefabs;
+
     private void Awake()
     {
         _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
         _audioSource = GetComponentInChildren<AudioSource>();
+    }
+
+    public override void Setup(WeaponID ID)
+    {
+        base.Setup(ID);
+
+        StartCoroutine(Coroutine_LoadVFX());
+    }
+
+    private IEnumerator Coroutine_LoadVFX()
+    {
+        WeaponDefinition weaponDef = WeaponDefinition.Get(_ID);
+
+        VFX_Muzzle_Prefabs = new List<GameObject>();
+
+        foreach (PrefabID prefabID in weaponDef.MuzzleVFX)
+        {
+            ResourceRequest request = GetPrefab(prefabID);
+
+            yield return new WaitUntil( () => request.isDone);
+
+            VFX_Muzzle_Prefabs.Add((GameObject) request.asset);
+        }
     }
 
     public override void OnAbility(AbilityID ability)
@@ -59,7 +81,7 @@ public class CharacterHandgun : CharacterWeapon
 
     private void PlayMuzzleFX()
     {
-        foreach(GameObject muzzlePrefab in Prefabs_Muzzle_FX)
+        foreach(GameObject muzzlePrefab in VFX_Muzzle_Prefabs)
         {
             Instantiate<GameObject>(muzzlePrefab, _muzzleAnchor.transform);
         }

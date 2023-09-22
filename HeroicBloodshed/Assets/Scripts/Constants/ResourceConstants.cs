@@ -103,11 +103,33 @@ public static partial class Constants
         Model_Weapon_Revolver,
         Model_Weapon_SMG,
 
+        //VFX
+        VFX_Cartridge_Auto,
+        VFX_Cartridge_Pistol,
+        VFX_Cartridge_Shotgun,
+
+        VFX_Explosion_Default,
+
+        VFX_Impact_Concrete,
+        VFX_Impact_Ground,
+        VFX_Impact_Metal,
+        VFX_Impact_Wood,
+
+        VFX_MuzzleFlash_Auto_Large,
+        VFX_MuzzleFlash_Auto_Medium,
+        VFX_MuzzleFlash_Auto_Small,
+        VFX_MuzzleFlash_Default,
+        VFX_MuzzleFlash_Smoke,
+        VFX_MuzzleFlash_Sparks,
+
+        VFX_Smoke_Dense,
+        VFX_Smoke_Light,
+
     }
 
     public static ResourceRequest GetTexture(TextureID ID)
     {
-        string fileName = "Sprites/" + ID.ToString();
+        string fileName = "Textures/" + ID.ToString();
 
         Debug.Log("Loading Texture: " + fileName);
 

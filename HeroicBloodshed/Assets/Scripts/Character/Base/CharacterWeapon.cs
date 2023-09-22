@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class CharacterWeapon : MonoBehaviour
 {
-    private WeaponID _ID;
+    protected WeaponID _ID;
     protected int _ammo = 0;
 
-    public void Setup(WeaponID ID)
+    public virtual void Setup(WeaponID ID)
     {
         _ID = ID;
         _ammo = GetMaxAmmo();

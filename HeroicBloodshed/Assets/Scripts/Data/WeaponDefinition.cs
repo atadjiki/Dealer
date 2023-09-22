@@ -13,6 +13,8 @@ public struct WeaponDefinition
 {
     public WeaponID ID;
 
+    public PrefabID[] MuzzleVFX;
+
     public int BaseDamage;
 
     public int CritDamage;
@@ -65,6 +67,12 @@ public struct WeaponDefinition
                     Spread = 2,
                     Ammo = 2,
                     PlusOneThreshold = 0.25f,
+                    MuzzleVFX = new PrefabID[]
+                    {
+                        PrefabID.VFX_MuzzleFlash_Auto_Medium,
+                        PrefabID.VFX_MuzzleFlash_Smoke,
+                        PrefabID.VFX_MuzzleFlash_Sparks,
+                    }
                 };
             case WeaponID.Pistol:
                 return new WeaponDefinition()
@@ -75,6 +83,12 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 3,
                     PlusOneThreshold = 0,
+                    MuzzleVFX = new PrefabID[]
+                    {
+                        PrefabID.VFX_MuzzleFlash_Default,
+                        PrefabID.VFX_MuzzleFlash_Smoke,
+                        PrefabID.VFX_MuzzleFlash_Sparks,
+                    }
                 };
             case WeaponID.Revolver:
                 return new WeaponDefinition()
@@ -85,18 +99,16 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 3,
                     PlusOneThreshold = 0,
+                    MuzzleVFX = new PrefabID[]
+                    {
+                        PrefabID.VFX_MuzzleFlash_Default,
+                        PrefabID.VFX_MuzzleFlash_Smoke,
+                        PrefabID.VFX_MuzzleFlash_Sparks,
+                    }
                 };
             default:
                 {
-                    return new WeaponDefinition()
-                    {
-                        ID = WeaponID.None,
-                        BaseDamage = 0,
-                        CritDamage = 0,
-                        Spread = 0,
-                        Ammo = 0,
-                        PlusOneThreshold = 0,
-                    };
+                    return new WeaponDefinition();
                 }
         }
     }
