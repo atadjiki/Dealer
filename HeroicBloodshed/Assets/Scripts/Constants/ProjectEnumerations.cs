@@ -27,13 +27,7 @@ public static partial class Constants
     {
         NONE,
 
-        //dea
-        DEA_MALE,
-        DEA_FEMALE,
-
-        //mafia
-        MAFIA_BRITISH,
-        MAFIA_ITALIAN,
+        MALE_GENERIC,
     }
 
     public enum PlayerID

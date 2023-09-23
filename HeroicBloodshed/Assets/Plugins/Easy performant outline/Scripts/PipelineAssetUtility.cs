@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -79,33 +81,36 @@ namespace EPOOutline
         }
 
 #if URP_OUTLINE
-        public static RenderPipelineAsset CreateAsset(ForwardRendererData data)
+        public static object GetDefault(Type type)
         {
-#if UNITY_2019_3_OR_NEWER
-            return UniversalRenderPipelineAsset.Create(data);
-#else
-            var asset = LightweightRenderPipelineAsset.Create();
-
-            using (var so = new SerializedObject(asset))
+            if(type.IsValueType)
             {
-                so.Update();
-                  
-                var rendererProperty = so.FindProperty("m_RendererData");
-                var rendererTypeProperty = so.FindProperty("m_RendererType");
-                rendererTypeProperty.enumValueIndex = (int)RendererType.Custom;
-
-                rendererProperty.objectReferenceValue = data;
-
-                so.ApplyModifiedProperties();
+                return Activator.CreateInstance(type);
             }
-
-            return asset;
-#endif
+            return null;
         }
-
-        public static ForwardRendererData CreateRenderData()
+        
+        public static RenderPipelineAsset CreateAsset(string path)
         {
-            return ScriptableObject.CreateInstance<ForwardRendererData>();
+            var method = typeof(UniversalRenderPipelineAsset)
+                .GetMethod("CreateRendererAsset", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var methodParams = method.GetParameters();
+            object[] parameters = new object[methodParams.Length];
+            for (var index = 0; index < methodParams.Length; index++)
+                parameters[index] = GetDefault(methodParams[index].ParameterType);
+
+            var possibleParameters = new object[] {path + " renderer.asset", (RendererType)1, false, "Renderer"};
+            for (var index = 0; index < Mathf.Min(possibleParameters.Length, parameters.Length); index++)
+                parameters[index] = possibleParameters[index];
+            
+            var data = method.Invoke(null, parameters) as ScriptableRendererData;
+
+            var pipeline = UniversalRenderPipelineAsset.Create(data);
+            
+            AssetDatabase.CreateAsset(pipeline, path + ".asset");
+
+            return pipeline;
         }
 #endif
 
@@ -115,7 +120,6 @@ namespace EPOOutline
             return ScriptableObject.CreateInstance<HDRenderPipelineAsset>();
         }
 #endif
-
 
         public static bool IsURPOrLWRP(RenderPipelineAsset asset)
         {

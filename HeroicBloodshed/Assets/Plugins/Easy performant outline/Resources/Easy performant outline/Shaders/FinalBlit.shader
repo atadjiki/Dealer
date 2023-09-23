@@ -83,8 +83,8 @@
             half4 frag (v2f i) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
-			
-				return FetchTexel(i.uv.xy / i.uv.w);
+
+                return FetchTexel(i.uv.xy / i.uv.w);
             }
             ENDCG
         }

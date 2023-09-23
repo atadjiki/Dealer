@@ -8,14 +8,8 @@ public static partial class Constants
     {
         switch(ID)
         {
-            case ModelID.DEA_MALE:
-                return PrefabID.Model_Character_DEA_Male;
-            case ModelID.DEA_FEMALE:
-                return PrefabID.Model_Character_DEA_Female;
-            case ModelID.MAFIA_BRITISH:
-                return PrefabID.Model_Character_Mafia_British;
-            case ModelID.MAFIA_ITALIAN:
-                return PrefabID.Model_Character_Mafia_Italian;
+            case ModelID.MALE_GENERIC:
+                return PrefabID.Model_Character_Male_Generic;
             default:
                 return PrefabID.INVALID;
         }
@@ -95,10 +89,7 @@ public static partial class Constants
         Encounter_UI_WinDialog_Item,
 
         //Model
-        Model_Character_DEA_Female,
-        Model_Character_DEA_Male,
-        Model_Character_Mafia_British,
-        Model_Character_Mafia_Italian,
+        Model_Character_Male_Generic,
         Model_Weapon_Pistol,
         Model_Weapon_Revolver,
         Model_Weapon_SMG,

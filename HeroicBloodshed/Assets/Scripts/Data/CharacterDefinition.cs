@@ -41,7 +41,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.DEA_MALE,
+                            ModelID.MALE_GENERIC,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -59,7 +59,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                        ModelID.DEA_FEMALE,
+                        ModelID.MALE_GENERIC,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -77,7 +77,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MAFIA_BRITISH,
+                            ModelID.MALE_GENERIC,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -97,7 +97,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MAFIA_ITALIAN,
+                            ModelID.MALE_GENERIC,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -115,7 +115,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MAFIA_BRITISH,
+                            ModelID.MALE_GENERIC,
                         },
                         AllowedWeapons = new WeaponID[]
                         {

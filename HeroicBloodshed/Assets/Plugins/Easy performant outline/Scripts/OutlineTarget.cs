@@ -64,7 +64,7 @@ namespace EPOOutline
         private int cutoutTextureIndex;
         
         private int? cutoutTextureId;
-
+        
         public Renderer Renderer
         {
             get

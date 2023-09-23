@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using EPOOutline;
 using UnityEngine;
 
 public class CharacterModel : MonoBehaviour
 {
-    [SerializeField] private SkinnedMeshRenderer Mesh_Main;
+    [SerializeField] private GameObject MeshGroup_Main;
 
-    [SerializeField] private SkinnedMeshRenderer Mesh_Outline;
+    [SerializeField] private GameObject MeshGroup_Outline;
 
-    [SerializeField] private SkinnedMeshRenderer Mesh_Highlight;
+    [SerializeField] private GameObject MeshGroup_Highlight;
 
     private CapsuleCollider _collider;
 
@@ -16,7 +17,7 @@ public class CharacterModel : MonoBehaviour
     {
         Constants.TeamID team = Constants.GetTeamByID(definition.ID);
 
-        Color teamColor = Constants.GetColorByTeam(team, 0.75f);
+        Color teamColor = Constants.GetColorByTeam(team, 1.0f);
 
         SetupOutline(teamColor);
 
@@ -29,34 +30,36 @@ public class CharacterModel : MonoBehaviour
 
     private void SetupOutline(Color color)
     {
-        if (Mesh_Outline != null)
+        color.a = 1.0f;
+
+        foreach(Outlinable outlinable in MeshGroup_Outline.GetComponentsInChildren<Outlinable>())
         {
-            Mesh_Outline.material.SetColor("OutlineColor", Color.black);
+            outlinable.OutlineParameters.Color = color;
         }
     }
 
     private void SetupHighlight(Color color)
     {
-        color.a = 0.25f;
+        color.a = 0.5f;
 
-        if (Mesh_Highlight!= null)
+        foreach (SkinnedMeshRenderer renderer in MeshGroup_Highlight.GetComponentsInChildren<SkinnedMeshRenderer>())
         {
-            Mesh_Highlight.material.SetColor("_BaseColor", color);
+            renderer.material.SetColor("_BaseColor", color);
         }
     }
 
     public void ToggleModel(bool flag)
     {
-        Mesh_Main.gameObject.SetActive(flag);
+        MeshGroup_Main.SetActive(flag);
     }
 
     public void ToggleOutline(bool flag)
     {
-        Mesh_Outline.gameObject.SetActive(flag);
+        MeshGroup_Outline.SetActive(flag);
     }
 
     public void ToggleHighlight(bool flag)
     {
-        Mesh_Highlight.gameObject.SetActive(flag);
+        MeshGroup_Highlight.SetActive(flag);
     }
 }

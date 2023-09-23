@@ -146,7 +146,7 @@
                     calculateAlphaMultiplier(secondaryProjection, _PublicVerticalGapSize, _PublicVerticalSoftness, _PublicVerticalSpeed, _PublicVerticalSize);
 
 #if USE_INFO_BUFFER
-				resultingColor.a *= GetScaler(i.screenUV, _InfoBuffer, _InfoBuffer_ST);
+				resultingColor.a *= GetScaler(i.screenUV, FetchTexelAtFrom(_InfoBuffer, i.screenUV, _InfoBuffer_ST));
 #endif
 
                 return resultingColor;

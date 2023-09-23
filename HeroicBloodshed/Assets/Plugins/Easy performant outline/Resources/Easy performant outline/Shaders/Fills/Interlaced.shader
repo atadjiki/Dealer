@@ -125,7 +125,7 @@
                 float4 result = lerp(_PublicGapColor, _PublicColor, factor);
 
 #if USE_INFO_BUFFER
-				result.a *= GetScaler(i.screenUV, _InfoBuffer, _InfoBuffer_ST);
+				result.a *= GetScaler(i.screenUV, FetchTexelAtFrom(_InfoBuffer, i.screenUV, _InfoBuffer_ST));
 #endif
 
 				return result;

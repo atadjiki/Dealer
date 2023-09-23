@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EPOOutline
@@ -6,7 +7,33 @@ namespace EPOOutline
     [ExecuteAlways]
     public class TargetStateListener : MonoBehaviour
     {
-        public event Action OnVisibilityChanged = null;
+        public struct Callback
+        {
+            public readonly Outlinable Target;
+            public readonly Action Action;
+
+            public Callback(Outlinable target, Action action)
+            {
+                Target = target;
+                Action = action;
+            }
+        }
+
+        private List<Callback> callbacks = new List<Callback>();
+
+        public void AddCallback(Outlinable outlinable, Action action)
+        {
+            callbacks.Add(new Callback(outlinable, action));
+        }
+
+        public void RemoveCallback(Outlinable outlinable, Action callback)
+        {
+            var found = callbacks.FindIndex(x => x.Target == outlinable && x.Action == callback);
+            if (found == -1)
+                return;
+            
+            callbacks.RemoveAt(found);
+        }
 
         private void Awake()
         {
@@ -15,20 +42,19 @@ namespace EPOOutline
 
         public void ForceUpdate()
         {
-            if (OnVisibilityChanged != null)
-                OnVisibilityChanged();
+            callbacks.RemoveAll(x => x.Target == null);
+            foreach (var callback in callbacks)
+                callback.Action();
         }
 
         private void OnBecameVisible()
         {
-            if (OnVisibilityChanged != null)
-                OnVisibilityChanged();
+            ForceUpdate();
         }
 
         private void OnBecameInvisible()
         {
-            if (OnVisibilityChanged != null)
-                OnVisibilityChanged();
+            ForceUpdate();
         }
     }
 }

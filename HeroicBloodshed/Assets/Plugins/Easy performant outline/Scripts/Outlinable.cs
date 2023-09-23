@@ -54,6 +54,8 @@ namespace EPOOutline
     [ExecuteAlways]
     public class Outlinable : MonoBehaviour
     {
+        private static List<TargetStateListener> tempListeners = new List<TargetStateListener>();
+        
         private static HashSet<Outlinable> outlinables = new HashSet<Outlinable>();
 
         [System.Serializable]
@@ -163,6 +165,8 @@ namespace EPOOutline
 
         [SerializeField]
         private OutlineProperties frontParameters = new OutlineProperties();
+
+        private bool shouldValidateTargets = false;
         
 #pragma warning restore CS0649
 
@@ -258,7 +262,7 @@ namespace EPOOutline
                     return false;
 
                 if (renderStyle == RenderStyle.FrontBack)
-                    return backParameters.Enabled && backParameters.FillPass.Material != null;
+                    return (frontParameters.Enabled || backParameters.Enabled) && (frontParameters.FillPass.Material != null || backParameters.FillPass.Material != null);
                 else
                     return false;
             }
@@ -291,6 +295,14 @@ namespace EPOOutline
         public void RemoveTarget(OutlineTarget target)
         {
             outlineTargets.Remove(target);
+            if (target.renderer != null)
+            {
+                var listener = target.renderer.GetComponent<TargetStateListener>();
+                if (listener == null)
+                    return;
+                
+                listener.RemoveCallback(this, UpdateVisibility);
+            }
         }
         
         public OutlineTarget this[int index]
@@ -315,7 +327,7 @@ namespace EPOOutline
         private void OnValidate()
         {
             outlineLayer = Mathf.Clamp(outlineLayer, 0, 63);
-            ValidateTargets();
+            shouldValidateTargets = true;
         }
 
         private void SubscribeToVisibilityChange(GameObject go)
@@ -330,8 +342,8 @@ namespace EPOOutline
 #endif
             }
 
-            listener.OnVisibilityChanged -= UpdateVisibility;
-            listener.OnVisibilityChanged += UpdateVisibility;
+            listener.RemoveCallback(this, UpdateVisibility);
+            listener.AddCallback(this, UpdateVisibility);
 
             listener.ForceUpdate();
         }
@@ -419,6 +431,15 @@ namespace EPOOutline
                 for (var index = 0; index < submeshesCount; index++)
                     TryAddTarget(new OutlineTarget(renderer, index));
             }
+        }
+
+        private void Update()
+        {
+            if (!shouldValidateTargets)
+                return;
+
+            shouldValidateTargets = false;
+            ValidateTargets();
         }
 
         private bool MatchingMode(Renderer renderer, RenderersAddingMode mode)

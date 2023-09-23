@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -57,13 +58,41 @@ namespace EPOOutline
             }
         }
 
+        private static List<BuildTargetGroup> GetApplicableGroups()
+        {
+            var groups = new List<BuildTargetGroup>();
+            var type = typeof(BuildTargetGroup);
+
+            var values = type.GetFields(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var value in values)
+            {
+                if (value.GetCustomAttribute<ObsoleteAttribute>() != null)
+                    continue;
+
+                var targetValue = (BuildTargetGroup) value.GetValue(null);
+                if (targetValue == BuildTargetGroup.Unknown)
+                    continue;
+                
+                groups.Add(targetValue);
+            }
+
+            return groups;
+        }
+
         private static bool CheckHasDefinition(string definition)
         {
-            var group = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var definitions = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-            var splited = definitions.Split(';');
+            var targets = GetApplicableGroups();
+            foreach (var buildTargetGroup in targets)
+            {
+                var definitions = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+                var splited = definitions.Split(';');
 
-            return Array.Find(splited, x => x == definition) != null;
+                if (Array.Find(splited, x => x == definition) == null)
+                    return false;
+            }
+
+            return true;
         }
 
         private static bool CheckHasURPOutlineDefinition()
@@ -144,11 +173,6 @@ namespace EPOOutline
             PlayerSettings.SetScriptingDefineSymbolsForGroup(group, builder.ToString());
         }
 
-        private static void RemoveSRPOutlineFromDefinitions()
-        {
-            RemoveDefinition(URP_OUTLINE_NAME, CheckHasURPOutlineDefinition);
-        }
-
         private static void AddURPDefinition()
         {
             AddDefinition(URP_OUTLINE_NAME, CheckHasURPOutlineDefinition);
@@ -174,9 +198,12 @@ namespace EPOOutline
             if (check())
                 return;
 
-            var group = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var definitions = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(group, definitions + ";" + definition);
+            var groups = GetApplicableGroups();
+            foreach (var group in groups)
+            {
+                var definitions = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(group, definitions + ";" + definition);
+            }
         }
         
         private static void Check()
@@ -342,7 +369,7 @@ namespace EPOOutline
 
             if (!HDRPWasFound)
             {
-                EditorGUILayout.HelpBox(new GUIContent("There are no package added. Chick 'Add' to add the pipeline package."));
+                EditorGUILayout.HelpBox(new GUIContent("There is no package added. Chick 'Add' to add the pipeline package."));
 
                 if (GUILayout.Button("Add"))
                     addRequest = Client.Add(packageName);
@@ -364,7 +391,7 @@ namespace EPOOutline
 #if HDRP_OUTLINE
             if (!CheckHasActiveRenderers())
             {
-                EditorGUILayout.HelpBox(new GUIContent("There are not renderer asset set up. Create one?"));
+                EditorGUILayout.HelpBox(new GUIContent("There is not renderer asset set up. Create one?"));
 
                 if (GUILayout.Button("Create"))
                 {
@@ -436,7 +463,7 @@ namespace EPOOutline
 
             if (!UPRWasFound)
             {
-                EditorGUILayout.HelpBox(new GUIContent("There are no package added. Chick 'Add' to add the pipeline package."));
+                EditorGUILayout.HelpBox(new GUIContent("There is no package added. Chick 'Add' to add the pipeline package."));
 
                 if (GUILayout.Button("Add"))
                     addRequest = Client.Add(packageName);
@@ -458,7 +485,7 @@ namespace EPOOutline
 #if URP_OUTLINE
             if (!CheckHasActiveRenderers())
             {
-                EditorGUILayout.HelpBox(new GUIContent("There are not renderer asset set up. Create one?"));
+                EditorGUILayout.HelpBox(new GUIContent("There is not renderer asset set up. Create one?"));
 
                 if (GUILayout.Button("Create"))
                 {
@@ -472,11 +499,8 @@ namespace EPOOutline
                     var pathNoExt = Path.ChangeExtension(path, string.Empty);
                     pathNoExt = pathNoExt.Substring(0, pathNoExt.Length - 1);
 
-                    var rendererAsset = PipelineAssetUtility.CreateRenderData();
-                    var asset = PipelineAssetUtility.CreateAsset(rendererAsset);
+                    var asset = PipelineAssetUtility.CreateAsset(pathNoExt);
                     GraphicsSettings.renderPipelineAsset = asset;
-                    AssetDatabase.CreateAsset(rendererAsset, pathNoExt + " renderer.asset");
-                    AssetDatabase.CreateAsset(asset, path);
                 }
             }
             else

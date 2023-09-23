@@ -4,10 +4,10 @@
 #define FetchTexelAtWithShift(uv,shift) FetchTexelAtFrom(_MainTex,(uv)+(shift),_MainTex_ST)
 #define FetchTexelAtFrom(tex,uv,texST) UNITY_SAMPLE_SCREENSPACE_TEXTURE(tex,(uv))
 #else
-#define FetchTexel(uv) tex2D(_MainTex, UnityStereoScreenSpaceUVAdjust((uv),_MainTex_ST))
+#define FetchTexel(uv) UNITY_SAMPLE_SCREENSPACE_TEXTURE(_MainTex, UnityStereoScreenSpaceUVAdjust((uv),_MainTex_ST))
 #define FetchTexelAt(uv) FetchTexelAtFrom(_MainTex,(uv),_MainTex_ST)
-#define FetchTexelAtWithShift(uv,shift) tex2D(_MainTex,UnityStereoScreenSpaceUVAdjust((uv),(_MainTex_ST))+(shift))
-#define FetchTexelAtFrom(tex,uv,texST) tex2D(tex,UnityStereoScreenSpaceUVAdjust((uv),(texST)))
+#define FetchTexelAtWithShift(uv,shift) UNITY_SAMPLE_SCREENSPACE_TEXTURE(_MainTex,UnityStereoScreenSpaceUVAdjust((uv),(_MainTex_ST))+(shift))
+#define FetchTexelAtFrom(tex,uv,texST) UNITY_SAMPLE_SCREENSPACE_TEXTURE(tex,UnityStereoScreenSpaceUVAdjust((uv),(texST)))
 #endif
 
 #if USE_INFO_BUFFER
@@ -17,12 +17,10 @@
 
 #endif
 
-inline float GetScaler(float4 inUV, sampler2D _InfoBuffer, float4 _InfoBuffer_ST)
+inline float GetScaler(float4 inUV, half4 info)
 {
 #if USE_INFO_BUFFER
 	float2 uv = inUV.xy / inUV.w;
-
-	half4 info = FetchTexelAtFrom(_InfoBuffer, uv, _InfoBuffer_ST);
 
 	float scaler = 1.0f;
 
@@ -43,15 +41,25 @@ inline float GetScaler(float4 inUV, sampler2D _InfoBuffer, float4 _InfoBuffer_ST
 
 #define DefineEdgeDilateParameters float3 normal : TEXCOORD6;
 
-#define ComputeScreenShift float2 clipNormal = (mul((float3x3) UNITY_MATRIX_VP, v.normal)).xy; o.vertex.xy += normalize(clipNormal) * 1.41f * _MainTex_TexelSize.xy * 2.0f * (_EffectSize + v.additionalScale.x) * o.vertex.w;
+//#define ComputeScreenShift float2 clipNormal = (mul((float3x3) UNITY_MATRIX_MVP, v.normal)).xy; o.vertex.xy += clipNormal * 1.41f * _MainTex_TexelSize.xy * 2.0f * (_EffectSize + v.additionalScale.x) * o.vertex.w;
 
-#define ComputeSmoothScreenShift float2 clipNormal = (mul((float3x3) UNITY_MATRIX_VP, mul((float3x3) UNITY_MATRIX_M, v.normal))).xy; o.vertex.xy += (normalize(clipNormal) / _ScreenParams.xy) * 2.0f * _DilateShift * o.vertex.w;
+#define ComputeScreenShift o.vertex.xy += EPOComputeShift(v.normal, 1.41f * _MainTex_TexelSize.xy * 2.0f * (_EffectSize + v.additionalScale.x) * o.vertex.w);
+
+#define ComputeSmoothScreenShift float2 clipNormal = (mul((float3x3) UNITY_MATRIX_MVP, mul((float3x3) UNITY_MATRIX_M, v.normal))).xy; o.vertex.xy += (normalize(clipNormal) / _ScreenParams.xy) * 2.0f * _DilateShift * o.vertex.w;
 
 #define DefineTransform float2 additionalScale : TEXCOORD0;
 
 #define DefineCoords float2 _Scale;
 
 #define PostprocessCoords// o.vertex.xy = _Scale.xy / 20.0f + (o.vertex.xy + 1.0f) * _Scale.zw - 1.0f;
+
+inline float2 EPOComputeShift(float3 normal, float2 shiftAmount)
+{
+	float2 transformedNormal = mul((float3x3) UNITY_MATRIX_MVP, normal).xy;
+	transformedNormal = normalize(transformedNormal);
+
+	return transformedNormal.xy * shiftAmount;
+}
 
 #if UNITY_UV_STARTS_AT_TOP
 #define CheckY o.vertex.y *= -_ProjectionParams.x;

@@ -68,9 +68,6 @@ namespace EPOOutline
         private OutlineRenderingStrategy renderingStrategy = OutlineRenderingStrategy.Default;
 
         [SerializeField]
-        private string renderTargetName = string.Empty;
-
-        [SerializeField]
         private RenderingMode renderingMode;
 
         [SerializeField]
@@ -108,6 +105,20 @@ namespace EPOOutline
         [SerializeField]
         private BlurType blurType = BlurType.Box;
 
+        [Obsolete]
+        public float InfoRendererScale
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+        
         public int PrimarySizeReference
         {
             get
@@ -178,14 +189,6 @@ namespace EPOOutline
             set
             {
                 dilateQuality = value;
-            }
-        }
-
-        public bool HasCutomRenderTarget
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(renderTargetName);
             }
         }
 
@@ -319,11 +322,6 @@ namespace EPOOutline
             {
                 dilateIterations = value > 0 ? value : 0;
             }
-        }
-
-        public RenderTargetIdentifier GetRenderTarget(OutlineParameters parameters)
-        {
-            return TargetsHolder.Instance.GetTarget(parameters, renderTargetName);
         }
 
         private void OnValidate()
@@ -544,8 +542,7 @@ namespace EPOOutline
 
             parameters.Antialiasing = editorCamera ? (targetTexture == null ? 1 : targetTexture.antiAliasing) : CameraUtility.GetMSAA(targetCamera);
 
-            parameters.Target = RenderTargetUtility.ComposeTarget(parameters, HasCutomRenderTarget && !editorCamera ? GetRenderTarget(parameters) :
-                BuiltinRenderTextureType.CameraTarget);
+            parameters.Target = RenderTargetUtility.ComposeTarget(parameters, BuiltinRenderTextureType.CameraTarget);
 
             parameters.Camera = camera;
 

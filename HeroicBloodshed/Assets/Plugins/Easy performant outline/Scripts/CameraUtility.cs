@@ -25,6 +25,9 @@ namespace EPOOutline
     {
         public static int GetMSAA(Camera camera)
         {
+            if (camera.targetTexture != null)
+                return camera.targetTexture.antiAliasing;
+
             var antialiasing = GetRenderPipelineMSAA();
 
             var msaa = Mathf.Max(antialiasing, 1);

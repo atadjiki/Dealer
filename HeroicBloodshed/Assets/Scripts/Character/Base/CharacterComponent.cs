@@ -104,6 +104,8 @@ public class CharacterComponent : MonoBehaviour
         _health = 0;
         _animator.GoTo(AnimState.Dead);
         _audioSource.Play(CharacterAudioType.Death);
+        _model.ToggleHighlight(false);
+        _model.ToggleOutline(false);
     }
 
     private void OnMouseOver()

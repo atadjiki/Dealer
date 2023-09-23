@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 namespace EPOOutline
 {
     public static class RendererFilteringUtility
@@ -29,7 +34,7 @@ namespace EPOOutline
                     continue;
 
 #if UNITY_EDITOR
-                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+                var stage = PrefabStageUtility.GetCurrentPrefabStage();
 
                 if (stage != null && !stage.IsPartOfPrefabContents(outlinable.gameObject))
                     continue;
