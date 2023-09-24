@@ -80,6 +80,11 @@ public static partial class Constants
         Death
     };
 
+    public enum CharacterEvent
+    {
+        DEAD,
+    }
+
     public enum EncounterState
     {
         INIT,

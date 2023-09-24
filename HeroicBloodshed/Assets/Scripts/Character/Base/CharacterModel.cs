@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using EPOOutline;
 using UnityEngine;
+using static Constants;
 
-public class CharacterModel : MonoBehaviour
+public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private GameObject MeshGroup_Main;
 
-    [SerializeField] private GameObject MeshGroup_Outline;
+    [SerializeField] private Outlinable Outline;
 
-    [SerializeField] private GameObject MeshGroup_Highlight;
+    [SerializeField] private Outlinable Highlight;
 
     private CapsuleCollider _collider;
 
@@ -20,11 +21,9 @@ public class CharacterModel : MonoBehaviour
         Color teamColor = Constants.GetColorByTeam(team, 1.0f);
 
         SetupOutline(teamColor);
-
         SetupHighlight(teamColor);
 
         ToggleOutline(true);
-
         ToggleHighlight(false);
     }
 
@@ -32,20 +31,16 @@ public class CharacterModel : MonoBehaviour
     {
         color.a = 1.0f;
 
-        foreach(Outlinable outlinable in MeshGroup_Outline.GetComponentsInChildren<Outlinable>())
-        {
-            outlinable.OutlineParameters.Color = color;
-        }
+        Outline.OutlineParameters.Color = color; //setup outliner color
     }
 
     private void SetupHighlight(Color color)
     {
         color.a = 0.5f;
+        Highlight.OutlineParameters.FillPass.SetColor("_PublicColor", color);
 
-        foreach (SkinnedMeshRenderer renderer in MeshGroup_Highlight.GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            renderer.material.SetColor("_BaseColor", color);
-        }
+        color.a = 1f;
+        Highlight.OutlineParameters.FillPass.SetColor("_PublicGapColor", color);
     }
 
     public void ToggleModel(bool flag)
@@ -55,11 +50,24 @@ public class CharacterModel : MonoBehaviour
 
     public void ToggleOutline(bool flag)
     {
-        MeshGroup_Outline.SetActive(flag);
+        Outline.gameObject.SetActive(flag);
     }
 
     public void ToggleHighlight(bool flag)
     {
-        MeshGroup_Highlight.SetActive(flag);
+        Highlight.gameObject.SetActive(flag);
+    }
+
+    public void HandleEvent(Constants.CharacterEvent characterEvent)
+    {
+        switch (characterEvent)
+        {
+            case CharacterEvent.DEAD:
+                ToggleHighlight(false);
+                ToggleOutline(false);
+                break;
+            default:
+                break;
+        }
     }
 }

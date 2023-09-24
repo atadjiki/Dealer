@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
 
-public class CharacterComponent : MonoBehaviour
+public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 {
     protected CharacterID _ID;
+
+    //Event Receivers
     protected CharacterModel _model;
-    protected CharacterOverheadAnchor _overheadAnchor;
-    protected CharacterWeaponAnchor _weaponAnchor;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
     protected CharacterAudioSource _audioSource;
     protected EncounterCharacterUI _encounterUI;
+
+    private List<ICharacterEventReceiver> _eventReceivers;
+
+    protected CharacterOverheadAnchor _overheadAnchor;
+    protected CharacterWeaponAnchor _weaponAnchor;
+
     protected int _health = 0;
     protected int _baseHealth = 0;
 
@@ -33,6 +39,8 @@ public class CharacterComponent : MonoBehaviour
         _health = def.BaseHealth;
         _baseHealth = def.BaseHealth;
 
+        _eventReceivers = new List<ICharacterEventReceiver>();
+
         ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length)];
 
         ResourceRequest modelRequest = GetPrefab(modelID);
@@ -45,7 +53,7 @@ public class CharacterComponent : MonoBehaviour
 
         _model.Setup(def);
 
-        yield return new WaitWhile(() => _model == null);
+        _eventReceivers.Add(_model);
 
         _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
 
@@ -63,24 +71,22 @@ public class CharacterComponent : MonoBehaviour
 
             _weapon = weaponPrefab.GetComponent<CharacterWeapon>();
 
-            yield return new WaitWhile(() => _weapon == null);
-
             _weapon.Setup(weaponID);
+
+            _eventReceivers.Add(_weapon);
         }
 
         _overheadAnchor = GetComponentInChildren<CharacterOverheadAnchor>();
 
-        yield return new WaitWhile(() => _overheadAnchor == null);
-
         _animator = modelPrefab.GetComponent<CharacterAnimator>();
-
-        yield return new WaitWhile(() => _animator == null);
 
         _animator.Setup(AnimState.Idle, _weapon.GetID());
 
+        _eventReceivers.Add(_animator);
+
         _audioSource = GetComponentInChildren<CharacterAudioSource>();
 
-        yield return new WaitWhile(() => _audioSource == null);
+        _eventReceivers.Add(_audioSource);
 
         _collider = this.gameObject.AddComponent<CapsuleCollider>();
 
@@ -97,15 +103,6 @@ public class CharacterComponent : MonoBehaviour
         }
 
         yield return null;
-    }
-
-    public void Kill()
-    {
-        _health = 0;
-        _animator.GoTo(AnimState.Dead);
-        _audioSource.Play(CharacterAudioType.Death);
-        _model.ToggleHighlight(false);
-        _model.ToggleOutline(false);
     }
 
     private void OnMouseOver()
@@ -244,7 +241,7 @@ public class CharacterComponent : MonoBehaviour
 
         if (_health < 1)
         {
-            Kill();
+            HandleEvent(CharacterEvent.DEAD);
         }
     }
 
@@ -341,5 +338,30 @@ public class CharacterComponent : MonoBehaviour
     public void PlayAudio(CharacterAudioType audioType)
     {
         _audioSource.Play(audioType);
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent)
+    {
+        switch (characterEvent)
+        {
+            case CharacterEvent.DEAD:
+            {
+                _health = 0;
+
+            }
+            break;
+            default:
+                break;
+        }
+
+        BroadcastEvent(characterEvent);
+    }
+
+    private void BroadcastEvent(CharacterEvent characterEvent)
+    {
+        foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)
+        {
+            eventReceiver.HandleEvent(characterEvent);
+        }
     }
 }

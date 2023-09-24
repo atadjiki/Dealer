@@ -4,7 +4,7 @@ using static Constants;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class CharacterAnimator : MonoBehaviour
+public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 {
     private Animator _animator;
 
@@ -13,6 +13,18 @@ public class CharacterAnimator : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
+    }
+
+    public void SwitchToRagdoll(float delay)
+    {
+        StartCoroutine(Coroutine_EnableRagdoll(delay));
+    }
+
+    private IEnumerator Coroutine_EnableRagdoll(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        _animator.enabled = false;
     }
 
     public void Setup(AnimState initialState, WeaponID weapon)
@@ -43,5 +55,18 @@ public class CharacterAnimator : MonoBehaviour
 
         Debug.Log("Animation: " + anim.ToString());
         _animator.CrossFade(anim.ToString(), transitionTime);
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent)
+    {
+        switch (characterEvent)
+        {
+            case CharacterEvent.DEAD:
+                GoTo(AnimState.Dead);
+                SwitchToRagdoll(0.5f);
+                break;
+            default:
+                break;
+        }
     }
 }

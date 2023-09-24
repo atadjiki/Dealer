@@ -95,7 +95,7 @@ public class AbilityHandler : MonoBehaviour
 
         if (target.IsDead())
         {
-            target.Kill();
+            target.HandleEvent(CharacterEvent.DEAD);
         }
         else
         {

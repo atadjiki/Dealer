@@ -17,7 +17,7 @@ public struct CharacterSoundBank
     }
 }
 
-public class CharacterAudioSource : MonoBehaviour
+public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private List<CharacterSoundBank> SoundbankMap;
 
@@ -48,6 +48,18 @@ public class CharacterAudioSource : MonoBehaviour
         if(audioClip != null)
         {
             _audioSource.PlayOneShot(audioClip);
+        }
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent)
+    {
+        switch(characterEvent)
+        {
+            case CharacterEvent.DEAD:
+                Play(CharacterAudioType.Death);
+                break;
+            default:
+                break;
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using static Constants;
 
-public class EncounterCharacterUI : MonoBehaviour
+public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private Image Panel_Backing;
 
@@ -25,6 +25,17 @@ public class EncounterCharacterUI : MonoBehaviour
         _rectTransform = Panel_Backing.GetComponent<RectTransform>();
 
         StartCoroutine(Coroutine_Update());
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent)
+    {
+        switch (characterEvent)
+        {
+            case CharacterEvent.DEAD:
+                break;
+            default:
+                break;
+        }
     }
 
     private IEnumerator Coroutine_Update()
