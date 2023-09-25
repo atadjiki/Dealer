@@ -28,6 +28,8 @@ public static partial class Constants
         NONE,
 
         MALE_GENERIC,
+
+        MALE_GENERIC_ENEMY,
     }
 
     public enum PlayerID

@@ -77,7 +77,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MALE_GENERIC,
+                            ModelID.MALE_GENERIC_ENEMY,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -97,7 +97,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MALE_GENERIC,
+                            ModelID.MALE_GENERIC_ENEMY,
                         },
                         AllowedWeapons = new WeaponID[]
                         {

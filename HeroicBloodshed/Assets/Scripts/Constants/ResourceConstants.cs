@@ -10,6 +10,8 @@ public static partial class Constants
         {
             case ModelID.MALE_GENERIC:
                 return PrefabID.Model_Character_Male_Generic;
+            case ModelID.MALE_GENERIC_ENEMY:
+                return PrefabID.Model_Character_Male_Generic_Enemy;
             default:
                 return PrefabID.INVALID;
         }
@@ -89,7 +91,12 @@ public static partial class Constants
         Encounter_UI_WinDialog_Item,
 
         //Model
+
+        //Characters
         Model_Character_Male_Generic,
+        Model_Character_Male_Generic_Enemy,
+
+        //Weapons
         Model_Weapon_Pistol,
         Model_Weapon_Revolver,
         Model_Weapon_SMG,
