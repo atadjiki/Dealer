@@ -43,14 +43,14 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator HandleAbility_Reload(CharacterComponent caster)
     {
-        caster.PerformAbility(AbilityID.Reload);
+        caster.HandleEvent(AbilityID.Reload, CharacterEvent.PERFORM_ABILITY);
         yield return new WaitForSeconds(1.0f);
     }
 
     public static IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
     {
         //maybe have some anim play here
-        caster.PerformAbility(AbilityID.SkipTurn);
+        caster.HandleEvent(AbilityID.SkipTurn, CharacterEvent.PERFORM_ABILITY);
         yield return new WaitForSeconds(1.0f);
     }
 
@@ -61,7 +61,7 @@ public class AbilityHandler : MonoBehaviour
         //rotate and pause momentarily
         yield return Coroutine_RotateTowards(caster, target);
         yield return new WaitForSeconds(0.5f);
-        caster.PerformAbility(AbilityID.Attack);
+        caster.HandleEvent(AbilityID.Attack, CharacterEvent.PERFORM_ABILITY);
     }
 
     public static IEnumerator Coroutine_RotateTowards(CharacterComponent caster, CharacterComponent target)
@@ -96,7 +96,7 @@ public class AbilityHandler : MonoBehaviour
 
         if (target.IsDead())
         {
-            target.HandleEvent(damageInfo, CharacterEvent.DEAD);
+            target.HandleEvent(damageInfo, CharacterEvent.KILLED);
         }
         else
         {

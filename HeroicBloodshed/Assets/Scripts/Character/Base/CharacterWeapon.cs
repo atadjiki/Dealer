@@ -46,7 +46,7 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.KILLED:
                 HandleEvent_Dead();
                 break;
             default:
@@ -62,6 +62,15 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         this.transform.parent = null;
 
         SetDeadOutline();
+
+        StartCoroutine(Coroutine_DestroyAfterTime(5.0f));
+    }
+
+    private IEnumerator Coroutine_DestroyAfterTime(float duration)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+
+        Destroy(this.gameObject);
     }
 
     public WeaponID GetID()

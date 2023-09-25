@@ -17,14 +17,22 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     public void SwitchToRagdoll(DamageInfo damageInfo)
     {
-        CharacterComponent characterComponent = damageInfo.caster;
+        Vector3 impactAngle;
 
-        Vector3 casterPos = characterComponent.transform.position;
-        Vector3 targetPos = this.transform.position;
+        if (damageInfo.caster != null)
+        {
+            CharacterComponent caster = damageInfo.caster;
+            Vector3 casterPos = caster.transform.position;
+            Vector3 targetPos = this.transform.position;
 
-        Vector3 impactAngle = targetPos - casterPos;
+            impactAngle = targetPos - casterPos;
 
-        impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
+            impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
+        }
+        else
+        {
+            impactAngle = this.transform.forward * -1;
+        }
 
         _animator.enabled = false;
 
@@ -36,16 +44,24 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
             }
         }
 
-        foreach (Rigidbody rigidbody in GetComponentsInChildren<Rigidbody>())
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+        foreach (Rigidbody rigidbody in rigidbodies)
         {
-            float mass = rigidbody.mass;
-
-            Vector3 forceVector = impactAngle * mass;
-
-            Debug.Log("Force Vector: " + forceVector.ToString());
-
             rigidbody.isKinematic = false;
-            rigidbody.AddForce(forceVector, ForceMode.Force);
+        }
+
+        if(rigidbodies.Length > 0)
+        {
+            Rigidbody impactedBody = rigidbodies[Random.Range(0, rigidbodies.Length)];
+
+            float mass = impactedBody.mass;
+
+            Vector3 forceVector = impactAngle * mass * 10f;
+
+            impactedBody.AddForce(forceVector, ForceMode.Impulse);
+
+            Debug.Log("Bullet Force of : " + forceVector.magnitude + " on " + impactedBody.name);
 
         }
     }
@@ -84,7 +100,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.KILLED:
                 HandleEvent_Death(eventData);
                 break;
             default:
@@ -94,7 +110,11 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Death(object eventData)
     {
-        DamageInfo damageInfo = (DamageInfo)eventData;
+        DamageInfo damageInfo = new DamageInfo();
+        if (eventData != null)
+        {
+             damageInfo = (DamageInfo)eventData;
+        }
 
         GoTo(AnimState.Dead);
         SwitchToRagdoll(damageInfo);

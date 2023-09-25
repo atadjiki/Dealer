@@ -84,7 +84,8 @@ public static partial class Constants
 
     public enum CharacterEvent
     {
-        DEAD,
+        PERFORM_ABILITY,
+        KILLED,
     }
 
     public enum EncounterState

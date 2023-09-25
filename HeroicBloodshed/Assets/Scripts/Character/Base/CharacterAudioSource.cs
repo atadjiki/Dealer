@@ -55,7 +55,7 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
     {
         switch(characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.KILLED:
                 Play(CharacterAudioType.Death);
                 break;
             default:

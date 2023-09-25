@@ -27,6 +27,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
+    private bool _setupComplete;
+
     public void Debug_Spawn()
     {
         SetID(CharacterID.HENCHMAN);
@@ -40,6 +42,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     public virtual IEnumerator SpawnCharacter()
     {
+        UIHelper.ClearTransformChildren(this.transform);
+
         CharacterDefinition def = CharacterDefinition.Get(_ID);
 
         _health = def.BaseHealth;
@@ -106,9 +110,15 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         if (onSetupComplete != null)
         {
             onSetupComplete.Invoke(this);
+            _setupComplete = true;
         }
 
         yield return null;
+    }
+
+    public bool IsSetupComplete()
+    {
+        return _setupComplete;
     }
 
     private void OnMouseOver()
@@ -297,26 +307,26 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _audioSource.Play(CharacterAudioType.Await);
     }
 
-    public void PerformAbility(AbilityID abilityID)
+    private void PerformAbility(AbilityID abilityID)
     {
-        switch(abilityID)
+        switch (abilityID)
         {
             case AbilityID.Attack:
-            {
-                _weapon.OnAbility(AbilityID.Attack);
-                _animator.GoTo(AnimState.Attack_Single);
-                break;
-            }
+                {
+                    _weapon.OnAbility(AbilityID.Attack);
+                    _animator.GoTo(AnimState.Attack_Single);
+                    break;
+                }
             case AbilityID.Reload:
-            {
-                _weapon.OnAbility(AbilityID.Reload);
-                _animator.GoTo(AnimState.Reload);
-                break;
-            }
+                {
+                    _weapon.OnAbility(AbilityID.Reload);
+                    _animator.GoTo(AnimState.Reload);
+                    break;
+                }
             default:
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
     }
 
@@ -345,7 +355,12 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.PERFORM_ABILITY:
+            {
+                PerformAbility((AbilityID) eventData);
+                break;
+            }
+            case CharacterEvent.KILLED:
             {
                 _health = 0;
 

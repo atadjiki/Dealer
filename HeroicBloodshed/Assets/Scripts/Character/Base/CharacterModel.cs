@@ -71,7 +71,7 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.KILLED:
                 ToggleHighlight(false);
                 SetDeadOutline();
                 break;

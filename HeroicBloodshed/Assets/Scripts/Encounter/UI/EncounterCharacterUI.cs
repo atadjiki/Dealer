@@ -31,7 +31,7 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.DEAD:
+            case CharacterEvent.KILLED:
                 break;
             default:
                 break;
