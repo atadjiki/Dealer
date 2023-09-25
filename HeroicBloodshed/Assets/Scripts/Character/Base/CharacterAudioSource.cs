@@ -51,7 +51,7 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    public void HandleEvent(CharacterEvent characterEvent)
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch(characterEvent)
         {

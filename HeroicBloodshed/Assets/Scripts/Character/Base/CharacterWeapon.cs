@@ -2,28 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
+using EPOOutline;
 
 public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 {
     protected WeaponID _ID;
+    protected CharacterID _characterID;
     protected int _ammo = 0;
 
-    public virtual void Setup(WeaponID ID)
+    protected Outlinable _outline;
+
+    public virtual void Setup(CharacterID characterID, WeaponID weaponID)
     {
-        _ID = ID;
+        _ID = weaponID;
+        _characterID = characterID;
         _ammo = GetMaxAmmo();
+
+        Constants.TeamID team = Constants.GetTeamByID(characterID);
+
+        Color teamColor = Constants.GetColorByTeam(team, 1.0f);
+
+        SetupOutline(teamColor);
     }
 
-    public void HandleEvent(Constants.CharacterEvent characterEvent)
+    private void SetupOutline(Color color)
+    {
+        color.a = 1.0f;
+
+        _outline.OutlineParameters.Color = color; //setup outliner color
+    }
+
+
+    private void SetDeadOutline()
+    {
+        Color color = _outline.OutlineParameters.Color;
+
+        color.a = 0.25f;
+
+        _outline.OutlineParameters.Color = color;
+    }
+
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {
             case CharacterEvent.DEAD:
-                this.transform.parent = null;
+                HandleEvent_Dead();
                 break;
             default:
                 break;
         }
+    }
+
+    private void HandleEvent_Dead()
+    {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        rigidbody.isKinematic = false;
+
+        this.transform.parent = null;
+
+        SetDeadOutline();
     }
 
     public WeaponID GetID()

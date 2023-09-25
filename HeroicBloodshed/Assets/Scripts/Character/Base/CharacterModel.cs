@@ -34,6 +34,15 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
         Outline.OutlineParameters.Color = color; //setup outliner color
     }
 
+    private void SetDeadOutline()
+    {
+        Color color = Outline.OutlineParameters.Color;
+
+        color.a = 0.25f;
+
+        Outline.OutlineParameters.Color = color;
+    }
+
     private void SetupHighlight(Color color)
     {
         color.a = 0.5f;
@@ -58,13 +67,13 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
         Highlight.gameObject.SetActive(flag);
     }
 
-    public void HandleEvent(Constants.CharacterEvent characterEvent)
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {
             case CharacterEvent.DEAD:
                 ToggleHighlight(false);
-                ToggleOutline(false);
+                SetDeadOutline();
                 break;
             default:
                 break;

@@ -16,6 +16,7 @@ public class AbilityHandler : MonoBehaviour
         //calculate damage
         bool crit = characterDef.RollCritChance();
         DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
+        damageInfo.caster = caster;
 
         if (crit)
         {
@@ -95,7 +96,7 @@ public class AbilityHandler : MonoBehaviour
 
         if (target.IsDead())
         {
-            target.HandleEvent(CharacterEvent.DEAD);
+            target.HandleEvent(damageInfo, CharacterEvent.DEAD);
         }
         else
         {

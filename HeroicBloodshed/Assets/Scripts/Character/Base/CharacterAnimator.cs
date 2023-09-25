@@ -15,16 +15,39 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         _animator = GetComponent<Animator>();    
     }
 
-    public void SwitchToRagdoll(float delay)
+    public void SwitchToRagdoll(DamageInfo damageInfo)
     {
-        StartCoroutine(Coroutine_EnableRagdoll(delay));
-    }
+        CharacterComponent characterComponent = damageInfo.caster;
 
-    private IEnumerator Coroutine_EnableRagdoll(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+        Vector3 casterPos = characterComponent.transform.position;
+        Vector3 targetPos = this.transform.position;
+
+        Vector3 impactAngle = targetPos - casterPos;
+
+        impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
 
         _animator.enabled = false;
+
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            if (!collider.isTrigger)
+            {
+                collider.enabled = true;
+            }
+        }
+
+        foreach (Rigidbody rigidbody in GetComponentsInChildren<Rigidbody>())
+        {
+            float mass = rigidbody.mass;
+
+            Vector3 forceVector = impactAngle * mass;
+
+            Debug.Log("Force Vector: " + forceVector.ToString());
+
+            rigidbody.isKinematic = false;
+            rigidbody.AddForce(forceVector, ForceMode.Force);
+
+        }
     }
 
     public void Setup(AnimState initialState, WeaponID weapon)
@@ -57,16 +80,23 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         _animator.CrossFade(anim.ToString(), transitionTime);
     }
 
-    public void HandleEvent(CharacterEvent characterEvent)
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {
             case CharacterEvent.DEAD:
-                GoTo(AnimState.Dead);
-                SwitchToRagdoll(0.5f);
+                HandleEvent_Death(eventData);
                 break;
             default:
                 break;
         }
+    }
+
+    private void HandleEvent_Death(object eventData)
+    {
+        DamageInfo damageInfo = (DamageInfo)eventData;
+
+        GoTo(AnimState.Dead);
+        SwitchToRagdoll(damageInfo);
     }
 }

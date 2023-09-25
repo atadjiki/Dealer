@@ -5,5 +5,5 @@ using static Constants;
 
 public interface ICharacterEventReceiver
 {
-    public abstract void HandleEvent(CharacterEvent characterEvent);
+    public abstract void HandleEvent(object eventData, CharacterEvent characterEvent);
 }

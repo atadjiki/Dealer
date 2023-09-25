@@ -27,7 +27,7 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         StartCoroutine(Coroutine_Update());
     }
 
-    public void HandleEvent(CharacterEvent characterEvent)
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {

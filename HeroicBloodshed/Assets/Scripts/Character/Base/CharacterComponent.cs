@@ -27,6 +27,12 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
+    public void Debug_Spawn()
+    {
+        SetID(CharacterID.HENCHMAN);
+        StartCoroutine(SpawnCharacter());
+    }
+
     public void SetID(CharacterID ID)
     {
         _ID = ID;
@@ -71,7 +77,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             _weapon = weaponPrefab.GetComponent<CharacterWeapon>();
 
-            _weapon.Setup(weaponID);
+            _weapon.Setup(_ID, weaponID);
 
             _eventReceivers.Add(_weapon);
         }
@@ -238,11 +244,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public virtual void SetHealth(int health)
     {
         _health = health;
-
-        if (_health < 1)
-        {
-            HandleEvent(CharacterEvent.DEAD);
-        }
     }
 
     public virtual int GetHealth()
@@ -340,7 +341,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _audioSource.Play(audioType);
     }
 
-    public void HandleEvent(CharacterEvent characterEvent)
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {
@@ -354,14 +355,14 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 break;
         }
 
-        BroadcastEvent(characterEvent);
+        BroadcastEvent(eventData, characterEvent) ;
     }
 
-    private void BroadcastEvent(CharacterEvent characterEvent)
+    private void BroadcastEvent(object eventData, CharacterEvent characterEvent)
     {
         foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)
         {
-            eventReceiver.HandleEvent(characterEvent);
+            eventReceiver.HandleEvent(eventData, characterEvent);
         }
     }
 }

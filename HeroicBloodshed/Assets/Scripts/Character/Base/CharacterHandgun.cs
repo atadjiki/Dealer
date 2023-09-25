@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EPOOutline;
 using UnityEngine;
 using static Constants;
 
@@ -30,11 +31,12 @@ public class CharacterHandgun : CharacterWeapon
     {
         _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
         _audioSource = GetComponentInChildren<AudioSource>();
+        _outline = GetComponent<Outlinable>();
     }
 
-    public override void Setup(WeaponID ID)
+    public override void Setup(CharacterID characterID, WeaponID ID)
     {
-        base.Setup(ID);
+        base.Setup(characterID, ID);
 
         StartCoroutine(Coroutine_LoadVFX());
     }

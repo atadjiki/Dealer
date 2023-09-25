@@ -5,6 +5,7 @@ using static Constants;
 
 public struct DamageInfo
 {
+    public CharacterComponent caster;
     public int ActualDamage;
     public int BaseDamage;
 }
