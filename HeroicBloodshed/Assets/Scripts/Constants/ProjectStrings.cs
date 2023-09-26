@@ -4,6 +4,23 @@ using UnityEngine;
 
 public static partial class Constants
 {
+    public static string GetDisplayString(CharacterEvent characterEvent)
+    {
+        switch(characterEvent)
+        {
+            case CharacterEvent.ABILITY:
+                return "Ability";
+            case CharacterEvent.HIT:
+                return "Hit";
+            case CharacterEvent.KILLED:
+                return "Killed";
+            case CharacterEvent.SELECTED:
+                return "Selected";
+            default:
+                return characterEvent.ToString();
+        }
+    }
+
     public static string GetDisplayString(WeaponID weapon)
     {
         switch (weapon)
