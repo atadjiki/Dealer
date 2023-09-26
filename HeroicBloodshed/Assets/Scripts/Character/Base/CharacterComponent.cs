@@ -51,7 +51,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
-        ModelID modelID = def.AllowedModels[Random.Range(0, def.AllowedModels.Length)];
+        ModelID modelID = def.AllowedModels[UnityEngine.Random.Range(0, def.AllowedModels.Length)];
 
         ResourceRequest modelRequest = GetPrefab(modelID);
 
@@ -71,7 +71,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         if (def.AllowedWeapons.Length > 0)
         {
-            WeaponID weaponID = def.AllowedWeapons[Random.Range(0, def.AllowedWeapons.Length)];
+            WeaponID weaponID = def.AllowedWeapons[UnityEngine.Random.Range(0, def.AllowedWeapons.Length)];
 
             ResourceRequest weaponRequest = GetPrefab(weaponID);
 
@@ -301,13 +301,65 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         return _overheadAnchor;
     }
 
-    public void PerformSelect()
+    public void PlayAudio(CharacterAudioType audioType)
+    {
+        _audioSource.Play(audioType);
+    }
+
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    {
+        switch (characterEvent)
+        {
+            case CharacterEvent.SELECTED:
+            {
+                HandleEvent_Selected();
+                break;
+            }
+            case CharacterEvent.HIT:
+            {
+                HandleEvent_Hit((DamageInfo)eventData);
+                break;
+            }
+            case CharacterEvent.ABILITY:
+            {
+                HandleEvent_Ability((AbilityID) eventData);
+                break;
+            }
+            case CharacterEvent.KILLED:
+            {
+                HandleEvent_Killed();
+            }
+            break;
+            default:
+                break;
+        }
+
+        BroadcastEvent(eventData, characterEvent) ;
+    }
+
+    private void HandleEvent_Selected()
     {
         CreateDecal();
         _audioSource.Play(CharacterAudioType.Await);
     }
 
-    private void PerformAbility(AbilityID abilityID)
+    private void HandleEvent_Hit(DamageInfo damageInfo)
+    { 
+        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Light);
+        }
+        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Medium);
+        }
+        else
+        {
+            _animator.GoTo(AnimState.Hit_Heavy);
+        }
+    }
+
+    private void HandleEvent_Ability(AbilityID abilityID)
     {
         switch (abilityID)
         {
@@ -330,47 +382,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    public void PerformDamageHit(DamageInfo damageInfo)
+    private void HandleEvent_Killed()
     {
-        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-        {
-            _animator.GoTo(AnimState.Hit_Light);
-        }
-        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
-        {
-            _animator.GoTo(AnimState.Hit_Medium);
-        }
-        else
-        {
-            _animator.GoTo(AnimState.Hit_Heavy);
-        }
-    }
-
-    public void PlayAudio(CharacterAudioType audioType)
-    {
-        _audioSource.Play(audioType);
-    }
-
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
-    {
-        switch (characterEvent)
-        {
-            case CharacterEvent.PERFORM_ABILITY:
-            {
-                PerformAbility((AbilityID) eventData);
-                break;
-            }
-            case CharacterEvent.KILLED:
-            {
-                _health = 0;
-
-            }
-            break;
-            default:
-                break;
-        }
-
-        BroadcastEvent(eventData, characterEvent) ;
+        _health = 0;
     }
 
     private void BroadcastEvent(object eventData, CharacterEvent characterEvent)

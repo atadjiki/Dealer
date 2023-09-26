@@ -84,7 +84,9 @@ public static partial class Constants
 
     public enum CharacterEvent
     {
-        PERFORM_ABILITY,
+        SELECTED,
+        HIT,
+        ABILITY,
         KILLED,
     }
 

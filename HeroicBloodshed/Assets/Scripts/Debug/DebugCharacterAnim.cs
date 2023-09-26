@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using static Constants;
+using System;
 
 [CustomEditor(typeof(CharacterComponent))]
 [CanEditMultipleObjects]
@@ -18,25 +19,35 @@ public class DebugCharacterAnim : Editor
             {
                 characterComponent.Debug_Spawn();
             }
-            if (GUILayout.Button("Perform Attack"))
+
+            foreach(CharacterEvent characterEvent in Enum.GetValues(typeof(CharacterEvent)))
             {
-                characterComponent.HandleEvent(AbilityID.Attack, Constants.CharacterEvent.PERFORM_ABILITY);
-            }
-            if (GUILayout.Button("Reload"))
-            {
-                characterComponent.HandleEvent(AbilityID.Reload, Constants.CharacterEvent.PERFORM_ABILITY);
-            }
-            if (GUILayout.Button("Skip Turn"))
-            {
-                characterComponent.HandleEvent(AbilityID.SkipTurn, Constants.CharacterEvent.PERFORM_ABILITY);
-            }
-            if (GUILayout.Button("Heal"))
-            {
-                characterComponent.HandleEvent(AbilityID.Heal, Constants.CharacterEvent.PERFORM_ABILITY);
-            }
-            if (GUILayout.Button("Kill"))
-            {
-                characterComponent.HandleEvent(null, Constants.CharacterEvent.KILLED);
+                if (characterEvent == CharacterEvent.ABILITY)
+                {
+                    foreach (AbilityID abilityID in Enum.GetValues(typeof(AbilityID)))
+                    {
+                        if (GUILayout.Button(abilityID.ToString()))
+                        {
+                            characterComponent.HandleEvent(abilityID, characterEvent);
+                        }
+                    }
+                }
+                else if (characterEvent == CharacterEvent.HIT)
+                {
+                    if (GUILayout.Button(characterEvent.ToString()))
+                    {
+                        DamageInfo damageInfo = WeaponDefinition.Get(WeaponID.Pistol).CalculateDamage();
+                        characterComponent.HandleEvent(damageInfo, characterEvent);
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button(characterEvent.ToString()))
+                    {
+                        characterComponent.HandleEvent(null, characterEvent);
+                    }
+                }
+
             }
         }
     }

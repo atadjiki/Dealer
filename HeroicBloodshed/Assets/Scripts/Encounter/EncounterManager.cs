@@ -116,7 +116,7 @@ public class EncounterManager : MonoBehaviour
                 CharacterComponent character = _model.GetCurrentCharacter();
                 if (character.IsAlive())
                 {
-                    character.PerformSelect();
+                    character.HandleEvent(null, CharacterEvent.SELECTED);
                 }
                 break;
             }
