@@ -15,8 +15,6 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
     [SerializeField] private List<Image> HealthbarItems;
 
-    [SerializeField] private List<Image> DamagePreviewItems;
-
     private CharacterComponent _character;
 
     private RectTransform _rectTransform;
@@ -27,73 +25,50 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
     {
         _character = character;
         _rectTransform = Panel_Backing.GetComponent<RectTransform>();
+
+        StartCoroutine(Coroutine_Update());
     }
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
         switch (characterEvent)
         {
-            case CharacterEvent.TARGETED:
-                HandleEvent_Targeted((DamageInfo)eventData);
-                break;
-            case CharacterEvent.DAMAGE:
-                HandleEvent_Damage();
-                break;
             case CharacterEvent.KILLED:
-                HandleEvent_Killed();
                 break;
             default:
                 break;
         }
     }
 
-    private void HandleEvent_Targeted(DamageInfo damageInfo)
+    private IEnumerator Coroutine_Update()
     {
-        float currentHealth = damageInfo.target.GetHealth();
-        float damagedHealth = currentHealth - damageInfo.ActualDamage;
-
-        float total = DamagePreviewItems.Count;
-
-        int threshold = Mathf.RoundToInt(total * damagedHealth / currentHealth);
-
-        for (int i = 0; i < DamagePreviewItems.Count; i++)
+        while(_character.IsAlive())
         {
-            DamagePreviewItems[i].enabled = (i < threshold);
-        }
-    }
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(_character.GetOverheadAnchor().transform.position);
 
-    private void HandleEvent_Damage()
-    {
-        for (int i = 0; i < DamagePreviewItems.Count; i++)
-        {
-            DamagePreviewItems[i].enabled = false;
-        }
+            _rectTransform.position = screenPos;
 
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(_character.GetOverheadAnchor().transform.position);
+            float health = _character.GetHealth();
+            float baseHealth = _character.GetBaseHealth();
 
-        _rectTransform.position = screenPos;
+            float total = HealthbarItems.Count;
 
-        float health = _character.GetHealth();
-        float baseHealth = _character.GetBaseHealth();
+            int threshold = Mathf.RoundToInt(total * health / baseHealth);
 
-        float total = HealthbarItems.Count;
+            for (int i = 0; i < HealthbarItems.Count; i++)
+            {
+                HealthbarItems[i].enabled = (i < threshold);
+            }
 
-        int threshold = Mathf.RoundToInt(total * health / baseHealth);
+            Text_Health.text = health + "/" + baseHealth;
+            Text_Name.text = GetDisplayString(_character.GetID());
 
-        for (int i = 0; i < HealthbarItems.Count; i++)
-        {
-            HealthbarItems[i].enabled = (i < threshold);
+            Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
+            Panel_Backing.gameObject.SetActive(true);
+
+            yield return null;
         }
 
-        Text_Health.text = health + "/" + baseHealth;
-        Text_Name.text = GetDisplayString(_character.GetID());
-
-        Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
-        Panel_Backing.gameObject.SetActive(true);
-    }
-
-    private void HandleEvent_Killed()
-    {
         Panel_Backing.gameObject.SetActive(false);
     }
 

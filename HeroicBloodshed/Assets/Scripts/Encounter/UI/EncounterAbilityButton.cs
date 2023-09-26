@@ -17,13 +17,11 @@ public class EncounterAbilityButton : Button
         Image_Icon = GetComponentInChildren<Image>();
     }
 
-    public void Populate(AbilityID abilityID, Texture2D icon, CharacterComponent character)
+    public void Populate(AbilityID abilityID, Sprite icon, CharacterComponent character)
     {
         Text_Title.text = GetDisplayString(abilityID);
 
-        Rect rect = new Rect(0, 0, icon.width, icon.height);
-
-        Image_Icon.sprite = Sprite.Create(icon, rect, new Vector2(0.5f, 0.5f));
+        Image_Icon.sprite = icon;
 
         _abilityID = abilityID;
 

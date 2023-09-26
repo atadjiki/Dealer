@@ -86,17 +86,10 @@ public static partial class Constants
     public enum CharacterEvent
     {
         ABILITY,
-
         SELECTED,
-
         DESELECTED,
-
-        TARGETED,
-
-        DAMAGE, //triggers a hit or kill event 
-
+        DAMAGE,
         HIT,
-
         KILLED,
     }
 

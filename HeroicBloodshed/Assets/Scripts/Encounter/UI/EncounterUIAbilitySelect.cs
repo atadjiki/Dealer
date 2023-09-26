@@ -15,6 +15,9 @@ public class EncounterUIAbilitySelect : EncounterUIElement
 {
     [SerializeField] protected Transform Container;
 
+    [Header("Icons")]
+    [SerializeField] private List<EncounterAbilityIconInfo> IconMap;
+
     [Header("Prefabs")]
     [SerializeField] protected GameObject Prefab_Item;
 
@@ -33,14 +36,7 @@ public class EncounterUIAbilitySelect : EncounterUIElement
         GameObject ButtonObject = Instantiate(Prefab_Item, Container);
         EncounterAbilityButton abilityButton = ButtonObject.GetComponent<EncounterAbilityButton>();
         yield return new WaitUntil(() => abilityButton != null);
-
-        ResourceRequest resourceRequest = GetTexture(abilityID);
-
-        yield return new WaitUntil(() => resourceRequest.isDone);
-
-        Texture2D icon = (Texture2D)resourceRequest.asset;
-
-        abilityButton.Populate(abilityID, icon, character);
+        abilityButton.Populate(abilityID, GetSprite(abilityID), character);
         abilityButton.onClick.AddListener(() => OnAbilityButtonClicked(abilityButton));
     }
 
@@ -85,5 +81,18 @@ public class EncounterUIAbilitySelect : EncounterUIElement
         UIHelper.ClearTransformChildren(Container);
 
         base.Hide();
+    }
+
+    public Sprite GetSprite(AbilityID abilityID)
+    {
+        foreach(EncounterAbilityIconInfo info in IconMap)
+        {
+            if(info.ID == abilityID)
+            {
+                return info.Icon;
+            }
+        }
+
+        return null;
     }
 }

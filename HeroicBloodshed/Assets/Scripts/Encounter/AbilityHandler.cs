@@ -5,7 +5,7 @@ using static Constants;
 
 public class AbilityHandler : MonoBehaviour
 {
-    public static float defaultWaitTime = 0.5f;
+    public static float defaultWaitTime = 0.75f;
     public static IEnumerator HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
         yield return Coroutine_RotateTowards(target, caster);
