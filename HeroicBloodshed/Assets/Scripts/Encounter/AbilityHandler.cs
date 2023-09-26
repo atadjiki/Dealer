@@ -5,6 +5,7 @@ using static Constants;
 
 public class AbilityHandler : MonoBehaviour
 {
+    public static float defaultWaitTime = 0.75f;
     public static IEnumerator HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
         yield return Coroutine_RotateTowards(target, caster);
@@ -17,10 +18,11 @@ public class AbilityHandler : MonoBehaviour
         bool crit = characterDef.RollCritChance();
         DamageInfo damageInfo = weaponDef.CalculateDamage(crit);
         damageInfo.caster = caster;
+        damageInfo.target = target;
 
         if (crit)
         {
-            EncounterManager.Instance.RequestEventBanner("Critical Hit!", 1.0f);
+            EncounterManager.Instance.RequestEventBanner("Critical Hit!", defaultWaitTime);
         }
 
         yield return Coroutine_FireWeaponAt(caster, target);
@@ -28,30 +30,30 @@ public class AbilityHandler : MonoBehaviour
 
         if (target.IsDead())
         {
-            EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", 2.0f);
+            EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", defaultWaitTime * 2);
             EncounterManager.Instance.FollowCharacter(target);
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(defaultWaitTime * 2);
         }
         else
         {
-            EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", 1.0f);
-            yield return new WaitForSeconds(1.0f);
+            EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", defaultWaitTime);
+            yield return new WaitForSeconds(defaultWaitTime);
 
         }
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(defaultWaitTime);
     }
 
     public static IEnumerator HandleAbility_Reload(CharacterComponent caster)
     {
         caster.HandleEvent(AbilityID.Reload, CharacterEvent.ABILITY);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(defaultWaitTime);
     }
 
     public static IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
     {
         //maybe have some anim play here
         caster.HandleEvent(AbilityID.SkipTurn, CharacterEvent.ABILITY);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(defaultWaitTime * 2);
     }
 
     //utility
@@ -60,7 +62,7 @@ public class AbilityHandler : MonoBehaviour
     {
         //rotate and pause momentarily
         yield return Coroutine_RotateTowards(caster, target);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(defaultWaitTime);
         caster.HandleEvent(AbilityID.Attack, CharacterEvent.ABILITY);
     }
 
@@ -85,23 +87,7 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleDamage(CharacterComponent target, DamageInfo damageInfo)
     {
-        //calculate how much damage we should deal
-        int health = target.GetHealth();
-
-        health -= Mathf.Abs(damageInfo.ActualDamage);
-
-        health = Mathf.Clamp(health, 0, health);
-
-        target.SetHealth(health);
-
-        if (target.IsDead())
-        {
-            target.HandleEvent(damageInfo, CharacterEvent.KILLED);
-        }
-        else
-        {
-            target.HandleEvent(damageInfo, CharacterEvent.HIT);
-        }
+        target.HandleEvent(damageInfo, CharacterEvent.DAMAGE);
         yield return null;
     }
 }

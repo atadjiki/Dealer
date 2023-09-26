@@ -7,6 +7,7 @@ using static Constants;
 public struct DamageInfo
 {
     public CharacterComponent caster;
+    public CharacterComponent target;
     public int ActualDamage;
     public int BaseDamage;
 }
@@ -16,6 +17,10 @@ public struct WeaponDefinition
     public WeaponID ID;
 
     public PrefabID[] MuzzleVFX;
+
+    public AudioID[] AttackSFX;
+
+    public AudioID[] ReloadSFX;
 
     public int BaseDamage;
 
@@ -74,7 +79,16 @@ public struct WeaponDefinition
                         PrefabID.VFX_MuzzleFlash_Auto_Medium,
                         PrefabID.VFX_MuzzleFlash_Smoke,
                         PrefabID.VFX_MuzzleFlash_Sparks,
-                    }
+                    },
+                    AttackSFX = new AudioID[]
+                    {
+                        AudioID.SFX_SMG_1,
+                    },
+                    ReloadSFX = new AudioID[]
+                    {
+                        AudioID.SFX_Reload_Default,
+                    },
+
                 };
             case WeaponID.Pistol:
                 return new WeaponDefinition()
@@ -90,7 +104,20 @@ public struct WeaponDefinition
                         PrefabID.VFX_MuzzleFlash_Default,
                         PrefabID.VFX_MuzzleFlash_Smoke,
                         PrefabID.VFX_MuzzleFlash_Sparks,
-                    }
+                    },
+                    AttackSFX = new AudioID[]
+                    {
+                        AudioID.SFX_Pistol_1,
+                        AudioID.SFX_Pistol_2,
+                        AudioID.SFX_Pistol_3,
+                        AudioID.SFX_Pistol_4,
+                        AudioID.SFX_Pistol_5,
+                        AudioID.SFX_Pistol_6,
+                    },
+                    ReloadSFX = new AudioID[]
+                    {
+                        AudioID.SFX_Reload_Default,
+                    },
                 };
             case WeaponID.Revolver:
                 return new WeaponDefinition()
@@ -106,7 +133,20 @@ public struct WeaponDefinition
                         PrefabID.VFX_MuzzleFlash_Default,
                         PrefabID.VFX_MuzzleFlash_Smoke,
                         PrefabID.VFX_MuzzleFlash_Sparks,
-                    }
+                    },
+                    AttackSFX = new AudioID[]
+                    {
+                        AudioID.SFX_Revolver_1,
+                        AudioID.SFX_Revolver_2,
+                        AudioID.SFX_Revolver_3,
+                        AudioID.SFX_Revolver_4,
+                        AudioID.SFX_Revolver_5,
+                        AudioID.SFX_Revolver_6,
+                    },
+                    ReloadSFX = new AudioID[]
+                    {
+                        AudioID.SFX_Reload_Default,
+                    },
                 };
             default:
                 {

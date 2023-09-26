@@ -5,27 +5,14 @@ using EPOOutline;
 using UnityEngine;
 using static Constants;
 
-[Serializable]
-public struct WeaponSoundBank
-{
-    public List<AudioClip> SoundBank;
-
-    public AudioClip GetRandom()
-    {
-        return SoundBank[UnityEngine.Random.Range(0, SoundBank.Count)];
-    }
-}
-
 public class CharacterHandgun : CharacterWeapon
 {
-    [Header("SFX")]
-    [SerializeField] private WeaponSoundBank Soundbank_Fire;
-    [SerializeField] private WeaponSoundBank Soundbank_Reload;
-
     private WeaponMuzzleAnchor _muzzleAnchor;
     private AudioSource _audioSource;
 
     private List<GameObject> VFX_Muzzle_Prefabs;
+    private List<AudioClip> SFX_Fire;
+    private List<AudioClip> SFX_Reload;
 
     private void Awake()
     {
@@ -55,6 +42,30 @@ public class CharacterHandgun : CharacterWeapon
 
             VFX_Muzzle_Prefabs.Add((GameObject) request.asset);
         }
+
+        SFX_Fire = new List<AudioClip>();
+
+        foreach(AudioID audioID in weaponDef.AttackSFX)
+        {
+            ResourceRequest request = GetAudioClip(audioID);
+
+            yield return new WaitUntil(() => request.isDone);
+
+            SFX_Fire.Add((AudioClip)request.asset);
+        }
+
+        SFX_Reload = new List<AudioClip>();
+
+        foreach (AudioID audioID in weaponDef.ReloadSFX)
+        {
+            ResourceRequest request = GetAudioClip(audioID);
+
+            yield return new WaitUntil(() => request.isDone);
+
+            SFX_Reload.Add((AudioClip)request.asset);
+        }
+
+
     }
 
     public override void OnAbility(AbilityID ability)
@@ -65,20 +76,33 @@ public class CharacterHandgun : CharacterWeapon
         {
             case AbilityID.Attack:
                 {
-                    _ammo--;
-                    _audioSource.PlayOneShot(Soundbank_Fire.GetRandom());
-                    PlayMuzzleFX();
+                    HandleAbility_Attack();
                     break;
                 }
             case AbilityID.Reload:
                 {
                     _ammo = GetMaxAmmo();
-                    _audioSource.PlayOneShot(Soundbank_Reload.GetRandom());
+                    _audioSource.PlayOneShot(GetRandom(SFX_Reload));
                     break;
                 }
             default:
                 break;
         }
+    }
+
+    private void HandleAbility_Attack()
+    {
+        if(_ammo > 0)
+        {
+            _ammo--;
+            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+            PlayMuzzleFX();
+        }
+        else
+        {
+            Debug.Log("Out of ammo!");
+        }
+
     }
 
     private void PlayMuzzleFX()
@@ -87,5 +111,10 @@ public class CharacterHandgun : CharacterWeapon
         {
             Instantiate<GameObject>(muzzlePrefab, _muzzleAnchor.transform);
         }
+    }
+
+    private AudioClip GetRandom(List<AudioClip> soundbank)
+    {
+        return soundbank[UnityEngine.Random.Range(0, soundbank.Count)];
     }
 }

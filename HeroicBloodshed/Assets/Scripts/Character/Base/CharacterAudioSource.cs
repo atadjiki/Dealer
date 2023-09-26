@@ -23,6 +23,8 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
 
     private AudioSource _audioSource;
 
+    private bool _canReceive = true;
+
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -53,13 +55,26 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
+        if (!_canReceive) { return; }
+
         switch(characterEvent)
         {
             case CharacterEvent.KILLED:
-                Play(CharacterAudioType.Death);
+                HandleEvent_Killed();
+                _canReceive = false;
                 break;
             default:
                 break;
         }
+    }
+
+    private void HandleEvent_Killed()
+    {
+        Play(CharacterAudioType.Death);
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return _canReceive;
     }
 }

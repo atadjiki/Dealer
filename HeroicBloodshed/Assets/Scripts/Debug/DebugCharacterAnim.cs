@@ -8,8 +8,10 @@ public class DebugCharacterAnim : MonoBehaviour
 {
     private CharacterComponent characterComponent;
 
-    [SerializeField] private CharacterID Debug_CharacterID;
-    [SerializeField] private WeaponID Debug_WeaponID;
+    [Header("To Spawn")]
+    [SerializeField] private CharacterDefinition DebugCharacter;
+    [Header("Attacking Weapon")]
+    [SerializeField] private WeaponID WeaponID;
 
     private void Awake()
     {
@@ -21,20 +23,29 @@ public class DebugCharacterAnim : MonoBehaviour
         //delete the existing character component
         if(characterComponent != null)
         {
-            Destroy(characterComponent);
+            Destroy(characterComponent.gameObject);
             characterComponent = null;
         }
 
-        characterComponent = this.gameObject.AddComponent<CharacterComponent>();
-        characterComponent.SetID(Debug_CharacterID);
-        StartCoroutine(characterComponent.SpawnCharacter());
+        GameObject characterObject = new GameObject("Debug " + DebugCharacter.ID);
+        characterObject.transform.parent = this.transform;
+        characterObject.transform.localRotation = Quaternion.identity;
+
+
+        characterComponent = characterObject.AddComponent<CharacterComponent>();
+        StartCoroutine(characterComponent.Coroutine_Spawn(DebugCharacter));
     }
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
-        if (characterEvent == CharacterEvent.HIT)
+        if (characterEvent == CharacterEvent.DAMAGE)
         {
-            eventData = WeaponDefinition.Get(Debug_WeaponID).CalculateDamage();
+            eventData = WeaponDefinition.Get(WeaponID).CalculateDamage();
+        }
+        else if(characterEvent == CharacterEvent.HIT)
+        {
+            DamageInfo damageInfo = new DamageInfo();
+            eventData = damageInfo;
         }
 
         characterComponent.HandleEvent(eventData, characterEvent);
@@ -52,6 +63,9 @@ public class DebugCharacterAnimEditor : Editor
         {
             DebugCharacterAnim debugCharacter = (DebugCharacterAnim)target;
 
+            GUILayout.Space(20);
+            GUILayout.Label("Commands");
+
             foreach(CharacterEvent characterEvent in Enum.GetValues(typeof(CharacterEvent)))
             {
                 if (characterEvent == CharacterEvent.ABILITY)
@@ -67,13 +81,6 @@ public class DebugCharacterAnimEditor : Editor
                         }
                     }
                 }
-                else if (characterEvent == CharacterEvent.HIT)
-                {
-                    if (GUILayout.Button(GetDisplayString(characterEvent)))
-                    {
-                        debugCharacter.HandleEvent(null, characterEvent);
-                    }
-                }
                 else
                 {
                     if (GUILayout.Button(GetDisplayString(characterEvent)))
@@ -84,7 +91,7 @@ public class DebugCharacterAnimEditor : Editor
 
             }
 
-            if (GUILayout.Button("Repawn"))
+            if (GUILayout.Button("Respawn"))
             {
                 debugCharacter.Spawn();
             }

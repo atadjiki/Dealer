@@ -19,6 +19,8 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
     private RectTransform _rectTransform;
 
+    private bool _canReceive = true;
+
     public void Setup(CharacterComponent character)
     {
         _character = character;
@@ -68,5 +70,10 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         }
 
         Panel_Backing.gameObject.SetActive(false);
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return _canReceive;
     }
 }

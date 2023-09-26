@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
+[Serializable]
 public struct CharacterDefinition
 {
     public CharacterID ID;

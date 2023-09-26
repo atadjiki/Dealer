@@ -53,6 +53,38 @@ public static partial class Constants
         return resourceRequest;
     }
 
+    public static ResourceRequest GetAudioClip(AudioID ID)
+    {
+        string fileName = "Audio/" + ID.ToString();
+
+        Debug.Log("Loading Audio Clip: " + fileName);
+
+        ResourceRequest resourceRequest = Resources.LoadAsync<AudioClip>(fileName);
+
+        return resourceRequest;
+    }
+
+    public enum AudioID
+    {
+        SFX_Pistol_1,
+        SFX_Pistol_2,
+        SFX_Pistol_3,
+        SFX_Pistol_4,
+        SFX_Pistol_5,
+        SFX_Pistol_6,
+
+        SFX_Revolver_1,
+        SFX_Revolver_2,
+        SFX_Revolver_3,
+        SFX_Revolver_4,
+        SFX_Revolver_5,
+        SFX_Revolver_6,
+
+        SFX_SMG_1,
+
+        SFX_Reload_Default,
+    }
+
     //Every single prefab in the Resources folder must correspond to a unique ID
     public enum PrefabID
     {
@@ -123,6 +155,7 @@ public static partial class Constants
         VFX_Smoke_Dense,
         VFX_Smoke_Light,
 
+        VFX_Bloodspray,
     }
 
     public static ResourceRequest GetTexture(TextureID ID)

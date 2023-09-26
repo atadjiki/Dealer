@@ -9,13 +9,17 @@ public static partial class Constants
         switch(characterEvent)
         {
             case CharacterEvent.ABILITY:
-                return "Ability";
+                return "Perform Ability";
+            case CharacterEvent.DAMAGE:
+                return "Receive Damage";
             case CharacterEvent.HIT:
                 return "Hit";
             case CharacterEvent.KILLED:
-                return "Killed";
+                return "Kill";
             case CharacterEvent.SELECTED:
-                return "Selected";
+                return "Select";
+            case CharacterEvent.DESELECTED:
+                return "Deselect";
             default:
                 return characterEvent.ToString();
         }

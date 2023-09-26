@@ -6,4 +6,6 @@ using static Constants;
 public interface ICharacterEventReceiver
 {
     public abstract void HandleEvent(object eventData, CharacterEvent characterEvent);
+
+    public abstract bool CanReceiveCharacterEvents();
 }

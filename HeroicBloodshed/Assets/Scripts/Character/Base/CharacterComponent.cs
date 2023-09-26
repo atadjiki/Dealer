@@ -24,34 +24,36 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     protected CapsuleCollider _collider;
 
+    private bool _canReceive = true;
+
     public delegate void OnCharacterSetupComplete(CharacterComponent character);
     public OnCharacterSetupComplete onSetupComplete;
 
-    private bool _setupComplete;
-
-    public void Debug_Spawn()
+    public virtual IEnumerator Coroutine_Spawn()
     {
-        SetID(CharacterID.HENCHMAN);
-        StartCoroutine(SpawnCharacter());
+        CharacterDefinition characterDefinition = CharacterDefinition.Get(_ID);
+
+        yield return Coroutine_Spawn(characterDefinition);
     }
 
-    public void SetID(CharacterID ID)
+    public virtual IEnumerator Coroutine_Spawn(CharacterID ID)
     {
-        _ID = ID;
+        CharacterDefinition characterDefinition = CharacterDefinition.Get(_ID);
+
+        yield return Coroutine_Spawn(characterDefinition);
     }
 
-    public virtual IEnumerator SpawnCharacter()
+    public virtual IEnumerator Coroutine_Spawn(CharacterDefinition characterDefinition)
     {
         UIHelper.ClearTransformChildren(this.transform);
 
-        CharacterDefinition def = CharacterDefinition.Get(_ID);
-
-        _health = def.BaseHealth;
-        _baseHealth = def.BaseHealth;
+        _ID = characterDefinition.ID;
+        _health = characterDefinition.BaseHealth;
+        _baseHealth = characterDefinition.BaseHealth;
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
-        ModelID modelID = def.AllowedModels[UnityEngine.Random.Range(0, def.AllowedModels.Length)];
+        ModelID modelID = characterDefinition.AllowedModels[UnityEngine.Random.Range(0, characterDefinition.AllowedModels.Length)];
 
         ResourceRequest modelRequest = GetPrefab(modelID);
 
@@ -61,7 +63,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _model = modelPrefab.GetComponent<CharacterModel>();
 
-        _model.Setup(def);
+        _model.Setup(characterDefinition);
 
         _eventReceivers.Add(_model);
 
@@ -69,9 +71,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         yield return new WaitWhile(() => _weaponAnchor == null);
 
-        if (def.AllowedWeapons.Length > 0)
+        if (characterDefinition.AllowedWeapons.Length > 0)
         {
-            WeaponID weaponID = def.AllowedWeapons[UnityEngine.Random.Range(0, def.AllowedWeapons.Length)];
+            WeaponID weaponID = characterDefinition.AllowedWeapons[UnityEngine.Random.Range(0, characterDefinition.AllowedWeapons.Length)];
 
             ResourceRequest weaponRequest = GetPrefab(weaponID);
 
@@ -110,140 +112,154 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         if (onSetupComplete != null)
         {
             onSetupComplete.Invoke(this);
-            _setupComplete = true;
         }
 
         yield return null;
     }
 
-    public bool IsSetupComplete()
+    public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
-        return _setupComplete;
-    }
+        if (!_canReceive) { return; }
 
-    private void OnMouseOver()
-    {
-        ToggleHighlight(true);
-    }
-
-    private void OnMouseExit()
-    {
-        ToggleHighlight(false);
-    }
-
-    private void OnMouseDown()
-    {
-        if (EncounterManager.Instance != null)
+        switch (characterEvent)
         {
-            EncounterManager.Instance.SelectTarget(this);
+            case CharacterEvent.SELECTED:
+            {
+                HandleEvent_Selected();
+                break;
+            }
+            case CharacterEvent.DESELECTED:
+            {
+                HandleEvent_Deselected();
+                break;
+            }
+            case CharacterEvent.DAMAGE:
+            {
+                HandleEvent_HandleDamage((DamageInfo)eventData);
+                break;
+            }
+            case CharacterEvent.HIT:
+            {
+                HandleEvent_Hit((DamageInfo)eventData);
+                break;
+            }
+            case CharacterEvent.ABILITY:
+            {
+                HandleEvent_Ability((AbilityID) eventData);
+                break;
+            }
+            case CharacterEvent.KILLED:
+            {
+                HandleEvent_Killed();
+            }
+            break;
+            default:
+                break;
+        }
+
+        BroadcastEvent(eventData, characterEvent);
+
+        if(characterEvent == CharacterEvent.KILLED)
+        {
+            _canReceive = false;
         }
     }
 
-    public void ToggleHighlight(bool flag)
+    private void HandleEvent_Selected()
     {
-        _model.ToggleHighlight(flag);
+        CreateDecal();
+        _audioSource.Play(CharacterAudioType.Await);
     }
 
-    public virtual IEnumerator PerformCleanup()
+    private void HandleEvent_Deselected()
     {
-        yield return DestroyModel();
-
-        yield return DestroyWeapon();
-
-        yield return null;
+        DestroyDecal();
     }
 
-    protected virtual IEnumerator DestroyModel()
+    private void HandleEvent_HandleDamage(DamageInfo damageInfo)
     {
-        GameObject modelObject = _model.gameObject;
+        if (IsDead()) { return; }
 
-        _model = null;
+        _health -= Mathf.Abs(damageInfo.ActualDamage);
 
-        GameObject.Destroy(modelObject);
+        _health = Mathf.Clamp(_health, 0, _health);
 
-        yield return new WaitUntil(() => modelObject == null);
-    }
+        SetHealth(_health);
 
-    protected virtual IEnumerator DestroyWeapon()
-    {
-        GameObject weaponObject = _weapon.gameObject;
-
-        _weapon = null;
-
-        GameObject.Destroy(weaponObject);
-
-        yield return new WaitUntil(() => weaponObject == null);
-    }
-
-    public virtual void CreateDecal()
-    {
-        StartCoroutine(Coroutine_CreateDecal());
-    }
-
-    private IEnumerator Coroutine_CreateDecal()
-    {
-        ResourceRequest request = GetPrefab(PrefabID.Character_Decal);
-
-        yield return new WaitUntil(() => request.isDone);
-
-        GameObject decalPrefab = Instantiate((GameObject) request.asset, this.transform);
-
-        if (decalPrefab != null)
+        if (IsDead())
         {
-            CharacterDecal decal = decalPrefab.GetComponent<CharacterDecal>();
+            HandleEvent(damageInfo, CharacterEvent.KILLED);
+        }
+        else
+        {
+            HandleEvent(damageInfo, CharacterEvent.HIT);
+        }
+    }
 
-            if (decal != null)
+    private void HandleEvent_Hit(DamageInfo damageInfo)
+    { 
+        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Light);
+        }
+        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
+        {
+            _animator.GoTo(AnimState.Hit_Medium);
+        }
+        else
+        {
+            _animator.GoTo(AnimState.Hit_Heavy);
+        }
+    }
+
+    private void HandleEvent_Killed()
+    {
+        _health = 0;
+    }
+
+    private void HandleEvent_Ability(AbilityID abilityID)
+    {
+        switch (abilityID)
+        {
+            case AbilityID.Attack:
             {
-                decal.SetColor(GetTeamByID(GetID()));
+                _weapon.OnAbility(AbilityID.Attack);
+                if (_weapon.HasAmmo())
+                {
+                    _animator.GoTo(AnimState.Attack_Single);
+                }
+                break;
+            }
+            case AbilityID.Reload:
+            {
+                _weapon.OnAbility(AbilityID.Reload);
+                _animator.GoTo(AnimState.Reload);
+                break;
+            }
+            default:
+            {
+                break;
             }
         }
     }
 
-    public virtual void DestroyDecal()
+    private void BroadcastEvent(object eventData, CharacterEvent characterEvent)
     {
-        CharacterDecal decal = GetComponentInChildren<CharacterDecal>();
-
-        if (decal != null)
+        foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)
         {
-            GameObject.Destroy(decal.gameObject);
+            eventReceiver.HandleEvent(eventData, characterEvent);
         }
     }
 
-    public virtual void CreateEncounterOverhead()
-    {
-        StartCoroutine(Coroutine_CreateEncounterOverhead());
-    }
-
-    private IEnumerator Coroutine_CreateEncounterOverhead()
-    {
-        ResourceRequest request = GetPrefab(PrefabID.Encounter_UI_CharacterUI_Canvas);
-
-        yield return new WaitUntil(() => request.isDone);
-
-        GameObject overheadPrefab = Instantiate((GameObject) request.asset, null);
-
-        if (overheadPrefab != null)
-        {
-            _encounterUI = overheadPrefab.GetComponent<EncounterCharacterUI>();
-
-            if (_encounterUI != null)
-            {
-                _encounterUI.Setup(this);
-            }
-        }
-    }
-
-    public virtual void DestroyEncounterOverhead()
-    {
-        if (_encounterUI != null)
-        {
-            GameObject.Destroy(_encounterUI.gameObject);
-        }
-    }
-
+    //Getters and Setters
     public bool HasAbility(AbilityID abilityID)
     {
         return Constants.GetAllowedAbilities(_ID).Contains(abilityID);
+    }
+
+    public void SetID(CharacterID ID)
+    {
+        _ID = ID;
     }
 
     public CharacterID GetID()
@@ -306,92 +322,124 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _audioSource.Play(audioType);
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void ToggleHighlight(bool flag)
     {
-        switch (characterEvent)
+        _model.ToggleHighlight(flag);
+    }
+
+    private void OnMouseOver()
+    {
+        if(IsAlive())
         {
-            case CharacterEvent.SELECTED:
+            ToggleHighlight(true);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        ToggleHighlight(false);
+    }
+
+    //creators and destroyers
+    public virtual IEnumerator PerformCleanup()
+    {
+        yield return DestroyModel();
+
+        yield return DestroyWeapon();
+
+        yield return null;
+    }
+
+    protected virtual IEnumerator DestroyModel()
+    {
+        GameObject modelObject = _model.gameObject;
+
+        _model = null;
+
+        GameObject.Destroy(modelObject);
+
+        yield return new WaitUntil(() => modelObject == null);
+    }
+
+    protected virtual IEnumerator DestroyWeapon()
+    {
+        GameObject weaponObject = _weapon.gameObject;
+
+        _weapon = null;
+
+        GameObject.Destroy(weaponObject);
+
+        yield return new WaitUntil(() => weaponObject == null);
+    }
+
+    protected virtual void CreateDecal()
+    {
+        StartCoroutine(Coroutine_CreateDecal());
+    }
+
+    private IEnumerator Coroutine_CreateDecal()
+    {
+        ResourceRequest request = GetPrefab(PrefabID.Character_Decal);
+
+        yield return new WaitUntil(() => request.isDone);
+
+        GameObject decalPrefab = Instantiate((GameObject)request.asset, this.transform);
+
+        if (decalPrefab != null)
+        {
+            CharacterDecal decal = decalPrefab.GetComponent<CharacterDecal>();
+
+            if (decal != null)
             {
-                HandleEvent_Selected();
-                break;
+                decal.SetColor(GetTeamByID(GetID()));
             }
-            case CharacterEvent.HIT:
+        }
+    }
+
+    protected virtual void DestroyDecal()
+    {
+        CharacterDecal decal = GetComponentInChildren<CharacterDecal>();
+
+        if (decal != null)
+        {
+            GameObject.Destroy(decal.gameObject);
+        }
+    }
+
+    public virtual void CreateEncounterOverhead()
+    {
+        StartCoroutine(Coroutine_CreateEncounterOverhead());
+    }
+
+    private IEnumerator Coroutine_CreateEncounterOverhead()
+    {
+        ResourceRequest request = GetPrefab(PrefabID.Encounter_UI_CharacterUI_Canvas);
+
+        yield return new WaitUntil(() => request.isDone);
+
+        GameObject overheadPrefab = Instantiate((GameObject)request.asset, null);
+
+        if (overheadPrefab != null)
+        {
+            _encounterUI = overheadPrefab.GetComponent<EncounterCharacterUI>();
+
+            if (_encounterUI != null)
             {
-                HandleEvent_Hit((DamageInfo)eventData);
-                break;
+                _encounterUI.Setup(this);
             }
-            case CharacterEvent.ABILITY:
-            {
-                HandleEvent_Ability((AbilityID) eventData);
-                break;
-            }
-            case CharacterEvent.KILLED:
-            {
-                HandleEvent_Killed();
-            }
-            break;
-            default:
-                break;
         }
-
-        BroadcastEvent(eventData, characterEvent) ;
     }
 
-    private void HandleEvent_Selected()
+    public virtual void DestroyEncounterOverhead()
     {
-        CreateDecal();
-        _audioSource.Play(CharacterAudioType.Await);
-    }
-
-    private void HandleEvent_Hit(DamageInfo damageInfo)
-    { 
-        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+        if (_encounterUI != null)
         {
-            _animator.GoTo(AnimState.Hit_Light);
-        }
-        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
-        {
-            _animator.GoTo(AnimState.Hit_Medium);
-        }
-        else
-        {
-            _animator.GoTo(AnimState.Hit_Heavy);
+            Destroy(_encounterUI.gameObject);
         }
     }
 
-    private void HandleEvent_Ability(AbilityID abilityID)
+    public bool CanReceiveCharacterEvents()
     {
-        switch (abilityID)
-        {
-            case AbilityID.Attack:
-                {
-                    _weapon.OnAbility(AbilityID.Attack);
-                    _animator.GoTo(AnimState.Attack_Single);
-                    break;
-                }
-            case AbilityID.Reload:
-                {
-                    _weapon.OnAbility(AbilityID.Reload);
-                    _animator.GoTo(AnimState.Reload);
-                    break;
-                }
-            default:
-                {
-                    break;
-                }
-        }
-    }
-
-    private void HandleEvent_Killed()
-    {
-        _health = 0;
-    }
-
-    private void BroadcastEvent(object eventData, CharacterEvent characterEvent)
-    {
-        foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)
-        {
-            eventReceiver.HandleEvent(eventData, characterEvent);
-        }
+        return _canReceive;
     }
 }

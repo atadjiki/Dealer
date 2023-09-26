@@ -122,7 +122,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.TEAM_UPDATED:
             {
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(1.0f);
                 break;
             }
             case EncounterState.CHOOSE_ACTION:
@@ -138,7 +138,7 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
                 CharacterComponent character = _model.GetCurrentCharacter();
-                character.DestroyDecal();
+                character.HandleEvent(null, CharacterEvent.DESELECTED);
                 break;
             }
             case EncounterState.PERFORM_ACTION:
@@ -193,7 +193,7 @@ public class EncounterManager : MonoBehaviour
             }
 
             //pretend like the CPU is thinking :)
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
 
             _model.TransitionState();
         }
@@ -215,7 +215,7 @@ public class EncounterManager : MonoBehaviour
                 _model.SetTarget(targetCharacter);
             }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
 
             _model.TransitionState();
         }
@@ -238,7 +238,7 @@ public class EncounterManager : MonoBehaviour
         UnfollowCharacter();
 
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
 
         switch (abilityID)
         {
@@ -305,7 +305,7 @@ public class EncounterManager : MonoBehaviour
     {
         foreach (CharacterComponent characterComponent in _model.GetAllCharacters())
         {
-            yield return characterComponent.SpawnCharacter();
+            yield return characterComponent.Coroutine_Spawn();
         }
     }
 

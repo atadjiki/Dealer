@@ -10,6 +10,8 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     protected CharacterID _characterID;
     protected int _ammo = 0;
 
+    private bool _canReceive = true;
+
     protected Outlinable _outline;
 
     public virtual void Setup(CharacterID characterID, WeaponID weaponID)
@@ -44,10 +46,13 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
+        if (!_canReceive) { return; }
+
         switch (characterEvent)
         {
             case CharacterEvent.KILLED:
                 HandleEvent_Dead();
+                _canReceive = false;
                 break;
             default:
                 break;
@@ -96,5 +101,10 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     public bool HasAmmo()
     {
         return _ammo > 0;
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return _canReceive;
     }
 }

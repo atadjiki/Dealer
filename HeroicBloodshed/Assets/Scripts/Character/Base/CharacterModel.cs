@@ -14,6 +14,8 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 
     private CapsuleCollider _collider;
 
+    private bool _canReceive = true;
+
     public void Setup(CharacterDefinition definition)
     {
         Constants.TeamID team = Constants.GetTeamByID(definition.ID);
@@ -69,6 +71,8 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
+        if (!_canReceive) { return; }
+
         switch (characterEvent)
         {
             case CharacterEvent.KILLED:
@@ -78,5 +82,10 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
             default:
                 break;
         }
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return _canReceive;
     }
 }

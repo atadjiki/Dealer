@@ -10,6 +10,8 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     private WeaponID _weaponID;
 
+    private bool _canReceive = true;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();    
@@ -53,7 +55,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         if(rigidbodies.Length > 0)
         {
-            Rigidbody impactedBody = rigidbodies[Random.Range(0, rigidbodies.Length)];
+            Rigidbody impactedBody = PickImpactedRigidBody();
 
             float mass = impactedBody.mass;
 
@@ -63,7 +65,42 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
             Debug.Log("Bullet Force of : " + forceVector.magnitude + " on " + impactedBody.name);
 
+            ProduceBloodSpray(impactedBody.transform);
         }
+    }
+
+    public Rigidbody PickImpactedRigidBody()
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+        return rigidbodies[Random.Range(0, rigidbodies.Length)];
+    }
+
+    private void ProduceBloodSpray(Transform parentTransform)
+    {
+        int randomCount = Random.Range(1, 4);
+
+        for (int i = 0; i < randomCount; i++)
+        {
+            StartCoroutine(Coroutine_ProduceBloodSpray(parentTransform));
+        }
+    }
+
+    private IEnumerator Coroutine_ProduceBloodSpray(Transform parentTransform)
+    {
+        ResourceRequest resourceRequest = GetPrefab(PrefabID.VFX_Bloodspray);
+
+        yield return new WaitUntil(() => resourceRequest.isDone);
+
+        GameObject prefab = (GameObject)resourceRequest.asset;
+
+        GameObject particleObject = Instantiate<GameObject>(prefab, parentTransform);
+
+        ParticleSystem particleSystem = prefab.GetComponent<ParticleSystem>();
+
+        yield return new WaitForSecondsRealtime(particleSystem.main.duration);
+
+        Destroy(particleObject);
     }
 
     public void Setup(AnimState initialState, WeaponID weapon)
@@ -98,14 +135,27 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
     {
+        if (!_canReceive) { return; }
+
         switch (characterEvent)
         {
+            case CharacterEvent.HIT:
+                HandleEvent_Hit(eventData);
+                break;
             case CharacterEvent.KILLED:
                 HandleEvent_Death(eventData);
+                _canReceive = false;
                 break;
             default:
                 break;
         }
+    }
+
+    private void HandleEvent_Hit(object eventData)
+    {
+        Rigidbody impactedBody = PickImpactedRigidBody();
+
+        ProduceBloodSpray(impactedBody.transform);
     }
 
     private void HandleEvent_Death(object eventData)
@@ -118,5 +168,10 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         GoTo(AnimState.Dead);
         SwitchToRagdoll(damageInfo);
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return _canReceive;
     }
 }

@@ -54,10 +54,11 @@ public static partial class Constants
     {
         NONE,
 
+        Attack,
         Reload,
         Heal,
         SkipTurn,
-        Attack,
+
     }
 
     public enum TargetType
@@ -84,9 +85,11 @@ public static partial class Constants
 
     public enum CharacterEvent
     {
-        SELECTED,
-        HIT,
         ABILITY,
+        SELECTED,
+        DESELECTED,
+        DAMAGE,
+        HIT,
         KILLED,
     }
 
