@@ -20,6 +20,8 @@ public static partial class Constants
                 return "Select";
             case CharacterEvent.DESELECTED:
                 return "Deselect";
+            case CharacterEvent.TARGETED:
+                return "Targeted";
             default:
                 return characterEvent.ToString();
         }
