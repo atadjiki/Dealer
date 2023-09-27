@@ -288,6 +288,11 @@ public class EncounterManager : MonoBehaviour
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
+            foreach (CharacterComponent target in _model.GetAllCharactersInTeam(character.GetTeam()))
+            {
+                character.HandleEvent(null, CharacterEvent.UNTARGETED);
+            }
+
             _model.SetTarget(character);
 
             _model.TransitionState();
@@ -296,9 +301,21 @@ public class EncounterManager : MonoBehaviour
 
     public void OnEnemyHighlighted(CharacterComponent target)
     {
+        //untarget everyone first before assigning a new one
+        foreach(CharacterComponent character in _model.GetAllCharactersInTeam(target.GetTeam()))
+        {
+            character.HandleEvent(null, CharacterEvent.UNTARGETED);
+        }
+
         CharacterComponent caster = _model.GetCurrentCharacter();
 
         StartCoroutine(AbilityHandler.Coroutine_RotateTowards(caster, target));
+
+        DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage();
+        damageInfo.caster = caster;
+        damageInfo.target = target;
+
+        target.HandleEvent(damageInfo, CharacterEvent.TARGETED);
     }
 
     private IEnumerator SpawnCharacters()

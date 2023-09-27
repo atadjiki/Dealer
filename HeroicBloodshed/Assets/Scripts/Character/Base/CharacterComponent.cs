@@ -133,6 +133,16 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 HandleEvent_Deselected();
                 break;
             }
+            case CharacterEvent.TARGETED:
+            {
+                HandleEvent_Targeted();
+                break;
+            }
+            case CharacterEvent.UNTARGETED:
+            {
+                HandleEvent_Untargeted();
+                break;
+            }
             case CharacterEvent.DAMAGE:
             {
                 HandleEvent_HandleDamage((DamageInfo)eventData);
@@ -175,6 +185,17 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         DestroyDecal();
     }
+
+    private void HandleEvent_Targeted()
+    {
+
+    }
+
+    private void HandleEvent_Untargeted()
+    {
+
+    }
+
 
     private void HandleEvent_HandleDamage(DamageInfo damageInfo)
     {
@@ -425,6 +446,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             if (_encounterUI != null)
             {
+                _eventReceivers.Add(_encounterUI);
                 _encounterUI.Setup(this);
             }
         }
@@ -434,6 +456,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         if (_encounterUI != null)
         {
+            _eventReceivers.Remove(_encounterUI);
             Destroy(_encounterUI.gameObject);
         }
     }

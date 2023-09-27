@@ -93,6 +93,8 @@ public static partial class Constants
 
         TARGETED,
 
+        UNTARGETED,
+
         DAMAGE, //triggers a hit or kill event 
 
         HIT,

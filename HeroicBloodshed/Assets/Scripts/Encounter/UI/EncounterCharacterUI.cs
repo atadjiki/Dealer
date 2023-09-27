@@ -27,6 +27,20 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
     {
         _character = character;
         _rectTransform = Panel_Backing.GetComponent<RectTransform>();
+
+        Text_Name.text = GetDisplayString(_character.GetID());
+
+        Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
+        Panel_Backing.gameObject.SetActive(true);
+
+        UpdateHealthBar();
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(_character.GetOverheadAnchor().transform.position);
+
+        _rectTransform.position = screenPos;
     }
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
@@ -35,6 +49,9 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         {
             case CharacterEvent.TARGETED:
                 HandleEvent_Targeted((DamageInfo)eventData);
+                break;
+            case CharacterEvent.UNTARGETED:
+                HandleEvent_Untargeted();
                 break;
             case CharacterEvent.DAMAGE:
                 HandleEvent_Damage();
@@ -58,21 +75,25 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
         for (int i = 0; i < DamagePreviewItems.Count; i++)
         {
-            DamagePreviewItems[i].enabled = (i < threshold);
+            DamagePreviewItems[DamagePreviewItems.Count - i - 1].enabled = (i < threshold);
         }
     }
 
-    private void HandleEvent_Damage()
+    private void HandleEvent_Untargeted()
     {
         for (int i = 0; i < DamagePreviewItems.Count; i++)
         {
             DamagePreviewItems[i].enabled = false;
         }
+    }
 
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(_character.GetOverheadAnchor().transform.position);
+    private void HandleEvent_Damage()
+    {
+        UpdateHealthBar();
+    }
 
-        _rectTransform.position = screenPos;
-
+    private void UpdateHealthBar()
+    {
         float health = _character.GetHealth();
         float baseHealth = _character.GetBaseHealth();
 
@@ -86,10 +107,6 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         }
 
         Text_Health.text = health + "/" + baseHealth;
-        Text_Name.text = GetDisplayString(_character.GetID());
-
-        Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
-        Panel_Backing.gameObject.SetActive(true);
     }
 
     private void HandleEvent_Killed()
