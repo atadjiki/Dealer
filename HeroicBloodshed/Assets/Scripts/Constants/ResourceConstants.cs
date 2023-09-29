@@ -42,6 +42,18 @@ public static partial class Constants
         return GetPrefab(GetPrefabID(ID));
     }
 
+    public static ResourceRequest GetAudioSource(CharacterID characterID)
+    {
+        if(GetGender(characterID) == GenderID.Male)
+        {
+            return GetPrefab(PrefabID.Character_AudioSource_Male);
+        }
+        else
+        {
+            return GetPrefab(PrefabID.Character_AudioSource_Female);
+        }
+    }
+
     public static ResourceRequest GetPrefab(PrefabID ID)
     {
         string fileName = "Prefabs/" + ID.ToString();

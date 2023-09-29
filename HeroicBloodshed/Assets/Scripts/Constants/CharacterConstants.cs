@@ -59,6 +59,17 @@ public static partial class Constants
         return true;
     }
 
+    public static GenderID GetGender(CharacterID ID)
+    {
+        switch(ID)
+        {
+            case CharacterID.PLAYER_2:
+                return GenderID.Female;
+            default:
+                return GenderID.Male;
+        }
+    }
+
     public static TeamID GetTeamByID(CharacterID ID)
     {
         switch (ID)

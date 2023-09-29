@@ -96,7 +96,13 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _eventReceivers.Add(_animator);
 
-        _audioSource = GetComponentInChildren<CharacterAudioSource>();
+        ResourceRequest audioSourceRequest = GetAudioSource(_ID);
+
+        yield return new WaitUntil(()=>audioSourceRequest.isDone);
+
+        GameObject audioSourceObject = Instantiate<GameObject>((GameObject)audioSourceRequest.asset, this.transform);
+
+        _audioSource = audioSourceObject.GetComponentInChildren<CharacterAudioSource>();
 
         _eventReceivers.Add(_audioSource);
 

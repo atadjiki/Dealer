@@ -23,6 +23,12 @@ public static partial class Constants
         PLAYER_2,
     }
 
+    public enum GenderID
+    {
+        Male,
+        Female,
+    }
+
     public enum ModelID
     {
         NONE,
