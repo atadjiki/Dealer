@@ -244,10 +244,10 @@ public class EncounterManager : MonoBehaviour
         {
             case AbilityID.Attack:
                 CharacterComponent target = _model.GetActiveTarget();
-                yield return AbilityHandler.HandleAbility_Attack(caster, target);
+                yield return AbilityHandler.Coroutine_HandleAbility_Attack(caster, target);
                 break;
             case AbilityID.Reload:
-                yield return AbilityHandler.HandleAbility_Reload(caster);
+                yield return AbilityHandler.Coroutine_HandleAbility_Reload(caster);
                 break;
             case AbilityID.SkipTurn:
                 yield return AbilityHandler.HandleAbility_SkipTurn(caster);
