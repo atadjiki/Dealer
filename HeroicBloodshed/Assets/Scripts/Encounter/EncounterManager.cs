@@ -311,9 +311,7 @@ public class EncounterManager : MonoBehaviour
 
         StartCoroutine(AbilityHandler.Coroutine_RotateTowards(caster, target));
 
-        DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage();
-        damageInfo.caster = caster;
-        damageInfo.target = target;
+        DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage(caster,target);
 
         target.HandleEvent(damageInfo, CharacterEvent.TARGETED);
     }

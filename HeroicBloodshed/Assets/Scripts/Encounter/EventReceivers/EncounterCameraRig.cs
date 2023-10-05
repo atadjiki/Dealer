@@ -17,8 +17,8 @@ public class EncounterCameraRig : EncounterEventReceiver
     private static int _priorityInactive = 0;
     private static int _priorityActive = 10;
 
-    private static int _zoomDefault = 10;
-    private static int _zoomCharacter = 9;
+    private static int _zoomDefault = 12;
+    private static int _zoomCharacter = 11;
 
     public override IEnumerator Coroutine_Init(EncounterModel model)
     {

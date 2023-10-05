@@ -212,15 +212,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _health = Mathf.Clamp(_health, 0, _health);
 
         SetHealth(_health);
-
-        if (IsDead())
-        {
-            HandleEvent(damageInfo, CharacterEvent.KILLED);
-        }
-        else
-        {
-            HandleEvent(damageInfo, CharacterEvent.HIT);
-        }
     }
 
     private void HandleEvent_Hit(DamageInfo damageInfo)

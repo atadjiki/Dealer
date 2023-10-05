@@ -40,7 +40,7 @@ public class DebugCharacterAnim : MonoBehaviour
     {
         if (characterEvent == CharacterEvent.DAMAGE)
         {
-            eventData = WeaponDefinition.Get(WeaponID).CalculateDamage();
+            eventData = WeaponDefinition.Get(WeaponID).CalculateDamage(null, characterComponent);
         }
         else if(characterEvent == CharacterEvent.HIT)
         {

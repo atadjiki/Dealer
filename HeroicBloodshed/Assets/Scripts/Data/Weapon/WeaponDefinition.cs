@@ -10,6 +10,8 @@ public struct DamageInfo
     public CharacterComponent target;
     public int ActualDamage;
     public int BaseDamage;
+    public bool IsCrit;
+    public bool IsKill;
 }
 
 public struct WeaponDefinition
@@ -32,9 +34,13 @@ public struct WeaponDefinition
 
     public float PlusOneThreshold; //0-1
 
-    public DamageInfo CalculateDamage(bool IsCrit = false)
+    public DamageInfo CalculateDamage(CharacterComponent caster, CharacterComponent target)
     {
+        CharacterDefinition casterDef = CharacterDefinition.Get(caster.GetID());
+
         DamageInfo damageInfo = new DamageInfo();
+        damageInfo.caster = caster;
+        damageInfo.target = target;
 
         //first, get a random amount of damage by applying the spread to the base damage
         int TotalDamage = UnityEngine.Random.Range(BaseDamage - Spread, BaseDamage + Spread + 1);
@@ -47,10 +53,19 @@ public struct WeaponDefinition
         }
 
         //if shot is a crit, add the additional damage to the total 
-        if(IsCrit)
+        if (casterDef.RollCritChance())
         {
             Debug.Log("Critical Hit!");
             TotalDamage += CritDamage;
+            damageInfo.IsCrit = true;
+        }
+
+        int targetHealth = target.GetHealth();
+
+        if ((targetHealth - TotalDamage) <= 0)
+        {
+            Debug.Log("Kill!");
+            damageInfo.IsKill = true;
         }
 
         Debug.Log("Damage: " + TotalDamage);
