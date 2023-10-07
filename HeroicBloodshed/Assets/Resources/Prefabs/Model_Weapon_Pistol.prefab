@@ -251,7 +251,6 @@ GameObject:
   - component: {fileID: 2609737566862630536}
   - component: {fileID: 6842871307169039396}
   - component: {fileID: 2342313376981339822}
-  - component: {fileID: 8825625472185116749}
   - component: {fileID: 8274745593772653666}
   m_Layer: 0
   m_Name: Model_Weapon_Pistol
@@ -363,17 +362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2102b381389cb42c2b5a0aba56122f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Soundbank_Fire:
-    SoundBank:
-    - {fileID: 8300000, guid: 10bda0cd8adc44938bf1b9bc8c5aed32, type: 3}
-    - {fileID: 8300000, guid: e4df6ed77e5d24e2085e07b58d14e488, type: 3}
-    - {fileID: 8300000, guid: 1cd235d70a8714157a39f4b22522b09a, type: 3}
-    - {fileID: 8300000, guid: 34287c1d6fda14d5e86818005a518346, type: 3}
-    - {fileID: 8300000, guid: 89d3b0fe64d4c486baa69786eec9e808, type: 3}
-    - {fileID: 8300000, guid: 189000a42bd3c4d9483b4b746bc59154, type: 3}
-  Soundbank_Reload:
-    SoundBank:
-    - {fileID: 8300000, guid: 40d371ab0deb940bea3fb064c9b49c96, type: 3}
 --- !u!54 &2342313376981339822
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -401,111 +389,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8825625472185116749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385333656699438836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  complexMaskingMode: 0
-  drawingMode: 1
-  outlineLayer: 0
-  outlineTargets:
-  - IsVisible: 0
-    CutoutMask: 8
-    edgeDilateAmount: 5
-    frontEdgeDilateAmount: 5
-    backEdgeDilateAmount: 5
-    renderer: {fileID: 435025142054696656}
-    SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-    CutoutThreshold: 0.5
-    CullMode: 2
-    cutoutTextureName: 
-    DilateRenderingMode: 0
-    cutoutTextureIndex: 0
-  - IsVisible: 0
-    CutoutMask: 8
-    edgeDilateAmount: 5
-    frontEdgeDilateAmount: 5
-    backEdgeDilateAmount: 5
-    renderer: {fileID: 1408191308721814456}
-    SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-    CutoutThreshold: 0.5
-    CullMode: 2
-    cutoutTextureName: 
-    DilateRenderingMode: 0
-    cutoutTextureIndex: 0
-  - IsVisible: 0
-    CutoutMask: 8
-    edgeDilateAmount: 5
-    frontEdgeDilateAmount: 5
-    backEdgeDilateAmount: 5
-    renderer: {fileID: 1214126647456602842}
-    SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-    CutoutThreshold: 0.5
-    CullMode: 2
-    cutoutTextureName: 
-    DilateRenderingMode: 0
-    cutoutTextureIndex: 0
-  - IsVisible: 0
-    CutoutMask: 8
-    edgeDilateAmount: 5
-    frontEdgeDilateAmount: 5
-    backEdgeDilateAmount: 5
-    renderer: {fileID: 3004166002668361468}
-    SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-    CutoutThreshold: 0.5
-    CullMode: 2
-    cutoutTextureName: 
-    DilateRenderingMode: 0
-    cutoutTextureIndex: 0
-  renderStyle: 1
-  outlineParameters:
-    enabled: 1
-    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-    dilateShift: 1
-    blurShift: 1
-    fillPass:
-      shader: {fileID: 0}
-      serializedProperties: []
-  backParameters:
-    enabled: 1
-    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-    dilateShift: 1
-    blurShift: 1
-    fillPass:
-      shader: {fileID: 0}
-      serializedProperties: []
-  frontParameters:
-    enabled: 1
-    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-    dilateShift: 1
-    blurShift: 1
-    fillPass:
-      shader: {fileID: 0}
-      serializedProperties: []
 --- !u!114 &8274745593772653666
 MonoBehaviour:
   m_ObjectHideFlags: 0

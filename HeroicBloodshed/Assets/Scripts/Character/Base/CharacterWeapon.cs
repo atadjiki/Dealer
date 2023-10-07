@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
-using EPOOutline;
 
 public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 {
@@ -12,36 +11,11 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 
     private bool _canReceive = true;
 
-    protected Outlinable _outline;
-
     public virtual void Setup(CharacterID characterID, WeaponID weaponID)
     {
         _ID = weaponID;
         _characterID = characterID;
         _ammo = GetMaxAmmo();
-
-        Constants.TeamID team = Constants.GetTeamByID(characterID);
-
-        Color teamColor = Constants.GetColorByTeam(team, 1.0f);
-
-        SetupOutline(teamColor);
-    }
-
-    private void SetupOutline(Color color)
-    {
-        color.a = 1.0f;
-
-        _outline.OutlineParameters.Color = color; //setup outliner color
-    }
-
-
-    private void SetDeadOutline()
-    {
-        Color color = _outline.OutlineParameters.Color;
-
-        color.a = 0.25f;
-
-        _outline.OutlineParameters.Color = color;
     }
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
@@ -65,8 +39,6 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         rigidbody.isKinematic = false;
 
         this.transform.parent = null;
-
-        SetDeadOutline();
 
         StartCoroutine(Coroutine_DestroyAfterTime(5.0f));
     }

@@ -12,6 +12,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
     protected CharacterAudioSource _audioSource;
+    protected CharacterOutlineController _outline;
     protected EncounterCharacterUI _encounterUI;
 
     private List<ICharacterEventReceiver> _eventReceivers;
@@ -53,24 +54,20 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
-        ModelID modelID = characterDefinition.AllowedModels[UnityEngine.Random.Range(0, characterDefinition.AllowedModels.Length)];
-
+        //get model from character ID
+        ModelID modelID = characterDefinition.AllowedModels[Random.Range(0, characterDefinition.AllowedModels.Length)];
         ResourceRequest modelRequest = GetPrefab(modelID);
-
         yield return new WaitUntil(() => modelRequest.isDone);
-
         GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, this.transform);
-
         _model = modelPrefab.GetComponent<CharacterModel>();
+        yield return new WaitUntil(() => _model != null);
 
-        _model.Setup(characterDefinition);
+        //grab UI anchor from model
+        _overheadAnchor = GetComponentInChildren<CharacterOverheadAnchor>();
 
-        _eventReceivers.Add(_model);
-
+        //get weapon model for character 
         _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
-
         yield return new WaitWhile(() => _weaponAnchor == null);
-
         if (characterDefinition.AllowedWeapons.Length > 0)
         {
             WeaponID weaponID = characterDefinition.AllowedWeapons[UnityEngine.Random.Range(0, characterDefinition.AllowedWeapons.Length)];
@@ -88,28 +85,30 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
             _eventReceivers.Add(_weapon);
         }
 
-        _overheadAnchor = GetComponentInChildren<CharacterOverheadAnchor>();
+        //create an outline container for the model 
+        ResourceRequest outlineRequest = GetPrefab(PrefabID.Character_Outliner);
+        yield return new WaitUntil(() => outlineRequest.isDone);
+        GameObject outlineObject = Instantiate<GameObject>((GameObject)outlineRequest.asset, this.transform);
+        _outline = outlineObject.GetComponent<CharacterOutlineController>();
+        _outline.Setup(characterDefinition, this.gameObject);
+        _eventReceivers.Add(_outline);
 
-        _animator = modelPrefab.GetComponent<CharacterAnimator>();
-
-        _animator.Setup(AnimState.Idle, _weapon.GetID());
-
-        _eventReceivers.Add(_animator);
-
+        //create an audio source
         ResourceRequest audioSourceRequest = GetAudioSource(_ID);
-
         yield return new WaitUntil(()=>audioSourceRequest.isDone);
-
         GameObject audioSourceObject = Instantiate<GameObject>((GameObject)audioSourceRequest.asset, this.transform);
-
         _audioSource = audioSourceObject.GetComponentInChildren<CharacterAudioSource>();
-
         _eventReceivers.Add(_audioSource);
 
+        //grab animator from model 
+        _animator = modelPrefab.GetComponent<CharacterAnimator>();
+        yield return new WaitUntil(() => _animator != null);
+        _animator.Setup(AnimState.Idle, _weapon.GetID());
+        _eventReceivers.Add(_animator);
+
+        //add a colider for mouse interaction
         _collider = this.gameObject.AddComponent<CapsuleCollider>();
-
         yield return new WaitWhile(() => _collider == null);
-
         _collider.isTrigger = true;
         _collider.radius = 0.5f;
         _collider.height = 2.0f;
@@ -342,7 +341,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     public void ToggleHighlight(bool flag)
     {
-        _model.ToggleHighlight(flag);
+        _outline.ToggleHighlight(flag);
     }
 
     private void OnMouseOver()

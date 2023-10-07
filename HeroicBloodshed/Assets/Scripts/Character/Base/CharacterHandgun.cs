@@ -18,7 +18,6 @@ public class CharacterHandgun : CharacterWeapon
     {
         _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
         _audioSource = GetComponentInChildren<AudioSource>();
-        _outline = GetComponent<Outlinable>();
     }
 
     public override void Setup(CharacterID characterID, WeaponID ID)

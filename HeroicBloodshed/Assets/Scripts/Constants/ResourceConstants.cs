@@ -78,6 +78,7 @@ public static partial class Constants
         Character_Marker_Default,
         Character_Marker_Enemy,
         Character_Marker_Player,
+        Character_Outliner,
 
         //Encounter
         Encounter_Camera_Character,
