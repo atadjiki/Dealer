@@ -15,7 +15,9 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
     [SerializeField] private List<Image> HealthbarItems;
 
-    [SerializeField] private List<Image> DamagePreviewItems;
+    [SerializeField] private Color Color_Health;
+
+    [SerializeField] private Color Color_DamagePreview;
 
     private CharacterComponent _character;
 
@@ -66,24 +68,27 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Targeted(DamageInfo damageInfo)
     {
-        float currentHealth = damageInfo.target.GetHealth();
-        float damagedHealth = currentHealth - damageInfo.ActualDamage;
+        int currentHealth = damageInfo.target.GetHealth();
+        int damagedHealth = currentHealth - damageInfo.BaseDamage;
 
-        float total = DamagePreviewItems.Count;
-
-        int threshold = Mathf.RoundToInt(total * damagedHealth / currentHealth);
-
-        for (int i = 0; i < DamagePreviewItems.Count; i++)
+        for (int i = 0; i < HealthbarItems.Count; i++)
         {
-            DamagePreviewItems[DamagePreviewItems.Count - i - 1].enabled = (i < threshold);
+            if(i > damagedHealth)
+            {
+                HealthbarItems[i].color = Color_DamagePreview;
+            }
+            else
+            {
+                HealthbarItems[i].color = Color_Health;
+            }
         }
     }
 
     private void HandleEvent_Untargeted()
     {
-        for (int i = 0; i < DamagePreviewItems.Count; i++)
+        for (int i = 0; i < HealthbarItems.Count; i++)
         {
-            DamagePreviewItems[i].enabled = false;
+            HealthbarItems[i].color = Color_Health;
         }
     }
 
