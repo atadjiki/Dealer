@@ -253,6 +253,18 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 _animator.GoTo(AnimState.Reload);
                 break;
             }
+            case AbilityID.Heal:
+            {
+                int amount = _baseHealth / 4;
+                _health += amount;
+                _animator.GoTo(AnimState.Heal);
+                break;
+            }
+            case AbilityID.SkipTurn:
+            {
+                _animator.GoTo(AnimState.SkipTurn);
+                break;
+            }
             default:
             {
                 break;
@@ -322,6 +334,11 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public bool IsAmmoFull()
     {
         return _weapon.GetRemainingAmmo() == _weapon.GetMaxAmmo();
+    }
+
+    public bool IsHealthFull()
+    {
+        return _baseHealth == _health;
     }
 
     public TeamID GetTeam()

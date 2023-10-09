@@ -60,13 +60,13 @@ public class EncounterModel : MonoBehaviour
             foreach (CharacterID characterID in teamData.Characters)
             {
                 //see if we have a marker available to spawn them in
-                foreach (EncounterGridTile tile in teamData.SpawnTiles)
+                foreach (EncounterGridSpawnMarker marker in teamData.SpawnMarkers)
                 {
-                    if (tile.IsOccupied() == false)
+                    if (marker.IsOccupied() == false)
                     {
-                        tile.SetOccupied(true);
+                        marker.SetOccupied(true);
 
-                        GameObject characterObject = CreateCharacterObject(teamData.Team + "_" + characterID, tile.transform);
+                        GameObject characterObject = CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
                         CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
 
                         _characterMap[teamData.Team].Add(characterComponent);

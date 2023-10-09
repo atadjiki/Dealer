@@ -120,7 +120,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         AnimID anim;
 
-        if (state == AnimState.Dead)
+        if (IsUnarmedAnim(state))
         {
             anim = GetUnarmedAnim(state);
         }

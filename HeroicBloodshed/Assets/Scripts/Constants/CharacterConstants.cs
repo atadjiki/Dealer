@@ -9,12 +9,6 @@ public static partial class Constants
         {
             case AbilityID.Attack:
                 return TargetType.Enemy;
-            case AbilityID.Heal:
-                return TargetType.Ally;
-            case AbilityID.Reload:
-                return TargetType.None;
-            case AbilityID.SkipTurn:
-                return TargetType.None;
             default:
                 return TargetType.None;
         }
@@ -30,6 +24,10 @@ public static partial class Constants
         };
 
         //eventually we will add dynamically abilities based on weapon type and team 
+        if (GetTeamByID(characterID)== TeamID.Player)
+        {
+            CharacterAbilities.Add(AbilityID.Heal);
+        }
 
         return CharacterAbilities;
     }
@@ -51,6 +49,13 @@ public static partial class Constants
         else if(abilityID == AbilityID.Reload)
         {
             if(characterComponent.IsAmmoFull())
+            {
+                return false;
+            }
+        }
+        else if(abilityID == AbilityID.Heal)
+        {
+            if(characterComponent.IsHealthFull())
             {
                 return false;
             }

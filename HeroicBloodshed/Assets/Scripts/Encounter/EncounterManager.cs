@@ -250,7 +250,10 @@ public class EncounterManager : MonoBehaviour
                 yield return AbilityHandler.Coroutine_HandleAbility_Reload(caster);
                 break;
             case AbilityID.SkipTurn:
-                yield return AbilityHandler.HandleAbility_SkipTurn(caster);
+                yield return AbilityHandler.Coroutine_HandleAbility_SkipTurn(caster);
+                break;
+            case AbilityID.Heal:
+                yield return AbilityHandler.Coroutine_HandleAbility_Heal(caster);
                 break;
             default:
                 break;

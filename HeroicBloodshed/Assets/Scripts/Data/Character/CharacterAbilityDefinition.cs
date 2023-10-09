@@ -60,18 +60,22 @@ public class AbilityHandler : MonoBehaviour
         yield return new WaitForSeconds(_waitTime);
     }
 
-    public static IEnumerator HandleAbility_SkipTurn(CharacterComponent caster)
+    public static IEnumerator Coroutine_HandleAbility_SkipTurn(CharacterComponent caster)
     {
-        //maybe have some anim play here
         caster.HandleEvent(AbilityID.SkipTurn, CharacterEvent.ABILITY);
-        yield return new WaitForSeconds(_waitTime * 2);
+        yield return new WaitForSeconds(_waitTime);
+    }
+
+    public static IEnumerator Coroutine_HandleAbility_Heal(CharacterComponent caster)
+    {
+        caster.HandleEvent(AbilityID.Heal, CharacterEvent.ABILITY);
+        yield return new WaitForSeconds(_waitTime);
     }
 
     //utility
 
     public static IEnumerator Coroutine_FireWeaponAt(DamageInfo damageInfo)
     {
-        //rotate and pause momentarily
         yield return Coroutine_RotateTowards(damageInfo.caster, damageInfo.target);
         damageInfo.caster.HandleEvent(AbilityID.Attack, CharacterEvent.ABILITY);
     }

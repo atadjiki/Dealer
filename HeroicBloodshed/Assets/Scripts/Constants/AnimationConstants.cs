@@ -2,12 +2,33 @@ using UnityEngine;
 
 public static partial class Constants
 {
+
+    public static bool IsUnarmedAnim(AnimState state)
+    {
+        switch(state)
+        {
+            case AnimState.Dead:
+            case AnimState.Interact:
+            case AnimState.Heal:
+            case AnimState.SkipTurn:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public static AnimID GetUnarmedAnim(AnimState state)
     {
         switch(state)
         {
             case AnimState.Dead:
                 return AnimID.Anim_Character_Death;
+            case AnimState.Interact:
+                return AnimID.Anim_Character_ButtonPush;
+            case AnimState.Heal:
+                return AnimID.Anim_Character_ShoulderRub;
+            case AnimState.SkipTurn:
+                return AnimID.Anim_Character_WipingSweat;
             default:
                 return AnimID.Anim_Character_Idle;
         }

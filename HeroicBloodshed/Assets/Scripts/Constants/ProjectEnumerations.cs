@@ -64,7 +64,6 @@ public static partial class Constants
         Reload,
         Heal,
         SkipTurn,
-
     }
 
     public enum TargetType
@@ -149,6 +148,9 @@ public static partial class Constants
         Hit_Light,
         Hit_Medium,
         Hit_Heavy,
+        Heal,
+        SkipTurn,
+        Interact,
         Dead,
     }
 
@@ -172,6 +174,11 @@ public static partial class Constants
         Anim_Character_Pistol_Hit_Medium,
         Anim_Character_Pistol_Hit_Heavy,
         Anim_Character_Pistol_Reload,
+
+        //Gestures
+        Anim_Character_ButtonPush,
+        Anim_Character_ShoulderRub,
+        Anim_Character_WipingSweat,
 
         //death
         Anim_Character_Death

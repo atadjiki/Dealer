@@ -11,7 +11,7 @@ public struct EncounterTeamData
 {
     public TeamID Team;
     public List<CharacterID> Characters; //who are we spawning?
-    public List<EncounterGridTile> SpawnTiles; //where are they spawning?
+    public List<EncounterGridSpawnMarker> SpawnMarkers; //where are they spawning?
 }
 
 public class EncounterSetupData : MonoBehaviour
