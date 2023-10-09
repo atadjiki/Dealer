@@ -4,7 +4,7 @@ using UnityEngine;
 using Pathfinding;
 using UnityEditor;
 
-public class EncounterGridVisualizer : MonoBehaviour
+public class EncounterGridBuilder : MonoBehaviour
 {
     [SerializeField] private GameObject TilePrefab;
 
@@ -19,15 +19,17 @@ public class EncounterGridVisualizer : MonoBehaviour
 
         gridGraph.GetNodes(node =>
         {
-            Debug.Log("Node " + index + " " + node.position.ToString());
+            Vector3 pos = ((Vector3)node.position);
 
             int col = (index % Columns);
             int row = (index / Columns);
 
-            Vector3 pos = ((Vector3)node.position);
+            string tilename = "Tile " + (index+1) + " [ " + row + "," + col + " ] "; ;
 
             GameObject tileDecal = Instantiate<GameObject>(TilePrefab, pos, Quaternion.identity, this.transform);
-            tileDecal.name = "Node " + index + " [ " + row + "," + col + " ] ";
+            tileDecal.name = tilename;
+
+            Debug.Log(tilename);
 
             index++;
 
@@ -36,23 +38,23 @@ public class EncounterGridVisualizer : MonoBehaviour
     }
 }
 
-[CustomEditor(typeof(EncounterGridVisualizer))]
-public class EncounterTileBuilder : Editor
+[CustomEditor(typeof(EncounterGridBuilder))]
+public class EncounterGridBuilderEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
+        EncounterGridBuilder gridVisualizer = (EncounterGridBuilder)target;
+
         if (GUILayout.Button("Generate Tiles"))
         {
-            EncounterGridVisualizer gridVisualizer = (EncounterGridVisualizer)target;
+
             gridVisualizer.GenerateTiles();
         }
 
         if(GUILayout.Button("Clear"))
         {
-            EncounterGridVisualizer gridVisualizer = (EncounterGridVisualizer)target;
-
             for (int i = 0; i < gridVisualizer.transform.childCount; i++)
             {
                 DestroyImmediate(gridVisualizer.transform.GetChild(i).gameObject);

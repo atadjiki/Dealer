@@ -177,6 +177,14 @@ public static partial class Constants
         Anim_Character_Death
     }
 
+    public enum EncounterGridTileType
+    {
+        Empty,
+        NoCover,
+        HalfCover,
+        FullCover,
+    }
+
     public enum SafehouseMenuID
     {
         None,
