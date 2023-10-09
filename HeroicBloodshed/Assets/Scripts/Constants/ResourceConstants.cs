@@ -160,6 +160,8 @@ public static partial class Constants
                 return GetTexture(TextureID.Icon_Cycle);
             case AbilityID.SkipTurn:
                 return GetTexture(TextureID.Icon_Cancel);
+            case AbilityID.Heal:
+                return GetTexture(TextureID.Icon_Medicine);
             default:
                 return GetTexture(TextureID.Icon_Square);
         }
@@ -183,6 +185,7 @@ public static partial class Constants
         Icon_Crosshair,
         Icon_Cycle,
         Icon_Halt,
+        Icon_Medicine,
         Icon_Mugshot,
         Icon_Pistol,
         Icon_PoliceBadge,

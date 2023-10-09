@@ -257,7 +257,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
             {
                 int amount = _baseHealth / 4;
                 _health += amount;
-                _animator.GoTo(AnimState.Heal);
+                _health = Mathf.Clamp(_health, _health, _baseHealth);
+                _animator.GoTo(AnimState.Heal, 1.0f);
                 break;
             }
             case AbilityID.SkipTurn:
@@ -271,7 +272,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
             }
         }
     }
-
+    
     private void BroadcastEvent(object eventData, CharacterEvent characterEvent)
     {
         foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)

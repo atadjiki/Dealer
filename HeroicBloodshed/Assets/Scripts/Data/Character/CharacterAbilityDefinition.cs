@@ -5,14 +5,13 @@ using static Constants;
 
 public class AbilityHandler : MonoBehaviour
 {
-    private static float _waitTime = 0.5f;
+    private static float _waitTime = 1.0f;
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
         yield return Coroutine_RotateTowards(target, caster);
 
         WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
-        WeaponAttackDefinition attackDef = WeaponAttackDefinition.Get(caster.GetWeaponID());
 
         target.ToggleHighlight(false);
         DamageInfo damageInfo = weaponDef.CalculateDamage(caster, target);
@@ -24,7 +23,6 @@ public class AbilityHandler : MonoBehaviour
 
         yield return Coroutine_HandleDamage(target, damageInfo);
 
-        //if kill, only fire once
         if (damageInfo.IsKill)
         {
             yield return Coroutine_FireWeaponAt(damageInfo);
@@ -36,20 +34,8 @@ public class AbilityHandler : MonoBehaviour
         else
         {
             EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
-
-            int shotCount = attackDef.CalculateShotCount();
-
-            for (int i = 0; i < shotCount; i++)
-            {
-                yield return Coroutine_FireWeaponAt(damageInfo);
-
-                if(i == (shotCount/2))
-                {
-                    target.HandleEvent(damageInfo, CharacterEvent.HIT);
-                }
-
-                yield return new WaitForSecondsRealtime(attackDef.TimeBetweenShots);
-            }
+            yield return Coroutine_FireWeaponAt(damageInfo);
+            target.HandleEvent(damageInfo, CharacterEvent.HIT);
         }
         yield return new WaitForSeconds(_waitTime);
     }

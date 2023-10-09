@@ -14,6 +14,8 @@ public class CharacterHandgun : CharacterWeapon
     private List<AudioClip> SFX_Fire;
     private List<AudioClip> SFX_Reload;
 
+    private WeaponAttackDefinition _attackDef;
+
     private void Awake()
     {
         _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
@@ -23,6 +25,8 @@ public class CharacterHandgun : CharacterWeapon
     public override void Setup(CharacterID characterID, WeaponID ID)
     {
         base.Setup(characterID, ID);
+
+        _attackDef = WeaponAttackDefinition.Get(ID);
 
         StartCoroutine(Coroutine_LoadVFX());
     }
@@ -94,12 +98,29 @@ public class CharacterHandgun : CharacterWeapon
         if(_ammo > 0)
         {
             _ammo--;
-            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
-            PlayMuzzleFX();
+            StartCoroutine(Coroutine_HandleAbility_Attack());
+
         }
         else
         {
             Debug.Log("Out of ammo!");
+        }
+
+    }
+
+    private IEnumerator Coroutine_HandleAbility_Attack()
+    {
+        int shotCount = _attackDef.CalculateShotCount();
+
+        for (int i = 0; i < shotCount; i++)
+        {
+
+            if (i == (shotCount / 2))
+            {
+                _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+                PlayMuzzleFX();
+                yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
+            }
         }
 
     }

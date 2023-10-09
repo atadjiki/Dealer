@@ -61,6 +61,11 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
             case CharacterEvent.KILLED:
                 HandleEvent_Killed();
                 break;
+            case CharacterEvent.ABILITY:
+            {
+                HandleEvent_Ability((AbilityID)eventData);
+                break;
+            }
             default:
                 break;
         }
@@ -95,6 +100,18 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
     private void HandleEvent_Damage()
     {
         UpdateHealthBar();
+    }
+
+    private void HandleEvent_Ability(AbilityID abilityID)
+    {
+        switch(abilityID)
+        {
+            case AbilityID.Heal:
+                UpdateHealthBar();
+                break;
+            default:
+                break;
+        }
     }
 
     private void UpdateHealthBar()

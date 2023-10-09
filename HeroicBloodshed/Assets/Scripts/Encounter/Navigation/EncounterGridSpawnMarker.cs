@@ -10,7 +10,7 @@ public class EncounterGridSpawnMarker : MonoBehaviour
 
     private void Awake()
     {
-        GameObject.Destroy(DebugMesh.gameObject);
+        DebugMesh.gameObject.SetActive(false);
     }
 
     public void SetOccupied(bool flag)
