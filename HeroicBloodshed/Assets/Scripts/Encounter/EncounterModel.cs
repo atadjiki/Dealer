@@ -59,20 +59,11 @@ public class EncounterModel : MonoBehaviour
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
             {
-                //see if we have a marker available to spawn them in
-                foreach (EncounterGridSpawnMarker marker in teamData.SpawnMarkers)
+                CharacterComponent characterComponent = EncounterGridManager.Instance.SpawnCharacter(teamData.Team, characterID);
+
+                if(characterComponent != null)
                 {
-                    if (marker.IsOccupied() == false)
-                    {
-                        marker.SetOccupied(true);
-
-                        GameObject characterObject = CreateCharacterObject(teamData.Team + "_" + characterID, marker.transform);
-                        CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
-
-                        _characterMap[teamData.Team].Add(characterComponent);
-
-                        break;
-                    }
+                    _characterMap[teamData.Team].Add(characterComponent);
                 }
             }
         }
@@ -384,34 +375,6 @@ public class EncounterModel : MonoBehaviour
         Debug.Log("Current Team: " + _currentTeam);
 
         return _currentTeam;
-    }
-
-    private static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
-    {
-        TeamID teamID = GetTeamByID(characterID);
-
-        switch (teamID)
-        {
-            case TeamID.Player:
-                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-                playerCharacterComponent.SetID(characterID);
-                return playerCharacterComponent;
-            case TeamID.Enemy:
-                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.SetID(characterID);
-                return enemyCharacterComponent;
-            default:
-                return null;
-        }
-    }
-
-    private static GameObject CreateCharacterObject(string name, Transform markerTransform)
-    {
-        GameObject characterObject = new GameObject(name);
-        characterObject.transform.parent = markerTransform;
-        characterObject.transform.localPosition = Vector3.zero;
-        characterObject.transform.localRotation = Quaternion.identity;
-        return characterObject;
     }
 
     //getters/setters
