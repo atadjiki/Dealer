@@ -111,16 +111,11 @@ public class CharacterHandgun : CharacterWeapon
     private IEnumerator Coroutine_HandleAbility_Attack()
     {
         int shotCount = _attackDef.CalculateShotCount();
-
         for (int i = 0; i < shotCount; i++)
         {
-
-            if (i == (shotCount / 2))
-            {
-                _audioSource.PlayOneShot(GetRandom(SFX_Fire));
-                PlayMuzzleFX();
-                yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
-            }
+            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+            PlayMuzzleFX();
+            yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
         }
 
     }
