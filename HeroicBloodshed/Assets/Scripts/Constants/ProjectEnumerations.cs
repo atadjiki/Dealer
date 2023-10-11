@@ -184,7 +184,7 @@ public static partial class Constants
         Anim_Character_Death
     }
 
-    public enum EncounterGridTileType
+    public enum EnvironmentTileType
     {
         Empty,
         NoCover,

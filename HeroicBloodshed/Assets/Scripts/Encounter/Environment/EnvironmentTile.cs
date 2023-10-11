@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EncounterGridTile : MonoBehaviour
+public class EnvironmentTile : MonoBehaviour
 {
-    [SerializeField] private EncounterGridTileType TileType;
+    [SerializeField] private EnvironmentTileType _type;
 
     private Vector2 _coordinates;
 
@@ -17,5 +17,10 @@ public class EncounterGridTile : MonoBehaviour
     public Vector2 GetCoordinates()
     {
         return _coordinates;
+    }
+
+    public void SetType(EnvironmentTileType TileType)
+    {
+        _type = TileType;
     }
 }

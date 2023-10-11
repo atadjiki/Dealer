@@ -5,25 +5,18 @@ using Pathfinding;
 using System;
 using static Constants;
 
-[Serializable]
-public struct SpawnMarkerData
-{
-    public TeamID Team;
-    public List<EncounterGridSpawnMarker> Markers;
-}
-
 [RequireComponent(typeof(AstarPath))]
-public class EncounterGridManager: MonoBehaviour
+public class EnvironmentManager: MonoBehaviour
 {
     //singleton
-    private static EncounterGridManager _instance;
-    public static EncounterGridManager Instance { get { return _instance; } }
-
-    //public
-    [SerializeField] private List<SpawnMarkerData> SpawnMarkers;
+    private static EnvironmentManager _instance;
+    public static EnvironmentManager Instance { get { return _instance; } }
 
     //private
     private GridGraph _grid;
+
+    //spawn markers
+    private Dictionary<TeamID, List<EnvironmentSpawnMarker>> _spawnMarkers;
 
     private void Awake()
     {
@@ -43,12 +36,29 @@ public class EncounterGridManager: MonoBehaviour
     {
         _grid = AstarPath.active.data.gridGraph;
         Debug.Log("Found A* grid graph for " + this.name);
+
+        _spawnMarkers = new Dictionary<TeamID, List<EnvironmentSpawnMarker>>();
+
+        //register all spawn markers
+        foreach (TeamID teamID in Enum.GetValues(typeof(TeamID)))
+        {
+            if(teamID != TeamID.None)
+            {
+                _spawnMarkers.Add(teamID, new List<EnvironmentSpawnMarker>());
+            }
+        }
+
+        foreach(EnvironmentSpawnMarker spawnMarker in GetComponentsInChildren<EnvironmentSpawnMarker>())
+        {
+            _spawnMarkers[spawnMarker.GetTeam()].Add(spawnMarker);
+        }
+
     }
 
     public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
     {
         //see if we have a marker available to spawn them in
-        foreach (EncounterGridSpawnMarker marker in GetSpawnMarkers(teamID))
+        foreach (EnvironmentSpawnMarker marker in _spawnMarkers[teamID])
         {
             if (marker.IsOccupied() == false)
             {
@@ -78,23 +88,8 @@ public class EncounterGridManager: MonoBehaviour
         }
     }
 
-    //helpers
-    private List<EncounterGridSpawnMarker> GetSpawnMarkers(TeamID team)
+    private GameObject CreateCharacterObject(string name, EnvironmentMarker spawnMarker)
     {
-        foreach (SpawnMarkerData data in SpawnMarkers)
-        {
-            if (data.Team == team)
-            {
-                return data.Markers;
-            }
-        }
-
-        return null;
-    }
-
-    private GameObject CreateCharacterObject(string name, EncounterGridSpawnMarker spawnMarker)
-    {
-
         //adjust spawn marker to the position of the closest tile
         Vector3 initialPos = spawnMarker.transform.position;
         Vector3 closestPos = GetClosestTile(initialPos);

@@ -59,7 +59,7 @@ public class EncounterModel : MonoBehaviour
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
             {
-                CharacterComponent characterComponent = EncounterGridManager.Instance.SpawnCharacter(teamData.Team, characterID);
+                CharacterComponent characterComponent = EnvironmentManager.Instance.SpawnCharacter(teamData.Team, characterID);
 
                 if(characterComponent != null)
                 {

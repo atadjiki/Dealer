@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EncounterGridSpawnMarker : MonoBehaviour
+public class EnvironmentMarker : MonoBehaviour
 {
     [SerializeField] private GameObject DebugMesh;
 
