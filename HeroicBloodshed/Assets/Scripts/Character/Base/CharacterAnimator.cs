@@ -88,7 +88,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     private IEnumerator Coroutine_ProduceBloodSpray(Transform parentTransform)
     {
-        ResourceRequest resourceRequest = GetPrefab(PrefabID.VFX_Bloodspray);
+        ResourceRequest resourceRequest = GetCharacterVFX(PrefabID.VFX_Bloodspray);
 
         yield return new WaitUntil(() => resourceRequest.isDone);
 

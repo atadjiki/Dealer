@@ -32,37 +32,80 @@ public static partial class Constants
         }
     }
 
-    public static ResourceRequest GetPrefab(ModelID ID)
+
+    public static ResourceRequest GetEncounterUI(PrefabID ID)
     {
-        return GetPrefab(GetPrefabID(ID));
+        return GetPrefab(PrefabCategory.Encounter, PrefabSubcategory.UI, ID);
     }
 
-    public static ResourceRequest GetPrefab(WeaponID ID)
+    public static ResourceRequest GetCharacterComponent(PrefabID ID)
     {
-        return GetPrefab(GetPrefabID(ID));
+        return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Components, ID);
+    }
+
+    public static ResourceRequest GetCharacterVFX(PrefabID ID)
+    {
+        return GetPrefab(PrefabCategory.Character, PrefabSubcategory.VFX, ID);
+    }
+
+    public static ResourceRequest GetCharacterModel(ModelID ID)
+    {
+        return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Model, GetPrefabID(ID));
+    }
+
+    public static ResourceRequest GetWeaponFX(PrefabID ID)
+    {
+        return GetPrefab(PrefabCategory.Weapon, PrefabSubcategory.VFX, ID);
+    }
+
+    public static ResourceRequest GetWeaponModel(WeaponID ID)
+    {
+        return GetPrefab(PrefabCategory.Weapon, PrefabSubcategory.Model, GetPrefabID(ID));
     }
 
     public static ResourceRequest GetAudioSource(CharacterID characterID)
     {
         if(GetGender(characterID) == GenderID.Male)
         {
-            return GetPrefab(PrefabID.Character_AudioSource_Male);
+            return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Components, PrefabID.Character_AudioSource_Male);
         }
         else
         {
-            return GetPrefab(PrefabID.Character_AudioSource_Female);
+            return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Components, PrefabID.Character_AudioSource_Female);
         }
     }
 
-    public static ResourceRequest GetPrefab(PrefabID ID)
+    private static ResourceRequest GetPrefab(PrefabCategory category, PrefabSubcategory subcategory, PrefabID ID)
     {
-        string fileName = "Prefabs/" + ID.ToString();
+        string fileName =
+            "Prefabs/" +
+            category + "/" +
+            subcategory + "/" +
+            ID.ToString();
 
         Debug.Log("Loading Prefab: " + fileName);
 
         ResourceRequest resourceRequest = Resources.LoadAsync<GameObject>(fileName);
 
         return resourceRequest;
+    }
+
+    public enum PrefabCategory
+    {
+        Character,
+        Encounter,
+        Environment,
+        Weapon
+    }
+
+    public enum PrefabSubcategory
+    {
+        Components,
+        Model,
+        VFX,
+        Camera,
+        Manager,
+        UI
     }
 
     //Every single prefab in the Resources folder must correspond to a unique ID
@@ -80,10 +123,13 @@ public static partial class Constants
         Character_Marker_Player,
         Character_Outliner,
 
+        //Environment
+        Environment_LoadingDock,
+
         //Encounter
         Encounter_Camera_Character,
         Encounter_Camera_Main,
-        Encounter_Environment_LoadingDock,
+
         Encounter_Manager_Audio,
         Encounter_Manager_CameraRig,
         Encounter_Manager_UI,

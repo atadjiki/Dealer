@@ -56,7 +56,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         //get model from character ID
         ModelID modelID = characterDefinition.AllowedModels[Random.Range(0, characterDefinition.AllowedModels.Length)];
-        ResourceRequest modelRequest = GetPrefab(modelID);
+        ResourceRequest modelRequest = GetCharacterModel(modelID);
         yield return new WaitUntil(() => modelRequest.isDone);
         GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, this.transform);
         _model = modelPrefab.GetComponent<CharacterModel>();
@@ -72,7 +72,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         {
             WeaponID weaponID = characterDefinition.AllowedWeapons[UnityEngine.Random.Range(0, characterDefinition.AllowedWeapons.Length)];
 
-            ResourceRequest weaponRequest = GetPrefab(weaponID);
+            ResourceRequest weaponRequest = GetWeaponModel(weaponID);
 
             yield return new WaitUntil(() => weaponRequest.isDone);
 
@@ -86,7 +86,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         }
 
         //create an outline container for the model 
-        ResourceRequest outlineRequest = GetPrefab(PrefabID.Character_Outliner);
+        ResourceRequest outlineRequest = GetCharacterComponent(PrefabID.Character_Outliner);
         yield return new WaitUntil(() => outlineRequest.isDone);
         GameObject outlineObject = Instantiate<GameObject>((GameObject)outlineRequest.asset, this.transform);
         _outline = outlineObject.GetComponent<CharacterOutlineController>();
@@ -414,7 +414,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private IEnumerator Coroutine_CreateDecal()
     {
-        ResourceRequest request = GetPrefab(PrefabID.Character_Decal);
+        ResourceRequest request = GetCharacterComponent(PrefabID.Character_Decal);
 
         yield return new WaitUntil(() => request.isDone);
 
@@ -448,7 +448,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private IEnumerator Coroutine_CreateEncounterOverhead()
     {
-        ResourceRequest request = GetPrefab(PrefabID.Encounter_UI_CharacterUI_Canvas);
+        ResourceRequest request = GetEncounterUI(PrefabID.Encounter_UI_CharacterUI_Canvas);
 
         yield return new WaitUntil(() => request.isDone);
 

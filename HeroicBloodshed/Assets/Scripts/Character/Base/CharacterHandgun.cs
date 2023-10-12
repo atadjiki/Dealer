@@ -39,7 +39,7 @@ public class CharacterHandgun : CharacterWeapon
 
         foreach (PrefabID prefabID in weaponDef.MuzzleVFX)
         {
-            ResourceRequest request = GetPrefab(prefabID);
+            ResourceRequest request = GetWeaponFX(prefabID);
 
             yield return new WaitUntil( () => request.isDone);
 
