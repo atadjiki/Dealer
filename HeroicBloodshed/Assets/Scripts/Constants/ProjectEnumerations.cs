@@ -184,9 +184,8 @@ public static partial class Constants
         Anim_Character_Death
     }
 
-    public enum EnvironmentTileType
+    public enum EnvironmentObstacleType
     {
-        Empty,
         NoCover,
         HalfCover,
         FullCover,

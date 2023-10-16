@@ -182,13 +182,13 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Selected()
     {
-        CreateDecal();
+       // CreateDecal();
         _audioSource.Play(CharacterAudioType.Await);
     }
 
     private void HandleEvent_Deselected()
     {
-        DestroyDecal();
+      //  DestroyDecal();
     }
 
     private void HandleEvent_Targeted()

@@ -54,6 +54,9 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerator Coroutine_LoadEncounter()
     {
+        Debug.Log("Waiting on environment");
+        yield return new WaitUntil(() => EnvironmentManager.Instance.AreTilesGenerated());
+
         _eventReceivers = new List<EncounterEventReceiver>();
 
         //create a canvas 
