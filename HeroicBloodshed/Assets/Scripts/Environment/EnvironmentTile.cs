@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Constants;
 
 public class EnvironmentTile : MonoBehaviour
@@ -15,5 +16,10 @@ public class EnvironmentTile : MonoBehaviour
     public Vector2 GetCoordinates()
     {
         return _coordinates;
+    }
+
+    private void OnMouseOver()
+    {
+        Debug.Log("Pointer over tile " + _coordinates.ToString());
     }
 }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2828474265351301080}
   - component: {fileID: 2111573178545586969}
+  - component: {fileID: 7455635202653170741}
   m_Layer: 0
   m_Name: EnvironmentTile
   m_TagString: Untagged
@@ -45,7 +46,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05b674c9f77b2467e8293be6d7d35388, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+--- !u!65 &7455635202653170741
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547938855032597165}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.75, y: 0.1, z: 0.75}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7452807140049809982
 GameObject:
   m_ObjectHideFlags: 0
