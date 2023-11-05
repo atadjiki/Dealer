@@ -108,9 +108,4 @@ public class EnvironmentTileGrid : MonoBehaviour
             return worldPosition;
         }
     }
-
-    public bool AreTilesGenerated()
-    {
-        return _generated;
-    }
 }

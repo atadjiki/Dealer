@@ -92,7 +92,6 @@ public class EncounterManager : MonoBehaviour
             yield return receiver.Coroutine_Init(_model);
         }
 
-
         _model.TransitionState();
 
         yield return null;
