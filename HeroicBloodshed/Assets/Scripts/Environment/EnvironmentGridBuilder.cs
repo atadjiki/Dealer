@@ -46,12 +46,10 @@ public class EnvironmentGridBuilder : MonoBehaviour
             GameObject tileDecal = Instantiate<GameObject>(TilePrefab, pos, Quaternion.identity, this.transform);
             tileDecal.name = tilename;
 
-            yield return new WaitUntil(() => tileDecal.GetComponent<EnvironmentTile>() != null);
+            yield return new WaitWhile(() => tileDecal.GetComponent<EnvironmentTile>() == null);
 
             EnvironmentTile tile = tileDecal.GetComponent<EnvironmentTile>();
             tile.Setup(row, col);
-
-            Debug.Log(tilename);
 
             index++;
         }
