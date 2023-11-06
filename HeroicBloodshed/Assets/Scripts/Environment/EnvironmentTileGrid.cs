@@ -38,6 +38,7 @@ public class EnvironmentTileGrid : MonoBehaviour
 
         int index = 0;
 
+        //generate a tile for each walkable node
         foreach (GraphNode node in WalkableNodes)
         {
             Vector3 pos = ((Vector3)node.position);
@@ -60,7 +61,18 @@ public class EnvironmentTileGrid : MonoBehaviour
             index++;
         }
 
-        if(OnTilesGenerated != null)
+        //once we have our tiles, check if they are under any obstacles, and if they have any neighboring nodes
+        foreach(EnvironmentTile tile in _tileMap.Values)
+        {
+            tile.PerformScan();
+        }
+
+        foreach(EnvironmentTile tile in _tileMap.Values)
+        {
+            tile.PerformCoverCheck();
+        }
+
+        if (OnTilesGenerated != null)
         {
             OnTilesGenerated.Invoke();
         }
