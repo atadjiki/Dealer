@@ -12,4 +12,11 @@ public class EnvironmentObstacle : MonoBehaviour
 
     public EnvironmentObstacleType GetObstacleType() { return ObstacleType; }
 
+    private BoxCollider _collider;
+
+    private void Awake()
+    {
+        _collider = GetComponent<BoxCollider>();
+    }
+
 }

@@ -10,7 +10,7 @@ public class EnvironmentTile : MonoBehaviour
 {
     [SerializeField] private List<EnvironmentTile> Neighbors;
 
-    [SerializeField] private List<EnvironmentObstacle> Obstacles;
+    [SerializeField] private EnvironmentObstacle Obstacle;
 
     private Vector2 _coordinates;
     private BoxCollider _collider;
@@ -21,7 +21,7 @@ public class EnvironmentTile : MonoBehaviour
         _collider = GetComponent<BoxCollider>();
         _renderer = GetComponentInChildren<MeshRenderer>();
 
-        SetColor(Color.clear);
+        ToggleVisibility(false);
     }
 
     public void Setup(int Row, int Column)
@@ -32,7 +32,7 @@ public class EnvironmentTile : MonoBehaviour
 
     public void MarkAsCoverTile(EnvironmentObstacleType obstacleType)
     {
-        if(Obstacles.Count > 0) { return; }
+        if(Obstacle != null) { return; }
         switch(obstacleType)
         {
             case EnvironmentObstacleType.FullCover:
@@ -48,17 +48,15 @@ public class EnvironmentTile : MonoBehaviour
 
     public void PerformCoverCheck()
     {
-        if(Obstacles.Count > 0)
+        if(Obstacle != null)
         {
-            EnvironmentObstacle obstacle = Obstacles[0];
-
             foreach(EnvironmentTile neighbor in Neighbors)
             {
                 float distance = Vector3.Distance(this.transform.position, neighbor.transform.position);
 
                 if (Mathf.Approximately(distance, 1))
                 {
-                    neighbor.MarkAsCoverTile(obstacle.GetObstacleType());
+                    neighbor.MarkAsCoverTile(Obstacle.GetObstacleType());
                 }
             }
         }
@@ -69,7 +67,7 @@ public class EnvironmentTile : MonoBehaviour
         GatherNeighbors();
         GatherObstacles();
 
-        if(Obstacles.Count > 0)
+        if(Obstacle != null)
         {
             SetColor(Color.red);
         }
@@ -96,16 +94,12 @@ public class EnvironmentTile : MonoBehaviour
 
     private void GatherObstacles()
     {
-        Obstacles = new List<EnvironmentObstacle>();
+        Obstacle = null;
 
         foreach (Collider collider in Physics.OverlapSphere(this.transform.position, 0.1f, LayerMask.GetMask("EnvironmentObstacle")))
         {
-            EnvironmentObstacle obstacle = collider.gameObject.GetComponent<EnvironmentObstacle>();
-
-            if (obstacle != this)
-            {
-                Obstacles.Add(obstacle);
-            }
+            Obstacle = collider.gameObject.GetComponent<EnvironmentObstacle>();
+            break;
         }
     }
 
@@ -124,14 +118,18 @@ public class EnvironmentTile : MonoBehaviour
         }
     }
 
+    public void ToggleVisibility(bool flag)
+    {
+        //_renderer.gameObject.SetActive(flag);
+    }
+
     private void OnMouseOver()
     {
-        //  Debug.Log("Pointer over tile " + _coordinates.ToString());
-      // SetColor(Color.green);
+        ToggleVisibility(true);
     }
 
     private void OnMouseExit()
     {
-     //   SetColor(Color.clear);
+        ToggleVisibility(false);
     }
 }
