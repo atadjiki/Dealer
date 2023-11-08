@@ -32,6 +32,10 @@ public static partial class Constants
         }
     }
 
+    public static ResourceRequest GetEnvironmentCameraRig()
+    {
+        return GetPrefab(PrefabCategory.Environment, PrefabSubcategory.Camera, PrefabID.EnvironmentCameraRig);
+    }
 
     public static ResourceRequest GetEncounterUI(PrefabID ID)
     {
@@ -124,14 +128,15 @@ public static partial class Constants
         Character_Outliner,
 
         //Environment
-        Environment_LoadingDock,
+        Environment_DrugHideout,
+        EnvironmentCameraRig,
 
-        //Encounter
-        Encounter_Camera_Character,
-        Encounter_Camera_Main,
+        ////Encounter
+        //Encounter_Camera_Character,
+        //Encounter_Camera_Main,
 
         Encounter_Manager_Audio,
-        Encounter_Manager_CameraRig,
+        //Encounter_Manager_CameraRig,
         Encounter_Manager_UI,
         Encounter_UI_AbilitySelect_Canvas,
         Encounter_UI_AbilitySelect_Item,

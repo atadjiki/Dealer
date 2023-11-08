@@ -17,5 +17,4 @@ public class EncounterSetupData : MonoBehaviour
 {
     public bool IsPlayerCPU;
     public List<EncounterTeamData> Teams;
-    public Transform CameraFollowTarget;
 }

@@ -19,12 +19,11 @@ public class EnvironmentManager: MonoBehaviour
     //private
     private GridGraph _gridGraph;
     private EnvironmentTileGrid _tileGrid;
+    private EnvironmentCameraRig _cameraRig;
 
     //Collections
     private Dictionary<TeamID, List<EnvironmentSpawnPoint>> _spawnPoints;
     private Dictionary<EnvironmentObstacleType, List<EnvironmentObstacle>> _obstacles;
-
-    private bool _generated = false;
 
     private void Awake()
     {
@@ -37,36 +36,32 @@ public class EnvironmentManager: MonoBehaviour
             _instance = this;
         }
 
-        Build();
+        StartCoroutine(Coroutine_Build());
     }
 
-    private void Build()
+    private IEnumerator Coroutine_Build()
     {
+        Debug.Log("Scanning navmesh");
         _gridGraph = AstarPath.active.data.gridGraph;
+        AstarPath.active.Scan(_gridGraph);
+        yield return new WaitWhile( () =>AstarPath.active.isScanning );
 
-        _tileGrid = GetComponentInChildren<EnvironmentTileGrid>();
-
-        Debug.Log("Found A* grid graph for " + this.name);
-
+        Debug.Log("Registering scene objects");
         RegisterSpawnMarkers();
-
         RegisterObstacles();
 
-        if(_tileGrid != null)
-        {
-            _tileGrid.OnTilesGenerated += OnTilesGenerated;
-            _tileGrid.GenerateTiles();
-        }
-    }
+        Debug.Log("Creating camera rig");
+        ResourceRequest cameraRigRequest = GetEnvironmentCameraRig();
+        yield return new WaitUntil(() => cameraRigRequest.isDone);
+        GameObject cameraRigObject = Instantiate<GameObject>((GameObject)cameraRigRequest.asset, this.transform);
+        yield return new WaitUntil(() => cameraRigObject.GetComponent<EnvironmentCameraRig>() != null);
+        _cameraRig = cameraRigObject.GetComponent<EnvironmentCameraRig>();
 
-    public void OnTilesGenerated()
-    {
-        _generated = true;
-    }
-
-    public bool AreTilesGenerated()
-    {
-        return _generated;
+        Debug.Log("Building tile grid");
+        yield return new WaitUntil(() => GetComponentInChildren<EnvironmentTileGrid>() != null);
+        _tileGrid = GetComponentInChildren<EnvironmentTileGrid>();
+        _tileGrid.GenerateTiles();
+        yield return new WaitUntil(() => _tileGrid.IsGenerated());
     }
 
     private void RegisterSpawnMarkers()

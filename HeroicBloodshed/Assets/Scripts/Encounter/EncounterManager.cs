@@ -12,7 +12,6 @@ public class EncounterManager : MonoBehaviour
     [SerializeField] private EncounterSetupData _setupData; //setup data
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject Prefab_EncounterCameraRig;
     [SerializeField] private GameObject Prefab_EncounterCanvas;
     [SerializeField] private GameObject Prefab_EncounterAudioManager;
 
@@ -25,7 +24,6 @@ public class EncounterManager : MonoBehaviour
     private List<EncounterEventReceiver> _eventReceivers;
 
     private EncounterCanvasManager _canvas;
-    private EncounterCameraRig _cameraRig;
     private EncounterAudioManager _audioManager;
 
     private void Awake()
@@ -55,7 +53,7 @@ public class EncounterManager : MonoBehaviour
     private IEnumerator Coroutine_LoadEncounter()
     {
         Debug.Log("Waiting on environment");
-        yield return new WaitUntil(() => EnvironmentManager.Instance.AreTilesGenerated());
+       // yield return new WaitUntil(() => EnvironmentManager.Instance.AreTilesGenerated()); TODO
 
         _eventReceivers = new List<EncounterEventReceiver>();
 
@@ -65,11 +63,12 @@ public class EncounterManager : MonoBehaviour
         _canvas = canvasObject.GetComponent<EncounterCanvasManager>();
         _eventReceivers.Add(_canvas);
 
-        //create a camera rig
-        GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, this.transform);
-        yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
-        _cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
-        _eventReceivers.Add(_cameraRig);
+        //TODO
+        ////create a camera rig 
+        //GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, this.transform);
+        //yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
+        //_cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
+        //_eventReceivers.Add(_cameraRig);
 
         //create audio manager
         GameObject audioManagerObject = Instantiate(Prefab_EncounterAudioManager, this.transform);
@@ -265,12 +264,14 @@ public class EncounterManager : MonoBehaviour
     //helpers
     public void FollowCharacter(CharacterComponent characterComponent)
     {
-        _cameraRig.GoToCharacter(characterComponent);
+        //TODO
+        //_cameraRig.GoToCharacter(characterComponent);
     }
 
     public void UnfollowCharacter()
     {
-        _cameraRig.GoToMainCamera();
+        //TODO
+        //_cameraRig.GoToMainCamera();
     }
 
     public void OnAbilityCancelled()

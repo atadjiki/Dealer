@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class EnvironmentTileGrid : MonoBehaviour
 {
-    public delegate void TilesGeneratedDelegate();
-
-    public TilesGeneratedDelegate OnTilesGenerated;
-
     [SerializeField] private GameObject TilePrefab;
 
     private Dictionary<GraphNode, EnvironmentTile> _tileMap;
+
+    private bool _generated = false;
 
     public void GenerateTiles()
     {
         StartCoroutine(Coroutine_GenerateTiles());
     }
+
+    public bool IsGenerated() { return _generated; }
 
     private IEnumerator Coroutine_GenerateTiles()
     {
@@ -72,10 +72,7 @@ public class EnvironmentTileGrid : MonoBehaviour
             tile.PerformCoverCheck();
         }
 
-        if (OnTilesGenerated != null)
-        {
-            OnTilesGenerated.Invoke();
-        }
+        _generated = true;
     }
 
     public EnvironmentTile GetClosestTile(GraphNode node)

@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using static Constants;
 
+//DEPRECATED
+[Obsolete("Use EnvironmentCameraRig instead")]
 public class EncounterCameraRig : EncounterEventReceiver
 {
     [Header("Prefabs")]
@@ -27,7 +30,7 @@ public class EncounterCameraRig : EncounterEventReceiver
         GameObject defaultCameraObject = Instantiate(Prefab_DefaultCamera, this.transform);
         CM_Main = defaultCameraObject.GetComponent<CinemachineVirtualCamera>();
 
-        CM_Main.Follow = model.GetCameraFollow();
+        //CM_Main.Follow = model.GetCameraFollow();
         CM_Main.Priority = _priorityMain;
 
         CinemachineFramingTransposer framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();

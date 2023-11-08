@@ -32,8 +32,6 @@ public class EncounterModel : MonoBehaviour
     private AbilityID _activeAbility = AbilityID.NONE;
     private CharacterComponent _activeTarget = null;
 
-    private Transform _cameraFollow;
-
     //
     //state machine
 
@@ -49,8 +47,6 @@ public class EncounterModel : MonoBehaviour
         _currentTeam = TeamID.Player; //the player always goes first
 
         _characterMap = new Dictionary<TeamID, List<CharacterComponent>>();
-
-        _cameraFollow = _setupData.CameraFollowTarget;
 
         foreach (EncounterTeamData teamData in _setupData.Teams)
         {
@@ -482,11 +478,6 @@ public class EncounterModel : MonoBehaviour
 
     //turns
     public int GetTurnCount() { return _turnCount; }
-
-    public Transform GetCameraFollow()
-    {
-        return _cameraFollow;
-    }
 
     public int IncrementTurnCount()
     {
