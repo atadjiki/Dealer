@@ -21,7 +21,7 @@ public class EnvironmentManager: MonoBehaviour
     private EnvironmentTileGrid _tileGrid;
 
     //Collections
-    private Dictionary<TeamID, List<EnvironmentSpawnMarker>> _spawnMarkers;
+    private Dictionary<TeamID, List<EnvironmentSpawnPoint>> _spawnPoints;
     private Dictionary<EnvironmentObstacleType, List<EnvironmentObstacle>> _obstacles;
 
     private bool _generated = false;
@@ -71,20 +71,20 @@ public class EnvironmentManager: MonoBehaviour
 
     private void RegisterSpawnMarkers()
     {
-        _spawnMarkers = new Dictionary<TeamID, List<EnvironmentSpawnMarker>>();
+        _spawnPoints = new Dictionary<TeamID, List<EnvironmentSpawnPoint>>();
 
         //register all spawn markers
         foreach (TeamID teamID in Enum.GetValues(typeof(TeamID)))
         {
             if (teamID != TeamID.None)
             {
-                _spawnMarkers.Add(teamID, new List<EnvironmentSpawnMarker>());
+                _spawnPoints.Add(teamID, new List<EnvironmentSpawnPoint>());
             }
         }
 
-        foreach (EnvironmentSpawnMarker spawnMarker in GetComponentsInChildren<EnvironmentSpawnMarker>())
+        foreach (EnvironmentSpawnPoint spawnPoint in GetComponentsInChildren<EnvironmentSpawnPoint>())
         {
-            _spawnMarkers[spawnMarker.GetTeam()].Add(spawnMarker);
+            _spawnPoints[spawnPoint.GetTeam()].Add(spawnPoint);
         }
     }
 
@@ -106,26 +106,21 @@ public class EnvironmentManager: MonoBehaviour
     public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
     {
         //see if we have a marker available to spawn them in
-        foreach (EnvironmentSpawnMarker marker in _spawnMarkers[teamID])
+        foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints[teamID])
         {
-            if (marker.IsOccupied() == false)
-            {
-                marker.SetOccupied(true);
+            GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, spawnPoint);
+            CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
 
-                GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, marker);
-                CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
-
-                return characterComponent;
-            }
+            return characterComponent;
         }
 
         return null;
     }
 
-    private GameObject CreateCharacterObject(string name, EnvironmentMarker spawnMarker)
+    private GameObject CreateCharacterObject(string name, EnvironmentSpawnPoint spawnPoint)
     {
         //adjust spawn marker to the position of the closest tile
-        Vector3 initialPos = spawnMarker.transform.position;
+        Vector3 initialPos = spawnPoint.GetSpawnLocation();
         Vector3 closestPos = _tileGrid.GetClosestTilePosition(initialPos);
 
         Debug.Log("Adjusted spawn marker from " + initialPos.ToString() + " to " + closestPos.ToString());

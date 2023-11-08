@@ -12,7 +12,7 @@ public class EnvironmentTile : MonoBehaviour
 
     [SerializeField] private EnvironmentObstacle Obstacle;
 
-    [SerializeField] private EnvironmentSpawnMarker SpawnMarker;
+    [SerializeField] private EnvironmentSpawnPoint SpawnPoint;
 
     private Vector2 _coordinates;
     private BoxCollider _collider;
@@ -79,7 +79,7 @@ public class EnvironmentTile : MonoBehaviour
             SetColor(Color.blue);
         }
 
-        if(SpawnMarker != null)
+        if(SpawnPoint != null)
         {
             SetColor(Color.green);
         }
@@ -113,11 +113,11 @@ public class EnvironmentTile : MonoBehaviour
 
     private void GatherSpawnMarkers()
     {
-        SpawnMarker = null;
+        SpawnPoint = null;
 
         foreach (Collider collider in Physics.OverlapSphere(this.transform.position, 0.1f, LayerMask.GetMask("EnvironmentSpawnMarker")))
         {
-            SpawnMarker = collider.gameObject.GetComponent<EnvironmentSpawnMarker>();
+            SpawnPoint = collider.gameObject.GetComponent<EnvironmentSpawnPoint>();
             break;
         }
     }
