@@ -283,6 +283,16 @@ public class EncounterManager : MonoBehaviour
         _model.TransitionState();
     }
 
+    public bool AreTargetsAvailable()
+    {
+        return _model.AreTargetsAvailable();
+    }
+
+    public bool AreAlliesAvailable()
+    {
+        return _model.AreAlliesAvailable();
+    }
+
     public void SelectTarget(CharacterComponent character)
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)

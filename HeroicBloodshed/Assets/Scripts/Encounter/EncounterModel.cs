@@ -444,24 +444,51 @@ public class EncounterModel : MonoBehaviour
         return GetTargetCandidates().Count > 0;
     }
 
+    public bool AreAlliesAvailable()
+    {
+        List<CharacterComponent> allies = GetAllCharactersInTeam(GetCurrentTeam());
+
+        if(allies != null)
+        {
+            return allies.Count > 0;
+        }
+
+        return false;
+    }
+
     public List<CharacterComponent> GetTargetCandidates()
     {
         TeamID opposingTeam = GetOpposingTeam(GetCurrentTeam());
 
         List<CharacterComponent> candidates = new List<CharacterComponent>();
 
-        foreach (CharacterComponent character in GetAllCharactersInTeam(opposingTeam))
+        List<CharacterComponent> OpposingCharacters = GetAllCharactersInTeam(opposingTeam);
+
+        if(OpposingCharacters != null)
         {
-            if(character.IsAlive())
+            foreach (CharacterComponent character in OpposingCharacters)
             {
-                candidates.Add(character);
+                if (character.IsAlive())
+                {
+                    candidates.Add(character);
+                }
             }
         }
 
         return candidates;
     }
 
-    public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) { return _characterMap[teamID]; }
+    public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) 
+    {
+        if(_characterMap.ContainsKey(teamID))
+        {
+            return _characterMap[teamID];
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     public List<CharacterComponent> GetAllCharactersInTeamQueue(TeamID teamID) { return new List<CharacterComponent>(_queues[teamID].ToArray()); }
 

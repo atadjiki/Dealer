@@ -60,6 +60,7 @@ public static partial class Constants
     {
         NONE,
 
+        Move,
         Attack,
         Reload,
         Heal,

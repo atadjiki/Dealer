@@ -15,6 +15,6 @@ public class EnvironmentCameraTarget : MonoBehaviour
 
          _collider = this.gameObject.AddComponent<SphereCollider>();
         _collider.isTrigger = true;
-        _collider.radius = 1.5f;
+        _collider.radius = 5f;
     }
 }

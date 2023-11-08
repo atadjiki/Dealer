@@ -18,6 +18,7 @@ public static partial class Constants
     {
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
+            AbilityID.Move,
             AbilityID.Attack,
             AbilityID.SkipTurn, //all characters have this by default
             AbilityID.Reload,
@@ -45,6 +46,8 @@ public static partial class Constants
             {
                 return false;
             }
+
+            return EncounterManager.Instance.AreTargetsAvailable();
         }
         else if(abilityID == AbilityID.Reload)
         {
