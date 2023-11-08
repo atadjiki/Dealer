@@ -2,11 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
 public class EnvironmentCameraTarget : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private Rigidbody _rigidBody;
+    private SphereCollider _collider;
+
+    private void Awake()
     {
-        Debug.Log("on trigger enter");
+        _rigidBody = this.gameObject.AddComponent<Rigidbody>();
+        _rigidBody.useGravity = false;
+        _rigidBody.isKinematic = false;
+
+         _collider = this.gameObject.AddComponent<SphereCollider>();
+        _collider.isTrigger = true;
+        _collider.radius = 1.5f;
     }
 }

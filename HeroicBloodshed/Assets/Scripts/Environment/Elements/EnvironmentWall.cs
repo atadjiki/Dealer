@@ -18,7 +18,7 @@ public class EnvironmentWall : MonoBehaviour
 
         if (collidedObject.GetComponent<EnvironmentCameraTarget>())
         {
-            ToggleVisiblity(true);
+            ToggleVisiblity(false);
         }
     }
 
@@ -28,7 +28,7 @@ public class EnvironmentWall : MonoBehaviour
 
         if (collidedObject.GetComponent<EnvironmentCameraTarget>())
         {
-            ToggleVisiblity(false);
+            ToggleVisiblity(true);
         }
     }
 
