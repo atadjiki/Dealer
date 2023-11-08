@@ -20,7 +20,7 @@ public class EnvironmentCameraSettings
     public float DefaultRotation = 0; 
     public float RotationStep = 90;
     public float RotationDuration = 0.35f;
-
+    
     [Header("Movement")]
     public float CameraSpeed = 15f;
     public float ScreenEdgeDelta = 10;
@@ -58,7 +58,7 @@ public class EnvironmentCameraRig : MonoBehaviour
         CameraObject.transform.parent = this.transform;
 
         _camera = CameraObject.AddComponent<CinemachineVirtualCamera>();
-        _camera.transform.eulerAngles = new Vector3(CameraSettings.Angle, 0, 0);
+        _camera.transform.eulerAngles = new Vector3(CameraSettings.Angle, CameraSettings.DefaultRotation, 0);
         _camera.Follow = _followTarget.transform;
 
         _framingTransposer =_camera.AddCinemachineComponent<CinemachineFramingTransposer>();
