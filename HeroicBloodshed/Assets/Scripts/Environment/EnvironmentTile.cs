@@ -131,7 +131,7 @@ public class EnvironmentTile : MonoBehaviour
     {
         if(_renderer != null)
         {
-            color.a = 0.25f;
+            color.a = 0.1f;
 
             _renderer.material.color = color;
         }

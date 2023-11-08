@@ -53,7 +53,7 @@ public class EncounterManager : MonoBehaviour
     private IEnumerator Coroutine_LoadEncounter()
     {
         Debug.Log("Waiting on environment");
-       // yield return new WaitUntil(() => EnvironmentManager.Instance.AreTilesGenerated()); TODO
+        yield return new WaitUntil(() => EnvironmentManager.Instance.IsEnvironmentReady());
 
         _eventReceivers = new List<EncounterEventReceiver>();
 
@@ -62,13 +62,6 @@ public class EncounterManager : MonoBehaviour
         yield return new WaitWhile(() => canvasObject.GetComponent<EncounterCanvasManager>() == null);
         _canvas = canvasObject.GetComponent<EncounterCanvasManager>();
         _eventReceivers.Add(_canvas);
-
-        //TODO
-        ////create a camera rig 
-        //GameObject cameraRigObject = Instantiate(Prefab_EncounterCameraRig, this.transform);
-        //yield return new WaitWhile(() => cameraRigObject.GetComponent<EncounterCameraRig>() == null);
-        //_cameraRig = cameraRigObject.GetComponent<EncounterCameraRig>();
-        //_eventReceivers.Add(_cameraRig);
 
         //create audio manager
         GameObject audioManagerObject = Instantiate(Prefab_EncounterAudioManager, this.transform);

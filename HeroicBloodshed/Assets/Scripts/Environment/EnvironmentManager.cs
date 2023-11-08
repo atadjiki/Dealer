@@ -8,10 +8,6 @@ using static Constants;
 [RequireComponent(typeof(AstarPath))]
 public class EnvironmentManager: MonoBehaviour
 {
-    //event handling
-    public delegate void EnvironmentGeneratedDelegate();
-    public EnvironmentGeneratedDelegate OnEnvironmentReady;
-
     //singleton
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
@@ -24,6 +20,8 @@ public class EnvironmentManager: MonoBehaviour
     //Collections
     private Dictionary<TeamID, List<EnvironmentSpawnPoint>> _spawnPoints;
     private Dictionary<EnvironmentObstacleType, List<EnvironmentObstacle>> _obstacles;
+
+    private bool _ready = false;
 
     private void Awake()
     {
@@ -50,6 +48,12 @@ public class EnvironmentManager: MonoBehaviour
         RegisterSpawnMarkers();
         RegisterObstacles();
 
+        Debug.Log("Building tile grid");
+        yield return new WaitUntil(() => GetComponentInChildren<EnvironmentTileGrid>() != null);
+        _tileGrid = GetComponentInChildren<EnvironmentTileGrid>();
+        _tileGrid.GenerateTiles();
+        yield return new WaitUntil(() => _tileGrid.IsGenerated());
+
         Debug.Log("Creating camera rig");
         ResourceRequest cameraRigRequest = GetEnvironmentCameraRig();
         yield return new WaitUntil(() => cameraRigRequest.isDone);
@@ -57,11 +61,14 @@ public class EnvironmentManager: MonoBehaviour
         yield return new WaitUntil(() => cameraRigObject.GetComponent<EnvironmentCameraRig>() != null);
         _cameraRig = cameraRigObject.GetComponent<EnvironmentCameraRig>();
 
-        Debug.Log("Building tile grid");
-        yield return new WaitUntil(() => GetComponentInChildren<EnvironmentTileGrid>() != null);
-        _tileGrid = GetComponentInChildren<EnvironmentTileGrid>();
-        _tileGrid.GenerateTiles();
-        yield return new WaitUntil(() => _tileGrid.IsGenerated());
+        Debug.Log("Environment Ready");
+
+        _ready = true;
+    }
+
+    public bool IsEnvironmentReady()
+    {
+        return _ready;
     }
 
     private void RegisterSpawnMarkers()
@@ -123,7 +130,7 @@ public class EnvironmentManager: MonoBehaviour
         GameObject characterObject = new GameObject(name);
         characterObject.transform.parent = this.transform;
         characterObject.transform.localPosition = Vector3.zero;
-        characterObject.transform.localRotation = Quaternion.identity;
+        characterObject.transform.rotation = spawnPoint.transform.rotation;
         characterObject.transform.position = closestPos;
         return characterObject;
     }
