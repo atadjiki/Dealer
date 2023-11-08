@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4387473409232866011}
   - component: {fileID: 6059079723414993820}
-  m_Layer: 0
-  m_Name: SpawnMarker
+  - component: {fileID: 3159118536917051607}
+  m_Layer: 8
+  m_Name: EnvironmentSpawnMarker_Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +48,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugMesh: {fileID: 8326329189756385862}
   Team: 0
+--- !u!65 &3159118536917051607
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3142596866054573793}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &6802021675319758719
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,7 +80,7 @@ GameObject:
   - component: {fileID: 1437339397285763218}
   - component: {fileID: 8640132108979443988}
   - component: {fileID: 3493726218002029353}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +163,7 @@ GameObject:
   - component: {fileID: 6844926023639693659}
   - component: {fileID: 2005077213819756168}
   - component: {fileID: 2806471345139693148}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}

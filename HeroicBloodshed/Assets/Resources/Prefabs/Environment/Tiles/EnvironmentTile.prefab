@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2828474265351301080}
   - component: {fileID: 2111573178545586969}
   - component: {fileID: 7455635202653170741}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: EnvironmentTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Neighbors: []
   Obstacle: {fileID: 0}
+  SpawnMarker: {fileID: 0}
 --- !u!65 &7455635202653170741
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -81,7 +82,7 @@ GameObject:
   - component: {fileID: 4589373342980957841}
   - component: {fileID: 4942799432078583512}
   - component: {fileID: 1506249415389024771}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
