@@ -33,6 +33,8 @@ public static partial class Constants
     {
         NONE,
 
+        MALE_DEA,
+
         MALE_GENERIC,
 
         MALE_GENERIC_ENEMY,

@@ -108,6 +108,8 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
                 CharacterComponent character = _model.GetCurrentCharacter();
+                CameraRig.Instance.Follow(character);
+
                 if (character.IsAlive())
                 {
                     character.HandleEvent(null, CharacterEvent.SELECTED);
@@ -229,7 +231,7 @@ public class EncounterManager : MonoBehaviour
 
         caster.PlayAudio(CharacterAudioType.Confirm);
 
-        UnfollowCharacter();
+        //UnfollowCharacter();
 
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
         yield return new WaitForSeconds(0.5f);
@@ -254,22 +256,9 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
-    //helpers
-    public void FollowCharacter(CharacterComponent characterComponent)
-    {
-        //TODO
-        //_cameraRig.GoToCharacter(characterComponent);
-    }
-
-    public void UnfollowCharacter()
-    {
-        //TODO
-        //_cameraRig.GoToMainCamera();
-    }
-
     public void OnAbilityCancelled()
     {
-        FollowCharacter(_model.GetCurrentCharacter());
+        CameraRig.Instance.Follow(_model.GetCurrentCharacter());
 
         _model.CancelActiveAbility();
 

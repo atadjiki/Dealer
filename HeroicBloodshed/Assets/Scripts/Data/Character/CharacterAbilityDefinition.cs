@@ -28,7 +28,7 @@ public class AbilityHandler : MonoBehaviour
             yield return Coroutine_FireWeaponAt(damageInfo);
             target.HandleEvent(damageInfo, CharacterEvent.KILLED);
             EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
-            EncounterManager.Instance.FollowCharacter(target);
+            CameraRig.Instance.Follow(target);
             yield return new WaitForSeconds(_waitTime * 2);
         }
         else

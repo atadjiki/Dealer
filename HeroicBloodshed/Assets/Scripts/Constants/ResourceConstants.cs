@@ -8,6 +8,8 @@ public static partial class Constants
     {
         switch(ID)
         {
+            case ModelID.MALE_DEA:
+                return PrefabID.Model_Character_Male_DEA;
             case ModelID.MALE_GENERIC:
                 return PrefabID.Model_Character_Male_Generic;
             case ModelID.MALE_GENERIC_ENEMY:
@@ -32,9 +34,9 @@ public static partial class Constants
         }
     }
 
-    public static ResourceRequest GetEnvironmentCameraRig()
+    public static ResourceRequest GetCameraRig()
     {
-        return GetPrefab(PrefabCategory.Environment, PrefabSubcategory.Camera, PrefabID.EnvironmentCameraRig);
+        return GetPrefab(PrefabCategory.Camera, PrefabSubcategory.Camera, PrefabID.CameraRig);
     }
 
     public static ResourceRequest GetEncounterUI(PrefabID ID)
@@ -87,7 +89,7 @@ public static partial class Constants
             subcategory + "/" +
             ID.ToString();
 
-        Debug.Log("Loading Prefab: " + fileName);
+       // Debug.Log("Loading Prefab: " + fileName);
 
         ResourceRequest resourceRequest = Resources.LoadAsync<GameObject>(fileName);
 
@@ -96,6 +98,7 @@ public static partial class Constants
 
     public enum PrefabCategory
     {
+        Camera,
         Character,
         Encounter,
         Environment,
@@ -117,6 +120,9 @@ public static partial class Constants
     {
         INVALID,
 
+        //Camera
+        CameraRig,
+
         //Character
         Character_Anchor_Overhead,
         Character_AudioSource_Female,
@@ -129,11 +135,6 @@ public static partial class Constants
 
         //Environment
         Environment_DrugHideout,
-        EnvironmentCameraRig,
-
-        ////Encounter
-        //Encounter_Camera_Character,
-        //Encounter_Camera_Main,
 
         Encounter_Manager_Audio,
         //Encounter_Manager_CameraRig,
@@ -157,6 +158,7 @@ public static partial class Constants
         //Model
 
         //Characters
+        Model_Character_Male_DEA,
         Model_Character_Male_Generic,
         Model_Character_Male_Generic_Enemy,
 
@@ -194,7 +196,7 @@ public static partial class Constants
     {
         string fileName = "Textures/" + ID.ToString();
 
-        Debug.Log("Loading Texture: " + fileName);
+        //Debug.Log("Loading Texture: " + fileName);
 
         ResourceRequest resourceRequest = Resources.LoadAsync<Texture2D>(fileName);
 
@@ -257,7 +259,7 @@ public static partial class Constants
     {
         string fileName = "Audio/" + ID.ToString();
 
-        Debug.Log("Loading Audio Clip: " + fileName);
+        //Debug.Log("Loading Audio Clip: " + fileName);
 
         ResourceRequest resourceRequest = Resources.LoadAsync<AudioClip>(fileName);
 

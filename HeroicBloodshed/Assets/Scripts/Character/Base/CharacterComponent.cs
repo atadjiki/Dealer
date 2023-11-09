@@ -80,6 +80,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, _weaponAnchor.transform);
 
+            weaponPrefab.transform.parent = _weaponAnchor.transform;
+
             _weapon = weaponPrefab.GetComponent<CharacterWeapon>();
 
             _weapon.Setup(_ID, weaponID);
@@ -99,7 +101,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         yield return new WaitUntil(() => outlineRequest.isDone);
         GameObject outlineObject = Instantiate<GameObject>((GameObject)outlineRequest.asset, this.transform);
         _outline = outlineObject.GetComponent<CharacterOutlineController>();
-        _outline.Setup(characterDefinition, this.gameObject);
+        _outline.Setup(characterDefinition, _model.gameObject);
         _eventReceivers.Add(_outline);
 
         //create an audio source

@@ -15,7 +15,6 @@ public class EnvironmentManager: MonoBehaviour
     //private
     private GridGraph _gridGraph;
     private EnvironmentTileGrid _tileGrid;
-    private EnvironmentCameraRig _cameraRig;
 
     //Collections
     private Dictionary<TeamID, List<EnvironmentSpawnPoint>> _spawnPoints;
@@ -54,12 +53,11 @@ public class EnvironmentManager: MonoBehaviour
         _tileGrid.GenerateTiles();
         yield return new WaitUntil(() => _tileGrid.IsGenerated());
 
-        Debug.Log("Creating camera rig");
-        ResourceRequest cameraRigRequest = GetEnvironmentCameraRig();
-        yield return new WaitUntil(() => cameraRigRequest.isDone);
-        GameObject cameraRigObject = Instantiate<GameObject>((GameObject)cameraRigRequest.asset);
-        yield return new WaitUntil(() => cameraRigObject.GetComponent<EnvironmentCameraRig>() != null);
-        _cameraRig = cameraRigObject.GetComponent<EnvironmentCameraRig>();
+        //Debug.Log("Creating camera rig");
+        //ResourceRequest cameraRigRequest = GetEnvironmentCameraRig();
+        //yield return new WaitUntil(() => cameraRigRequest.isDone);
+        //GameObject cameraRigObject = Instantiate<GameObject>((GameObject)cameraRigRequest.asset);
+        //yield return new WaitUntil(() => cameraRigObject.GetComponent<CameraRig>() != null);
 
         Debug.Log("Environment Ready");
 

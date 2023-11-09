@@ -67,7 +67,7 @@ public class EncounterCanvasManager : EncounterEventReceiver
 
     private void GenerateUIElement(GameObject prefab)
     {
-        GameObject gameObject = Instantiate<GameObject>(prefab);
+        GameObject gameObject = Instantiate<GameObject>(prefab, this.transform);
         EncounterUIElement component = gameObject.GetComponent<EncounterUIElement>();
         component.Hide();
         _elements.Add(component);

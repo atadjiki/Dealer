@@ -26,8 +26,7 @@ public class EncounterTargetButton : Button, IPointerEnterHandler, IPointerExitH
             _character.ToggleHighlight(true);
 
             //follow character
-            EncounterManager.Instance.FollowCharacter(_character);
-
+            CameraRig.Instance.Follow(_character);
             //rotate caster towards target
             EncounterManager.Instance.OnEnemyHighlighted(_character);
         }
@@ -40,7 +39,7 @@ public class EncounterTargetButton : Button, IPointerEnterHandler, IPointerExitH
         if (_character != null)
         {
             _character.ToggleHighlight(false);
-            EncounterManager.Instance.UnfollowCharacter();
+            //EncounterManager.Instance.UnfollowCharacter();
         }
     }
 
