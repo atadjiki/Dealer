@@ -55,6 +55,7 @@ public class EnvironmentTileGrid : MonoBehaviour
 
             EnvironmentTile tile = tileDecal.GetComponent<EnvironmentTile>();
             tile.Setup(row, col);
+            tile.OnTileSelected += OnTileSelected;
 
             _tileMap.Add(node, tile);
 
@@ -73,6 +74,11 @@ public class EnvironmentTileGrid : MonoBehaviour
         }
 
         _generated = true;
+    }
+
+    public void OnTileSelected(EnvironmentTile tile)
+    {
+        EncounterManager.Instance.OnEnvironmentTileSelected(tile);
     }
 
     public EnvironmentTile GetClosestTile(GraphNode node)

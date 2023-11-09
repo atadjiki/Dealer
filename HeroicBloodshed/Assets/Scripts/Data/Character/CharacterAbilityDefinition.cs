@@ -7,6 +7,14 @@ public class AbilityHandler : MonoBehaviour
 {
     private static float _waitTime = 1.0f;
 
+    public static IEnumerator Coroutine_MoveToTile(CharacterComponent caster, EnvironmentTile tile)
+    {
+        Vector3 destination = EnvironmentManager.Instance.GetClosestPositionToTile(tile);
+        caster.transform.position = destination;
+
+        yield return new WaitForSeconds(_waitTime);
+    }
+
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
         yield return Coroutine_RotateTowards(target, caster);

@@ -293,18 +293,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stage: 1
-  renderingStrategy: 0
+  renderingStrategy: 1
   renderingMode: 0
   outlineLayerMask: -1
   primaryBufferSizeMode: 0
-  primaryRendererScale: 0.75
-  primarySizeReference: 800
-  blurShift: 1
-  dilateShift: 1
+  primaryRendererScale: 0.8
+  primarySizeReference: 900
+  blurShift: 0.1
+  dilateShift: 0.15
   dilateIterations: 1
-  dilateQuality: 0
+  dilateQuality: 2
   blurIterations: 1
-  blurType: 1
+  blurType: 2
 --- !u!1 &3321274039668110141
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,7 +339,7 @@ Transform:
   - {fileID: 2618554557609966007}
   - {fileID: 8434413886764474608}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2788603793618814410
 MonoBehaviour:

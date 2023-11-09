@@ -238,6 +238,10 @@ public class EncounterManager : MonoBehaviour
 
         switch (abilityID)
         {
+            case AbilityID.Move:
+                EnvironmentTile tile = _model.GetActiveDestination();
+                yield return AbilityHandler.Coroutine_MoveToTile(caster, tile);
+                break;
             case AbilityID.Attack:
                 CharacterComponent target = _model.GetActiveTarget();
                 yield return AbilityHandler.Coroutine_HandleAbility_Attack(caster, target);
@@ -270,6 +274,19 @@ public class EncounterManager : MonoBehaviour
         _model.SetActiveAbility(abilityID);
 
         _model.TransitionState();
+    }
+
+    public void OnEnvironmentTileSelected(EnvironmentTile environmentTile)
+    {
+        if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
+        {
+            Debug.Log("Tile " + environmentTile.GetCoordinates().ToString() + " selected");
+
+            _model.SetActiveDestination(environmentTile);
+            _model.SetActiveAbility(AbilityID.Move);
+
+            _model.TransitionState();
+        }
     }
 
     public bool AreTargetsAvailable()

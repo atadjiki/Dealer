@@ -31,6 +31,7 @@ public class EncounterModel : MonoBehaviour
 
     private AbilityID _activeAbility = AbilityID.NONE;
     private CharacterComponent _activeTarget = null;
+    private EnvironmentTile _activeDestination = null;
 
     //
     //state machine
@@ -401,6 +402,16 @@ public class EncounterModel : MonoBehaviour
     public CharacterComponent GetActiveTarget()
     {
         return _activeTarget;
+    }
+
+    public void SetActiveDestination(EnvironmentTile tile)
+    {
+        _activeDestination = tile;
+    }
+
+    public EnvironmentTile GetActiveDestination()
+    {
+        return _activeDestination;
     }
 
     public void CancelActiveAbility()

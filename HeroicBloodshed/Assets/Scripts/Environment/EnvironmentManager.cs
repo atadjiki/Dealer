@@ -117,6 +117,11 @@ public class EnvironmentManager: MonoBehaviour
         return null;
     }
 
+    public Vector3 GetClosestPositionToTile(EnvironmentTile tile)
+    {
+        return _tileGrid.GetClosestTilePosition(tile.transform.position);
+    }
+
     private GameObject CreateCharacterObject(string name, EnvironmentSpawnPoint spawnPoint)
     {
         //adjust spawn marker to the position of the closest tile

@@ -189,8 +189,6 @@ public class EnvironmentTile : MonoBehaviour
 
     public void Select()
     {
-        Debug.Log("Tile " + _coordinates.ToString() + " selected");
-
         if (OnTileSelected != null)
         {
             OnTileSelected.Invoke(this);
