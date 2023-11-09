@@ -23,7 +23,7 @@ public class EnvironmentCameraSettings
     
     [Header("Movement")]
     public float CameraSpeed = 15f;
-    public float ScreenEdgeDelta = 10;
+    public float ScreenEdgeDelta = 1;
     public float BoundaryWidth = 32;
 
 }

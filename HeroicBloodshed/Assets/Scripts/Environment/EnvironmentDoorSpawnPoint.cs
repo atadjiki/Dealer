@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class DoorSpawnPoint : EnvironmentSpawnPoint
+public class EnvironmentDoorSpawnPoint : EnvironmentSpawnPoint
 {
     [Header("Door Mechanism")]
     [SerializeField] private GameObject DoorMesh;

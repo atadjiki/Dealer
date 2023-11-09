@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
-using EPOOutline;
 
 public class CharacterDecal : MonoBehaviour
 {
-    [SerializeField] private Outlinable Outline;
+    private List<SpriteRenderer> _renderers;
+
+    private void Awake()
+    {
+        _renderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
+    }
 
     public void SetColor(TeamID team)
     {
         Color teamColor = GetColorByTeam(team, 1.0f);
+        teamColor.a = 0.2f;
 
-        Outline.OutlineParameters.Color = teamColor;
-
-        teamColor.a = 0.15f;
-
-        Outline.OutlineParameters.FillPass.SetColor("_PublicColor", teamColor);
+        foreach(SpriteRenderer renderer in _renderers)
+        {
+            renderer.color = teamColor;
+        }
     }
 }

@@ -11,32 +11,4 @@ public class EnvironmentWall : MonoBehaviour
     {
         _renderers = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject collidedObject = other.gameObject;
-
-        if (collidedObject.GetComponent<EnvironmentCameraTarget>())
-        {
-            ToggleVisiblity(false);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        GameObject collidedObject = other.gameObject;
-
-        if (collidedObject.GetComponent<EnvironmentCameraTarget>())
-        {
-            ToggleVisiblity(true);
-        }
-    }
-
-    private void ToggleVisiblity(bool flag)
-    {
-        foreach (MeshRenderer renderer in _renderers)
-        {
-            renderer.enabled = flag;
-        }
-    } 
 }

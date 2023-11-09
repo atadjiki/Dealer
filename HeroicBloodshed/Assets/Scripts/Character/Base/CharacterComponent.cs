@@ -20,6 +20,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     protected CharacterOverheadAnchor _overheadAnchor;
     protected CharacterWeaponAnchor _weaponAnchor;
 
+    protected CharacterDecal _decal;
+
     protected int _health = 0;
     protected int _baseHealth = 0;
 
@@ -84,6 +86,13 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             _eventReceivers.Add(_weapon);
         }
+
+        //create a decal for this character
+        ResourceRequest decalRequest = GetCharacterComponent(PrefabID.Character_Decal);
+        yield return new WaitUntil(() => decalRequest.isDone);
+        GameObject decalObject = Instantiate<GameObject>((GameObject)decalRequest.asset, this.transform);
+        _decal = decalObject.GetComponent<CharacterDecal>();
+        _decal.SetColor(GetTeam());
 
         //create an outline container for the model 
         ResourceRequest outlineRequest = GetCharacterComponent(PrefabID.Character_Outliner);
