@@ -9,6 +9,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     //Event Receivers
     protected CharacterModel _model;
+    protected CharacterNavigator _navigator;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
     protected CharacterAudioSource _audioSource;
@@ -56,11 +57,25 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
-        //get model from character ID
+        //create a navigator for the character
+        ResourceRequest navigatorRequest = GetCharacterComponent(PrefabID.Character_Navigator);
+        yield return new WaitUntil(() => navigatorRequest.isDone);
+        GameObject navigatorObject = Instantiate<GameObject>((GameObject)navigatorRequest.asset, this.transform);
+        _navigator = navigatorObject.GetComponent<CharacterNavigator>();
+
+        //add a colider for mouse interaction
+        _collider = navigatorObject.AddComponent<CapsuleCollider>();
+        yield return new WaitWhile(() => _collider == null);
+        _collider.isTrigger = true;
+        _collider.radius = 0.5f;
+        _collider.height = 2.0f;
+        _collider.center = new Vector3(0, 1.0f, 0);
+
+        //get model from character ID and attach to navigator
         ModelID modelID = characterDefinition.AllowedModels[Random.Range(0, characterDefinition.AllowedModels.Length)];
         ResourceRequest modelRequest = GetCharacterModel(modelID);
         yield return new WaitUntil(() => modelRequest.isDone);
-        GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, this.transform);
+        GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, navigatorObject.transform);
         _model = modelPrefab.GetComponent<CharacterModel>();
         yield return new WaitUntil(() => _model != null);
 
@@ -116,14 +131,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         yield return new WaitUntil(() => _animator != null);
         _animator.Setup(AnimState.Idle, _weapon.GetID());
         _eventReceivers.Add(_animator);
-
-        //add a colider for mouse interaction
-        _collider = this.gameObject.AddComponent<CapsuleCollider>();
-        yield return new WaitWhile(() => _collider == null);
-        _collider.isTrigger = true;
-        _collider.radius = 0.5f;
-        _collider.height = 2.0f;
-        _collider.center = new Vector3(0, 1.0f, 0);
 
         if (onSetupComplete != null)
         {
@@ -463,7 +470,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         yield return new WaitUntil(() => request.isDone);
 
-        GameObject overheadPrefab = Instantiate((GameObject)request.asset, null);
+        GameObject overheadPrefab = Instantiate((GameObject)request.asset, this.transform);
 
         if (overheadPrefab != null)
         {

@@ -11,20 +11,20 @@ public class EnvironmentTile : MonoBehaviour
     public delegate void TileSelectedDelegate(EnvironmentTile environmentTile);
     public TileSelectedDelegate OnTileSelected;
 
-    [SerializeField] private List<EnvironmentTile> _neighbors;
-
-    [SerializeField] private EnvironmentObstacle _obstacle;
-
-    [SerializeField] private EnvironmentSpawnPoint _spawnPoint;
+    private List<EnvironmentTile> _neighbors;
+    private EnvironmentObstacle _obstacle;
+    private EnvironmentSpawnPoint _spawnPoint;
 
     private Vector2 _coordinates;
     private BoxCollider _collider;
     private MeshRenderer _renderer;
+    private Outlinable _outliner;
 
     private void Awake()
     {
         _collider = GetComponent<BoxCollider>();
         _renderer = GetComponentInChildren<MeshRenderer>();
+        _outliner = GetComponent<Outlinable>();
 
         ToggleVisibility(false);
     }
@@ -234,6 +234,7 @@ public class EnvironmentTile : MonoBehaviour
     public void ToggleVisibility(bool flag)
     {
         _renderer.gameObject.SetActive(flag);
+        _outliner.enabled = flag;
     }
 
     public void Select()

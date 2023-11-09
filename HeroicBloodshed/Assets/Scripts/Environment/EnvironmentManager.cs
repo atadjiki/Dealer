@@ -131,7 +131,6 @@ public class EnvironmentManager: MonoBehaviour
         Debug.Log("Adjusted spawn marker from " + initialPos.ToString() + " to " + closestPos.ToString());
 
         GameObject characterObject = new GameObject(name);
-        characterObject.transform.parent = this.transform;
         characterObject.transform.localPosition = Vector3.zero;
         characterObject.transform.rotation = spawnPoint.transform.rotation;
         characterObject.transform.position = closestPos;

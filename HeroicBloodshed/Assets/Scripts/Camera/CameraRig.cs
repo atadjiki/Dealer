@@ -28,6 +28,7 @@ public class CameraRig : MonoBehaviour
 {
     [Header("MainCamera")]
     [SerializeField] private CinemachineVirtualCamera CM_Main;
+    [SerializeField] private CinemachineVirtualCamera CM_Overview;
 
     [Header("FollowTarget")]
     [SerializeField] private CameraFollowTarget FollowTarget;
@@ -40,9 +41,7 @@ public class CameraRig : MonoBehaviour
     public static CameraRig Instance { get { return _instance; } }
 
     private CinemachineFramingTransposer _framingTransposer;
-
     private BoxCollider _collider;
-
     private bool _rotating = false;
 
     private void Awake()
@@ -63,7 +62,12 @@ public class CameraRig : MonoBehaviour
     {
         _collider = this.gameObject.GetComponent<BoxCollider>();
 
-        SetupCamera();
+        _framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();
+        _framingTransposer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
+        _framingTransposer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
+        _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
+
+        SwitchToOverviewCam();
     }
 
     private void Update()
@@ -77,15 +81,8 @@ public class CameraRig : MonoBehaviour
     public void Follow(CharacterComponent character)
     {
         Debug.Log("New Follow Target " + character.GetID());
+        SwitchToMainCam();
         FollowTarget.transform.position = character.transform.position;
-    }
-
-    private void SetupCamera()
-    {
-        _framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();
-        _framingTransposer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
-        _framingTransposer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
-        _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
     }
 
     private void Update_Zoom()
@@ -210,6 +207,18 @@ public class CameraRig : MonoBehaviour
         CM_Main.transform.eulerAngles = new Vector3(45, targetAngle, 0);
 
         _rotating = false;
+    }
+
+    public void SwitchToMainCam()
+    {
+        CM_Overview.Priority = 0;
+        CM_Main.Priority = 10;
+    }
+
+    public void SwitchToOverviewCam()
+    {
+        CM_Main.Priority = 0;
+        CM_Overview.Priority = 10;
     }
 
 }
