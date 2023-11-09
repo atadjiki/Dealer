@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 228133484}
   - component: {fileID: 228133483}
   - component: {fileID: 228133482}
+  - component: {fileID: 228133485}
   m_Layer: 0
   m_Name: DebugCamera
   m_TagString: MainCamera
@@ -380,7 +381,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -453,11 +454,36 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_AllowDynamicResolution: 1
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &228133485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228133480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stage: 1
+  renderingStrategy: 0
+  renderingMode: 0
+  outlineLayerMask: -1
+  primaryBufferSizeMode: 0
+  primaryRendererScale: 0.75
+  primarySizeReference: 800
+  blurShift: 1
+  dilateShift: 1
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 1
+  blurType: 1
 --- !u!4 &261593938 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7412587250117893084, guid: 6f565a4b88372254695250888f2d7a14, type: 3}
@@ -606,7 +632,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 8.1e-44}
+  m_BoundingSphereOverride: {x: 4.5904e-41, y: 1.5157203e+35, z: 4.5904e-41, w: 9.403955e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -674,6 +700,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -765,6 +799,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -890,7 +932,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0.13671875, y: 42, z: 14, w: 0}
+  m_BoundingSphereOverride: {x: 7.6e-43, y: 4.898178e+30, z: 7.6e-43, w: 9.403955e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -1346,7 +1388,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0.13671875, y: 42, z: 14, w: 0}
+  m_BoundingSphereOverride: {x: 7.6e-43, y: 4.898178e+30, z: 7.6e-43, w: 2.955e-42}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -2104,7 +2146,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1.1621705e-29, z: 6.53e-43, w: 5.7054e-41}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: NaN}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -2588,6 +2630,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3543,6 +3593,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3602,6 +3660,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3806,6 +3872,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4304,6 +4378,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4320,10 +4402,6 @@ PrefabInstance:
     - target: {fileID: 109907906253107107, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_Name
       value: Wall_Interior_Default (14)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6834100655222045407, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_RootOrder
@@ -4367,6 +4445,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4647,6 +4733,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -5909,6 +6003,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5988,6 +6090,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6272,6 +6382,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6845,6 +6963,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -8446,6 +8572,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9233,6 +9367,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636054728435954831, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
+      propertyPath: outlineTargets.Array.data[0].IsVisible
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

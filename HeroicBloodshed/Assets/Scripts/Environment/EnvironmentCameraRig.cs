@@ -73,6 +73,13 @@ public class EnvironmentCameraRig : MonoBehaviour
         Update_Rotation();
         Update_Movement_Keys();
         Update_Movement_Mouse();
+
+        Update_Raycast();
+    }
+
+    private void Update_Raycast()
+    {
+
     }
 
     private void Update_Zoom()

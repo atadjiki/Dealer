@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7702963973358470153}
-  - component: {fileID: 6834100655222045407}
+  - component: {fileID: -5716700401777985757}
   - component: {fileID: 5840213080223096161}
   m_Layer: 11
   m_Name: Wall_Interior_Corner
@@ -34,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6834100655222045407
+--- !u!65 &-5716700401777985757
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 3, z: 0.5}
-  m_Center: {x: 0, y: 1.5, z: 0}
+  m_Size: {x: 3, y: 3, z: 0.2}
+  m_Center: {x: -1.5, y: 1.5, z: 0}
 --- !u!114 &5840213080223096161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,6 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c44080d1256c1409357d3adf818203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Mesh_Default: {fileID: 9165141646908442651}
+  Mesh_Alternate: {fileID: 9165141646908442651}
+  CheckOverlap: 0
 --- !u!1 &9165141646908442651
 GameObject:
   m_ObjectHideFlags: 0

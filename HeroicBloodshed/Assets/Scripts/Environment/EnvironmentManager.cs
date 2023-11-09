@@ -57,7 +57,7 @@ public class EnvironmentManager: MonoBehaviour
         Debug.Log("Creating camera rig");
         ResourceRequest cameraRigRequest = GetEnvironmentCameraRig();
         yield return new WaitUntil(() => cameraRigRequest.isDone);
-        GameObject cameraRigObject = Instantiate<GameObject>((GameObject)cameraRigRequest.asset, this.transform);
+        GameObject cameraRigObject = Instantiate<GameObject>((GameObject)cameraRigRequest.asset);
         yield return new WaitUntil(() => cameraRigObject.GetComponent<EnvironmentCameraRig>() != null);
         _cameraRig = cameraRigObject.GetComponent<EnvironmentCameraRig>();
 
