@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7702963973358470153}
   - component: {fileID: 5811164085135852277}
   - component: {fileID: 5840213080223096161}
+  - component: {fileID: 8658174681887682344}
   m_Layer: 11
   m_Name: Wall_Interior_Window
   m_TagString: Untagged
@@ -67,9 +68,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c44080d1256c1409357d3adf818203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mesh_Default: {fileID: 9165141646908442651}
-  Mesh_Alternate: {fileID: 0}
-  CheckOverlap: 1
+--- !u!114 &8658174681887682344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109907906253107107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da784a08b559f624f904dbe1d123ae8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxFadeDistance: 16
 --- !u!1 &9165141646908442651
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +142,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 281a4c418aae1104eaf0626b78d547ed, type: 2}
+  - {fileID: 2100000, guid: 39b756c7990377f44b96eb631e28cc62, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

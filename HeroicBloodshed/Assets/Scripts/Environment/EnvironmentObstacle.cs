@@ -11,42 +11,34 @@ public class EnvironmentObstacle : MonoBehaviour
 {
     [SerializeField] private EnvironmentObstacleType ObstacleType;
 
-    [SerializeField] private Shader BackShader;
+    //[SerializeField] private Shader FillShader;
 
     public EnvironmentObstacleType GetObstacleType() { return ObstacleType; }
 
     private BoxCollider _collider;
 
-    private Outlinable _outliner;
+    //private Outlinable _outliner;
 
-    private void Awake()
-    {
-        _collider = GetComponent<BoxCollider>();
+    //private void Awake()
+    //{
+    //    _collider = GetComponent<BoxCollider>();
+    //    _outliner = this.gameObject.AddComponent<Outlinable>();
 
-        _outliner = this.gameObject.AddComponent<Outlinable>();
+    //    _outliner.RenderStyle = RenderStyle.FrontBack;
 
-        _outliner.OutlineLayer = 0;
+    //    _outliner.BackParameters.Color = Color.clear;
+    //    //_outliner.BackParameters.FillPass.Shader = FillShader;
+    //    //_outliner.BackParameters.FillPass.SetColor("_PublicColor", fillColor);
 
-        _outliner.RenderStyle = RenderStyle.FrontBack;
+    //    _outliner.FrontParameters.Color = Color.grey;
+    //    //_outliner.FrontParameters.FillPass.Shader = FillShader;
+    //    //_outliner.FrontParameters.FillPass.SetColor("_PublicColor", fillColor);
 
-        _outliner.FrontParameters.Color = Color.white;
-
-        Color backColor = Color.grey;
-
-        _outliner.BackParameters.Color = backColor;
-        if (BackShader != null)
-        {
-            _outliner.BackParameters.FillPass.Shader = BackShader;
-            backColor.a = 0.1f;
-        }
-
-        _outliner.BackParameters.FillPass.SetColor("_PublicColor", backColor);
-
-        foreach (MeshRenderer renderer in this.gameObject.GetComponentsInChildren<MeshRenderer>())
-        {
-            OutlineTarget target = new OutlineTarget(renderer);
-            _outliner.TryAddTarget(target);
-        }
-    }
+    //    foreach (MeshRenderer renderer in this.gameObject.GetComponentsInChildren<MeshRenderer>())
+    //    {
+    //        OutlineTarget target = new OutlineTarget(renderer);
+    //        _outliner.TryAddTarget(target);
+    //    }
+    //}
 
 }

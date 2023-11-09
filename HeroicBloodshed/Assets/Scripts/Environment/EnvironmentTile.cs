@@ -11,11 +11,11 @@ public class EnvironmentTile : MonoBehaviour
     public delegate void TileSelectedDelegate(EnvironmentTile environmentTile);
     public TileSelectedDelegate OnTileSelected;
 
-    [SerializeField] private List<EnvironmentTile> Neighbors;
+    [SerializeField] private List<EnvironmentTile> _neighbors;
 
-    [SerializeField] private EnvironmentObstacle Obstacle;
+    [SerializeField] private EnvironmentObstacle _obstacle;
 
-    [SerializeField] private EnvironmentSpawnPoint SpawnPoint;
+    [SerializeField] private EnvironmentSpawnPoint _spawnPoint;
 
     private Vector2 _coordinates;
     private BoxCollider _collider;
@@ -33,6 +33,55 @@ public class EnvironmentTile : MonoBehaviour
     {
         CheckMouseHighlight();
         CheckMouseClick();
+    }
+
+    public List<EnvironmentTile> GetNeighbors()
+    {
+        return _neighbors;
+    }
+
+    public bool HasNeighbors()
+    {
+        if(_neighbors != null)
+        {
+            return _neighbors.Count > 0;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsFree()
+    {
+        //need to also check for other characters on these tiles
+
+        if(ContainsObstacle())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public EnvironmentObstacle GetObstacle()
+    {
+        return _obstacle;
+    }
+
+    public bool ContainsObstacle()
+    {
+        return _obstacle != null;
+    }
+
+    public EnvironmentSpawnPoint GetSpawnPoint()
+    {
+        return _spawnPoint;
+    }
+
+    public bool ContainsSpawnPoint()
+    {
+        return _spawnPoint != null;
     }
 
     private void CheckMouseHighlight()
@@ -82,7 +131,7 @@ public class EnvironmentTile : MonoBehaviour
 
     public void MarkAsCoverTile(EnvironmentObstacleType obstacleType)
     {
-        if(Obstacle != null) { return; }
+        if(_obstacle != null) { return; }
         switch(obstacleType)
         {
             case EnvironmentObstacleType.FullCover:
@@ -98,15 +147,15 @@ public class EnvironmentTile : MonoBehaviour
 
     public void PerformCoverCheck()
     {
-        if(Obstacle != null)
+        if(_obstacle != null)
         {
-            foreach(EnvironmentTile neighbor in Neighbors)
+            foreach(EnvironmentTile neighbor in _neighbors)
             {
                 float distance = Vector3.Distance(this.transform.position, neighbor.transform.position);
 
                 if (Mathf.Approximately(distance, 1))
                 {
-                    neighbor.MarkAsCoverTile(Obstacle.GetObstacleType());
+                    neighbor.MarkAsCoverTile(_obstacle.GetObstacleType());
                 }
             }
         }
@@ -118,11 +167,11 @@ public class EnvironmentTile : MonoBehaviour
         GatherObstacles();
         GatherSpawnMarkers();
 
-        if (SpawnPoint != null)
+        if (_spawnPoint != null)
         {
             SetColor(Color.green);
         }
-        else if (Obstacle != null)
+        else if (_obstacle != null)
         {
             SetColor(Color.red);
         }
@@ -134,7 +183,7 @@ public class EnvironmentTile : MonoBehaviour
 
     private void GatherNeighbors()
     {
-        Neighbors = new List<EnvironmentTile>();
+        _neighbors = new List<EnvironmentTile>();
 
         foreach (Collider collider in Physics.OverlapSphere(this.transform.position, 1f, LayerMask.GetMask("EnvironmentTile")))
         {
@@ -142,29 +191,29 @@ public class EnvironmentTile : MonoBehaviour
 
             if (neighbor != this)
             {
-                Neighbors.Add(neighbor);
+                _neighbors.Add(neighbor);
             }
         }
     }
 
     private void GatherObstacles()
     {
-        Obstacle = null;
+        _obstacle = null;
 
         foreach (Collider collider in Physics.OverlapSphere(this.transform.position, 0.1f, LayerMask.GetMask("EnvironmentObstacle")))
         {
-            Obstacle = collider.gameObject.GetComponent<EnvironmentObstacle>();
+            _obstacle = collider.gameObject.GetComponent<EnvironmentObstacle>();
             break;
         }
     }
 
     private void GatherSpawnMarkers()
     {
-        SpawnPoint = null;
+        _spawnPoint = null;
 
         foreach (Collider collider in Physics.OverlapSphere(this.transform.position, 0.1f, LayerMask.GetMask("EnvironmentSpawnMarker")))
         {
-            SpawnPoint = collider.gameObject.GetComponent<EnvironmentSpawnPoint>();
+            _spawnPoint = collider.gameObject.GetComponent<EnvironmentSpawnPoint>();
             break;
         }
     }

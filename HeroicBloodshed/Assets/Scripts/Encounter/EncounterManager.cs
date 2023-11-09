@@ -282,10 +282,13 @@ public class EncounterManager : MonoBehaviour
         {
             Debug.Log("Tile " + environmentTile.GetCoordinates().ToString() + " selected");
 
-            _model.SetActiveDestination(environmentTile);
-            _model.SetActiveAbility(AbilityID.Move);
+            if(environmentTile.IsFree())
+            {
+                _model.SetActiveDestination(environmentTile);
+                _model.SetActiveAbility(AbilityID.Move);
 
-            _model.TransitionState();
+                _model.TransitionState();
+            }
         }
     }
 
