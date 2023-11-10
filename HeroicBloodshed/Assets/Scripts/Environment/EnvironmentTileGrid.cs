@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentTileGrid : MonoBehaviour
+public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 {
     [SerializeField] private GameObject TilePrefab;
 
@@ -160,5 +160,33 @@ public class EnvironmentTileGrid : MonoBehaviour
         }
 
         return tiles;
+    }
+
+    public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
+    {
+        switch(stateID)
+        {
+            case EncounterState.CHOOSE_ACTION:
+
+                if(!model.IsCurrentTeamCPU())
+                {
+                    AllowTileUpdate(true);
+                }
+
+                break;
+            default:
+                AllowTileUpdate(false);
+                break;
+        }
+
+        yield return null;
+    }
+
+    private void AllowTileUpdate(bool flag)
+    {
+        foreach(EnvironmentTile tile in _tileMap.Values)
+        {
+            tile.AllowUpdate(flag);
+        }
     }
 }

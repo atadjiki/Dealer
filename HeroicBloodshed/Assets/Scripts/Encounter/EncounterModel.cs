@@ -56,7 +56,7 @@ public class EncounterModel : MonoBehaviour
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
             {
-                CharacterComponent characterComponent = EnvironmentManager.Instance.SpawnCharacter(teamData.Team, characterID);
+                CharacterComponent characterComponent = EnvironmentUtil.SpawnCharacter(teamData.Team, characterID);
 
                 if(characterComponent != null)
                 {

@@ -1,4 +1,5 @@
 using EPOOutline;
+using Pathfinding;
 using Pathfinding.RVO;
 using System.Collections;
 using System.Collections.Generic;

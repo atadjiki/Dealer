@@ -103,6 +103,9 @@ public class EncounterManager : MonoBehaviour
             yield return receiver.Coroutine_StateUpdate(state, _model);
         }
 
+        //broadcast to other managers as well
+        yield return EnvironmentManager.Instance.Coroutine_EncounterStateUpdate(state, _model);
+
         switch (state)
         {
             case EncounterState.SELECT_CURRENT_CHARACTER:

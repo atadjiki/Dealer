@@ -108,6 +108,10 @@ public static partial class Constants
         HIT,
 
         KILLED,
+
+        MOVING,
+
+        STOPPED,
     }
 
     public enum EncounterState

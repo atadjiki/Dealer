@@ -20,6 +20,18 @@ public class EnvironmentTile : MonoBehaviour
     private MeshRenderer _renderer;
     private Outlinable _outliner;
 
+    private bool _allowUpdate = false;
+
+    public void AllowUpdate(bool flag)
+    {
+        _allowUpdate = flag;
+
+        if(!_allowUpdate)
+        {
+            ToggleVisibility(false);
+        }
+    }
+
     private void Awake()
     {
         _collider = GetComponent<BoxCollider>();
@@ -31,8 +43,11 @@ public class EnvironmentTile : MonoBehaviour
 
     private void Update()
     {
-        CheckMouseHighlight();
-        CheckMouseClick();
+        if(_allowUpdate)
+        {
+            CheckMouseHighlight();
+            CheckMouseClick();
+        }
     }
 
     public List<EnvironmentTile> GetNeighbors()

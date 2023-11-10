@@ -5,7 +5,27 @@ using static Constants;
 
 public class EnvironmentUtil : MonoBehaviour
 {
-    public static GameObject CreateCharacterObject(string name, EnvironmentTile tile)
+    public static CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
+    {
+        if(EnvironmentManager.Instance == null)
+        {
+            Debug.Log("Environment Manager is not initialized");
+                return null;
+        }
+
+        //see if we have a marker available to spawn them in
+        foreach (EnvironmentTile tile in EnvironmentManager.Instance.GetTilesContainingSpawnPoints())
+        {
+            GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, tile);
+            CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
+
+            return characterComponent;
+        }
+
+        return null;
+    }
+
+    private static GameObject CreateCharacterObject(string name, EnvironmentTile tile)
     {
         GameObject characterObject = new GameObject(name);
         characterObject.transform.localPosition = Vector3.zero;
@@ -21,7 +41,7 @@ public class EnvironmentUtil : MonoBehaviour
         return characterObject;
     }
 
-    public static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
+    private static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
     {
         TeamID teamID = GetTeamByID(characterID);
 

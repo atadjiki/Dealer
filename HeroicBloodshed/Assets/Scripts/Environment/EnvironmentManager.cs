@@ -5,7 +5,7 @@ using Pathfinding;
 using System;
 using static Constants;
 
-public class EnvironmentManager: MonoBehaviour
+public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
     //singleton
     private static EnvironmentManager _instance;
@@ -16,6 +16,8 @@ public class EnvironmentManager: MonoBehaviour
     private bool _ready = false;
 
     public bool IsEnvironmentReady() { return _ready; }
+
+    //Setup
 
     private void Awake()
     {
@@ -35,6 +37,10 @@ public class EnvironmentManager: MonoBehaviour
     {
         yield return Coroutine_ScanNavmesh();
         yield return Coroutine_BuildTileGrid();
+
+        //dispose of the setup navmesh after tiles are built
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+        AstarPath.active.data.RemoveGraph(gridGraph);
 
         Debug.Log("Environment Ready");
 
@@ -59,20 +65,30 @@ public class EnvironmentManager: MonoBehaviour
         yield return new WaitUntil(() => _tileGrid.IsGenerated());
     }
 
+    //Encounter Events
+
+    public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
+    {
+        if(_tileGrid != null)
+        {
+            yield return _tileGrid.Coroutine_EncounterStateUpdate(stateID, model);
+        }
+
+        yield return null;
+    }
+
+    //Helpers/interface 
+
     public Vector3 GetClosestPositionToTile(EnvironmentTile tile)
     {
         return _tileGrid.GetClosestTilePosition(tile.transform.position);
     }
 
-    public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
+    public List<EnvironmentTile> GetTilesContainingSpawnPoints()
     {
-        //see if we have a marker available to spawn them in
-        foreach (EnvironmentTile tile in _tileGrid.GetTilesContainingSpawnPoints(teamID))
+        if (_tileGrid != null)
         {
-            GameObject characterObject = EnvironmentUtil.CreateCharacterObject(teamID + "_" + characterID, tile);
-            CharacterComponent characterComponent = EnvironmentUtil.AddComponentByTeam(characterID, characterObject);
-
-            return characterComponent;
+            return _tileGrid.GetTilesContainingSpawnPoints();
         }
 
         return null;

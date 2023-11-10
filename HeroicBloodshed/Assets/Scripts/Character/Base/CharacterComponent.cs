@@ -184,8 +184,18 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
             case CharacterEvent.KILLED:
             {
                 HandleEvent_Killed();
+                break;
             }
-            break;
+            case CharacterEvent.MOVING:
+            {
+                HandleEvent_Moving();
+                break;
+            }
+            case CharacterEvent.STOPPED:
+            {
+                HandleEvent_Stopped();
+                break;
+            }
             default:
                 break;
         }
@@ -217,6 +227,16 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     private void HandleEvent_Untargeted()
     {
 
+    }
+
+    private void HandleEvent_Moving()
+    { 
+        _animator.GoTo(AnimState.Running);
+    }
+
+    private void HandleEvent_Stopped()
+    {
+        _animator.GoTo(AnimState.Idle);
     }
 
 
@@ -496,5 +516,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public bool CanReceiveCharacterEvents()
     {
         return _canReceive;
+    }
+
+    public CharacterNavigator GetNavigator()
+    {
+        return _navigator;
     }
 }

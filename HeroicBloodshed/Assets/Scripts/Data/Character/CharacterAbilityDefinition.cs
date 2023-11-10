@@ -9,10 +9,13 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_MoveToTile(CharacterComponent caster, EnvironmentTile tile)
     {
-        Vector3 destination = EnvironmentManager.Instance.GetClosestPositionToTile(tile);
-        caster.transform.position = destination;
+        CharacterNavigator navigator = caster.GetNavigator();
 
-        yield return new WaitForSeconds(_waitTime);
+        caster.HandleEvent(null, CharacterEvent.MOVING);
+
+        yield return navigator.MoveToTile(tile);
+
+        caster.HandleEvent(null, CharacterEvent.STOPPED);
     }
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
