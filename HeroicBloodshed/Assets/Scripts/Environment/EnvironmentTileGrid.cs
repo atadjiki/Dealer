@@ -2,6 +2,7 @@ using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class EnvironmentTileGrid : MonoBehaviour
 {
@@ -122,5 +123,42 @@ public class EnvironmentTileGrid : MonoBehaviour
             Debug.Log("Could not find tile close to position " + worldPosition.ToString());
             return worldPosition;
         }
+    }
+
+    public List<EnvironmentTile> GetTilesContainingSpawnPoints(TeamID team = TeamID.None)
+    {
+        List<EnvironmentTile> tiles = new List<EnvironmentTile>();
+
+        foreach (EnvironmentTile tile in _tileMap.Values)
+        {
+            if(tile.ContainsSpawnPoint())
+            {
+                EnvironmentSpawnPoint spawnPoint = tile.GetSpawnPoint();
+
+                if(spawnPoint.GetTeam() == team || team == TeamID.None)
+                {
+                    tiles.Add(tile);
+                }
+            }
+        }
+
+        Debug.Log("Found " + tiles.Count + " spawn points");
+
+        return tiles;
+    }
+
+    public List<EnvironmentTile> GetTilesContainingObstacles()
+    {
+        List<EnvironmentTile> tiles = new List<EnvironmentTile>();
+
+        foreach (EnvironmentTile tile in _tileMap.Values)
+        {
+            if (tile.ContainsObstacle())
+            {
+                tiles.Add(tile);
+            }
+        }
+
+        return tiles;
     }
 }
