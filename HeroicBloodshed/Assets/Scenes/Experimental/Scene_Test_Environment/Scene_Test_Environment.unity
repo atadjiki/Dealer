@@ -1036,6 +1036,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.73544264
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.06919608
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.6710807
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.06314042
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 10.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -84.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027272022679820477, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_Follow
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2058148375838253053, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_CustomBlends
       value: 
@@ -1087,6 +1127,34 @@ PrefabInstance:
     - target: {fileID: 5625500220968417528, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.73544264
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.06919608
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.6710807
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.06314042
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8064,8 +8132,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.80271155, b: 0.4764151, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -8102,7 +8170,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3071
+    m_Bits: 4294967295
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
