@@ -11,6 +11,9 @@ public class EnvironmentTile : MonoBehaviour
     public delegate void TileSelectedDelegate(EnvironmentTile environmentTile);
     public TileSelectedDelegate OnTileSelected;
 
+    public delegate void TileHighlightDelegate(EnvironmentTile environmentTile, bool highlighted);
+    public TileHighlightDelegate OnTileHighlightState;
+
     private List<EnvironmentTile> _neighbors;
     private EnvironmentObstacle _obstacle;
     private EnvironmentSpawnPoint _spawnPoint;
@@ -21,6 +24,8 @@ public class EnvironmentTile : MonoBehaviour
     private Outlinable _outliner;
 
     private bool _allowUpdate = false;
+
+    private bool _highlighted = false;
 
     public void AllowUpdate(bool flag)
     {
@@ -111,13 +116,28 @@ public class EnvironmentTile : MonoBehaviour
 
             if (tile != null && tile == this)
             {
+                _highlighted = true;
                 ToggleVisibility(true);
+
+                if(OnTileHighlightState != null)
+                {
+                    OnTileHighlightState(this, true);
+                }
+
                 return;
             }
         }
 
-        ToggleVisibility(false);
+        if(_highlighted)
+        {
+            _highlighted = false;
+            ToggleVisibility(false);
 
+            if (OnTileHighlightState != null)
+            {
+                OnTileHighlightState(this, false);
+            }
+        }
     }
 
     private void CheckMouseClick()

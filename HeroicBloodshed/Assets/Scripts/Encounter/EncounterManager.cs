@@ -243,7 +243,7 @@ public class EncounterManager : MonoBehaviour
         {
             case AbilityID.Move:
                 EnvironmentTile tile = _model.GetActiveDestination();
-                yield return AbilityHandler.Coroutine_MoveToTile(caster, tile);
+                yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, tile);
                 break;
             case AbilityID.Attack:
                 CharacterComponent target = _model.GetActiveTarget();
@@ -361,6 +361,16 @@ public class EncounterManager : MonoBehaviour
         }
 
         return EncounterState.DONE;
+    }
+
+    public bool IsPlayerTurn()
+    {
+        return _model.IsPlayerTurn();
+    }
+
+    public CharacterComponent GetCurrentCharacter()
+    {
+        return _model.GetCurrentCharacter();
     }
 
     public void RequestEventBanner(string message, float duration)

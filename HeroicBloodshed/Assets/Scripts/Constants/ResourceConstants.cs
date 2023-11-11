@@ -81,6 +81,11 @@ public static partial class Constants
         }
     }
 
+    public static ResourceRequest GetEnvironmentVFX(PrefabID ID)
+    {
+        return GetPrefab(PrefabCategory.Environment, PrefabSubcategory.VFX, ID);
+    }
+
     private static ResourceRequest GetPrefab(PrefabCategory category, PrefabSubcategory subcategory, PrefabID ID)
     {
         string fileName =
@@ -136,7 +141,7 @@ public static partial class Constants
 
         //Environment
         Environment_DrugHideout,
-
+        
         Encounter_Manager_Audio,
         //Encounter_Manager_CameraRig,
         Encounter_Manager_UI,
@@ -191,6 +196,9 @@ public static partial class Constants
         VFX_Smoke_Light,
 
         VFX_Bloodspray,
+
+        //LineRenderers
+        LineRenderer_Path,
     }
 
     public static ResourceRequest GetTexture(TextureID ID)

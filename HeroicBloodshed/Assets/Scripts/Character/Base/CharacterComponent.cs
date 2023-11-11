@@ -522,4 +522,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         return _navigator;
     }
+
+    public Vector3 GetWorldLocation()
+    {
+        return _navigator.transform.position;
+    }
 }

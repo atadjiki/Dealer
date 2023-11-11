@@ -7,13 +7,13 @@ public class AbilityHandler : MonoBehaviour
 {
     private static float _waitTime = 1.0f;
 
-    public static IEnumerator Coroutine_MoveToTile(CharacterComponent caster, EnvironmentTile tile)
+    public static IEnumerator Coroutine_HandleAbility_Move(CharacterComponent caster, EnvironmentTile tile)
     {
         CharacterNavigator navigator = caster.GetNavigator();
 
         caster.HandleEvent(null, CharacterEvent.MOVING);
 
-        yield return navigator.MoveToTile(tile);
+        yield return navigator.Coroutine_MoveToTile(tile);
 
         caster.HandleEvent(null, CharacterEvent.STOPPED);
     }

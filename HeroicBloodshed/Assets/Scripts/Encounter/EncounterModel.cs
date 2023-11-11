@@ -429,6 +429,11 @@ public class EncounterModel : MonoBehaviour
  
     }
 
+    public bool IsPlayerTurn()
+    {
+        return !IsCurrentTeamCPU();
+    }
+
     //state
     public EncounterState GetState() { return _pendingState; }
 

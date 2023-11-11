@@ -13,20 +13,14 @@ public class CharacterNavigator : MonoBehaviour
         _AI.canMove = false;
     }
 
-    public IEnumerator MoveToTile(EnvironmentTile tile)
+    public IEnumerator Coroutine_MoveToTile(EnvironmentTile tile)
     {
-        Vector3 destination = tile.transform.position;
-
         ABPath path = ABPath.Construct(this.transform.position, tile.transform.position);
-        NNConstraint constraint = new NNConstraint();
 
         _AI.SetPath(path);
 
         _AI.canMove = true;
-        _AI.destination = destination;
 
-        yield return new WaitWhile(() => Vector3.Distance(destination, this.transform.position) > 0.1f);
+        yield return new WaitUntil(() => _AI.reachedDestination);
     }
-
-
 }

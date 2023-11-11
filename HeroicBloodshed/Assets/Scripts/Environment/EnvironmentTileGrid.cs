@@ -57,6 +57,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             EnvironmentTile tile = tileDecal.GetComponent<EnvironmentTile>();
             tile.Setup(row, col);
             tile.OnTileSelected += OnTileSelected;
+            tile.OnTileHighlightState += OnTileHighlightState;
 
             _tileMap.Add(node, tile);
 
@@ -80,6 +81,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     public void OnTileSelected(EnvironmentTile tile)
     {
         EncounterManager.Instance.OnEnvironmentTileSelected(tile);
+    }
+
+    public void OnTileHighlightState(EnvironmentTile tile, bool highlighted)
+    {
+        EnvironmentManager.Instance.OnEnvironmentTileHighlightState(tile, highlighted);
     }
 
     public EnvironmentTile GetClosestTile(GraphNode node)
@@ -187,6 +193,14 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         foreach(EnvironmentTile tile in _tileMap.Values)
         {
             tile.AllowUpdate(flag);
+        }
+    }
+
+    public void ToggleVisbility(bool flag)
+    {
+        foreach(EnvironmentTile tile in _tileMap.Values)
+        {
+            tile.ToggleVisibility(flag);
         }
     }
 }
