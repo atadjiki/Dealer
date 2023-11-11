@@ -107,7 +107,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         //create a decal for this character
         ResourceRequest decalRequest = GetCharacterComponent(PrefabID.Character_Decal);
         yield return new WaitUntil(() => decalRequest.isDone);
-        GameObject decalObject = Instantiate<GameObject>((GameObject)decalRequest.asset, this.transform);
+        GameObject decalObject = Instantiate<GameObject>((GameObject)decalRequest.asset, navigatorObject.transform);
         _decal = decalObject.GetComponent<CharacterDecal>();
         _decal.SetColor(GetTeam());
 
@@ -122,7 +122,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         //create an audio source
         ResourceRequest audioSourceRequest = GetAudioSource(_ID);
         yield return new WaitUntil(()=>audioSourceRequest.isDone);
-        GameObject audioSourceObject = Instantiate<GameObject>((GameObject)audioSourceRequest.asset, this.transform);
+        GameObject audioSourceObject = Instantiate<GameObject>((GameObject)audioSourceRequest.asset, navigatorObject.transform);
         _audioSource = audioSourceObject.GetComponentInChildren<CharacterAudioSource>();
         _eventReceivers.Add(_audioSource);
 

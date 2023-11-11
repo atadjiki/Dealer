@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 5455398483204107123}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641228, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -447,7 +447,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 3e-45, y: 1.5631e-41, z: 1e-45, w: 0}
+  m_BoundingSphereOverride: {x: 7.64e-43, y: -3.9264015e-37, z: 7.64e-43, w: NaN}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -580,7 +580,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.2e-44, y: 6.034e-42, z: 1e-45, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6e-44, z: 1.3e-44, w: 1.7977e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -806,7 +806,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 3e-45, y: 1.5347e-41, z: 6.8291495e+22, w: 0}
+  m_BoundingSphereOverride: {x: 1.3958644e+10, y: 3015.1533, z: 7.564175e+28, w: 7.8680306e+31}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -998,7 +998,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.2e-44, y: 1.3496e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6e-44, z: 7.1e-44, w: 1.7707e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -1036,50 +1036,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10.37
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.73544264
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.06919608
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.6710807
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.06314042
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 10.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 242053632692803164, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -84.76
-      objectReference: {fileID: 0}
-    - target: {fileID: 1027272022679820477, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_Follow
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2058148375838253053, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_CustomBlends
-      value: 
-      objectReference: {fileID: 11400000, guid: 51e568503101543f2aa65a1c8fdcd9a1, type: 2}
     - target: {fileID: 3321274039668110141, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_Name
       value: CameraRig
@@ -1128,38 +1084,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10.37
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.73544264
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.06919608
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.6710807
-      objectReference: {fileID: 0}
-    - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.06314042
+    - target: {fileID: 8632721227267805004, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: outlineLayerMask
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2819866054276773561, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1984978793}
   m_SourcePrefab: {fileID: 100100000, guid: 05156c94656d4f944825c624732db36f, type: 3}
 --- !u!4 &619593815 stripped
 Transform:
@@ -1354,7 +1289,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 7.4e-44, y: 7.505e-42, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 7.64e-43, y: 2.3218559e-24, z: 7.64e-43, w: 1.686e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -1407,6 +1342,8 @@ MonoBehaviour:
   Teams:
   - Team: 1
     Characters: 03000000
+  - Team: 2
+    Characters: 02000000
 --- !u!4 &702965785
 Transform:
   m_ObjectHideFlags: 0
@@ -1507,8 +1444,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1731563278}
-  m_RootOrder: -1
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &754597417
 GameObject:
@@ -1623,7 +1560,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 7e-45, y: 1.504e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 7.64e-43, y: 2.28e-43, z: 0, w: -9.654628e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -1812,7 +1749,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188341902525817524, guid: 53b3b30eafe5436458e00f90d9d8e2b1, type: 3}
       propertyPath: Team
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 53b3b30eafe5436458e00f90d9d8e2b1, type: 3}
       propertyPath: m_RootOrder
@@ -2381,43 +2318,11 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 6e-45, y: 1.5329e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 3.6e-44, z: 1.2446e-41, w: 1.7937e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &1731563277
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1731563278}
-  m_Layer: 0
-  m_Name: Managers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1731563278
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1731563277}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 754239002}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1822451511
 GameObject:
   m_ObjectHideFlags: 0
@@ -2464,7 +2369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: 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
+    dataString: UEsDBBQAAAgIAACQn+tKK4q1lwIAAJ8FAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVG1v2jAQ/ivIn7cpCWxt920LlG5SW1Q29cNSTU58IRaOHfmlQCv+e89OIIFqmoTkcPfcc3fPnf1KuDQNFFbpuebsVjEgX0fEf5MPo955A1u6UnLJX+CAeeTMVh5EA+aBWq7QHvswo2qwmhff5Ep4cIRGJ3mpdD1jK0iVsQbNJRUG0KWV9dESTa8jsu0Cdt354s/RHr8KkBb0/1BOFoLWDTBfbQ8eJx16nASYxD46hK+5UEJw0xVB7K4JTaa0MQ5bQADjFJsK6aNPn9FQAV9VFv8mw/D7sjRgu6I03U25RnVaXvJdtZLV1Kzbyp6pcHAsvaW8fef9MgnuUqv65pA1jnwGW/Fi/UB3BTV2oOjQPO0Lj4M8GyrWNBfwWIG8U3OtnGTotNr5UGcgmQ6ojp2lFRTrHtfWemZ0zfvpxP109qH3bSp4nQcdJ61hKVTQ+8rHgMbJ/MCCw06YjgmtvojfBn7R1XB5Osc118aiq0sofXW5ctpDySxo5ptxNlVagh4yNCCpsLsF8tjzCZ75/h11Tf096bJ3vsP6n4UEc4+PojPXQm36aRn46epmobi0S6C6qAZ8plKbWzDVvbOCS+jH4B13qGKqpGy3z5w6fdTS6ZIWgygLW+s0TKml4RJgSbglbJgQBQ0R0gnhFzI04bn/YBP+9+RFriimFcFM7pQM1+fkfPKLsHKcna45yScXRRwlRZLEl+OLfPKxHOdXV3GUs3wSX04YI+EecImSU7FoNesmhRs0HI/EpT88ZXNNm+rvEiyup7/Jmm7m/KVWA1G4LNWy0ADy/pTHgMZU+E6wGePYLLJYLsMGkteMCFWsgWVHoizIO9taTbOeJSMNf1bWWzKShlcsI958vFwLDc8cNj75gWxP9m9QSwMEFAAACAgAAJCf6510NuiWAgAAogUAAAsAJABncmFwaDEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAYVU72/aMBD9V5A/bxOEDtR924DSTWqLxqZ+GNV0tS/EwrEj/yjQiv99ZyeQlG6ahJTw7t7du+dzXpjUrkLujZ1bKW6MQPapx+I7e9drg9e4g7XRS/mMx5x7KXwRkyDlfAcvDeGDSHOmRG8l/6zXKib3CQxa5saWM7HGiXHeEZyDckgha3xka4JeemzXEPbN8zk+ewd646g92v9lBc0VlBWKqLZNHmZN9jBLaZrmaDKiZm6Ukq4Rwfy+SkNOoHKBRqAEIYGGSu37Hz4SUKBcF57+Zl36XZ479I0oC/uptOROXZd9MbVlJbhNrewJVEgShqOkqi568yY+ukjh3Jry+th30I89fCH55jvsOTjf8bQLT1vpg2TQFtQGHhXeF6hvzdyaoAUFvQ2RGhxm006p02yTAvmmzau1noGhens+g/Z8Dmn63UTJ8jE5eVEDS2WS45eRg5bO5isJTlvhmkqERhE/Hf6AdXd9msCVtM5TqGmoo7pHE2xMZbPkWRwm+ImxGm23QoUalN8vqI4/P8Oz2L9ZVxBvStO9iR0vwBklwW1+v38WWphte1oOv4WyWhip/RLB8qJTzxVme4OuuAteSY3tMcTALbk4MVrX++f+QlsGmwPv0DzufLA4BQ/pHpAmWhPRpZKjiaGDUnEj0xSx+C+aIv4eossFUF+VYHZrdLpBr54PcRPWQYrXe84uRiJDgdkQcDjmY/5+CFn/ko/H4ywfjkaDPksXQWryHNSiNq2xilZIt7NoWvrjx2xuoSp+TzGHoNIaCAvbuXwujWsJUudmyS2ivqsLnWZGS73oWyFmQtK0S/Re6rSD7GXFlOEbFKtToVXyd7bzFrpgJZ+Mj8CKTdKHbMUifLpdC4tPErex95F2YIc/UEsDBBQAAAgIAACQn+sMZc82iwAAALYAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BbY1NDoIwEIWvQroW0s40HfAC7Ix7w6LttNCFQAqaGOPdpXHr7v18ee8tniFvaZnFudINNKo9VWLMdp22I4FiHomLvgmnySsJHkC1SE7XEV3XKenYadVqZnHg2jAEDoA2IHnyNVqQnSciiGiMkmI4qP21hou9h9/w1e5TTDOneWz6nLgv/2XsfzF8vlBLAQItABQAAAgIAACQn+tKK4q1lwIAAJ8FAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+uddDbolgIAAKIFAAALACQAAAAAAAAAAAAAAOQCAABncmFwaDEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+sMZc82iwAAALYAAAAJACQAAAAAAAAAAAAAAMcFAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAMAAwAVAQAAnQYAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -2734,7 +2639,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 3.9e-44, y: 1.2739e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6e-44, z: 3.4e-44, w: 1.6404e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -2842,6 +2747,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7412587250117893084, guid: 6f565a4b88372254695250888f2d7a14, type: 3}
   m_PrefabInstance: {fileID: 6831961795124029795}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1984978786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2819866054276773561, guid: 05156c94656d4f944825c624732db36f, type: 3}
+  m_PrefabInstance: {fileID: 584492718}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1984978793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1984978786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stage: 0
+  renderingStrategy: 0
+  renderingMode: 0
+  outlineLayerMask: 2
+  primaryBufferSizeMode: 0
+  primaryRendererScale: 0.75
+  primarySizeReference: 800
+  blurShift: 1
+  dilateShift: 1
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 1
+  blurType: 1
 --- !u!4 &2010576919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8044173561291155533, guid: d623bce33d6b1024d9bd162fdf54e83a, type: 3}

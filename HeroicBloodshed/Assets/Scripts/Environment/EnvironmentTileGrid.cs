@@ -1,4 +1,5 @@
 using Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     [SerializeField] private GameObject PreviewPrefab;
 
     private Dictionary<GraphNode, EnvironmentTile> _tileMap;
-
-    private List<GameObject> PreviewTiles;
 
     private bool _calculatingPath = false;
 
@@ -137,40 +136,56 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void GenerateMovementRadius()
     {
-        PreviewTiles = new List<GameObject>();
-
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
-        List<EnvironmentTile> eligibleTiles = new List<EnvironmentTile>();
+        List<Tuple<EnvironmentTile, int>> eligibleTiles = new List<Tuple<EnvironmentTile, int>>();
 
         //find the distance between the character and every tile (yikes)
-        foreach(GraphNode node in _tileMap.Keys)
+        foreach(GraphNode mapNode in _tileMap.Keys)
         {
-            ABPath path = ABPath.Construct(origin, ((Vector3)node.position));
+            ABPath path = ABPath.Construct(origin, ((Vector3)mapNode.position));
 
             AstarPath.StartPath(path, true);
 
             path.BlockUntilCalculated();
 
-            int length = path.vectorPath.Count;
+            int cost = 0;
 
-            if (length < 12)
+            foreach(GraphNode pathNode in path.path)
             {
-                EnvironmentTile tile = GetClosestTile(node);
+                cost += (int) path.GetTraversalCost(pathNode);
+            }
+
+            Debug.Log("path cost " + cost);
+
+            if (cost < 12)
+            {
+                EnvironmentTile tile = GetClosestTile(mapNode);
                 if(tile.IsFree())
                 {
-                    eligibleTiles.Add(tile);
+                    eligibleTiles.Add(new Tuple<EnvironmentTile, int>(tile, cost));
                 }
             }
         }
 
         Debug.Log("Found " + eligibleTiles.Count + " eligible paths");
 
-        foreach(EnvironmentTile tile in eligibleTiles)
+        foreach(Tuple<EnvironmentTile, int> pair in eligibleTiles)
         {
-            Instantiate<GameObject>(PreviewPrefab, tile.transform);
+            GameObject prefab = Instantiate<GameObject>(PreviewPrefab, pair.Item1.transform);
+
+            EnvironmentPreviewTile previewTile = prefab.GetComponent<EnvironmentPreviewTile>();
+
+            MovementRangeType movementType = MovementRangeType.Full;
+
+            if(pair.Item2 < 6)
+            {
+                movementType = MovementRangeType.Half;
+            }
+
+            previewTile.Setup(movementType);
         }
     }
 
@@ -198,7 +213,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             _pathRenderer.SetPositions(pendingPath.vectorPath.ToArray());
 
             _pathRenderer.forceRenderingOff = false;
-
         }
 
         _calculatingPath = false;
@@ -307,12 +321,9 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void ClearRadiusTiles()
     {
-        if(PreviewTiles != null)
+        foreach(EnvironmentPreviewTile previewTile in this.GetComponentsInChildren<EnvironmentPreviewTile>())
         {
-            foreach (GameObject radiusTile in PreviewTiles)
-            {
-                GameObject.Destroy(radiusTile);
-            }
+            Destroy(previewTile.gameObject);
         }
     }
 

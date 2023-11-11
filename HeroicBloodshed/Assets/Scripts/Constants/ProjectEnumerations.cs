@@ -198,6 +198,12 @@ public static partial class Constants
         FullCover,
     }
 
+    public enum MovementRangeType
+    {
+        Half, 
+        Full
+    }
+
     public enum SafehouseMenuID
     {
         None,
