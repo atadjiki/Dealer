@@ -199,6 +199,7 @@ public static partial class Constants
 
         //LineRenderers
         LineRenderer_Path,
+        LineRenderer_Radius,
     }
 
     public static ResourceRequest GetTexture(TextureID ID)

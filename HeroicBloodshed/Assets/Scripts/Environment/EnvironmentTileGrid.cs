@@ -7,20 +7,35 @@ using static Constants;
 public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 {
     [SerializeField] private GameObject TilePrefab;
+    [SerializeField] private GameObject PreviewPrefab;
 
     private Dictionary<GraphNode, EnvironmentTile> _tileMap;
 
-    private bool _generated = false;
+    private List<GameObject> PreviewTiles;
 
-    public void GenerateTiles()
+    private bool _calculatingPath = false;
+
+    private LineRenderer _pathRenderer;
+
+    public IEnumerator Corutine_PerformSetup()
     {
-        StartCoroutine(Coroutine_GenerateTiles());
+        yield return Coroutine_GenerateTiles();
+        yield return Coroutine_SetupRenderers();
     }
 
-    public bool IsGenerated() { return _generated; }
+    private IEnumerator Coroutine_SetupRenderers()
+    {
+        Debug.Log("Setting Up Path Renderer");
+        ResourceRequest pathRendererRequest = GetEnvironmentVFX(PrefabID.LineRenderer_Path);
+        yield return new WaitUntil(() => pathRendererRequest.isDone);
+        GameObject pathRendererObject = Instantiate<GameObject>((GameObject)pathRendererRequest.asset, this.transform);
+        yield return new WaitWhile(() => pathRendererObject.GetComponent<LineRenderer>() == null);
+        _pathRenderer = pathRendererObject.GetComponent<LineRenderer>();
+    }
 
     private IEnumerator Coroutine_GenerateTiles()
     {
+        Debug.Log("Generating Tiles");
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
         List<GraphNode> WalkableNodes = new List<GraphNode>();
 
@@ -74,18 +89,119 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         {
             tile.PerformCoverCheck();
         }
-
-        _generated = true;
     }
 
-    public void OnTileSelected(EnvironmentTile tile)
+    public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        EncounterManager.Instance.OnEnvironmentTileSelected(tile);
+        switch(stateID)
+        {
+            case EncounterState.CHOOSE_ACTION:
+                if(!model.IsCurrentTeamCPU())
+                {
+                    AllowTileUpdate(true);
+                    GenerateMovementRadius();
+                }
+                break;
+            default:
+                AllowTileUpdate(false);
+                ClearLineRenderers();
+                ClearRadiusTiles();
+                break;
+        }
+
+        yield return null;
     }
 
-    public void OnTileHighlightState(EnvironmentTile tile, bool highlighted)
+    private void OnTileHighlightState(EnvironmentTile tile, bool highlighted)
     {
-        EnvironmentManager.Instance.OnEnvironmentTileHighlightState(tile, highlighted);
+        if (_calculatingPath) { return; }
+        if (tile.ContainsObstacle()) { return; }
+
+        if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION
+            && EncounterManager.Instance.IsPlayerTurn())
+        {
+            //if true, create a line renderer from the current character to this tile,
+            if (highlighted)
+            {
+                GenerateMovementPath(tile);
+            }
+
+            //if false, clear line renderer
+            else
+            {
+                _pathRenderer.positionCount = 0;
+                _pathRenderer.forceRenderingOff = true;
+            }
+        }
+    }
+
+    private void GenerateMovementRadius()
+    {
+        PreviewTiles = new List<GameObject>();
+
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+
+        List<EnvironmentTile> eligibleTiles = new List<EnvironmentTile>();
+
+        //find the distance between the character and every tile (yikes)
+        foreach(GraphNode node in _tileMap.Keys)
+        {
+            ABPath path = ABPath.Construct(origin, ((Vector3)node.position));
+
+            AstarPath.StartPath(path, true);
+
+            path.BlockUntilCalculated();
+
+            int length = path.vectorPath.Count;
+
+            if (length < 12)
+            {
+                EnvironmentTile tile = GetClosestTile(node);
+                if(tile.IsFree())
+                {
+                    eligibleTiles.Add(tile);
+                }
+            }
+        }
+
+        Debug.Log("Found " + eligibleTiles.Count + " eligible paths");
+
+        foreach(EnvironmentTile tile in eligibleTiles)
+        {
+            Instantiate<GameObject>(PreviewPrefab, tile.transform);
+        }
+    }
+
+    private void GenerateMovementPath(EnvironmentTile tile)
+    {
+        _calculatingPath = true;
+
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+        Vector3 destination = tile.transform.position;
+
+        ABPath pendingPath = ABPath.Construct(origin, destination);
+
+        AstarPath.StartPath(pendingPath, true);
+
+        pendingPath.BlockUntilCalculated();
+
+        int length = pendingPath.vectorPath.Count;
+
+        if (length < 12)
+        {
+            _pathRenderer.positionCount = length;
+
+            _pathRenderer.SetPositions(pendingPath.vectorPath.ToArray());
+
+            _pathRenderer.forceRenderingOff = false;
+
+        }
+
+        _calculatingPath = false;
     }
 
     public EnvironmentTile GetClosestTile(GraphNode node)
@@ -120,7 +236,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         EnvironmentTile tile = GetClosestTile(worldPosition);
 
-        if(tile != null)
+        if (tile != null)
         {
             return tile.transform.position;
         }
@@ -135,15 +251,22 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         List<EnvironmentTile> tiles = new List<EnvironmentTile>();
 
-        foreach (EnvironmentTile tile in _tileMap.Values)
+        if (_tileMap != null)
         {
-            if(tile.ContainsSpawnPoint())
+            foreach (EnvironmentTile tile in _tileMap.Values)
             {
-                EnvironmentSpawnPoint spawnPoint = tile.GetSpawnPoint();
-
-                if(spawnPoint.GetTeam() == team || team == TeamID.None)
+                if (tile.ContainsSpawnPoint())
                 {
-                    tiles.Add(tile);
+                    EnvironmentSpawnPoint spawnPoint = tile.GetSpawnPoint();
+
+                    if (spawnPoint != null)
+                    {
+
+                        if (spawnPoint.GetTeam() == team || team == TeamID.None)
+                        {
+                            tiles.Add(tile);
+                        }
+                    }
                 }
             }
         }
@@ -168,26 +291,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         return tiles;
     }
 
-    public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
-    {
-        switch(stateID)
-        {
-            case EncounterState.CHOOSE_ACTION:
-
-                if(!model.IsCurrentTeamCPU())
-                {
-                    AllowTileUpdate(true);
-                }
-
-                break;
-            default:
-                AllowTileUpdate(false);
-                break;
-        }
-
-        yield return null;
-    }
-
     private void AllowTileUpdate(bool flag)
     {
         foreach(EnvironmentTile tile in _tileMap.Values)
@@ -196,11 +299,25 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    public void ToggleVisbility(bool flag)
+    private void ClearLineRenderers()
     {
-        foreach(EnvironmentTile tile in _tileMap.Values)
+        _pathRenderer.positionCount = 0;
+        _pathRenderer.forceRenderingOff = true;
+    }
+
+    private void ClearRadiusTiles()
+    {
+        if(PreviewTiles != null)
         {
-            tile.ToggleVisibility(flag);
+            foreach (GameObject radiusTile in PreviewTiles)
+            {
+                GameObject.Destroy(radiusTile);
+            }
         }
+    }
+
+    private void OnTileSelected(EnvironmentTile tile)
+    {
+        EncounterManager.Instance.OnEnvironmentTileSelected(tile);
     }
 }

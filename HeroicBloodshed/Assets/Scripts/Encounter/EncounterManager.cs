@@ -53,7 +53,7 @@ public class EncounterManager : MonoBehaviour
     private IEnumerator Coroutine_LoadEncounter()
     {
         Debug.Log("Waiting on environment");
-        yield return new WaitUntil(() => EnvironmentManager.Instance.IsEnvironmentReady());
+        yield return EnvironmentManager.Instance.Coroutine_Build();
 
         _eventReceivers = new List<EncounterEventReceiver>();
 
