@@ -201,6 +201,7 @@ public static partial class Constants
 
     public enum MovementRangeType
     {
+        None,
         Half, 
         Full
     }

@@ -1040,22 +1040,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CameraRig
       objectReference: {fileID: 0}
-    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LookaheadTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_MaximumDistance
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_MinimumDistance
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_LookaheadSmoothing
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5625500220968417528, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1100,22 +1084,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8084978015360369189, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8632721227267805004, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      propertyPath: outlineLayerMask
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4353949146307794953, guid: 05156c94656d4f944825c624732db36f, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2819866054276773561, guid: 05156c94656d4f944825c624732db36f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1984978793}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05156c94656d4f944825c624732db36f, type: 3}
 --- !u!4 &619593815 stripped
 Transform:
@@ -2768,36 +2740,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7412587250117893084, guid: 6f565a4b88372254695250888f2d7a14, type: 3}
   m_PrefabInstance: {fileID: 6831961795124029795}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1984978786 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2819866054276773561, guid: 05156c94656d4f944825c624732db36f, type: 3}
-  m_PrefabInstance: {fileID: 584492718}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1984978793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984978786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stage: 0
-  renderingStrategy: 0
-  renderingMode: 0
-  outlineLayerMask: 2
-  primaryBufferSizeMode: 0
-  primaryRendererScale: 0.75
-  primarySizeReference: 800
-  blurShift: 1
-  dilateShift: 1
-  dilateIterations: 1
-  dilateQuality: 0
-  blurIterations: 1
-  blurType: 1
 --- !u!4 &2010576919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8044173561291155533, guid: d623bce33d6b1024d9bd162fdf54e83a, type: 3}

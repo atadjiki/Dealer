@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6331455095302748150}
   - component: {fileID: 4581238702133864725}
   - component: {fileID: 3595015686520255040}
-  - component: {fileID: 4353949146307794953}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -68,7 +67,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 10
+  m_CameraDistance: 8
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -83,29 +82,12 @@ MonoBehaviour:
   m_GroupFramingSize: 0.8
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 1
-  m_MaximumDistance: 5000
+  m_MinimumDistance: 8
+  m_MaximumDistance: 24
   m_MinimumFOV: 3
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
---- !u!114 &4353949146307794953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2540265154814250232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NoiseProfile: {fileID: 11400000, guid: 46965f9cbaf525742a6da4c2172a99cd, type: 2}
-  m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 0.1
-  m_FrequencyGain: 0.1
-  mNoiseOffsets: {x: 157.16516, y: 784.2412, z: -604.9779}
 --- !u!1 &2819866054276773561
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +102,7 @@ GameObject:
   - component: {fileID: 353265746453680072}
   - component: {fileID: 2058148375838253053}
   - component: {fileID: 8632721227267805004}
+  - component: {fileID: 1657257331523384122}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -295,7 +278,7 @@ MonoBehaviour:
   stage: 1
   renderingStrategy: 1
   renderingMode: 0
-  outlineLayerMask: -1
+  outlineLayerMask: 1
   primaryBufferSizeMode: 0
   primaryRendererScale: 0.8
   primarySizeReference: 900
@@ -305,6 +288,31 @@ MonoBehaviour:
   dilateQuality: 2
   blurIterations: 1
   blurType: 2
+--- !u!114 &1657257331523384122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2819866054276773561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stage: 0
+  renderingStrategy: 0
+  renderingMode: 0
+  outlineLayerMask: 2
+  primaryBufferSizeMode: 0
+  primaryRendererScale: 0.75
+  primarySizeReference: 800
+  blurShift: 1
+  dilateShift: 1
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 1
+  blurType: 1
 --- !u!1 &3321274039668110141
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,7 +469,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4859439537007032371}
   m_LocalRotation: {x: -0.27059805, y: 0.6532815, z: -0.27059805, w: -0.6532815}
-  m_LocalPosition: {x: 4.4210687, y: 7.071068, z: -9.010001}
+  m_LocalPosition: {x: 3.0068548, y: 5.656854, z: -9.010001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -705,7 +713,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &212927499715521237
 Transform:
   m_ObjectHideFlags: 0

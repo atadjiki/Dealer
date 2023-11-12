@@ -11,6 +11,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     [SerializeField] private GameObject PreviewPrefab;
 
     private Dictionary<GraphNode, EnvironmentTile> _tileMap;
+    private Dictionary<GraphNode, EnvironmentPreviewTile> _previewMap;
 
     private bool _calculatingPath = false;
 
@@ -50,6 +51,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         });
 
         _tileMap = new Dictionary<GraphNode, EnvironmentTile>();
+        _previewMap = new Dictionary<GraphNode, EnvironmentPreviewTile>();
 
         int index = 0;
 
@@ -63,17 +65,23 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
             string tilename = "Tile " + (index + 1) + " [ " + row + "," + col + " ] "; ;
 
-            GameObject tileDecal = Instantiate<GameObject>(TilePrefab, pos, Quaternion.identity, this.transform);
-            tileDecal.name = tilename;
-
-            yield return new WaitWhile(() => tileDecal.GetComponent<EnvironmentTile>() == null);
-
-            EnvironmentTile tile = tileDecal.GetComponent<EnvironmentTile>();
+            GameObject tileObject = Instantiate<GameObject>(TilePrefab, pos, Quaternion.identity, this.transform);
+            tileObject.name = tilename;
+            yield return new WaitWhile(() => tileObject.GetComponent<EnvironmentTile>() == null);
+            EnvironmentTile tile = tileObject.GetComponent<EnvironmentTile>();
             tile.Setup(row, col);
             tile.OnTileSelected += OnTileSelected;
             tile.OnTileHighlightState += OnTileHighlightState;
 
+            GameObject previewObject = Instantiate<GameObject>(PreviewPrefab, pos, Quaternion.identity, this.transform);
+            previewObject.name = "prev_" + tilename;
+            yield return new WaitWhile(() => previewObject.GetComponent<EnvironmentPreviewTile>() == null);
+            EnvironmentPreviewTile previewTile = previewObject.GetComponent<EnvironmentPreviewTile>();
+            previewTile.Setup(MovementRangeType.None);
+
             _tileMap.Add(node, tile);
+
+            _previewMap.Add(node, previewTile);
 
             index++;
         }
@@ -142,7 +150,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
-        List<Tuple<EnvironmentTile, int>> eligibleTiles = new List<Tuple<EnvironmentTile, int>>();
+        List<Tuple<GraphNode, int>> eligibleTiles = new List<Tuple<GraphNode, int>>();
 
         //find the distance between the character and every tile (yikes)
         foreach(GraphNode mapNode in _tileMap.Keys)
@@ -178,7 +186,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                     EnvironmentTile tile = GetClosestTile(mapNode);
                     if (tile.IsFree())
                     {
-                        eligibleTiles.Add(new Tuple<EnvironmentTile, int>(tile, cost));
+                        eligibleTiles.Add(new Tuple<GraphNode, int>(mapNode, cost));
                     }
                 }
             }
@@ -186,11 +194,9 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Debug.Log("Found " + eligibleTiles.Count + " eligible paths");
 
-        foreach(Tuple<EnvironmentTile, int> pair in eligibleTiles)
+        foreach(Tuple<GraphNode, int> pair in eligibleTiles)
         {
-            GameObject prefab = Instantiate<GameObject>(PreviewPrefab, pair.Item1.transform);
-
-            EnvironmentPreviewTile previewTile = prefab.GetComponent<EnvironmentPreviewTile>();
+            EnvironmentPreviewTile previewTile = _previewMap[pair.Item1];
 
             MovementRangeType movementType = MovementRangeType.Full;
 
@@ -336,9 +342,9 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void ClearRadiusTiles()
     {
-        foreach(EnvironmentPreviewTile previewTile in this.GetComponentsInChildren<EnvironmentPreviewTile>())
+        foreach(EnvironmentPreviewTile previewTile in _previewMap.Values)
         {
-            Destroy(previewTile.gameObject);
+            previewTile.Setup(MovementRangeType.None);
         }
     }
 

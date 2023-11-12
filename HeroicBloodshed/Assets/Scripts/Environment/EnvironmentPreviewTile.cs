@@ -20,6 +20,9 @@ public class EnvironmentPreviewTile : MonoBehaviour
     {
         switch(rangeType)
         {
+            case MovementRangeType.None:
+                SetColor(Color.clear);
+                break;
             case MovementRangeType.Full:
                 SetColor(Color_Full);
                 break;
