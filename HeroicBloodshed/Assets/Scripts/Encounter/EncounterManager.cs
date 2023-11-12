@@ -137,6 +137,7 @@ public class EncounterManager : MonoBehaviour
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
                 CharacterComponent character = _model.GetCurrentCharacter();
+                CameraRig.Instance.Unfollow();
                 character.HandleEvent(null, CharacterEvent.DESELECTED);
                 break;
             }

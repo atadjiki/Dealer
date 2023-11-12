@@ -104,9 +104,24 @@ public class EnvironmentTile : MonoBehaviour
         return _spawnPoint != null;
     }
 
+    private bool CheckIsMouseBlocked()
+    {
+        if (Camera.main == null)
+        {
+            return true;
+        }
+
+        if(EventSystem.current.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void CheckMouseHighlight()
     {
-        if (Camera.main == null) return;
+        if (CheckIsMouseBlocked()) { return; }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -135,14 +150,15 @@ public class EnvironmentTile : MonoBehaviour
 
             if (OnTileHighlightState != null)
             {
-                OnTileHighlightState(this, false);
+                OnTileHighlightState.Invoke(this, false);
             }
         }
     }
 
     private void CheckMouseClick()
     {
-        if (Camera.main == null) return;
+        if (CheckIsMouseBlocked()) { return; }
+
         if (!Input.GetMouseButtonDown(0)) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -260,6 +276,7 @@ public class EnvironmentTile : MonoBehaviour
 
     public void SetColor(Color color)
     {
+        return; 
         if(_renderer != null)
         {
             _renderer.material.color = color;

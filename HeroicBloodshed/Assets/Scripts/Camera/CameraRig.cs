@@ -82,7 +82,13 @@ public class CameraRig : MonoBehaviour
     {
         Debug.Log("New Follow Target " + character.GetID());
         SwitchToMainCam();
-        FollowTarget.transform.position = character.GetNavigator().transform.position;
+        FollowTarget.AttachToCharacter(character);
+    }
+
+    public void Unfollow()
+    {
+        SwitchToMainCam();
+        FollowTarget.Release();
     }
 
     private void Update_Zoom()

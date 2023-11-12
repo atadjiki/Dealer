@@ -1040,6 +1040,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: CameraRig
       objectReference: {fileID: 0}
+    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LookaheadTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_MaximumDistance
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_MinimumDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3595015686520255040, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_LookaheadSmoothing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5625500220968417528, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1084,11 +1100,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8084978015360369189, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8632721227267805004, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: outlineLayerMask
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4353949146307794953, guid: 05156c94656d4f944825c624732db36f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1343,7 +1364,7 @@ MonoBehaviour:
   - Team: 1
     Characters: 03000000
   - Team: 2
-    Characters: 02000000
+    Characters: 01000000
 --- !u!4 &702965785
 Transform:
   m_ObjectHideFlags: 0
@@ -1749,7 +1770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188341902525817524, guid: 53b3b30eafe5436458e00f90d9d8e2b1, type: 3}
       propertyPath: Team
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7702963973358470153, guid: 53b3b30eafe5436458e00f90d9d8e2b1, type: 3}
       propertyPath: m_RootOrder

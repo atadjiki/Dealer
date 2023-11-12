@@ -14,7 +14,7 @@ public class EnvironmentUtil : MonoBehaviour
         }
 
         //see if we have a marker available to spawn them in
-        foreach (EnvironmentTile tile in EnvironmentManager.Instance.GetTilesContainingSpawnPoints())
+        foreach (EnvironmentTile tile in EnvironmentManager.Instance.GetTilesContainingSpawnPoints(teamID))
         {
             GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, tile);
             CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);

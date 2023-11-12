@@ -74,11 +74,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return _tileGrid.GetClosestTilePosition(tile.transform.position);
     }
 
-    public List<EnvironmentTile> GetTilesContainingSpawnPoints()
+    public List<EnvironmentTile> GetTilesContainingSpawnPoints(TeamID teamID)
     {
         if (_tileGrid != null)
         {
-            return _tileGrid.GetTilesContainingSpawnPoints();
+            return _tileGrid.GetTilesContainingSpawnPoints(teamID);
         }
 
         return null;

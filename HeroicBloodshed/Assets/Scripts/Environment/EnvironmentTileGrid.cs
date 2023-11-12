@@ -98,7 +98,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 if(!model.IsCurrentTeamCPU())
                 {
                     AllowTileUpdate(true);
-                    GenerateMovementRadius();
+                    yield return GenerateMovementRadius();
                 }
                 break;
             default:
@@ -122,7 +122,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             //if true, create a line renderer from the current character to this tile,
             if (highlighted)
             {
-                GenerateMovementPath(tile);
+                StartCoroutine(GenerateMovementPath(tile));
             }
 
             //if false, clear line renderer
@@ -134,7 +134,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    private void GenerateMovementRadius()
+    private IEnumerator GenerateMovementRadius()
     {
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
@@ -149,7 +149,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
             AstarPath.StartPath(path, true);
 
-            path.BlockUntilCalculated();
+            yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
 
             int cost = 0;
 
@@ -158,7 +158,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 cost += (int) path.GetTraversalCost(pathNode);
             }
 
-            Debug.Log("path cost " + cost);
+           // Debug.Log("path cost " + cost);
 
             if (cost < 12)
             {
@@ -189,7 +189,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    private void GenerateMovementPath(EnvironmentTile tile)
+    private IEnumerator GenerateMovementPath(EnvironmentTile tile)
     {
         _calculatingPath = true;
 
@@ -202,7 +202,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         AstarPath.StartPath(pendingPath, true);
 
-        pendingPath.BlockUntilCalculated();
+        yield return new WaitUntil(() => pendingPath.CompleteState == PathCompleteState.Complete);
 
         int length = pendingPath.vectorPath.Count;
 
@@ -275,7 +275,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
                     if (spawnPoint != null)
                     {
-
                         if (spawnPoint.GetTeam() == team || team == TeamID.None)
                         {
                             tiles.Add(tile);
@@ -285,7 +284,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             }
         }
 
-        Debug.Log("Found " + tiles.Count + " spawn points");
+        Debug.Log("Found " + tiles.Count + " spawn points for team " + team);
 
         return tiles;
     }
