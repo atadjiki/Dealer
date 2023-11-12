@@ -14,6 +14,8 @@ public struct CharacterDefinition
 
     public int BaseHealth;
 
+    public int BaseActionPoints;
+
     public int CritChance;
 
     public bool RollCritChance()
@@ -50,6 +52,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 16,
+                        BaseActionPoints = 2,
                         CritChance = 30,
                     };
                 }
@@ -68,6 +71,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 16,
+                        BaseActionPoints = 2,
                         CritChance = 30,
                     };
                 }
@@ -87,6 +91,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 4,
+                        BaseActionPoints = 2,
                         CritChance = 0,
                     };
                 }
@@ -106,6 +111,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 7,
+                        BaseActionPoints = 2,
                         CritChance = 0,
                     };
                 }
@@ -123,6 +129,7 @@ public struct CharacterDefinition
                         },
 
                         BaseHealth = 1,
+                        BaseActionPoints = 1,
                         CritChance = 0,
                     };
                 }

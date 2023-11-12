@@ -3,6 +3,19 @@ using UnityEngine;
 
 public static partial class Constants
 {
+    public static int GetAbilityCost(AbilityID ability)
+    {
+        switch(ability)
+        {
+            case AbilityID.MoveHalf:
+                return 1;
+            case AbilityID.Reload:
+                return 1;
+            default:
+                return 2;
+        }
+    }
+
     public static TargetType GetTargetType(AbilityID abilityID)
     {
         switch(abilityID)
@@ -18,7 +31,8 @@ public static partial class Constants
     {
         List<AbilityID> CharacterAbilities = new List<AbilityID>()
         {
-            AbilityID.Move,
+            AbilityID.MoveHalf,
+            AbilityID.MoveFull,
             AbilityID.Attack,
             AbilityID.SkipTurn, //all characters have this by default
             AbilityID.Reload,

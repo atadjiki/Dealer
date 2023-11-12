@@ -242,7 +242,8 @@ public class EncounterManager : MonoBehaviour
 
         switch (abilityID)
         {
-            case AbilityID.Move:
+            case AbilityID.MoveHalf:
+            case AbilityID.MoveFull:
                 EnvironmentTile tile = _model.GetActiveDestination();
                 yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, tile);
                 break;
@@ -280,7 +281,7 @@ public class EncounterManager : MonoBehaviour
         _model.TransitionState();
     }
 
-    public void OnEnvironmentTileSelected(EnvironmentTile environmentTile)
+    public void OnEnvironmentTileSelected(EnvironmentTile environmentTile, MovementRangeType rangeType)
     {
         if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
         {
@@ -289,7 +290,15 @@ public class EncounterManager : MonoBehaviour
             if(environmentTile.IsFree())
             {
                 _model.SetActiveDestination(environmentTile);
-                _model.SetActiveAbility(AbilityID.Move);
+
+                if(rangeType == MovementRangeType.Half)
+                {
+                    _model.SetActiveAbility(AbilityID.MoveHalf);
+                }
+                else
+                {
+                    _model.SetActiveAbility(AbilityID.MoveFull);
+                }
 
                 _model.TransitionState();
             }

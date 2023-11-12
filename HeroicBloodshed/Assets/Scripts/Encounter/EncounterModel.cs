@@ -167,6 +167,8 @@ public class EncounterModel : MonoBehaviour
                     if (characterComponent.IsAlive())
                     {
                         debugString += characterComponent.GetID() + ", ";
+
+                        characterComponent.ReplenishActionPoints();
                         _queues[team].Enqueue(characterComponent);
                     }
                 }
@@ -257,7 +259,19 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_PerformAction()
     {
-        SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        currentCharacter.DecrementActionPoints(GetAbilityCost(GetActiveAbility()));
+
+        if (currentCharacter.HasActionPoints())
+        {
+            SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
+        }
+        else
+        {
+            SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
+        }
+
         yield return null;
     }
 

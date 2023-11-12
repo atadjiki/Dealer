@@ -24,9 +24,8 @@ public class EncounterUIAbilitySelect : EncounterUIElement
 
         foreach (AbilityID abilityID in GetAllowedAbilities(character.GetID()))
         {
-            if(abilityID != AbilityID.Move)
+            if(abilityID != AbilityID.MoveHalf && abilityID != AbilityID.MoveFull)
             {
-
                 StartCoroutine(GenerateAbilityButton(abilityID, character));
             }
         }

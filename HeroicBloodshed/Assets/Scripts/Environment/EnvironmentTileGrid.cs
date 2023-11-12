@@ -158,9 +158,18 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 cost += (int) path.GetTraversalCost(pathNode);
             }
 
-           // Debug.Log("path cost " + cost);
+            int threshold;
 
-            if (cost < 12)
+            if (currentCharacter.GetActionPoints() >= GetAbilityCost(AbilityID.MoveFull))
+            {
+                threshold = 12;
+            }
+            else
+            {
+                threshold = 6;
+            }
+
+            if (cost <= threshold)
             {
                 EnvironmentTile tile = GetClosestTile(mapNode);
                 if(tile.IsFree())
@@ -180,7 +189,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
             MovementRangeType movementType = MovementRangeType.Full;
 
-            if(pair.Item2 < 6)
+            if (pair.Item2 <= 6)
             {
                 movementType = MovementRangeType.Half;
             }
@@ -328,6 +337,38 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void OnTileSelected(EnvironmentTile tile)
     {
-        EncounterManager.Instance.OnEnvironmentTileSelected(tile);
+        StartCoroutine(Coroutine_OnTileSelected(tile));
+
+    }
+
+    private IEnumerator Coroutine_OnTileSelected(EnvironmentTile tile)
+    {
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+
+        ABPath path = ABPath.Construct(origin, tile.transform.position);
+
+        AstarPath.StartPath(path, true);
+
+        yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
+
+        int cost = 0;
+
+        foreach (GraphNode pathNode in path.path)
+        {
+            cost += (int)path.GetTraversalCost(pathNode);
+        }
+
+        Debug.Log("Path cost is " + cost);
+
+        if (cost > 6 && cost < 12)
+        {
+            EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Full);
+        }
+        else
+        {
+            EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Half);
+        }
     }
 }

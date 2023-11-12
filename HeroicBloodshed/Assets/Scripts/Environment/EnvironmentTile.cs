@@ -27,6 +27,8 @@ public class EnvironmentTile : MonoBehaviour
 
     private bool _highlighted = false;
 
+    private bool _debug = false;
+
     public void AllowUpdate(bool flag)
     {
         _allowUpdate = flag;
@@ -276,8 +278,7 @@ public class EnvironmentTile : MonoBehaviour
 
     public void SetColor(Color color)
     {
-        return; 
-        if(_renderer != null)
+        if(_renderer != null && _debug)
         {
             _renderer.material.color = color;
         }

@@ -26,6 +26,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     protected int _health = 0;
     protected int _baseHealth = 0;
 
+    protected int _actionPoints = 0;
+    protected int _baseActionPoints = 0;
+
     protected CapsuleCollider _collider;
 
     private bool _canReceive = true;
@@ -54,6 +57,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _ID = characterDefinition.ID;
         _health = characterDefinition.BaseHealth;
         _baseHealth = characterDefinition.BaseHealth;
+
+        _baseActionPoints = characterDefinition.BaseActionPoints;
+        _actionPoints = characterDefinition.BaseActionPoints;
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
@@ -526,5 +532,27 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public Vector3 GetWorldLocation()
     {
         return _navigator.transform.position;
+    }
+
+    public void ReplenishActionPoints()
+    {
+        _actionPoints = _baseActionPoints;
+    }
+
+    public int DecrementActionPoints(int cost)
+    {
+        _actionPoints -= cost;
+
+        return (int) Mathf.Clamp(_actionPoints, 0, _baseActionPoints);
+    }
+
+    public bool HasActionPoints()
+    {
+        return _actionPoints > 0;
+    }
+
+    public int GetActionPoints()
+    {
+        return _actionPoints;
     }
 }

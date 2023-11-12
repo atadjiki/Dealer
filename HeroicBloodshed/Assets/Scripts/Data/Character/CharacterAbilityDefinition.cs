@@ -79,6 +79,11 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_RotateTowards(CharacterComponent caster, CharacterComponent target)
     {
+        if(caster == null || target == null)
+        {
+            yield break;
+        }
+
         float currentTime = 0;
         float duration = 0.15f;
 
