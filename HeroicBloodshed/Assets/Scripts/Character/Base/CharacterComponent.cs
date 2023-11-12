@@ -29,6 +29,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     protected int _actionPoints = 0;
     protected int _baseActionPoints = 0;
 
+    protected int _movementRange = 0;
+
     protected CapsuleCollider _collider;
 
     private bool _canReceive = true;
@@ -60,6 +62,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _baseActionPoints = characterDefinition.BaseActionPoints;
         _actionPoints = characterDefinition.BaseActionPoints;
+
+        _movementRange = characterDefinition.MovementRange;
 
         _eventReceivers = new List<ICharacterEventReceiver>();
 
@@ -554,5 +558,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public int GetActionPoints()
     {
         return _actionPoints;
+    }
+
+    public int GetMovementRange()
+    {
+        return _movementRange;
     }
 }

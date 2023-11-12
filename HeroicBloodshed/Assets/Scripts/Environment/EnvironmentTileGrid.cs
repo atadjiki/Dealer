@@ -138,6 +138,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
+        int movementRange = currentCharacter.GetMovementRange();
+
         Vector3 origin = currentCharacter.GetWorldLocation();
 
         List<Tuple<EnvironmentTile, int>> eligibleTiles = new List<Tuple<EnvironmentTile, int>>();
@@ -145,36 +147,39 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         //find the distance between the character and every tile (yikes)
         foreach(GraphNode mapNode in _tileMap.Keys)
         {
-            ABPath path = ABPath.Construct(origin, ((Vector3)mapNode.position));
-
-            AstarPath.StartPath(path, true);
-
-            yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
-
-            int cost = 0;
-
-            foreach(GraphNode pathNode in path.path)
+            if(_tileMap[mapNode].IsFree())
             {
-                cost += (int) path.GetTraversalCost(pathNode);
-            }
+                ABPath path = ABPath.Construct(origin, ((Vector3)mapNode.position));
 
-            int threshold;
+                AstarPath.StartPath(path, true);
 
-            if (currentCharacter.GetActionPoints() >= GetAbilityCost(AbilityID.MoveFull))
-            {
-                threshold = 12;
-            }
-            else
-            {
-                threshold = 6;
-            }
+                yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
 
-            if (cost <= threshold)
-            {
-                EnvironmentTile tile = GetClosestTile(mapNode);
-                if(tile.IsFree())
+                int cost = 0;
+
+                foreach (GraphNode pathNode in path.path)
                 {
-                    eligibleTiles.Add(new Tuple<EnvironmentTile, int>(tile, cost));
+                    cost += (int)path.GetTraversalCost(pathNode);
+                }
+
+                int threshold;
+
+                if (currentCharacter.GetActionPoints() >= GetAbilityCost(AbilityID.MoveFull))
+                {
+                    threshold = (movementRange * 2);
+                }
+                else
+                {
+                    threshold = movementRange;
+                }
+
+                if (cost <= threshold)
+                {
+                    EnvironmentTile tile = GetClosestTile(mapNode);
+                    if (tile.IsFree())
+                    {
+                        eligibleTiles.Add(new Tuple<EnvironmentTile, int>(tile, cost));
+                    }
                 }
             }
         }
@@ -189,7 +194,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
             MovementRangeType movementType = MovementRangeType.Full;
 
-            if (pair.Item2 <= 6)
+            if (pair.Item2 <= movementRange)
             {
                 movementType = MovementRangeType.Half;
             }
@@ -204,6 +209,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
+        int movementRange = currentCharacter.GetMovementRange();
+
         Vector3 origin = currentCharacter.GetWorldLocation();
         Vector3 destination = tile.transform.position;
 
@@ -215,7 +222,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         int length = pendingPath.vectorPath.Count;
 
-        if (length < 12)
+        if (length < (movementRange * 2 ))
         {
             _pathRenderer.positionCount = length;
 
@@ -345,6 +352,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
+        int movementRange = currentCharacter.GetMovementRange();
+
         Vector3 origin = currentCharacter.GetWorldLocation();
 
         ABPath path = ABPath.Construct(origin, tile.transform.position);
@@ -362,7 +371,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Debug.Log("Path cost is " + cost);
 
-        if (cost > 6 && cost < 12)
+        if (cost > movementRange && cost < (movementRange * 2))
         {
             EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Full);
         }
