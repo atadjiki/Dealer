@@ -10,8 +10,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     [SerializeField] private GameObject TilePrefab;
     [SerializeField] private GameObject PreviewPrefab;
 
-    private Dictionary<GraphNode, EnvironmentTile> _tileMap;
-    private Dictionary<GraphNode, EnvironmentPreviewTile> _previewMap;
+    private Dictionary<Vector3, EnvironmentTile> _tileMap;
 
     private bool _calculatingPath = false;
 
@@ -50,8 +49,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             return true;
         });
 
-        _tileMap = new Dictionary<GraphNode, EnvironmentTile>();
-        _previewMap = new Dictionary<GraphNode, EnvironmentPreviewTile>();
+        _tileMap = new Dictionary<Vector3, EnvironmentTile>();
 
         int index = 0;
 
@@ -73,15 +71,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             tile.OnTileSelected += OnTileSelected;
             tile.OnTileHighlightState += OnTileHighlightState;
 
-            GameObject previewObject = Instantiate<GameObject>(PreviewPrefab, pos, Quaternion.identity, this.transform);
-            previewObject.name = "prev_" + tilename;
-            yield return new WaitWhile(() => previewObject.GetComponent<EnvironmentPreviewTile>() == null);
-            EnvironmentPreviewTile previewTile = previewObject.GetComponent<EnvironmentPreviewTile>();
-            previewTile.Setup(MovementRangeType.None);
-
-            _tileMap.Add(node, tile);
-
-            _previewMap.Add(node, previewTile);
+            _tileMap.Add((Vector3) node.position, tile);
 
             index++;
         }
@@ -90,11 +80,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         foreach(EnvironmentTile tile in _tileMap.Values)
         {
             tile.PerformScan();
-        }
-
-        foreach(EnvironmentTile tile in _tileMap.Values)
-        {
-            tile.PerformCoverCheck();
         }
     }
 
@@ -105,12 +90,12 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             case EncounterState.CHOOSE_ACTION:
                 if(!model.IsCurrentTeamCPU())
                 {
-                    AllowTileUpdate(true);
+                    SetTileMode(EnvironmentTileMode.Highlight);
                     yield return GenerateMovementRadius();
                 }
                 break;
             default:
-                AllowTileUpdate(false);
+                SetTileMode(EnvironmentTileMode.Hidden);
                 ClearLineRenderers();
                 ClearRadiusTiles();
                 break;
@@ -150,14 +135,14 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
-        List<Tuple<GraphNode, int>> eligibleTiles = new List<Tuple<GraphNode, int>>();
+        List<Tuple<Vector3, int>> eligibleTiles = new List<Tuple<Vector3, int>>();
 
         //find the distance between the character and every tile (yikes)
-        foreach(GraphNode mapNode in _tileMap.Keys)
+        foreach(Vector3 mapNode in _tileMap.Keys)
         {
             if(_tileMap[mapNode].IsFree())
             {
-                ABPath path = ABPath.Construct(origin, ((Vector3)mapNode.position));
+                ABPath path = ABPath.Construct(origin, mapNode);
 
                 AstarPath.StartPath(path, true);
 
@@ -186,7 +171,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                     EnvironmentTile tile = GetClosestTile(mapNode);
                     if (tile.IsFree())
                     {
-                        eligibleTiles.Add(new Tuple<GraphNode, int>(mapNode, cost));
+                        eligibleTiles.Add(new Tuple<Vector3, int>(mapNode, cost));
                     }
                 }
             }
@@ -194,19 +179,19 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Debug.Log("Found " + eligibleTiles.Count + " eligible paths");
 
-        foreach(Tuple<GraphNode, int> pair in eligibleTiles)
-        {
-            EnvironmentPreviewTile previewTile = _previewMap[pair.Item1];
+        //foreach(Tuple<Vector3, int> pair in eligibleTiles)
+        //{
+        //    EnvironmentPreviewTile previewTile = _tileMap[pair.Item1].previewTile;
 
-            MovementRangeType movementType = MovementRangeType.Full;
+        //    MovementRangeType movementType = MovementRangeType.Full;
 
-            if (pair.Item2 <= movementRange)
-            {
-                movementType = MovementRangeType.Half;
-            }
+        //    if (pair.Item2 <= movementRange)
+        //    {
+        //        movementType = MovementRangeType.Half;
+        //    }
 
-            previewTile.Setup(movementType);
-        }
+        //    previewTile.Setup(movementType);
+        //}
     }
 
     private IEnumerator GenerateMovementPath(EnvironmentTile tile)
@@ -242,9 +227,9 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     public EnvironmentTile GetClosestTile(GraphNode node)
     {
-        if (_tileMap.ContainsKey(node))
+        if (_tileMap.ContainsKey((Vector3)node.position))
         {
-            return _tileMap[node];
+            return _tileMap[(Vector3)node.position];
         }
         else
         {
@@ -326,11 +311,12 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         return tiles;
     }
 
-    private void AllowTileUpdate(bool flag)
+    private void SetTileMode(EnvironmentTileMode mode)
     {
         foreach(EnvironmentTile tile in _tileMap.Values)
         {
-            tile.AllowUpdate(flag);
+
+            tile.SetMode(mode);
         }
     }
 
@@ -342,16 +328,15 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void ClearRadiusTiles()
     {
-        foreach(EnvironmentPreviewTile previewTile in _previewMap.Values)
-        {
-            previewTile.Setup(MovementRangeType.None);
-        }
+        //foreach(EnvironmentTile tile in _tileMap.Values)
+        //{
+        //    tile.Setup(MovementRangeType.None);
+        //}
     }
 
     private void OnTileSelected(EnvironmentTile tile)
     {
         StartCoroutine(Coroutine_OnTileSelected(tile));
-
     }
 
     private IEnumerator Coroutine_OnTileSelected(EnvironmentTile tile)

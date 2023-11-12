@@ -175,4 +175,6 @@ public static partial class Constants
 
         return TeamID.None;
     }
+
+    public enum EnvironmentTileMode { Highlight, Preview, Hidden };
 }

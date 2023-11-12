@@ -19,91 +19,34 @@ public class EnvironmentTile : MonoBehaviour
     private EnvironmentSpawnPoint _spawnPoint;
 
     private Vector2 _coordinates;
-    private BoxCollider _collider;
     private MeshRenderer _renderer;
     private Outlinable _outliner;
 
-    private bool _allowUpdate = false;
-
     private bool _highlighted = false;
-
     private bool _debug = false;
 
-    public void AllowUpdate(bool flag)
-    {
-        _allowUpdate = flag;
-
-        if(!_allowUpdate)
-        {
-            ToggleVisibility(false);
-        }
-    }
+    private EnvironmentTileMode _mode;
 
     private void Awake()
     {
-        _collider = GetComponent<BoxCollider>();
         _renderer = GetComponentInChildren<MeshRenderer>();
         _outliner = GetComponent<Outlinable>();
-
-        ToggleVisibility(false);
     }
 
     private void Update()
     {
-        if(_allowUpdate)
+        if (_mode == EnvironmentTileMode.Highlight)
         {
             CheckMouseHighlight();
             CheckMouseClick();
         }
     }
 
-    public List<EnvironmentTile> GetNeighbors()
+    public void Setup(int Row, int Column)
     {
-        return _neighbors;
-    }
+        _coordinates = new Vector2(Row, Column);
 
-    public bool HasNeighbors()
-    {
-        if(_neighbors != null)
-        {
-            return _neighbors.Count > 0;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public bool IsFree()
-    {
-        //need to also check for other characters on these tiles
-
-        if(ContainsObstacle())
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public EnvironmentObstacle GetObstacle()
-    {
-        return _obstacle;
-    }
-
-    public bool ContainsObstacle()
-    {
-        return _obstacle != null;
-    }
-
-    public EnvironmentSpawnPoint GetSpawnPoint()
-    {
-        return _spawnPoint;
-    }
-
-    public bool ContainsSpawnPoint()
-    {
-        return _spawnPoint != null;
+        SetMode(EnvironmentTileMode.Hidden);
     }
 
     private bool CheckIsMouseBlocked()
@@ -138,7 +81,7 @@ public class EnvironmentTile : MonoBehaviour
 
                 if(OnTileHighlightState != null)
                 {
-                    OnTileHighlightState(this, true);
+                    OnTileHighlightState.Invoke(this, true);
                 }
 
                 return;
@@ -174,12 +117,6 @@ public class EnvironmentTile : MonoBehaviour
                 Select();
             }
         }
-    }
-
-    public void Setup(int Row, int Column)
-    {
-        _coordinates = new Vector2(Row, Column);
-        SetColor(Color.clear);
     }
 
     public void MarkAsCoverTile(EnvironmentObstacleType obstacleType)
@@ -271,11 +208,6 @@ public class EnvironmentTile : MonoBehaviour
         }
     }
 
-    public Vector2 GetCoordinates()
-    {
-        return _coordinates;
-    }
-
     public void SetColor(Color color)
     {
         if(_renderer != null && _debug)
@@ -296,5 +228,67 @@ public class EnvironmentTile : MonoBehaviour
         {
             OnTileSelected.Invoke(this);
         }
+    }
+
+    public bool HasNeighbors()
+    {
+        if (_neighbors != null)
+        {
+            return _neighbors.Count > 0;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsFree()
+    {
+        if (ContainsObstacle())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public EnvironmentTileMode GetMode()
+    {
+        return _mode;
+    }
+
+    public void SetMode(EnvironmentTileMode mode)
+    {
+        _mode = mode;
+    }
+
+    public List<EnvironmentTile> GetNeighbors()
+    {
+        return _neighbors;
+    }
+
+    public EnvironmentObstacle GetObstacle()
+    {
+        return _obstacle;
+    }
+
+    public bool ContainsObstacle()
+    {
+        return _obstacle != null;
+    }
+
+    public EnvironmentSpawnPoint GetSpawnPoint()
+    {
+        return _spawnPoint;
+    }
+
+    public bool ContainsSpawnPoint()
+    {
+        return _spawnPoint != null;
+    }
+
+    public Vector2 GetCoordinates()
+    {
+        return _coordinates;
     }
 }
