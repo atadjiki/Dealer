@@ -12,12 +12,6 @@ public class EnvironmentTile : MonoBehaviour
     [SerializeField] private GameObject Mesh_Highlight;
     [SerializeField] private GameObject Mesh_Preview;
 
-    public delegate void TileSelectedDelegate(EnvironmentTile environmentTile);
-    public TileSelectedDelegate OnTileSelected;
-
-    public delegate void TileHighlightDelegate(EnvironmentTile environmentTile, bool highlighted);
-    public TileHighlightDelegate OnTileHighlightState;
-
     private List<EnvironmentTile> _neighbors;
     private EnvironmentObstacle _obstacle;
     private EnvironmentSpawnPoint _spawnPoint;
@@ -25,7 +19,6 @@ public class EnvironmentTile : MonoBehaviour
     private Outlinable _highlightOutline;
     private Outlinable _previewOutline;
 
-    private EnvironmentTileActiveState _activeState;
     private EnvironmentTileHighlightState _highlightState;
     private EnvironmentTilePreviewState _previewState;
 
@@ -33,83 +26,6 @@ public class EnvironmentTile : MonoBehaviour
     {
         _highlightOutline = Mesh_Highlight.GetComponent<Outlinable>();
         _previewOutline = Mesh_Preview.GetComponent<Outlinable>();
-    }
-
-    private void Update()
-    {
-        if(_activeState == EnvironmentTileActiveState.Active)
-        {
-            CheckMouseHighlight();
-            CheckMouseClick();
-        }
-    }
-
-    private bool CheckIsMouseBlocked()
-    {
-        if (Camera.main == null)
-        {
-            return true;
-        }
-
-        if(EventSystem.current.IsPointerOverGameObject())
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private void CheckMouseHighlight()
-    {
-        if (CheckIsMouseBlocked()) { return; }
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
-        {
-            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
-
-            if (tile != null && tile == this)
-            {
-                SetHighlightState(EnvironmentTileHighlightState.On);
-
-                if (OnTileHighlightState != null)
-                {
-                    OnTileHighlightState.Invoke(this, true);
-                }
-
-                return;
-            }
-        }
-
-        if(_highlightState == EnvironmentTileHighlightState.On)
-        {
-            SetHighlightState(EnvironmentTileHighlightState.Off);
-
-            if (OnTileHighlightState != null)
-            {
-                OnTileHighlightState.Invoke(this, false);
-            }
-        }
-    }
-
-    private void CheckMouseClick()
-    {
-        if (CheckIsMouseBlocked()) { return; }
-
-        if (!Input.GetMouseButtonDown(0)) return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
-        {
-            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
-
-            if (tile != null && tile == this)
-            {
-                Select();
-            }
-        }
     }
 
     public void PerformScan()
@@ -153,14 +69,6 @@ public class EnvironmentTile : MonoBehaviour
         {
             _spawnPoint = collider.gameObject.GetComponent<EnvironmentSpawnPoint>();
             break;
-        }
-    }
-
-    public void Select()
-    {
-        if (OnTileSelected != null)
-        {
-            OnTileSelected.Invoke(this);
         }
     }
 
@@ -231,21 +139,6 @@ public class EnvironmentTile : MonoBehaviour
         }
 
         return false;
-    }
-
-    public void SetActiveState(EnvironmentTileActiveState activeState)
-    {
-        _activeState = activeState;
-
-        if(activeState == EnvironmentTileActiveState.Active)
-        {
-
-        }
-        else
-        {
-            SetHighlightState(EnvironmentTileHighlightState.Off);
-            SetPreviewState(EnvironmentTilePreviewState.None);
-        }
     }
 
     public void SetHighlightState(EnvironmentTileHighlightState highlightState)

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Constants;
 
 public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
@@ -15,6 +16,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     private bool _calculatingPath = false;
 
     private LineRenderer _pathRenderer;
+
+    private EnvironmentTileActiveState _activeState = EnvironmentTileActiveState.Inactive;
 
     public IEnumerator Corutine_PerformSetup()
     {
@@ -67,9 +70,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             tileObject.name = tilename;
             yield return new WaitWhile(() => tileObject.GetComponent<EnvironmentTile>() == null);
             EnvironmentTile tile = tileObject.GetComponent<EnvironmentTile>();
-            tile.OnTileSelected += OnTileSelected;
-            tile.OnTileHighlightState += OnTileHighlightState;
-
             _tileMap.Add((Vector3) node.position, tile);
 
             index++;
@@ -89,17 +89,68 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             case EncounterState.CHOOSE_ACTION:
                 if(!model.IsCurrentTeamCPU())
                 {
-                    SetTileActiveStates(EnvironmentTileActiveState.Active);
+                    SetActiveState(EnvironmentTileActiveState.Active);
                     yield return GenerateMovementRadius();
                 }
                 break;
             default:
-                SetTileActiveStates(EnvironmentTileActiveState.Inactive);
+                SetActiveState(EnvironmentTileActiveState.Inactive);
                 ClearLineRenderers();
                 break;
         }
 
         yield return null;
+    }
+
+    private void Update()
+    {
+        if (_activeState == EnvironmentTileActiveState.Active)
+        {
+            CheckMouseHighlight();
+            CheckMouseClick();
+        }
+    }
+
+    private void CheckMouseHighlight()
+    {
+        if (CheckIsMouseBlocked()) { return; }
+
+        foreach(EnvironmentTile tile in _tileMap.Values)
+        {
+            tile.SetHighlightState(EnvironmentTileHighlightState.Off);
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
+        {
+            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
+
+            if (tile != null && tile == this)
+            {
+                tile.SetHighlightState(EnvironmentTileHighlightState.On);
+
+                OnTileHighlightState(tile, true);
+
+                return;
+            }
+        }
+    }
+
+    private void CheckMouseClick()
+    {
+        if (CheckIsMouseBlocked()) { return; }
+
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
+        {
+            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
+
+            OnTileSelected(tile);
+        }
     }
 
     private void OnTileHighlightState(EnvironmentTile tile, bool highlighted)
@@ -318,11 +369,21 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         return tiles;
     }
 
-    public void SetTileActiveStates(EnvironmentTileActiveState state)
+    public void SetActiveState(EnvironmentTileActiveState state)
     {
-        foreach (EnvironmentTile tile in _tileMap.Values)
+        _activeState = state;
+
+        if (_activeState == EnvironmentTileActiveState.Active)
         {
-            tile.SetActiveState(state);
+
+        }
+        else
+        {
+            foreach (EnvironmentTile tile in _tileMap.Values)
+            {
+                tile.SetHighlightState(EnvironmentTileHighlightState.Off);
+                tile.SetPreviewState(EnvironmentTilePreviewState.None);
+            }
         }
     }
 
@@ -368,5 +429,20 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         {
             EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Half);
         }
+    }
+
+    private bool CheckIsMouseBlocked()
+    {
+        if (Camera.main == null)
+        {
+            return true;
+        }
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        return false;
     }
 }
