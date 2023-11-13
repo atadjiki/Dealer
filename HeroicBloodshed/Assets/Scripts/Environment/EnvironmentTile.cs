@@ -145,7 +145,7 @@ public class EnvironmentTile : MonoBehaviour
     {
         _highlightState = highlightState;
 
-        Color outlineColor = Color.clear;
+        Color outlineColor = Color.white;
         Color fillColor = Color.clear;
 
         if (_highlightState == EnvironmentTileHighlightState.On)
@@ -169,6 +169,7 @@ public class EnvironmentTile : MonoBehaviour
                 }
             }
 
+            outlineColor.a = 0.5f;
             fillColor.a = 0.2f;
 
             _highlightOutline.OutlineParameters.Color = outlineColor;
@@ -194,10 +195,12 @@ public class EnvironmentTile : MonoBehaviour
             case EnvironmentTilePreviewState.Full:
                 Mesh_Preview.SetActive(true);
                 _previewOutline.OutlineParameters.Color = GetColor(MovementRangeType.Full);
+                _previewOutline.OutlineLayer = 2;
                 break;
             case EnvironmentTilePreviewState.Half:
                 Mesh_Preview.SetActive(true);
                 _previewOutline.OutlineParameters.Color = GetColor(MovementRangeType.Half);
+                _previewOutline.OutlineLayer = 1;
                 break;
             case EnvironmentTilePreviewState.None:
                 Mesh_Preview.SetActive(false);

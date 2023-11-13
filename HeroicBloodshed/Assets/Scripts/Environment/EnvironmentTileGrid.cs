@@ -9,13 +9,14 @@ using static Constants;
 public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 {
     [SerializeField] private GameObject TilePrefab;
-    [SerializeField] private GameObject PreviewPrefab;
 
     private Dictionary<Vector3, EnvironmentTile> _tileMap;
 
     private bool _calculatingPath = false;
 
     private LineRenderer _pathRenderer;
+
+    private EnvironmentTile _currentlyHighlighted;
 
     private EnvironmentTileActiveState _activeState = EnvironmentTileActiveState.Inactive;
 
@@ -56,6 +57,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         int index = 0;
 
+        float loadTime = Time.time;
+
         //generate a tile for each walkable node
         foreach (GraphNode node in WalkableNodes)
         {
@@ -71,9 +74,14 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             yield return new WaitWhile(() => tileObject.GetComponent<EnvironmentTile>() == null);
             EnvironmentTile tile = tileObject.GetComponent<EnvironmentTile>();
             _tileMap.Add((Vector3) node.position, tile);
+            yield return new WaitForEndOfFrame();
 
             index++;
         }
+
+        loadTime -= Time.time;
+
+        Debug.Log(Mathf.Abs(loadTime) + " seconds to generate tiles");
 
         //once we have our tiles, check if they are under any obstacles, and if they have any neighboring nodes
         foreach(EnvironmentTile tile in _tileMap.Values)
@@ -115,26 +123,40 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         if (CheckIsMouseBlocked()) { return; }
 
-        foreach(EnvironmentTile tile in _tileMap.Values)
-        {
-            tile.SetHighlightState(EnvironmentTileHighlightState.Off);
-        }
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
         {
-            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
+            EnvironmentTile hitTile = hit.collider.GetComponent<EnvironmentTile>();
 
-            if (tile != null && tile == this)
+            if (hitTile != null && _currentlyHighlighted != hitTile)
             {
-                tile.SetHighlightState(EnvironmentTileHighlightState.On);
+                hitTile.SetHighlightState(EnvironmentTileHighlightState.On);
 
-                OnTileHighlightState(tile, true);
+                HighlightTile(hitTile);
 
                 return;
             }
         }
+    }
+
+    private void HighlightTile(EnvironmentTile tile)
+    {
+        if(_currentlyHighlighted != null)
+        {
+            //un highlight the old tile
+            _currentlyHighlighted.SetHighlightState(EnvironmentTileHighlightState.Off);
+
+        }
+
+        _currentlyHighlighted = tile;
+
+        //highlight the new tile
+        _currentlyHighlighted.SetHighlightState(EnvironmentTileHighlightState.On);
+
+        ClearLineRenderers();
+
+        StartCoroutine(GenerateMovementPath(_currentlyHighlighted));
     }
 
     private void CheckMouseClick()
@@ -149,38 +171,89 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         {
             EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
 
-            OnTileSelected(tile);
+            StartCoroutine(Coroutine_OnTileSelected(tile));
         }
     }
-
-    private void OnTileHighlightState(EnvironmentTile tile, bool highlighted)
-    {
-        if (_calculatingPath) { return; }
-        if (tile.ContainsObstacle()) { return; }
-
-        if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION
-            && EncounterManager.Instance.IsPlayerTurn())
-        {
-            //if true, create a line renderer from the current character to this tile,
-            if (highlighted)
-            {
-                StartCoroutine(GenerateMovementPath(tile));
-            }
-
-            //if false, clear line renderer
-            else
-            {
-                _pathRenderer.positionCount = 0;
-                _pathRenderer.forceRenderingOff = true;
-            }
-        }
-    }
-
-    private IEnumerator GenerateMovementRadius()
+    private IEnumerator Coroutine_OnTileSelected(EnvironmentTile tile)
     {
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
         int movementRange = currentCharacter.GetMovementRange();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+
+        ABPath path = ABPath.Construct(origin, tile.transform.position);
+
+        AstarPath.StartPath(path, true);
+
+        yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
+
+        int cost = 0;
+
+        foreach (GraphNode pathNode in path.path)
+        {
+            cost += (int)path.GetTraversalCost(pathNode);
+        }
+
+        Debug.Log("Path cost is " + cost);
+
+        MovementRangeType rangeType;
+        if (IsWithinCharacterRange(cost, currentCharacter, out rangeType))
+        {
+            EncounterManager.Instance.OnEnvironmentTileSelected(tile, rangeType);
+        }
+        else
+        {
+            Debug.Log(tile.name + " is out of range for " + currentCharacter.GetID());
+        }
+    }
+
+    private IEnumerator GenerateMovementPath(EnvironmentTile tile)
+    {
+        _calculatingPath = true;
+
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        int movementRange = currentCharacter.GetMovementRange();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+        Vector3 destination = tile.transform.position;
+
+        ABPath pendingPath = ABPath.Construct(origin, destination);
+
+        AstarPath.StartPath(pendingPath, true);
+
+        yield return new WaitUntil(() => pendingPath.CompleteState == PathCompleteState.Complete);
+
+        List<Vector3> vectorPath = pendingPath.vectorPath;
+
+        int length = vectorPath.Count;
+
+        vectorPath.Add(destination);
+
+        MovementRangeType rangeType;
+
+        if (IsWithinCharacterRange(length, currentCharacter, out rangeType))
+        {
+            _pathRenderer.positionCount = vectorPath.Count;
+
+            _pathRenderer.SetPositions(vectorPath.ToArray());
+
+            Color pathColor = GetColor(rangeType);
+            pathColor.a = 0.25f;
+
+            _pathRenderer.material.color = pathColor;
+
+            _pathRenderer.forceRenderingOff = false;
+        }
+
+        _calculatingPath = false;
+    }
+
+
+    private IEnumerator GenerateMovementRadius()
+    {
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
@@ -204,18 +277,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                     cost += (int)path.GetTraversalCost(pathNode);
                 }
 
-                int threshold;
-
-                if (currentCharacter.GetActionPoints() >= GetAbilityCost(AbilityID.MoveFull))
-                {
-                    threshold = (movementRange * 2);
-                }
-                else
-                {
-                    threshold = movementRange;
-                }
-
-                if (cost <= threshold)
+                MovementRangeType rangeType;
+                if (IsWithinCharacterRange(cost, currentCharacter, out rangeType))
                 {
                     EnvironmentTile tile = GetClosestTile(mapNode);
                     if (tile.IsFree())
@@ -232,7 +295,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         {
             EnvironmentTile tile = _tileMap[pair.Item1];
 
-            if (pair.Item2 <= movementRange)
+            if (pair.Item2 <= currentCharacter.GetMovementRange())
             {
                 tile.SetPreviewState(EnvironmentTilePreviewState.Half);
             }
@@ -241,46 +304,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 tile.SetPreviewState(EnvironmentTilePreviewState.Full);
             }
         }
-    }
-
-    private IEnumerator GenerateMovementPath(EnvironmentTile tile)
-    {
-        _calculatingPath = true;
-
-        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-        int movementRange = currentCharacter.GetMovementRange();
-
-        Vector3 origin = currentCharacter.GetWorldLocation();
-        Vector3 destination = tile.transform.position;
-
-        ABPath pendingPath = ABPath.Construct(origin, destination);
-
-        AstarPath.StartPath(pendingPath, true);
-
-        yield return new WaitUntil(() => pendingPath.CompleteState == PathCompleteState.Complete);
-
-        int length = pendingPath.vectorPath.Count;
-
-        if (length < (movementRange * 2 ))
-        {
-            _pathRenderer.positionCount = length;
-
-            _pathRenderer.SetPositions(pendingPath.vectorPath.ToArray());
-
-            if( length <= movementRange)
-            {
-                _pathRenderer.material.SetColor("_Color", GetColor(MovementRangeType.Half));
-            }
-            else
-            {
-                _pathRenderer.material.SetColor("_Color", GetColor(MovementRangeType.Full));
-            }
-
-            _pathRenderer.forceRenderingOff = false;
-        }
-
-        _calculatingPath = false;
     }
 
     public EnvironmentTile GetClosestTile(GraphNode node)
@@ -393,44 +416,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         _pathRenderer.forceRenderingOff = true;
     }
 
-    private void OnTileSelected(EnvironmentTile tile)
-    {
-        StartCoroutine(Coroutine_OnTileSelected(tile));
-    }
-
-    private IEnumerator Coroutine_OnTileSelected(EnvironmentTile tile)
-    {
-        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-        int movementRange = currentCharacter.GetMovementRange();
-
-        Vector3 origin = currentCharacter.GetWorldLocation();
-
-        ABPath path = ABPath.Construct(origin, tile.transform.position);
-
-        AstarPath.StartPath(path, true);
-
-        yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
-
-        int cost = 0;
-
-        foreach (GraphNode pathNode in path.path)
-        {
-            cost += (int)path.GetTraversalCost(pathNode);
-        }
-
-        Debug.Log("Path cost is " + cost);
-
-        if (cost > movementRange && cost < (movementRange * 2))
-        {
-            EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Full);
-        }
-        else
-        {
-            EncounterManager.Instance.OnEnvironmentTileSelected(tile, MovementRangeType.Half);
-        }
-    }
-
     private bool CheckIsMouseBlocked()
     {
         if (Camera.main == null)
@@ -443,6 +428,40 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             return true;
         }
 
+        return false;
+    }
+
+    private bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
+    {
+        int threshold;
+
+        int AP = character.GetActionPoints();
+        int movementRange = character.GetMovementRange();
+
+        if (AP >= GetAbilityCost(AbilityID.MoveFull))
+        {
+            threshold = (movementRange * 2);
+        }
+        else
+        {
+            threshold = movementRange;
+        }
+
+        if(distance <= threshold)
+        {
+            if(distance <= character.GetMovementRange())
+            {
+                rangeType = MovementRangeType.Half;
+            }
+            else
+            {
+                rangeType = MovementRangeType.Full;
+            }
+
+            return true;
+        }
+
+        rangeType = MovementRangeType.None;
         return false;
     }
 }
