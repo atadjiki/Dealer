@@ -176,5 +176,9 @@ public static partial class Constants
         return TeamID.None;
     }
 
-    public enum EnvironmentTileMode { Highlight, Preview, Hidden };
+    public enum EnvironmentTileActiveState { Active, Inactive };
+
+    public enum EnvironmentTileHighlightState { On, Off };
+
+    public enum EnvironmentTilePreviewState { Full, Half, None };
 }

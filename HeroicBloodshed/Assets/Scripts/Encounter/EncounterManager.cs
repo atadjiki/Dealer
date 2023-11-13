@@ -285,7 +285,7 @@ public class EncounterManager : MonoBehaviour
     {
         if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
         {
-            Debug.Log("Tile " + environmentTile.GetCoordinates().ToString() + " selected");
+            Debug.Log("Tile " + environmentTile.name.ToString() + " selected");
 
             if(environmentTile.IsFree())
             {

@@ -8,6 +8,10 @@ using static Constants;
 [RequireComponent(typeof(BoxCollider))]
 public class EnvironmentTile : MonoBehaviour
 {
+    [Header("Meshes")]
+    [SerializeField] private GameObject Mesh_Highlight;
+    [SerializeField] private GameObject Mesh_Preview;
+
     public delegate void TileSelectedDelegate(EnvironmentTile environmentTile);
     public TileSelectedDelegate OnTileSelected;
 
@@ -18,35 +22,26 @@ public class EnvironmentTile : MonoBehaviour
     private EnvironmentObstacle _obstacle;
     private EnvironmentSpawnPoint _spawnPoint;
 
-    private Vector2 _coordinates;
-    private MeshRenderer _renderer;
-    private Outlinable _outliner;
+    private Outlinable _highlightOutline;
+    private Outlinable _previewOutline;
 
-    private bool _highlighted = false;
-    private bool _debug = false;
-
-    private EnvironmentTileMode _mode;
+    private EnvironmentTileActiveState _activeState;
+    private EnvironmentTileHighlightState _highlightState;
+    private EnvironmentTilePreviewState _previewState;
 
     private void Awake()
     {
-        _renderer = GetComponentInChildren<MeshRenderer>();
-        _outliner = GetComponent<Outlinable>();
+        _highlightOutline = Mesh_Highlight.GetComponent<Outlinable>();
+        _previewOutline = Mesh_Preview.GetComponent<Outlinable>();
     }
 
     private void Update()
     {
-        if (_mode == EnvironmentTileMode.Highlight)
+        if(_activeState == EnvironmentTileActiveState.Active)
         {
             CheckMouseHighlight();
             CheckMouseClick();
         }
-    }
-
-    public void Setup(int Row, int Column)
-    {
-        _coordinates = new Vector2(Row, Column);
-
-        SetMode(EnvironmentTileMode.Hidden);
     }
 
     private bool CheckIsMouseBlocked()
@@ -76,10 +71,9 @@ public class EnvironmentTile : MonoBehaviour
 
             if (tile != null && tile == this)
             {
-                _highlighted = true;
-                ToggleVisibility(true);
+                SetHighlightState(EnvironmentTileHighlightState.On);
 
-                if(OnTileHighlightState != null)
+                if (OnTileHighlightState != null)
                 {
                     OnTileHighlightState.Invoke(this, true);
                 }
@@ -88,10 +82,9 @@ public class EnvironmentTile : MonoBehaviour
             }
         }
 
-        if(_highlighted)
+        if(_highlightState == EnvironmentTileHighlightState.On)
         {
-            _highlighted = false;
-            ToggleVisibility(false);
+            SetHighlightState(EnvironmentTileHighlightState.Off);
 
             if (OnTileHighlightState != null)
             {
@@ -119,56 +112,11 @@ public class EnvironmentTile : MonoBehaviour
         }
     }
 
-    public void MarkAsCoverTile(EnvironmentObstacleType obstacleType)
-    {
-        if(_obstacle != null) { return; }
-        switch(obstacleType)
-        {
-            case EnvironmentObstacleType.FullCover:
-                SetColor(Color.cyan);
-                break;
-            case EnvironmentObstacleType.HalfCover:
-                SetColor(Color.yellow);
-                break;
-            case EnvironmentObstacleType.NoCover:
-                break;
-        }
-    }
-
-    public void PerformCoverCheck()
-    {
-        if(_obstacle != null)
-        {
-            foreach(EnvironmentTile neighbor in _neighbors)
-            {
-                float distance = Vector3.Distance(this.transform.position, neighbor.transform.position);
-
-                if (Mathf.Approximately(distance, 1))
-                {
-                    neighbor.MarkAsCoverTile(_obstacle.GetObstacleType());
-                }
-            }
-        }
-    }
-
     public void PerformScan()
     {
         GatherNeighbors();
         GatherObstacles();
         GatherSpawnMarkers();
-
-        if (_spawnPoint != null)
-        {
-            SetColor(Color.green);
-        }
-        else if (_obstacle != null)
-        {
-            SetColor(Color.red);
-        }
-        else
-        {
-            SetColor(Color.blue);
-        }
     }
 
     private void GatherNeighbors()
@@ -208,20 +156,6 @@ public class EnvironmentTile : MonoBehaviour
         }
     }
 
-    public void SetColor(Color color)
-    {
-        if(_renderer != null && _debug)
-        {
-            _renderer.material.color = color;
-        }
-    }
-
-    public void ToggleVisibility(bool flag)
-    {
-        _renderer.gameObject.SetActive(flag);
-        _outliner.enabled = flag;
-    }
-
     public void Select()
     {
         if (OnTileSelected != null)
@@ -252,14 +186,130 @@ public class EnvironmentTile : MonoBehaviour
         return true;
     }
 
-    public EnvironmentTileMode GetMode()
+    public EnvironmentObstacleType GetCoverType()
     {
-        return _mode;
+        EnvironmentObstacleType obstacleType = EnvironmentObstacleType.NoCover;
+
+        if (_neighbors != null)
+        {
+            foreach (EnvironmentTile neighbor in _neighbors)
+            {
+                float distance = Vector3.Distance(this.transform.position, neighbor.transform.position);
+                if (Mathf.Approximately(distance, 1))
+                {
+                    if (neighbor.ContainsObstacle())
+                    {
+                        EnvironmentObstacleType neighborType = neighbor.GetObstacle().GetObstacleType();
+
+                        if (neighborType > obstacleType)
+                        {
+                            obstacleType = neighborType;
+                        }
+                    }
+                }
+            }
+        }
+
+        return obstacleType;
     }
 
-    public void SetMode(EnvironmentTileMode mode)
+    public bool IsCoverTile()
     {
-        _mode = mode;
+        if(_neighbors != null)
+        {
+            foreach (EnvironmentTile neighbor in _neighbors)
+            {
+                float distance = Vector3.Distance(this.transform.position, neighbor.transform.position);
+                if (Mathf.Approximately(distance, 1))
+                {
+                    if (neighbor.ContainsObstacle())
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void SetActiveState(EnvironmentTileActiveState activeState)
+    {
+        _activeState = activeState;
+
+        if(activeState == EnvironmentTileActiveState.Active)
+        {
+
+        }
+        else
+        {
+            SetHighlightState(EnvironmentTileHighlightState.Off);
+            SetPreviewState(EnvironmentTilePreviewState.None);
+        }
+    }
+
+    public void SetHighlightState(EnvironmentTileHighlightState highlightState)
+    {
+        _highlightState = highlightState;
+
+        Color outlineColor = Color.clear;
+        Color fillColor = Color.clear;
+
+        if (_highlightState == EnvironmentTileHighlightState.On)
+        {
+            if (ContainsObstacle())
+            {
+                fillColor = Color.red;
+            }
+            else if(IsCoverTile())
+            {
+                EnvironmentObstacleType obstacleType = GetCoverType();
+
+                switch(obstacleType)
+                {
+                    case EnvironmentObstacleType.FullCover:
+                        fillColor = Color.green;
+                        break;
+                    case EnvironmentObstacleType.HalfCover:
+                        fillColor = Color.yellow;
+                        break;
+                }
+            }
+
+            fillColor.a = 0.2f;
+
+            _highlightOutline.OutlineParameters.Color = outlineColor;
+            _highlightOutline.OutlineParameters.FillPass.SetColor("_PublicColor", fillColor);
+
+        }
+        else
+        {
+            outlineColor = Color.grey;
+            outlineColor.a = 0.5f;
+
+            _highlightOutline.OutlineParameters.Color = outlineColor;
+            _highlightOutline.OutlineParameters.FillPass.SetColor("_PublicColor", fillColor);
+        }
+    }
+
+    public void SetPreviewState(EnvironmentTilePreviewState previewState)
+    {
+        _previewState = previewState;
+
+        switch(_previewState)
+        {
+            case EnvironmentTilePreviewState.Full:
+                Mesh_Preview.SetActive(true);
+                _previewOutline.OutlineParameters.Color = GetColor(MovementRangeType.Full);
+                break;
+            case EnvironmentTilePreviewState.Half:
+                Mesh_Preview.SetActive(true);
+                _previewOutline.OutlineParameters.Color = GetColor(MovementRangeType.Half);
+                break;
+            case EnvironmentTilePreviewState.None:
+                Mesh_Preview.SetActive(false);
+                break;
+        }
     }
 
     public List<EnvironmentTile> GetNeighbors()
@@ -285,10 +335,5 @@ public class EnvironmentTile : MonoBehaviour
     public bool ContainsSpawnPoint()
     {
         return _spawnPoint != null;
-    }
-
-    public Vector2 GetCoordinates()
-    {
-        return _coordinates;
     }
 }

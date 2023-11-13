@@ -67,7 +67,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             tileObject.name = tilename;
             yield return new WaitWhile(() => tileObject.GetComponent<EnvironmentTile>() == null);
             EnvironmentTile tile = tileObject.GetComponent<EnvironmentTile>();
-            tile.Setup(row, col);
             tile.OnTileSelected += OnTileSelected;
             tile.OnTileHighlightState += OnTileHighlightState;
 
@@ -90,14 +89,13 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             case EncounterState.CHOOSE_ACTION:
                 if(!model.IsCurrentTeamCPU())
                 {
-                    SetTileMode(EnvironmentTileMode.Highlight);
+                    SetTileActiveStates(EnvironmentTileActiveState.Active);
                     yield return GenerateMovementRadius();
                 }
                 break;
             default:
-                SetTileMode(EnvironmentTileMode.Hidden);
+                SetTileActiveStates(EnvironmentTileActiveState.Inactive);
                 ClearLineRenderers();
-                ClearRadiusTiles();
                 break;
         }
 
@@ -179,19 +177,19 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         Debug.Log("Found " + eligibleTiles.Count + " eligible paths");
 
-        //foreach(Tuple<Vector3, int> pair in eligibleTiles)
-        //{
-        //    EnvironmentPreviewTile previewTile = _tileMap[pair.Item1].previewTile;
+        foreach (Tuple<Vector3, int> pair in eligibleTiles)
+        {
+            EnvironmentTile tile = _tileMap[pair.Item1];
 
-        //    MovementRangeType movementType = MovementRangeType.Full;
-
-        //    if (pair.Item2 <= movementRange)
-        //    {
-        //        movementType = MovementRangeType.Half;
-        //    }
-
-        //    previewTile.Setup(movementType);
-        //}
+            if (pair.Item2 <= movementRange)
+            {
+                tile.SetPreviewState(EnvironmentTilePreviewState.Half);
+            }
+            else
+            {
+                tile.SetPreviewState(EnvironmentTilePreviewState.Full);
+            }
+        }
     }
 
     private IEnumerator GenerateMovementPath(EnvironmentTile tile)
@@ -218,6 +216,15 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             _pathRenderer.positionCount = length;
 
             _pathRenderer.SetPositions(pendingPath.vectorPath.ToArray());
+
+            if( length <= movementRange)
+            {
+                _pathRenderer.material.SetColor("_Color", GetColor(MovementRangeType.Half));
+            }
+            else
+            {
+                _pathRenderer.material.SetColor("_Color", GetColor(MovementRangeType.Full));
+            }
 
             _pathRenderer.forceRenderingOff = false;
         }
@@ -311,12 +318,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         return tiles;
     }
 
-    private void SetTileMode(EnvironmentTileMode mode)
+    public void SetTileActiveStates(EnvironmentTileActiveState state)
     {
-        foreach(EnvironmentTile tile in _tileMap.Values)
+        foreach (EnvironmentTile tile in _tileMap.Values)
         {
-
-            tile.SetMode(mode);
+            tile.SetActiveState(state);
         }
     }
 
@@ -324,14 +330,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         _pathRenderer.positionCount = 0;
         _pathRenderer.forceRenderingOff = true;
-    }
-
-    private void ClearRadiusTiles()
-    {
-        //foreach(EnvironmentTile tile in _tileMap.Values)
-        //{
-        //    tile.Setup(MovementRangeType.None);
-        //}
     }
 
     private void OnTileSelected(EnvironmentTile tile)
