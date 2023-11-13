@@ -88,7 +88,7 @@ public class AbilityHandler : MonoBehaviour
         float duration = 0.15f;
 
         Quaternion casterRotation = caster.transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - caster.transform.position);
+        Quaternion targetRotation = Quaternion.LookRotation(target.GetWorldLocation() - caster.GetWorldLocation());
 
         while (currentTime < duration)
         {
