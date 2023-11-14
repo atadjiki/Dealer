@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Console
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -243,15 +243,15 @@ MonoBehaviour:
     y: 606
     width: 1483
     height: 341
-  m_MinSize: {x: 231, y: 271}
-  m_MaxSize: {x: 10001, y: 10021}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 101, y: 121}
+  m_MaxSize: {x: 4001, y: 4021}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
   - {fileID: 18}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -347,7 +347,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -415,9 +415,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 486e0000
-      m_LastClickedID: 28232
-      m_ExpandedIDs: 689cffff10fbffffe46d00000c6e00005e6e00006a6e0000786e0000
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 0ee4ffff10fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -851,7 +851,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: -1.037103, y: 4.860093, z: -21.236982}
     speed: 2
-    m_Value: {x: -1.037103, y: 4.860093, z: -21.236982}
+    m_Value: {x: 1.0627913, y: 0.58547455, z: -0.12364807}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -899,11 +899,11 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: 0.098402604, y: 0.90185505, z: -0.29621583, w: 0.2991697}
     speed: 2
-    m_Value: {x: 0.09927731, y: 0.90083104, z: -0.29587907, w: 0.30183288}
+    m_Value: {x: 0.46088958, y: -0.28272822, z: 0.15775174, w: 0.82629293}
   m_Size:
     m_Target: 1.5
     speed: 2
-    m_Value: 1.4999996
+    m_Value: 0.70710677
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1043,7 +1043,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Prefabs/Environment/Obstacles/Full Cover
+    - Assets/Resources/Prefabs/Environment/Tiles
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1051,16 +1051,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Resources/Prefabs/Environment/Obstacles/Full Cover
+  - Assets/Resources/Prefabs/Environment/Tiles
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\GitHub\Dealer\HeroicBloodshed
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 708}
-    m_SelectedIDs: e6740000
-    m_LastClickedID: 29926
-    m_ExpandedIDs: 000000008e71000090710000927100009471000096710000987100009a7100009c7100009e710000a0710000a2710000a4710000a6710000a8710000aa710000ac710000ae710000b0710000b2710000b4710000b6710000b8710000ba710000
+    scrollPos: {x: 0, y: 772}
+    m_SelectedIDs: 6a750000
+    m_LastClickedID: 30058
+    m_ExpandedIDs: 000000000a7200000c7200000e72000010720000127200001472000016720000187200001a7200001c7200001e72000020720000227200002472000026720000287200002a7200002c7200002e7200003072000032720000347200003672000076750000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1088,7 +1088,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000008e71000090710000927100009471000096710000987100009a7100009c7100009e710000a0710000a2710000a4710000a6710000a8710000aa710000ac710000ae710000b0710000b2710000b4710000b6710000b8710000ba710000
+    m_ExpandedIDs: 000000000a7200000c7200000e72000010720000127200001472000016720000187200001a7200001c7200001e72000020720000227200002472000026720000287200002a7200002c7200002e72000030720000327200003472000036720000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1119,18 +1119,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c62300001c77000060810000588d0000307400008e750000827500007a7500006e7500007e7500007275000086750000767500008a7500008e710000c2760100e08d0000ca760100c6760100fa940000f6e405003af3050022f30500665b01004ec0000006c800004ec20000d8be0000525e01001275ffff6ebf0000b6bf000014c200005ebf000060170500ec650100127c000036a700005aa7000056720000f677000016750000a07900007681000000000000e8760000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Scene_Test_Environment
+      m_OriginalName: Scene_Test_Environment
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 32834
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
