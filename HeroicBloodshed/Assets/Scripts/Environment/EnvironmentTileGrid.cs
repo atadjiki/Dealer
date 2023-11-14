@@ -199,8 +199,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         MovementRangeType rangeType;
         if (IsWithinCharacterRange(cost, currentCharacter, out rangeType))
-        {
-            EncounterManager.Instance.OnEnvironmentTileSelected(tile, rangeType);
+        {//TODO
+           // EncounterManager.Instance.OnEnvironmentTileSelected(tile, rangeType);
         }
         else
         {
@@ -334,21 +334,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    public Vector3 GetClosestTilePosition(Vector3 worldPosition)
-    {
-        EnvironmentTile tile = GetClosestTile(worldPosition);
-
-        if (tile != null)
-        {
-            return tile.transform.position;
-        }
-        else
-        {
-            Debug.Log("Could not find tile close to position " + worldPosition.ToString());
-            return worldPosition;
-        }
-    }
-
     public List<EnvironmentTile> GetTilesContainingSpawnPoints(TeamID team = TeamID.None)
     {
         List<EnvironmentTile> tiles = new List<EnvironmentTile>();
@@ -373,21 +358,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
 
         Debug.Log("Found " + tiles.Count + " spawn points for team " + team);
-
-        return tiles;
-    }
-
-    public List<EnvironmentTile> GetTilesContainingObstacles()
-    {
-        List<EnvironmentTile> tiles = new List<EnvironmentTile>();
-
-        foreach (EnvironmentTile tile in _tileMap.Values)
-        {
-            if (tile.ContainsObstacle())
-            {
-                tiles.Add(tile);
-            }
-        }
 
         return tiles;
     }

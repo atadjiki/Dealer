@@ -31,7 +31,7 @@ public class EncounterModel : MonoBehaviour
 
     private AbilityID _activeAbility = AbilityID.NONE;
     private CharacterComponent _activeTarget = null;
-    private EnvironmentTile _activeDestination = null;
+    private Vector3 _activeDestination = Vector3.zero;
 
     //
     //state machine
@@ -418,12 +418,12 @@ public class EncounterModel : MonoBehaviour
         return _activeTarget;
     }
 
-    public void SetActiveDestination(EnvironmentTile tile)
+    public void SetActiveDestination(Vector3 position)
     {
-        _activeDestination = tile;
+        _activeDestination = position;
     }
 
-    public EnvironmentTile GetActiveDestination()
+    public Vector3 GetActiveDestination()
     {
         return _activeDestination;
     }

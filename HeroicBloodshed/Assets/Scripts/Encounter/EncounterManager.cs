@@ -244,8 +244,8 @@ public class EncounterManager : MonoBehaviour
         {
             case AbilityID.MoveHalf:
             case AbilityID.MoveFull:
-                EnvironmentTile tile = _model.GetActiveDestination();
-                yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, tile);
+                Vector3 destination = _model.GetActiveDestination();
+                yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, destination);
                 break;
             case AbilityID.Attack:
                 CharacterComponent target = _model.GetActiveTarget();
@@ -280,30 +280,30 @@ public class EncounterManager : MonoBehaviour
 
         _model.TransitionState();
     }
+    //TODO
+    //public void OnEnvironmentTileSelected(EnvironmentTile environmentTile, MovementRangeType rangeType)
+    //{
+    //    if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
+    //    {
+    //        Debug.Log("Tile " + environmentTile.name.ToString() + " selected");
 
-    public void OnEnvironmentTileSelected(EnvironmentTile environmentTile, MovementRangeType rangeType)
-    {
-        if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
-        {
-            Debug.Log("Tile " + environmentTile.name.ToString() + " selected");
+    //        if(environmentTile.IsFree())
+    //        {
+    //            _model.SetActiveDestination(environmentTile);
 
-            if(environmentTile.IsFree())
-            {
-                _model.SetActiveDestination(environmentTile);
+    //            if(rangeType == MovementRangeType.Half)
+    //            {
+    //                _model.SetActiveAbility(AbilityID.MoveHalf);
+    //            }
+    //            else
+    //            {
+    //                _model.SetActiveAbility(AbilityID.MoveFull);
+    //            }
 
-                if(rangeType == MovementRangeType.Half)
-                {
-                    _model.SetActiveAbility(AbilityID.MoveHalf);
-                }
-                else
-                {
-                    _model.SetActiveAbility(AbilityID.MoveFull);
-                }
-
-                _model.TransitionState();
-            }
-        }
-    }
+    //            _model.TransitionState();
+    //        }
+    //    }
+    //}
 
     public bool AreTargetsAvailable()
     {

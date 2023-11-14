@@ -13,9 +13,9 @@ public class CharacterNavigator : MonoBehaviour
         _AI.canMove = false;
     }
 
-    public IEnumerator Coroutine_MoveToTile(EnvironmentTile tile)
+    public IEnumerator Coroutine_MoveToPosition(Vector3 destination)
     {
-        ABPath path = ABPath.Construct(this.transform.position, tile.transform.position);
+        ABPath path = ABPath.Construct(this.transform.position, destination);
 
         _AI.SetPath(path);
 
@@ -23,7 +23,7 @@ public class CharacterNavigator : MonoBehaviour
 
         yield return new WaitUntil(() => _AI.reachedDestination);
 
-        _AI.Teleport(tile.transform.position);
+        _AI.Teleport(destination);
 
    
     }

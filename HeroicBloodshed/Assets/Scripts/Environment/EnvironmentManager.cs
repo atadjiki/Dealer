@@ -69,11 +69,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     //Helpers/interface 
 
-    public Vector3 GetClosestPositionToTile(EnvironmentTile tile)
-    {
-        return _tileGrid.GetClosestTilePosition(tile.transform.position);
-    }
-
     public List<EnvironmentTile> GetTilesContainingSpawnPoints(TeamID teamID)
     {
         if (_tileGrid != null)

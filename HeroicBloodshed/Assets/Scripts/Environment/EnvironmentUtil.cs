@@ -13,30 +13,32 @@ public class EnvironmentUtil : MonoBehaviour
                 return null;
         }
 
-        //see if we have a marker available to spawn them in
-        foreach (EnvironmentTile tile in EnvironmentManager.Instance.GetTilesContainingSpawnPoints(teamID))
-        {
-            GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, tile);
-            CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
+        //find a spawn point to place the character
+        ////see if we have a marker available to spawn them in
+        //foreach (EnvironmentTile tile in EnvironmentManager.Instance.GetTilesContainingSpawnPoints(teamID))
+        //{
+        //    GameObject characterObject = CreateCharacterObject(teamID + "_" + characterID, tile);
+        //    CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
 
-            return characterComponent;
-        }
+        //    return characterComponent;
+        //}
 
         return null;
     }
 
-    private static GameObject CreateCharacterObject(string name, EnvironmentTile tile)
+    private static GameObject CreateCharacterObject(string name, Vector3 origin)
     {
         GameObject characterObject = new GameObject(name);
         characterObject.transform.localPosition = Vector3.zero;
-        characterObject.transform.position = tile.transform.position;
+        characterObject.transform.position = origin;
 
-        if(tile.ContainsSpawnPoint())
-        {
-            EnvironmentSpawnPoint spawnPoint = tile.GetSpawnPoint();
+        //see if there is a spawn point around here to orient them with
+        //if(tile.ContainsSpawnPoint())
+        //{
+        //    EnvironmentSpawnPoint spawnPoint = tile.GetSpawnPoint();
 
-            characterObject.transform.localEulerAngles = spawnPoint.transform.eulerAngles;
-        }
+        //    characterObject.transform.localEulerAngles = spawnPoint.transform.eulerAngles;
+        //}
 
         return characterObject;
     }
