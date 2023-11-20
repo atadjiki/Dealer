@@ -22,7 +22,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     public IEnumerator Corutine_PerformSetup()
     {
-        yield return Coroutine_GenerateTiles();
+     //   yield return Coroutine_GenerateTiles();
         yield return Coroutine_SetupRenderers();
     }
 
@@ -98,7 +98,8 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 if(!model.IsCurrentTeamCPU())
                 {
                     SetActiveState(EnvironmentTileActiveState.Active);
-                    yield return GenerateMovementRadius();
+                    // yield return GenerateMovementRadius();
+                    yield return null;
                 }
                 break;
             default:
@@ -123,20 +124,27 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         if (CheckIsMouseBlocked()) { return; }
 
+       // Debug.Log("here");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
         {
-            EnvironmentTile hitTile = hit.collider.GetComponent<EnvironmentTile>();
-
-            if (hitTile != null && _currentlyHighlighted != hitTile)
+            Vector3 nodePosition;
+            if(EnvironmentManager.Instance.GetClosestNodeToPosition(hit.point, out nodePosition))
             {
-                hitTile.SetHighlightState(EnvironmentTileHighlightState.On);
-
-                HighlightTile(hitTile);
-
-                return;
+                Debug.Log("Hovering over node" + nodePosition.ToString());
             }
+
+            //EnvironmentTile hitTile = hit.collider.GetComponent<EnvironmentTile>();
+
+            //if (hitTile != null && _currentlyHighlighted != hitTile)
+            //{
+            //    hitTile.SetHighlightState(EnvironmentTileHighlightState.On);
+
+            //    HighlightTile(hitTile);
+
+            //    return;
+            //}
         }
     }
 
@@ -372,11 +380,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         }
         else
         {
-            foreach (EnvironmentTile tile in _tileMap.Values)
-            {
-                tile.SetHighlightState(EnvironmentTileHighlightState.Off);
-                tile.SetPreviewState(EnvironmentTilePreviewState.None);
-            }
+            //foreach (EnvironmentTile tile in _tileMap.Values)
+            //{
+            //    tile.SetHighlightState(EnvironmentTileHighlightState.Off);
+            //    tile.SetPreviewState(EnvironmentTilePreviewState.None);
+            //}
         }
     }
 

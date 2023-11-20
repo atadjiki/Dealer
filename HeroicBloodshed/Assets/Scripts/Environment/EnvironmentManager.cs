@@ -11,6 +11,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
 
+    [SerializeField] private EnvironmentTileGrid _tileGrid;
+
     private List<EnvironmentSpawnPoint> _spawnPoints;
 
     private List<EnvironmentObstacle> _obstacles;
@@ -32,6 +34,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         yield return Coroutine_ScanNavmesh();
         yield return Coroutine_GatherEnvironmentObjects();
+
+        yield return _tileGrid.Corutine_PerformSetup();
 
         //dispose of the setup navmesh after tiles are built
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -95,10 +99,10 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        //if (_tileGrid != null)
-        //{
-        //    yield return _tileGrid.Coroutine_EncounterStateUpdate(stateID, model);
-        //}
+        if (_tileGrid != null)
+        {
+            yield return _tileGrid.Coroutine_EncounterStateUpdate(stateID, model);
+        }
 
         yield return null;
     }
@@ -110,9 +114,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         NNInfoInternal nnInfo = gridGraph.GetNearest(position);
 
-        if (nnInfo.node != null)
+        if (nnInfo.node != null && nnInfo.node != null)
         {
-            result = nnInfo.clampedPosition;
+            result = (Vector3) nnInfo.node.position;
             return true;
         }
         else
