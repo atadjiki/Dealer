@@ -22,7 +22,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     public IEnumerator Corutine_PerformSetup()
     {
-     //   yield return Coroutine_GenerateTiles();
         yield return Coroutine_SetupRenderers();
     }
 
@@ -115,36 +114,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         if (_activeState == EnvironmentTileActiveState.Active)
         {
-            CheckMouseHighlight();
             CheckMouseClick();
-        }
-    }
-
-    private void CheckMouseHighlight()
-    {
-        if (CheckIsMouseBlocked()) { return; }
-
-       // Debug.Log("here");
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
-        {
-            Vector3 nodePosition;
-            if(EnvironmentManager.Instance.GetClosestNodeToPosition(hit.point, out nodePosition))
-            {
-                Debug.Log("Hovering over node" + nodePosition.ToString());
-            }
-
-            //EnvironmentTile hitTile = hit.collider.GetComponent<EnvironmentTile>();
-
-            //if (hitTile != null && _currentlyHighlighted != hitTile)
-            //{
-            //    hitTile.SetHighlightState(EnvironmentTileHighlightState.On);
-
-            //    HighlightTile(hitTile);
-
-            //    return;
-            //}
         }
     }
 
@@ -169,7 +139,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private void CheckMouseClick()
     {
-        if (CheckIsMouseBlocked()) { return; }
+        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
 
         if (!Input.GetMouseButtonDown(0)) return;
 
@@ -392,21 +362,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         _pathRenderer.positionCount = 0;
         _pathRenderer.forceRenderingOff = true;
-    }
-
-    private bool CheckIsMouseBlocked()
-    {
-        if (Camera.main == null)
-        {
-            return true;
-        }
-
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return true;
-        }
-
-        return false;
     }
 
     private bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)

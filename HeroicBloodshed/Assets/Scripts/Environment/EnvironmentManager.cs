@@ -11,7 +11,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
 
-    [SerializeField] private EnvironmentTileGrid _tileGrid;
+    [SerializeField] private List<IEncounterEventHandler> EventHandlers;
 
     private List<EnvironmentSpawnPoint> _spawnPoints;
 
@@ -35,7 +35,16 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         yield return Coroutine_ScanNavmesh();
         yield return Coroutine_GatherEnvironmentObjects();
 
-        yield return _tileGrid.Corutine_PerformSetup();
+        EventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
+
+        EventHandlers.Remove(this);
+
+        foreach (IEncounterEventHandler eventHandler in EventHandlers)
+        {
+            Debug.Log("Found environment event handler: " + eventHandler.ToString());
+
+            yield return eventHandler.Coroutine_PerformSetup();
+        }
 
         //dispose of the setup navmesh after tiles are built
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -99,9 +108,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        if (_tileGrid != null)
+        foreach (IEncounterEventHandler eventHandler in EventHandlers)
         {
-            yield return _tileGrid.Coroutine_EncounterStateUpdate(stateID, model);
+            yield return eventHandler.Coroutine_EncounterStateUpdate(stateID, model);
         }
 
         yield return null;
@@ -125,6 +134,17 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             return false;
         }
     }
+
+    public List<EnvironmentSpawnPoint> GetSpawnPoints()
+    {
+        return _spawnPoints;
+    }
+
+    public List<EnvironmentObstacle> GetObstacles()
+    {
+        return _obstacles;
+    }
+
     public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
     {
         //find a spawn point to place the character
@@ -138,7 +158,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 {
                     GameObject characterObject = new GameObject(teamID + "_" + characterID);
 
-                    CharacterComponent characterComponent = AddComponentByTeam(characterID, characterObject);
+                    CharacterComponent characterComponent = EnvironmentUtil.AddComponentByTeam(characterID, characterObject);
 
                     characterObject.transform.parent = this.transform;
                     characterObject.transform.localPosition = Vector3.zero;
@@ -148,7 +168,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     return characterComponent;
                 }
             }
-           else
+            else
             {
                 Debug.Log("Couldnt find location to spawn character");
             }
@@ -157,32 +177,4 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return null;
     }
 
-    private static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
-    {
-        TeamID teamID = GetTeamByID(characterID);
-
-        switch (teamID)
-        {
-            case TeamID.Player:
-                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-                playerCharacterComponent.SetID(characterID);
-                return playerCharacterComponent;
-            case TeamID.Enemy:
-                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.SetID(characterID);
-                return enemyCharacterComponent;
-            default:
-                return null;
-        }
-    }
-
-    public List<EnvironmentSpawnPoint> GetSpawnPoints()
-    {
-        return _spawnPoints;
-    }
-
-    public List<EnvironmentObstacle> GetObstacles()
-    {
-        return _obstacles;
-    }
 }
