@@ -46,7 +46,7 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler
             Vector3 nodePosition;
             if (EnvironmentManager.Instance.GetClosestNodeToPosition(hit.point, out nodePosition))
             {
-                HighlightDecal.transform.position = nodePosition;
+                HighlightDecal.transform.position = nodePosition + new Vector3(0,0.5f,0);
             }
         }
     }
