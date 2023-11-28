@@ -18,6 +18,16 @@ public class EnvironmentObstacle : MonoBehaviour
 
     private BoxCollider _collider;
 
+    private void Awake()
+    {
+        _collider = GetComponent<BoxCollider>();
+    }
+
+    public Vector3 GetWorldLocation()
+    {
+        return _collider.bounds.center;
+    }
+
     //private Outlinable _outliner;
 
     //private void Awake()

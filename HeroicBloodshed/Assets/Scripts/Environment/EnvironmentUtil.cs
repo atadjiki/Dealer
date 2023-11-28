@@ -25,6 +25,40 @@ public class EnvironmentUtil : MonoBehaviour
         }
     }
 
+    public static bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
+    {
+        int threshold;
+
+        int AP = character.GetActionPoints();
+        int movementRange = character.GetMovementRange();
+
+        if (AP >= GetAbilityCost(AbilityID.MoveFull))
+        {
+            threshold = (movementRange * 2);
+        }
+        else
+        {
+            threshold = movementRange;
+        }
+
+        if (distance <= threshold)
+        {
+            if (distance <= character.GetMovementRange())
+            {
+                rangeType = MovementRangeType.Half;
+            }
+            else
+            {
+                rangeType = MovementRangeType.Full;
+            }
+
+            return true;
+        }
+
+        rangeType = MovementRangeType.None;
+        return false;
+    }
+
     public static bool CheckIsMouseBlocked()
     {
         if (Camera.main == null)

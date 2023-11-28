@@ -21,10 +21,10 @@ public class CharacterNavigator : MonoBehaviour
 
         _AI.canMove = true;
 
-        yield return new WaitUntil(() => _AI.reachedDestination);
+        yield return new WaitUntil(() => _AI.reachedEndOfPath);
+
+        _AI.canMove = false;
 
         _AI.Teleport(destination);
-
-   
     }
 }

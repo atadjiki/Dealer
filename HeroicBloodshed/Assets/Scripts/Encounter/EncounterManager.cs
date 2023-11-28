@@ -280,30 +280,27 @@ public class EncounterManager : MonoBehaviour
 
         _model.TransitionState();
     }
-    //TODO
-    //public void OnEnvironmentTileSelected(EnvironmentTile environmentTile, MovementRangeType rangeType)
-    //{
-    //    if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
-    //    {
-    //        Debug.Log("Tile " + environmentTile.name.ToString() + " selected");
+    
+    public void OnEnvironmentDestinationSelected(Vector3 destination, MovementRangeType rangeType)
+    {
+        if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
+        {
+            Debug.Log("Destination " + destination.ToString() + "selected");
 
-    //        if(environmentTile.IsFree())
-    //        {
-    //            _model.SetActiveDestination(environmentTile);
+            _model.SetActiveDestination(destination);
 
-    //            if(rangeType == MovementRangeType.Half)
-    //            {
-    //                _model.SetActiveAbility(AbilityID.MoveHalf);
-    //            }
-    //            else
-    //            {
-    //                _model.SetActiveAbility(AbilityID.MoveFull);
-    //            }
+            if (rangeType == MovementRangeType.Half)
+            {
+                _model.SetActiveAbility(AbilityID.MoveHalf);
+            }
+            else
+            {
+                _model.SetActiveAbility(AbilityID.MoveFull);
+            }
 
-    //            _model.TransitionState();
-    //        }
-    //    }
-    //}
+            _model.TransitionState();
+        }
+    }
 
     public bool AreTargetsAvailable()
     {

@@ -110,82 +110,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         yield return null;
     }
 
-    private void Update()
-    {
-        if (_activeState == EnvironmentTileActiveState.Active)
-        {
-            CheckMouseClick();
-        }
-    }
-
-    private void HighlightTile(EnvironmentTile tile)
-    {
-        if(_currentlyHighlighted != null)
-        {
-            //un highlight the old tile
-            _currentlyHighlighted.SetHighlightState(EnvironmentTileHighlightState.Off);
-
-        }
-
-        _currentlyHighlighted = tile;
-
-        //highlight the new tile
-        _currentlyHighlighted.SetHighlightState(EnvironmentTileHighlightState.On);
-
-        ClearLineRenderers();
-
-        StartCoroutine(GenerateMovementPath(_currentlyHighlighted));
-    }
-
-    private void CheckMouseClick()
-    {
-        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
-
-        if (!Input.GetMouseButtonDown(0)) return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentTile")))
-        {
-            EnvironmentTile tile = hit.collider.GetComponent<EnvironmentTile>();
-
-            StartCoroutine(Coroutine_OnTileSelected(tile));
-        }
-    }
-    private IEnumerator Coroutine_OnTileSelected(EnvironmentTile tile)
-    {
-        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-        int movementRange = currentCharacter.GetMovementRange();
-
-        Vector3 origin = currentCharacter.GetWorldLocation();
-
-        ABPath path = ABPath.Construct(origin, tile.transform.position);
-
-        AstarPath.StartPath(path, true);
-
-        yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
-
-        int cost = 0;
-
-        foreach (GraphNode pathNode in path.path)
-        {
-            cost += (int)path.GetTraversalCost(pathNode);
-        }
-
-        Debug.Log("Path cost is " + cost);
-
-        MovementRangeType rangeType;
-        if (IsWithinCharacterRange(cost, currentCharacter, out rangeType))
-        {//TODO
-           // EncounterManager.Instance.OnEnvironmentTileSelected(tile, rangeType);
-        }
-        else
-        {
-            Debug.Log(tile.name + " is out of range for " + currentCharacter.GetID());
-        }
-    }
-
     private IEnumerator GenerateMovementPath(EnvironmentTile tile)
     {
         _calculatingPath = true;
@@ -211,7 +135,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
         MovementRangeType rangeType;
 
-        if (IsWithinCharacterRange(length, currentCharacter, out rangeType))
+        if (EnvironmentUtil.IsWithinCharacterRange(length, currentCharacter, out rangeType))
         {
             _pathRenderer.positionCount = vectorPath.Count;
 
@@ -256,7 +180,7 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 }
 
                 MovementRangeType rangeType;
-                if (IsWithinCharacterRange(cost, currentCharacter, out rangeType))
+                if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
                 {
                     EnvironmentTile tile = GetClosestTile(mapNode);
                     if (tile.IsFree())
@@ -362,39 +286,5 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
     {
         _pathRenderer.positionCount = 0;
         _pathRenderer.forceRenderingOff = true;
-    }
-
-    private bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
-    {
-        int threshold;
-
-        int AP = character.GetActionPoints();
-        int movementRange = character.GetMovementRange();
-
-        if (AP >= GetAbilityCost(AbilityID.MoveFull))
-        {
-            threshold = (movementRange * 2);
-        }
-        else
-        {
-            threshold = movementRange;
-        }
-
-        if(distance <= threshold)
-        {
-            if(distance <= character.GetMovementRange())
-            {
-                rangeType = MovementRangeType.Half;
-            }
-            else
-            {
-                rangeType = MovementRangeType.Full;
-            }
-
-            return true;
-        }
-
-        rangeType = MovementRangeType.None;
-        return false;
     }
 }

@@ -102,7 +102,7 @@ MeshRenderer:
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -172,17 +172,17 @@ MonoBehaviour:
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
     CutoutThreshold: 0.5
     CullMode: 2
-    cutoutTextureName: 
+    cutoutTextureName: _BaseMap
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  renderStyle: 2
+  renderStyle: 1
   outlineParameters:
     enabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
     dilateShift: 1
     blurShift: 1
     fillPass:
-      shader: {fileID: 0}
+      shader: {fileID: 4800000, guid: 799033b0d33c8ca40ac949403ec6ee87, type: 3}
       serializedProperties: []
   backParameters:
     enabled: 1

@@ -177,4 +177,23 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return null;
     }
 
+    public bool IsPositionOccupied(Vector3 worldLocation)
+    {
+        Vector3 result;
+        if(GetClosestNodeToPosition(worldLocation, out result ))
+        {
+            foreach (EnvironmentObstacle obstacle in _obstacles)
+            {
+                float distance = Vector3.Distance(obstacle.GetWorldLocation(), result);
+                if (distance < 0.5f)
+                {
+                    return true;
+                }
+            }
+
+            //will need to track characters as well TODO
+        }
+
+        return false;
+    }
 }
