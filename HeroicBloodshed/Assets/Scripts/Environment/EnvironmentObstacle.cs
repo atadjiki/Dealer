@@ -23,9 +23,9 @@ public class EnvironmentObstacle : MonoBehaviour
         _collider = GetComponent<BoxCollider>();
     }
 
-    public Vector3 GetWorldLocation()
+    public bool ContainsPoint(Vector3 point)
     {
-        return _collider.bounds.center;
+        return _collider.bounds.Contains(point);
     }
 
     //private Outlinable _outliner;

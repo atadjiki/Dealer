@@ -184,8 +184,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         {
             foreach (EnvironmentObstacle obstacle in _obstacles)
             {
-                float distance = Vector3.Distance(obstacle.GetWorldLocation(), result);
-                if (distance < 0.5f)
+                if (obstacle.ContainsPoint(result))
                 {
                     return true;
                 }
