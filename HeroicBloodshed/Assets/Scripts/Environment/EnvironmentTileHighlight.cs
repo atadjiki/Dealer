@@ -19,33 +19,9 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler
         _outliner = GetComponentInChildren<Outlinable>();
     }
 
-    private EnvironmentTileActiveState _activeState = EnvironmentTileActiveState.Inactive;
-
     public IEnumerator Coroutine_EncounterStateUpdate(Constants.EncounterState stateID, EncounterModel model)
     {
-        switch (stateID)
-        {
-            case EncounterState.CHOOSE_ACTION:
-                if (!model.IsCurrentTeamCPU())
-                {
-                    SetActiveState(EnvironmentTileActiveState.Active);
-                }
-                break;
-            default:
-                SetActiveState(EnvironmentTileActiveState.Inactive);
-                break;
-        }
-
         yield return null;
-    }
-
-    private void Update()
-    {
-        if (_activeState == EnvironmentTileActiveState.Active)
-        {
-            CheckMouseHighlight();
-            CheckMouseClick();
-        }
     }
 
     private void CheckMouseHighlight()
@@ -98,7 +74,7 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask(LAYER_ENV_GROUND)))
         {
             if(!EnvironmentManager.Instance.IsPositionOccupied(hit.point))
             {
@@ -141,12 +117,12 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    private void SetActiveState(EnvironmentTileActiveState state)
-    {
-        _activeState = state;
+    //private void SetActiveState(EnvironmentTileActiveState state)
+    //{
 
-        HighlightDecal.SetActive(_activeState == EnvironmentTileActiveState.Active);
-    }
+
+    //    HighlightDecal.SetActive(_activeState == EnvironmentTileActiveState.Active);
+    //}
 
     private void SetColor(Color color)
     {

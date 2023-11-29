@@ -5,6 +5,25 @@ using Pathfinding;
 using System;
 using static Constants;
 
+public struct EnvironmentInputData
+{
+    public bool IsValid;
+    public Vector3 ClosestNode;
+    public MovementRangeType RangeType;
+    public int PathCost;
+
+    public static EnvironmentInputData Build()
+    {
+        return new EnvironmentInputData()
+        {
+            IsValid = false,
+            ClosestNode = Vector3.zero,
+            RangeType = MovementRangeType.None,
+            PathCost = -1,
+        };
+    }
+}
+
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
     //singleton
@@ -104,6 +123,121 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         yield return null;
     }
 
+    //Environment Input/Interactions
+
+    private void Update()
+    {
+        if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+        {
+            CheckMouseHighlight();
+            CheckMouseClick();
+        }
+    }
+
+    private void CheckMouseHighlight()
+    {
+        //Bail if the mouse is blocked by UI
+        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
+
+        EnvironmentInputData InputData = EnvironmentInputData.Build();
+
+        //shoot a ray from the camera to the ground
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
+        {
+            Vector3 nodePosition;
+
+            //find the closest node to the mouse location
+            if (GetClosestNodeToPosition(hit.point, out nodePosition))
+            {
+                //if it's unoccupied, it's ok to highlight/path/click it
+                if (IsPositionFree(nodePosition))
+                {
+                    InputData.IsValid = true;
+
+                    CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+                    if(currentCharacter != null)
+                    {
+                        //calculate the path cost correctly here
+                        int distance = (int)Vector3.Distance(nodePosition, currentCharacter.GetWorldLocation());
+
+                        MovementRangeType rangeType;
+
+                        if (EnvironmentUtil.IsWithinCharacterRange(distance, currentCharacter, out rangeType))
+                        {
+                            InputData.RangeType = rangeType;
+                        }
+                        else
+                        {
+                            //the tile is out of range for the character
+                        }
+                    }
+                }
+                else
+                {
+                    //the tile is occupied, so do nothing (or maybe highlight the next adjaecent node)
+                }
+            }
+            else
+            {
+                //no node is available, so do nothing
+            }
+        }
+    }
+
+    private void CheckMouseClick()
+    {
+        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
+
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
+        {
+            if (!EnvironmentManager.Instance.IsPositionOccupied(hit.point))
+            {
+                StartCoroutine(Coroutine_OnDestinationSelected(hit.point));
+            }
+        }
+    }
+
+    private IEnumerator Coroutine_OnDestinationSelected(Vector3 destination)
+    {
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        int movementRange = currentCharacter.GetMovementRange();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+
+        ABPath path = ABPath.Construct(origin, destination);
+
+        AstarPath.StartPath(path, true);
+
+        yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
+
+        int cost = 0;
+
+        foreach (GraphNode pathNode in path.path)
+        {
+            cost += (int)path.GetTraversalCost(pathNode);
+        }
+
+        Debug.Log("Path cost is " + cost);
+
+        MovementRangeType rangeType;
+        if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
+        {
+            EncounterManager.Instance.OnEnvironmentDestinationSelected(destination, rangeType);
+        }
+        else
+        {
+            Debug.Log(destination.ToString() + " is out of range for " + currentCharacter.GetID());
+        }
+    }
+
     //Encounter Events
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
@@ -117,34 +251,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     }
 
     //Helpers/interface 
-    public bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
-    {
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        NNInfoInternal nnInfo = gridGraph.GetNearest(position);
-
-        if (nnInfo.node != null && nnInfo.node != null)
-        {
-            result = (Vector3) nnInfo.node.position;
-            return true;
-        }
-        else
-        {
-            result = Vector3.zero;
-            return false;
-        }
-    }
-
-    public List<EnvironmentSpawnPoint> GetSpawnPoints()
-    {
-        return _spawnPoints;
-    }
-
-    public List<EnvironmentObstacle> GetObstacles()
-    {
-        return _obstacles;
-    }
-
     public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
     {
         //find a spawn point to place the character
@@ -177,6 +283,24 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return null;
     }
 
+    public bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
+    {
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        NNInfoInternal nnInfo = gridGraph.GetNearest(position);
+
+        if (nnInfo.node != null && nnInfo.node != null)
+        {
+            result = (Vector3)nnInfo.node.position;
+            return true;
+        }
+        else
+        {
+            result = Vector3.zero;
+            return false;
+        }
+    }
+
     public bool IsPositionOccupied(Vector3 worldLocation)
     {
         Vector3 result;
@@ -194,5 +318,20 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         }
 
         return false;
+    }
+
+    public bool IsPositionFree(Vector3 worldLocation)
+    {
+        return !IsPositionOccupied(worldLocation);
+    }
+
+    public List<EnvironmentSpawnPoint> GetSpawnPoints()
+    {
+        return _spawnPoints;
+    }
+
+    public List<EnvironmentObstacle> GetObstacles()
+    {
+        return _obstacles;
     }
 }
