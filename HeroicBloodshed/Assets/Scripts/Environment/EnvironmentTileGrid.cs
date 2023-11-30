@@ -18,8 +18,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private EnvironmentTile _currentlyHighlighted;
 
-    private EnvironmentTileActiveState _activeState = EnvironmentTileActiveState.Inactive;
-
     public IEnumerator Corutine_PerformSetup()
     {
         yield return Coroutine_SetupRenderers();
@@ -96,13 +94,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
             case EncounterState.CHOOSE_ACTION:
                 if(!model.IsCurrentTeamCPU())
                 {
-                    SetActiveState(EnvironmentTileActiveState.Active);
                     // yield return GenerateMovementRadius();
                     yield return null;
                 }
                 break;
             default:
-                SetActiveState(EnvironmentTileActiveState.Inactive);
                 ClearLineRenderers();
                 break;
         }
@@ -262,24 +258,6 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         Debug.Log("Found " + tiles.Count + " spawn points for team " + team);
 
         return tiles;
-    }
-
-    public void SetActiveState(EnvironmentTileActiveState state)
-    {
-        _activeState = state;
-
-        if (_activeState == EnvironmentTileActiveState.Active)
-        {
-
-        }
-        else
-        {
-            //foreach (EnvironmentTile tile in _tileMap.Values)
-            //{
-            //    tile.SetHighlightState(EnvironmentTileHighlightState.Off);
-            //    tile.SetPreviewState(EnvironmentTilePreviewState.None);
-            //}
-        }
     }
 
     private void ClearLineRenderers()
