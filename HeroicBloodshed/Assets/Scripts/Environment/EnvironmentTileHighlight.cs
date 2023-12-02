@@ -23,10 +23,11 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler, I
     {
         switch(stateID)
         {
-            case EncounterState.CHOOSE_ACTION:
+            case EncounterState.SELECT_CURRENT_CHARACTER:
                 break;
             default:
                 SetColor(Color.clear);
+                StopAllCoroutines();
                 break;
         }
 

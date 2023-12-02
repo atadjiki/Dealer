@@ -234,7 +234,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         switch(stateID)
         {
-            case EncounterState.CHOOSE_ACTION:
+            case EncounterState.SELECT_CURRENT_CHARACTER:
                 StartCoroutine(Coroutine_InputUpdate());
                 break;
             default:

@@ -16,10 +16,11 @@ public class EnvironmentPathRenderer : MonoBehaviour, IEncounterEventHandler, IE
     {
         switch (stateID)
         {
-            case EncounterState.CHOOSE_ACTION:
+            case EncounterState.SELECT_CURRENT_CHARACTER:
                 break;
             default:
                 Clear();
+                StopAllCoroutines();
                 break;
         }
 
@@ -30,15 +31,22 @@ public class EnvironmentPathRenderer : MonoBehaviour, IEncounterEventHandler, IE
     {
         if (InputData.OnValidTile)
         {
+            Clear();
+
             if (InputData.RangeType != MovementRangeType.None)
             {
-                Clear();
-
                 int length = InputData.VectorPath.Count;
 
                 _pathRenderer.positionCount = length;
 
-                _pathRenderer.SetPositions(InputData.VectorPath.ToArray());
+                Vector3[] positions = InputData.VectorPath.ToArray();
+
+                for(int i = 0; i < positions.Length; i++)
+                {
+                    positions[i].y = 0.5f;
+                }
+
+                _pathRenderer.SetPositions(positions);
 
                 Color pathColor = GetColor(InputData.RangeType);
                 pathColor.a = 0.25f;
