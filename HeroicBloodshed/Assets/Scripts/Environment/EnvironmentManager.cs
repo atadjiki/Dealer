@@ -5,36 +5,21 @@ using Pathfinding;
 using System;
 using static Constants;
 
-public struct EnvironmentInputData
-{
-    public bool IsValid;
-    public Vector3 ClosestNode;
-    public MovementRangeType RangeType;
-    public int PathCost;
-
-    public static EnvironmentInputData Build()
-    {
-        return new EnvironmentInputData()
-        {
-            IsValid = false,
-            ClosestNode = Vector3.zero,
-            RangeType = MovementRangeType.None,
-            PathCost = -1,
-        };
-    }
-}
-
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
     //singleton
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
 
-    [SerializeField] private List<IEncounterEventHandler> EventHandlers;
+    private List<IEncounterEventHandler> _eventHandlers;
+
+    private List<IEnvironmentInputHandler> _inputHandlers;
 
     private List<EnvironmentSpawnPoint> _spawnPoints;
 
     private List<EnvironmentObstacle> _obstacles;
+
+    private EnvironmentInputData _inputData;
 
     //Setup
     private void Awake()
@@ -54,15 +39,22 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         yield return Coroutine_ScanNavmesh();
         yield return Coroutine_GatherEnvironmentObjects();
 
-        EventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
+        _eventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
 
-        EventHandlers.Remove(this);
+        _eventHandlers.Remove(this);
 
-        foreach (IEncounterEventHandler eventHandler in EventHandlers)
+        foreach (IEncounterEventHandler eventHandler in _eventHandlers)
         {
             Debug.Log("Found environment event handler: " + eventHandler.ToString());
 
             yield return eventHandler.Coroutine_PerformSetup();
+        }
+
+        _inputHandlers = new List<IEnvironmentInputHandler>(GetComponentsInChildren<IEnvironmentInputHandler>());
+
+        foreach (IEnvironmentInputHandler inputHandler in _inputHandlers)
+        {
+            Debug.Log("Found environment input handler: " + inputHandler.ToString());
         }
 
         //dispose of the setup navmesh after tiles are built
@@ -127,90 +119,94 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private void Update()
     {
-        if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
+
+        if (Input.GetMouseButtonDown(0))
         {
-            CheckMouseHighlight();
-            CheckMouseClick();
+            if(EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+            {
+                if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
+                {
+                    EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.TilePosition, _inputData.RangeType);
+                }
+                else
+                {
+                    Debug.Log("Click not handled");
+                    Debug.Log(_inputData.ToString());
+                }
+            }
         }
     }
 
-    private void CheckMouseHighlight()
+    private IEnumerator Coroutine_InputUpdate()
+    {
+        while(true)
+        {
+            _inputData = EnvironmentInputData.Build();
+
+            yield return CheckMousePosition();
+
+            foreach (IEnvironmentInputHandler inputHandler in _inputHandlers)
+            {
+                yield return inputHandler.PerformInputUpdate(_inputData);
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    private IEnumerator CheckMousePosition()
     {
         //Bail if the mouse is blocked by UI
-        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
-
-        EnvironmentInputData InputData = EnvironmentInputData.Build();
+        if (EnvironmentUtil.CheckIsMouseBlocked()) { yield break; }
 
         //shoot a ray from the camera to the ground
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
+
+        foreach(RaycastHit hit in Physics.RaycastAll(ray, 100, LayerMask.GetMask("EnvironmentGround")))
         {
             Vector3 nodePosition;
 
             //find the closest node to the mouse location
             if (GetClosestNodeToPosition(hit.point, out nodePosition))
             {
+                nodePosition.y = 0;
+
+                _inputData.TilePosition = nodePosition;
+
                 //if it's unoccupied, it's ok to highlight/path/click it
                 if (IsPositionFree(nodePosition))
                 {
-                    InputData.IsValid = true;
+                    _inputData.OnValidTile = true;
 
                     CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
-                    if(currentCharacter != null)
+                    if (currentCharacter != null)
                     {
-                        //calculate the path cost correctly here
-                        int distance = (int)Vector3.Distance(nodePosition, currentCharacter.GetWorldLocation());
+                        //calculate the cost of the path if we made it to here
+                        yield return Coroutine_CalculatePathCost(currentCharacter.GetWorldLocation(), nodePosition);
 
                         MovementRangeType rangeType;
 
-                        if (EnvironmentUtil.IsWithinCharacterRange(distance, currentCharacter, out rangeType))
+                        if (EnvironmentUtil.IsWithinCharacterRange(_inputData.PathCost, currentCharacter, out rangeType))
                         {
-                            InputData.RangeType = rangeType;
-                        }
-                        else
-                        {
-                            //the tile is out of range for the character
+                            _inputData.RangeType = rangeType;
                         }
                     }
                 }
-                else
-                {
-                    //the tile is occupied, so do nothing (or maybe highlight the next adjaecent node)
-                }
             }
-            else
-            {
-                //no node is available, so do nothing
-            }
+
+            break;
         }
+
+        yield return null;
     }
 
-    private void CheckMouseClick()
+    private IEnumerator Coroutine_CalculatePathCost(Vector3 origin, Vector3 destination)
     {
-        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
-
-        if (!Input.GetMouseButtonDown(0)) return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnvironmentGround")))
-        {
-            if (!EnvironmentManager.Instance.IsPositionOccupied(hit.point))
-            {
-                StartCoroutine(Coroutine_OnDestinationSelected(hit.point));
-            }
-        }
-    }
-
-    private IEnumerator Coroutine_OnDestinationSelected(Vector3 destination)
-    {
-        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-        int movementRange = currentCharacter.GetMovementRange();
-
-        Vector3 origin = currentCharacter.GetWorldLocation();
+        _inputData.PathCost = 0;
+        _inputData.VectorPath = new List<Vector3>();
 
         ABPath path = ABPath.Construct(origin, destination);
 
@@ -218,31 +214,35 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
 
-        int cost = 0;
-
         foreach (GraphNode pathNode in path.path)
         {
-            cost += (int)path.GetTraversalCost(pathNode);
+            Vector3 nodePosition = (Vector3) pathNode.position;
+
+            if (!_inputData.VectorPath.Contains(nodePosition))
+            {
+                _inputData.VectorPath.Add(nodePosition);
+                _inputData.PathCost += (int)path.GetTraversalCost(pathNode);
+            }
         }
 
-        Debug.Log("Path cost is " + cost);
-
-        MovementRangeType rangeType;
-        if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
-        {
-            EncounterManager.Instance.OnEnvironmentDestinationSelected(destination, rangeType);
-        }
-        else
-        {
-            Debug.Log(destination.ToString() + " is out of range for " + currentCharacter.GetID());
-        }
+        _inputData.VectorPath.Add(destination);
     }
 
     //Encounter Events
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        foreach (IEncounterEventHandler eventHandler in EventHandlers)
+        switch(stateID)
+        {
+            case EncounterState.CHOOSE_ACTION:
+                StartCoroutine(Coroutine_InputUpdate());
+                break;
+            default:
+                StopCoroutine(Coroutine_InputUpdate());
+                break;
+        }
+
+        foreach (IEncounterEventHandler eventHandler in _eventHandlers)
         {
             yield return eventHandler.Coroutine_EncounterStateUpdate(stateID, model);
         }

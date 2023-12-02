@@ -212,7 +212,7 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_SelectCurrentCharacter()
     {
-        if(GetCurrentCharacter().IsAlive())
+        if (GetCurrentCharacter().IsAlive())
         {
             SetPendingState(EncounterState.CHOOSE_ACTION);
         }
@@ -458,15 +458,15 @@ public class EncounterModel : MonoBehaviour
     //characters
     public CharacterComponent GetCurrentCharacter()
     {
-        if(_queues[_currentTeam].Count > 0)
+        if(_queues != null)
         {
-            return _queues[_currentTeam].Peek();
-        }
-        else
-        {
-            return null;
+            if (_queues[_currentTeam] != null && _queues[_currentTeam].Count > 0)
+            {
+                return _queues[_currentTeam].Peek();
+            }
         }
 
+        return null;
     }
 
     public bool AreTargetsAvailable()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Constants;
@@ -47,9 +48,13 @@ public class EnvironmentUtil : MonoBehaviour
             {
                 rangeType = MovementRangeType.Half;
             }
-            else
+            else if(AP > 1)
             {
                 rangeType = MovementRangeType.Full;
+            }
+            else
+            {
+                rangeType = MovementRangeType.Half;
             }
 
             return true;

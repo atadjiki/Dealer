@@ -14,77 +14,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
 
     private bool _calculatingPath = false;
 
-    private LineRenderer _pathRenderer;
-
     private EnvironmentTile _currentlyHighlighted;
 
     public IEnumerator Corutine_PerformSetup()
     {
-        yield return Coroutine_SetupRenderers();
-    }
-
-    private IEnumerator Coroutine_SetupRenderers()
-    {
-        Debug.Log("Setting Up Path Renderer");
-        ResourceRequest pathRendererRequest = GetEnvironmentVFX(PrefabID.LineRenderer_Path);
-        yield return new WaitUntil(() => pathRendererRequest.isDone);
-        GameObject pathRendererObject = Instantiate<GameObject>((GameObject)pathRendererRequest.asset, this.transform);
-        yield return new WaitWhile(() => pathRendererObject.GetComponent<LineRenderer>() == null);
-        _pathRenderer = pathRendererObject.GetComponent<LineRenderer>();
-    }
-
-    private IEnumerator Coroutine_GenerateTiles()
-    {
-        Debug.Log("Generating Tiles");
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-        List<GraphNode> WalkableNodes = new List<GraphNode>();
-
-        //only create tiles for walkable nodes (including ones with obstacles on them)
-        gridGraph.GetNodes(node =>
-        {
-            if (node.Walkable)
-            {
-                WalkableNodes.Add(node);
-            }
-
-            return true;
-        });
-
-        _tileMap = new Dictionary<Vector3, EnvironmentTile>();
-
-        int index = 0;
-
-        float loadTime = Time.time;
-
-        //generate a tile for each walkable node
-        foreach (GraphNode node in WalkableNodes)
-        {
-            Vector3 pos = ((Vector3)node.position);
-
-            int row = (index / gridGraph.Width);
-            int col = (index % gridGraph.Width);
-
-            string tilename = "Tile " + (index + 1) + " [ " + row + "," + col + " ] "; ;
-
-            GameObject tileObject = Instantiate<GameObject>(TilePrefab, pos, Quaternion.identity, this.transform);
-            tileObject.name = tilename;
-            yield return new WaitWhile(() => tileObject.GetComponent<EnvironmentTile>() == null);
-            EnvironmentTile tile = tileObject.GetComponent<EnvironmentTile>();
-            _tileMap.Add((Vector3) node.position, tile);
-            yield return new WaitForEndOfFrame();
-
-            index++;
-        }
-
-        loadTime -= Time.time;
-
-        Debug.Log(Mathf.Abs(loadTime) + " seconds to generate tiles");
-
-        //once we have our tiles, check if they are under any obstacles, and if they have any neighboring nodes
-        foreach(EnvironmentTile tile in _tileMap.Values)
-        {
-            tile.PerformScan();
-        }
+        yield return null;
     }
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
@@ -99,55 +33,11 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
                 }
                 break;
             default:
-                ClearLineRenderers();
                 break;
         }
 
         yield return null;
     }
-
-    private IEnumerator GenerateMovementPath(EnvironmentTile tile)
-    {
-        _calculatingPath = true;
-
-        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-        int movementRange = currentCharacter.GetMovementRange();
-
-        Vector3 origin = currentCharacter.GetWorldLocation();
-        Vector3 destination = tile.transform.position;
-
-        ABPath pendingPath = ABPath.Construct(origin, destination);
-
-        AstarPath.StartPath(pendingPath, true);
-
-        yield return new WaitUntil(() => pendingPath.CompleteState == PathCompleteState.Complete);
-
-        List<Vector3> vectorPath = pendingPath.vectorPath;
-
-        int length = vectorPath.Count;
-
-        vectorPath.Add(destination);
-
-        MovementRangeType rangeType;
-
-        if (EnvironmentUtil.IsWithinCharacterRange(length, currentCharacter, out rangeType))
-        {
-            _pathRenderer.positionCount = vectorPath.Count;
-
-            _pathRenderer.SetPositions(vectorPath.ToArray());
-
-            Color pathColor = GetColor(rangeType);
-            pathColor.a = 0.25f;
-
-            _pathRenderer.material.color = pathColor;
-
-            _pathRenderer.forceRenderingOff = false;
-        }
-
-        _calculatingPath = false;
-    }
-
 
     private IEnumerator GenerateMovementRadius()
     {
@@ -258,11 +148,5 @@ public class EnvironmentTileGrid : MonoBehaviour, IEncounterEventHandler
         Debug.Log("Found " + tiles.Count + " spawn points for team " + team);
 
         return tiles;
-    }
-
-    private void ClearLineRenderers()
-    {
-        _pathRenderer.positionCount = 0;
-        _pathRenderer.forceRenderingOff = true;
     }
 }

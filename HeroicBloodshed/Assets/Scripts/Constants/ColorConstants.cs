@@ -14,7 +14,7 @@ public static partial class Constants
             case MovementRangeType.Half:
                 return Color.blue;
             default:
-                return Color.clear;
+                return Color.grey;
         }
     }
     
