@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: GameView
+  m_Name: SceneView
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -215,15 +215,15 @@ MonoBehaviour:
     y: 0
     width: 835
     height: 466
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 12}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
+  m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
   - {fileID: 12}
   - {fileID: 15}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -347,7 +347,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -415,23 +415,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: b8f5ffff
-      m_LastClickedID: -2632
-      m_ExpandedIDs: 10fbffff42730000
+      m_SelectedIDs: 96f8ffff
+      m_LastClickedID: -1898
+      m_ExpandedIDs: 4cf8ffff96f8ffff10fbffff8a72000042730000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: SpawnPoint_Door_Default
+        m_OriginalName: SpawnPoint_Door_Default
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -1898
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -849,9 +849,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -3.5, y: 0, z: -11.5}
+    m_Target: {x: 4.5, y: 0.5, z: 2.5}
     speed: 2
-    m_Value: {x: -3.5, y: 0, z: -11.5}
+    m_Value: {x: 4.5, y: 0.5, z: 2.5}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -897,13 +897,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 1
   m_Rotation:
-    m_Target: {x: 0.66931975, y: 0.036725607, z: -0.03315843, w: 0.7413254}
+    m_Target: {x: 0.39708188, y: 0.57817924, z: -0.3812041, w: 0.60226136}
     speed: 2
-    m_Value: {x: 0.66931957, y: 0.0367256, z: -0.03315842, w: 0.7413252}
+    m_Value: {x: 0.3970818, y: 0.5781791, z: -0.381204, w: 0.60226125}
   m_Size:
-    m_Target: 2.4664104
+    m_Target: 1.6192424
     speed: 2
-    m_Value: 2.4664104
+    m_Value: 1.6192424
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1043,7 +1043,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Encounter
+    - Assets/Resources/Prefabs/Environment/VFX
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1051,16 +1051,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts/Encounter
+  - Assets/Resources/Prefabs/Environment/VFX
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /Users/atadjiki/Documents/GitHub/Dealer/HeroicBloodshed
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 279}
-    m_SelectedIDs: 34790000
-    m_LastClickedID: 31028
-    m_ExpandedIDs: 0000000030790000327900003479000036790000387900003a7900003c7900003e7900004079000042790000447900004679000048790000
+    scrollPos: {x: 0, y: 447}
+    m_SelectedIDs: e47c0000
+    m_LastClickedID: 31972
+    m_ExpandedIDs: 0000000030790000327900003479000036790000387900003a7900003c7900003e7900004079000042790000447900004679000048790000427c0000567c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1113,24 +1113,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 5a730000
-    m_LastClickedInstanceID: 29530
+    m_SelectedInstanceIDs: 5af9ffff
+    m_LastClickedInstanceID: -1702
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300001c77000060810000588d0000307400008e750000827500007a7500006e7500007e7500007275000086750000767500008a7500008e710000c2760100e08d0000ca760100c6760100fa940000f6e405003af3050022f30500665b01004ec0000006c800004ec20000d8be0000525e01001275ffff6ebf0000b6bf000014c200005ebf000060170500ec650100127c000036a700005aa7000056720000f677000016750000a07900007681000000000000e8760000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: EnvironmentTile
+      m_OriginalName: EnvironmentTile
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 31516
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:

@@ -28,7 +28,7 @@ public class EnvironmentTileHighlight : EnvironmentInputHandler
 
     public override IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
     {
-        transform.position = InputData.TilePosition;
+        transform.position = InputData.NodePosition;
 
         if (InputData.OnValidTile)
         {

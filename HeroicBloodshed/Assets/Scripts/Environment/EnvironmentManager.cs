@@ -130,7 +130,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
                 {
                     ToggleInputHandlers(false);
-                    EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.TilePosition, _inputData.RangeType);
+                    EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.NodePosition, _inputData.RangeType);
                 }
                 else
                 {
@@ -179,7 +179,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             {
                 nodePosition.y = 0;
 
-                _inputData.TilePosition = nodePosition;
+                _inputData.NodePosition = nodePosition;
 
                 //if it's unoccupied, it's ok to highlight/path/click it
                 if (IsPositionFree(nodePosition))
@@ -212,7 +212,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     private IEnumerator Coroutine_CalculatePathCost(Vector3 origin, Vector3 destination)
     {
         _inputData.PathCost = 0;
-        _inputData.VectorPath = new List<Vector3>();
+        _inputData.PathToHighlightedNode = new List<Vector3>();
 
         ABPath path = ABPath.Construct(origin, destination);
 
@@ -224,14 +224,64 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         {
             Vector3 nodePosition = (Vector3) pathNode.position;
 
-            if (!_inputData.VectorPath.Contains(nodePosition))
+            if (!_inputData.PathToHighlightedNode.Contains(nodePosition))
             {
-                _inputData.VectorPath.Add(nodePosition);
+                _inputData.PathToHighlightedNode.Add(nodePosition);
                 _inputData.PathCost += (int)path.GetTraversalCost(pathNode);
             }
         }
 
-        _inputData.VectorPath.Add(destination);
+        _inputData.PathToHighlightedNode.Add(destination);
+    }
+
+    private IEnumerator Coroutine_CalculateRadiusBounds()
+    {
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        Vector3 origin = currentCharacter.GetWorldLocation();
+
+        _inputData.RadiusMap = new Dictionary<Vector3, int>();
+
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        //find the distance between the character and every walkable node in the grid graph (yikes)
+        foreach (GraphNode graphNode in gridGraph.nodes)
+        {
+            //dont count nodes that are invalid anyway
+            if(graphNode.Walkable)
+            {
+                Vector3 nodePosition = (Vector3) graphNode.position;
+
+                //check if there is an obstacle or character blocking this node
+                if (IsPositionFree(nodePosition))
+                {
+                    ABPath path = ABPath.Construct(origin, nodePosition);
+
+                    AstarPath.StartPath(path, true);
+
+                    yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
+
+                    int cost = 0;
+
+                    foreach (GraphNode pathNode in path.path)
+                    {
+                        cost += (int)path.GetTraversalCost(pathNode);
+                    }
+
+                    //if the path to this node is available, add it to our list 
+                    MovementRangeType rangeType;
+                    if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
+                    {
+                        if(!_inputData.RadiusMap.ContainsKey(nodePosition))
+                        {
+                            _inputData.RadiusMap.Add(nodePosition, cost);
+                        }
+                    }
+                }
+            }
+        }
+
+        Debug.Log("Found " + _inputData.RadiusMap.Count + " eligible paths");
     }
 
     //Encounter Events
@@ -243,6 +293,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         switch (stateID)
         {
             case EncounterState.CHOOSE_ACTION:
+                yield return Coroutine_CalculateRadiusBounds();
                 ToggleInputHandlers(true);
                 break;
             case EncounterState.PERFORM_ACTION:
@@ -361,5 +412,10 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         }
 
         _allowUpdate = flag;
+    }
+
+    public EnvironmentInputData GetInputData()
+    {
+        return _inputData;
     }
 }

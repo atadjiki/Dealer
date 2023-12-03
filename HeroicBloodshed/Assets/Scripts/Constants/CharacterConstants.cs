@@ -178,5 +178,5 @@ public static partial class Constants
 
     public enum EnvironmentTileHighlightState { On, Off };
 
-    public enum EnvironmentTilePreviewState { Full, Half, None };
+    public enum EnvironmentTileState { Full, Half, None };
 }

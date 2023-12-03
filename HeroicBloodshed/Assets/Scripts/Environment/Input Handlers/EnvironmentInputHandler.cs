@@ -6,21 +6,24 @@ using static Constants;
 public struct EnvironmentInputData
 {
     public bool OnValidTile;
-    public Vector3 TilePosition;
+    public Vector3 NodePosition;
     public MovementRangeType RangeType;
     public int PathCost;
-    public List<Vector3> VectorPath;
+    public List<Vector3> PathToHighlightedNode;
+    public Dictionary<Vector3, int> RadiusMap;
 
     public static EnvironmentInputData Build()
     {
         return new EnvironmentInputData()
         {
             OnValidTile = false,
-            TilePosition = Vector3.zero,
+            NodePosition = Vector3.zero,
             RangeType = MovementRangeType.None,
             PathCost = -1,
 
-            VectorPath = new List<Vector3>(),
+            PathToHighlightedNode = new List<Vector3>(),
+
+            RadiusMap = new Dictionary<Vector3, int>(),
         };
     }
 
@@ -29,7 +32,7 @@ public struct EnvironmentInputData
         string result = "Input Data:\n";
 
         result += "Valid Tile " + OnValidTile + "\n";
-        result += "Position "   + TilePosition + "\n";
+        result += "Position "   + NodePosition + "\n";
         result += "Range Type"  + RangeType+ "\n";
         result += "Path Cost "  + PathCost+ "\n";
 
