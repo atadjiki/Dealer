@@ -13,13 +13,15 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private List<IEncounterEventHandler> _eventHandlers;
 
-    private List<IEnvironmentInputHandler> _inputHandlers;
+    private List<EnvironmentInputHandler> _inputHandlers;
 
     private List<EnvironmentSpawnPoint> _spawnPoints;
 
     private List<EnvironmentObstacle> _obstacles;
 
     private EnvironmentInputData _inputData;
+
+    private bool _allowUpdate = false;
 
     //Setup
     private void Awake()
@@ -50,16 +52,13 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             yield return eventHandler.Coroutine_PerformSetup();
         }
 
-        _inputHandlers = new List<IEnvironmentInputHandler>(GetComponentsInChildren<IEnvironmentInputHandler>());
-
-        foreach (IEnvironmentInputHandler inputHandler in _inputHandlers)
-        {
-            Debug.Log("Found environment input handler: " + inputHandler.ToString());
-        }
+        _inputHandlers = new List<EnvironmentInputHandler>(GetComponentsInChildren<EnvironmentInputHandler>());
 
         //dispose of the setup navmesh after tiles are built
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
         AstarPath.active.data.RemoveGraph(gridGraph);
+
+        StartCoroutine(Coroutine_InputUpdate());
 
         Debug.Log("Environment Ready");
     }
@@ -119,14 +118,18 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private void Update()
     {
-        if (EnvironmentUtil.CheckIsMouseBlocked()) { return; }
+        CheckMouseClick();
+    }
 
+    private void CheckMouseClick()
+    {
         if (Input.GetMouseButtonDown(0))
         {
-            if(EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+            if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
             {
                 if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
                 {
+                    ToggleInputHandlers(false);
                     EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.TilePosition, _inputData.RangeType);
                 }
                 else
@@ -142,13 +145,16 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         while(true)
         {
-            _inputData = EnvironmentInputData.Build();
-
-            yield return CheckMousePosition();
-
-            foreach (IEnvironmentInputHandler inputHandler in _inputHandlers)
+            if(_allowUpdate)
             {
-                yield return inputHandler.PerformInputUpdate(_inputData);
+                _inputData = EnvironmentInputData.Build();
+
+                yield return CheckMousePosition();
+
+                foreach (EnvironmentInputHandler inputHandler in _inputHandlers)
+                {
+                    yield return inputHandler.PerformInputUpdate(_inputData);
+                }
             }
 
             yield return new WaitForEndOfFrame();
@@ -232,13 +238,17 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     public IEnumerator Coroutine_EncounterStateUpdate(EncounterState stateID, EncounterModel model)
     {
-        switch(stateID)
+        StopCoroutine(Coroutine_InputUpdate());
+
+        switch (stateID)
         {
-            case EncounterState.SELECT_CURRENT_CHARACTER:
-                StartCoroutine(Coroutine_InputUpdate());
+            case EncounterState.CHOOSE_ACTION:
+                ToggleInputHandlers(true);
+                break;
+            case EncounterState.PERFORM_ACTION:
+                ToggleInputHandlers(false);
                 break;
             default:
-                StopCoroutine(Coroutine_InputUpdate());
                 break;
         }
 
@@ -333,5 +343,23 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     public List<EnvironmentObstacle> GetObstacles()
     {
         return _obstacles;
+    }
+
+    private void ToggleInputHandlers(bool flag)
+    {
+        foreach(EnvironmentInputHandler inputHandler in _inputHandlers)
+        {
+            if(flag)
+            {
+                inputHandler.Activate();
+            }
+            else
+            {
+                inputHandler.Deactivate();
+            }
+
+        }
+
+        _allowUpdate = flag;
     }
 }

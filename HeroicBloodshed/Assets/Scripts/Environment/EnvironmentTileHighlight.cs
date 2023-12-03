@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler, IEnvironmentInputHandler
+public class EnvironmentTileHighlight : EnvironmentInputHandler
 {
     [SerializeField] private GameObject HighlightDecal;
 
@@ -19,22 +19,14 @@ public class EnvironmentTileHighlight : MonoBehaviour, IEncounterEventHandler, I
         _outliner = GetComponentInChildren<Outlinable>();
     }
 
-    public IEnumerator Coroutine_EncounterStateUpdate(Constants.EncounterState stateID, EncounterModel model)
+    public override void Deactivate()
     {
-        switch(stateID)
-        {
-            case EncounterState.SELECT_CURRENT_CHARACTER:
-                break;
-            default:
-                SetColor(Color.clear);
-                StopAllCoroutines();
-                break;
-        }
+        base.Deactivate();
 
-        yield return null;
+        SetColor(Color.clear);
     }
 
-    public IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
+    public override IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
     {
         transform.position = InputData.TilePosition;
 

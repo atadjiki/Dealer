@@ -37,7 +37,19 @@ public struct EnvironmentInputData
     }
 }
 
-public interface IEnvironmentInputHandler 
-{
-    public IEnumerator PerformInputUpdate(EnvironmentInputData InputData);
+public class EnvironmentInputHandler : MonoBehaviour
+{ 
+    public virtual IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
+    {
+        yield return null;
+    }
+
+    public virtual void Activate()
+    {
+    }
+
+    public virtual void Deactivate()
+    {
+        StopAllCoroutines();
+    }
 }

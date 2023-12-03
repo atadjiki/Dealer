@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentPathRenderer : MonoBehaviour, IEncounterEventHandler, IEnvironmentInputHandler
+public class EnvironmentPathRenderer : EnvironmentInputHandler
 {
     private LineRenderer _pathRenderer;
 
@@ -12,23 +12,17 @@ public class EnvironmentPathRenderer : MonoBehaviour, IEncounterEventHandler, IE
         _pathRenderer = GetComponent<LineRenderer>();   
     }
 
-    public IEnumerator Coroutine_EncounterStateUpdate(Constants.EncounterState stateID, EncounterModel model)
+    public override void Deactivate()
     {
-        switch (stateID)
-        {
-            case EncounterState.SELECT_CURRENT_CHARACTER:
-                break;
-            default:
-                Clear();
-                StopAllCoroutines();
-                break;
-        }
+        base.Deactivate();
 
-        yield return null;
+        Clear();
     }
 
-    public IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
+    public override IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
     {
+        base.PerformInputUpdate(InputData);
+
         if (InputData.OnValidTile)
         {
             Clear();
