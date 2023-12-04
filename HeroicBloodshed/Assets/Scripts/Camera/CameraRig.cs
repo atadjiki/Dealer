@@ -62,7 +62,7 @@ public class CameraRig : MonoBehaviour
     {
         _collider = this.gameObject.GetComponent<BoxCollider>();
 
-        _framingTransposer = CM_Main.AddCinemachineComponent<CinemachineFramingTransposer>();
+        _framingTransposer = CM_Main.GetCinemachineComponent<CinemachineFramingTransposer>();
         _framingTransposer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
         _framingTransposer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
         _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;

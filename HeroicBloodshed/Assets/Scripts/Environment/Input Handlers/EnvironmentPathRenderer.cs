@@ -37,7 +37,7 @@ public class EnvironmentPathRenderer : EnvironmentInputHandler
 
                 for(int i = 0; i < positions.Length; i++)
                 {
-                    positions[i].z = 0.5f;
+                    positions[i].y = 0.5f;
                 }
 
                 _pathRenderer.SetPositions(positions);

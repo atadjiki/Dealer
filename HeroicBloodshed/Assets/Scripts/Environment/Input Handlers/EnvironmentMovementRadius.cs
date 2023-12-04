@@ -7,9 +7,9 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
-    [SerializeField] private GameObject Prefab_RadiusTile;
+    [SerializeField] private GameObject Prefab_Tile;
 
-    private List<GameObject> _generatedTiles;
+    private List<GameObject> _tiles;
 
     public override void Activate()
     {
@@ -22,16 +22,16 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     {
         base.Deactivate();
 
-        if(_generatedTiles != null)
+        if(_tiles != null)
         {
-            foreach (GameObject tileObject in _generatedTiles)
+            foreach (GameObject tileObject in _tiles)
             {
                 GameObject.Destroy(tileObject);
             }
 
-            _generatedTiles.Clear();
+            _tiles.Clear();
 
-            _generatedTiles = null;
+            _tiles = null;
         }
     }
 
@@ -43,20 +43,16 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
         {
             CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
-            _generatedTiles = new List<GameObject>();
+            _tiles = new List<GameObject>();
 
             foreach (KeyValuePair<Vector3, int> pair in inputData.RadiusMap)
             {
-                EnvironmentTileState tileState;
+                EnvironmentTileState tileState = EnvironmentTileState.Full;
 
                 if (pair.Value <= currentCharacter.GetMovementRange())
                 {
 
                     tileState = EnvironmentTileState.Half;
-                }
-                else
-                {
-                    tileState = EnvironmentTileState.Full;
                 }
 
                 StartCoroutine(Coroutine_GenerateTile(pair.Key, tileState));
@@ -68,7 +64,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
     private IEnumerator Coroutine_GenerateTile(Vector3 position, EnvironmentTileState tileState)
     {
-        GameObject tilePrefab = Instantiate(Prefab_RadiusTile, this.transform);
+        GameObject tilePrefab = Instantiate(Prefab_Tile, this.transform);
 
         EnvironmentTile environmentTile = tilePrefab.GetComponent<EnvironmentTile>();
 
@@ -76,7 +72,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
         environmentTile.SetState(tileState);
 
-        _generatedTiles.Add(tilePrefab);
+        _tiles.Add(tilePrefab);
 
         yield return null;
     }

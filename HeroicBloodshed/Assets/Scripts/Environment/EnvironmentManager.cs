@@ -236,52 +236,74 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private IEnumerator Coroutine_CalculateRadiusBounds()
     {
+        _inputData.RadiusMap = new Dictionary<Vector3, int>();
+
+        AstarPath.active.maxNearestNodeDistance = 12;
+
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
         CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
-        _inputData.RadiusMap = new Dictionary<Vector3, int>();
-
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+        Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
 
         //find the distance between the character and every walkable node in the grid graph (yikes)
-        foreach (GraphNode graphNode in gridGraph.nodes)
+        foreach (GraphNode graphNode in gridGraph.GetNodesInRegion(searchBounds))
         {
-            //dont count nodes that are invalid anyway
-            if(graphNode.Walkable)
+            StartCoroutine(Coroutine_PerformPathSearch(origin, graphNode));
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator Coroutine_PerformPathSearch(Vector3 origin, GraphNode graphNode)
+    {
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        //dont count nodes that are invalid anyway
+        if (graphNode.Walkable)
+        {
+            NNConstraint constraint = new NNConstraint();
+            constraint.constrainWalkability = true;
+            constraint.constrainDistance = true;
+            constraint.walkable = true;
+
+            Vector3 nodePosition = (Vector3)graphNode.position;
+
+            //check if there is an obstacle or character blocking this node
+            if (IsPositionFree(nodePosition))
             {
-                Vector3 nodePosition = (Vector3) graphNode.position;
+                ABPath path = ABPath.Construct(origin, nodePosition);
 
-                //check if there is an obstacle or character blocking this node
-                if (IsPositionFree(nodePosition))
+                path.heuristic = Heuristic.Euclidean;
+                path.nnConstraint = constraint;
+
+                AstarPath.StartPath(path, true);
+
+                yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
+
+  
+                int cost = 0;
+
+                foreach (GraphNode pathNode in path.path)
                 {
-                    ABPath path = ABPath.Construct(origin, nodePosition);
+                    cost += (int)path.GetTraversalCost(pathNode);
+                }
 
-                    AstarPath.StartPath(path, true);
-
-                    yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
-
-                    int cost = 0;
-
-                    foreach (GraphNode pathNode in path.path)
+                //if the path to this node is available, add it to our list 
+                MovementRangeType rangeType;
+                if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
+                {
+                    if (!_inputData.RadiusMap.ContainsKey(nodePosition))
                     {
-                        cost += (int)path.GetTraversalCost(pathNode);
-                    }
-
-                    //if the path to this node is available, add it to our list 
-                    MovementRangeType rangeType;
-                    if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
-                    {
-                        if(!_inputData.RadiusMap.ContainsKey(nodePosition))
-                        {
-                            _inputData.RadiusMap.Add(nodePosition, cost);
-                        }
+                        _inputData.RadiusMap.Add(nodePosition, cost);
                     }
                 }
             }
         }
 
-        Debug.Log("Found " + _inputData.RadiusMap.Count + " eligible paths");
+        yield return null;
     }
 
     //Encounter Events
