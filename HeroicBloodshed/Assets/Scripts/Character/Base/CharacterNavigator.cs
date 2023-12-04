@@ -25,6 +25,12 @@ public class CharacterNavigator : MonoBehaviour
 
         _AI.canMove = false;
 
+        TeleportTo(destination);
+    }
+
+    public void TeleportTo(Vector3 destination)
+    {
+        Debug.Log("Teleporting to " + destination);
         _AI.Teleport(destination);
     }
 }

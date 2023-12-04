@@ -7,9 +7,19 @@ public class EnvironmentSpawnPoint : MonoBehaviour
 {
     [SerializeField] private TeamID Team;
 
+    [SerializeField] private Transform SpawnTransform;
+
     public TeamID GetTeam() { return Team; }
 
     public virtual void Activate() { }
 
-    public virtual Vector3 GetSpawnLocation() { return this.transform.position; }
+    public virtual Transform GetSpawnTransform()
+    {
+        if(SpawnTransform == null)
+        {
+            return this.transform;
+        }
+
+        return SpawnTransform;
+    }
 }

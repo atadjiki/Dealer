@@ -26,11 +26,6 @@ public class EnvironmentDoorSpawnPoint : EnvironmentSpawnPoint
         StartCoroutine(Coroutine_ActivateDoor());
     }
 
-    public override Vector3 GetSpawnLocation()
-    {
-        return _collider.bounds.center;
-    }
-
     private IEnumerator Coroutine_ActivateDoor()
     {
         DoorMesh.transform.localEulerAngles = new Vector3(0, 90, 0);

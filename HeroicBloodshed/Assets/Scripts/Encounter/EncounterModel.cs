@@ -56,9 +56,15 @@ public class EncounterModel : MonoBehaviour
             //spawn characters for each team 
             foreach (CharacterID characterID in teamData.Characters)
             {
-                CharacterComponent characterComponent = EnvironmentManager.Instance.SpawnCharacter(teamData.Team, characterID);
+                GameObject characterObject = new GameObject(teamData.Team + "_" + characterID);
 
-                if(characterComponent != null)
+                CharacterComponent characterComponent = EnvironmentUtil.AddComponentByTeam(characterID, characterObject);
+
+                characterObject.transform.parent = this.transform;
+                characterObject.transform.localPosition = Vector3.zero;
+                characterObject.transform.localEulerAngles = Vector3.zero;
+
+                if (characterComponent != null)
                 {
                     _characterMap[teamData.Team].Add(characterComponent);
                 }

@@ -334,43 +334,37 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     }
 
     //Helpers/interface 
-    public CharacterComponent SpawnCharacter(TeamID teamID, CharacterID characterID)
+    public bool FindSpawnLocationForCharacter(CharacterComponent character, out Vector3 location)
     {
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
         foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
         {
-            Vector3 location;
-            if (GetClosestNodeToPosition(spawnPoint.transform.position, out location))
+            if (GetClosestNodeToPosition(spawnPoint.GetSpawnLocation(), out location))
             {
-                if (spawnPoint.GetTeam() == teamID)
+                if (spawnPoint.GetTeam() == character.GetTeam())
                 {
-                    GameObject characterObject = new GameObject(teamID + "_" + characterID);
-
-                    CharacterComponent characterComponent = EnvironmentUtil.AddComponentByTeam(characterID, characterObject);
-
-                    characterObject.transform.parent = this.transform;
-                    characterObject.transform.localPosition = Vector3.zero;
-                    characterObject.transform.localEulerAngles = spawnPoint.transform.eulerAngles;
-                    characterObject.transform.position = location;
-
-                    return characterComponent;
+                    return true;
                 }
             }
             else
             {
-                Debug.Log("Couldnt find location to spawn character");
+                Debug.Log("Couldnt find location to placecharacter");
             }
         }
 
-        return null;
+        location = Vector3.zero;
+        return false;
     }
 
     public bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
-        NNInfoInternal nnInfo = gridGraph.GetNearest(position);
+        NNConstraint constraint = new NNConstraint();
+        constraint.constrainWalkability = true;
+
+        NNInfoInternal nnInfo = gridGraph.GetNearest(position, constraint);
 
         if (nnInfo.node != null && nnInfo.node != null)
         {

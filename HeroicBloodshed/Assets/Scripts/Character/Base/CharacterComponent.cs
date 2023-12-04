@@ -142,6 +142,13 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _animator.Setup(AnimState.Idle, _weapon.GetID());
         _eventReceivers.Add(_animator);
 
+        //place the character at an appropriate spawn location
+        Vector3 spawnLocation;
+        if(EnvironmentManager.Instance.FindSpawnLocationForCharacter(this, out spawnLocation))
+        {
+            _navigator.TeleportTo(spawnLocation);
+        }
+
         if (onSetupComplete != null)
         {
             onSetupComplete.Invoke(this);
