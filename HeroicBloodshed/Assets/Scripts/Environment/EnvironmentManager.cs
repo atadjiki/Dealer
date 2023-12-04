@@ -54,6 +54,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         _inputHandlers = new List<EnvironmentInputHandler>(GetComponentsInChildren<EnvironmentInputHandler>());
 
+        AstarPath.active.maxNearestNodeDistance = 12;
+
         //dispose of the setup navmesh after tiles are built
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
         AstarPath.active.data.RemoveGraph(gridGraph);
@@ -237,8 +239,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     private IEnumerator Coroutine_CalculateRadiusBounds()
     {
         _inputData.RadiusMap = new Dictionary<Vector3, int>();
-
-        AstarPath.active.maxNearestNodeDistance = 12;
 
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
