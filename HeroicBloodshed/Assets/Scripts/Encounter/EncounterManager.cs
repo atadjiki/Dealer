@@ -283,23 +283,20 @@ public class EncounterManager : MonoBehaviour
     
     public void OnEnvironmentDestinationSelected(Vector3 destination, MovementRangeType rangeType)
     {
-        if (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU())
+        Debug.Log("Destination " + destination.ToString() + "selected");
+
+        _model.SetActiveDestination(destination);
+
+        if (rangeType == MovementRangeType.Half)
         {
-            Debug.Log("Destination " + destination.ToString() + "selected");
-
-            _model.SetActiveDestination(destination);
-
-            if (rangeType == MovementRangeType.Half)
-            {
-                _model.SetActiveAbility(AbilityID.MoveHalf);
-            }
-            else
-            {
-                _model.SetActiveAbility(AbilityID.MoveFull);
-            }
-
-            _model.TransitionState();
+            _model.SetActiveAbility(AbilityID.MoveHalf);
         }
+        else
+        {
+            _model.SetActiveAbility(AbilityID.MoveFull);
+        }
+
+        _model.TransitionState();
     }
 
     public bool AreTargetsAvailable()
@@ -383,5 +380,10 @@ public class EncounterManager : MonoBehaviour
     public void RequestEventBanner(string message, float duration)
     {
         _canvas.ShowEventBanner(message, duration);
+    }
+
+    public bool ShouldAllowInput()
+    {
+        return (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU());
     }
 }

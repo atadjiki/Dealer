@@ -22,8 +22,6 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
-        CameraRig.Instance.Follow(caster);
-
         yield return Coroutine_RotateTowards(target, caster);
 
         WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());

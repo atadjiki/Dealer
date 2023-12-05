@@ -33,4 +33,9 @@ public class CharacterNavigator : MonoBehaviour
         Debug.Log("Teleporting to " + destination);
         _AI.Teleport(destination);
     }
+
+    public void Rotate(Quaternion rotation)
+    {
+        _AI.rotation = rotation;
+    }
 }

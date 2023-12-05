@@ -87,7 +87,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             Vector3 position = spawnPoint.transform.position;
 
             Vector3 result;
-            if(GetClosestNodeToPosition(position, out result))
+            if(EnvironmentUtil.GetClosestNodeToPosition(position, out result))
             {
                 _spawnPoints.Add(spawnPoint);
             }
@@ -103,7 +103,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             Vector3 position = obstacle.transform.position;
 
             Vector3 result;
-            if (GetClosestNodeToPosition(position, out result))
+            if (EnvironmentUtil.GetClosestNodeToPosition(position, out result))
             {
                 _obstacles.Add(obstacle);
             }
@@ -155,7 +155,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             Vector3 nodePosition;
 
             //find the closest node to the mouse location
-            if (GetClosestNodeToPosition(hit.point, out nodePosition))
+            if (EnvironmentUtil.GetClosestNodeToPosition(hit.point, out nodePosition))
             {
                 nodePosition.y = 0;
 
@@ -195,7 +195,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         {
             Debug.Log("click");
 
-            if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+            if (EncounterManager.Instance.ShouldAllowInput())
             {
                 if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
                 {
@@ -266,11 +266,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         //dont count nodes that are invalid anyway
         if (graphNode.Walkable)
         {
-            NNConstraint constraint = new NNConstraint();
-            constraint.constrainWalkability = true;
-            constraint.constrainDistance = true;
-            constraint.walkable = true;
-
             Vector3 nodePosition = (Vector3)graphNode.position;
 
             //check if there is an obstacle or character blocking this node
@@ -279,13 +274,12 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 ABPath path = ABPath.Construct(origin, nodePosition);
 
                 path.heuristic = Heuristic.Euclidean;
-                path.nnConstraint = constraint;
+                path.nnConstraint = EnvironmentUtil.BuildConstraint();
 
                 AstarPath.StartPath(path, true);
 
                 yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
 
-  
                 int cost = 0;
 
                 foreach (GraphNode pathNode in path.path)
@@ -336,16 +330,17 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     }
 
     //Helpers/interface 
-    public bool FindSpawnLocationForCharacter(CharacterComponent character, out Vector3 location)
+    public bool FindSpawnLocationForCharacter(CharacterComponent character, out Vector3 location, out Quaternion rotation)
     {
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
         foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
         {
-            if (GetClosestNodeToPosition(spawnPoint.GetSpawnTransform().position, out location))
+            if (EnvironmentUtil.GetClosestNodeInArea(spawnPoint.transform.position, new Vector3(1f,1f, 1f), out location))
             {
                 if (spawnPoint.GetTeam() == character.GetTeam())
                 {
+                    rotation = spawnPoint.transform.rotation;
                     return true;
                 }
             }
@@ -356,34 +351,14 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         }
 
         location = Vector3.zero;
+        rotation = Quaternion.identity;
         return false;
-    }
-
-    public bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
-    {
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        NNConstraint constraint = new NNConstraint();
-        constraint.constrainWalkability = true;
-
-        NNInfoInternal nnInfo = gridGraph.GetNearest(position, constraint);
-
-        if (nnInfo.node != null && nnInfo.node != null)
-        {
-            result = (Vector3)nnInfo.node.position;
-            return true;
-        }
-        else
-        {
-            result = Vector3.zero;
-            return false;
-        }
     }
 
     public bool IsPositionOccupied(Vector3 worldLocation)
     {
         Vector3 result;
-        if(GetClosestNodeToPosition(worldLocation, out result ))
+        if(EnvironmentUtil.GetClosestNodeToPosition(worldLocation, out result ))
         {
             foreach (EnvironmentObstacle obstacle in _obstacles)
             {

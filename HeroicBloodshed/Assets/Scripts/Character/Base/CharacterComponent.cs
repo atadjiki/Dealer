@@ -144,9 +144,11 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         //place the character at an appropriate spawn location
         Vector3 spawnLocation;
-        if(EnvironmentManager.Instance.FindSpawnLocationForCharacter(this, out spawnLocation))
+        Quaternion spawnRotation;
+        if(EnvironmentManager.Instance.FindSpawnLocationForCharacter(this, out spawnLocation, out spawnRotation))
         {
             _navigator.TeleportTo(spawnLocation);
+            _navigator.Rotate(spawnRotation);
         }
 
         if (onSetupComplete != null)
