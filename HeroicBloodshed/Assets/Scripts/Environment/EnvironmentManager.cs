@@ -4,6 +4,7 @@ using UnityEngine;
 using Pathfinding;
 using System;
 using static Constants;
+using UnityEngine.EventSystems;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
@@ -118,31 +119,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     //Environment Input/Interactions
 
-    private void Update()
-    {
-        CheckMouseClick();
-    }
-
-    private void CheckMouseClick()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
-            {
-                if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
-                {
-                    ToggleInputHandlers(false);
-                    EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.NodePosition, _inputData.RangeType);
-                }
-                else
-                {
-                    Debug.Log("Click not handled");
-                    Debug.Log(_inputData.ToString());
-                }
-            }
-        }
-    }
-
     private IEnumerator Coroutine_InputUpdate()
     {
         while(true)
@@ -152,6 +128,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 _inputData = EnvironmentInputData.Build();
 
                 yield return CheckMousePosition();
+
+                yield return CheckMouseClick();
 
                 foreach (EnvironmentInputHandler inputHandler in _inputHandlers)
                 {
@@ -206,6 +184,30 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             }
 
             break;
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator CheckMouseClick()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Debug.Log("click");
+
+            if (EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
+            {
+                if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
+                {
+                    ToggleInputHandlers(false);
+                    EncounterManager.Instance.OnEnvironmentDestinationSelected(_inputData.NodePosition, _inputData.RangeType);
+                }
+                else
+                {
+                    Debug.Log("Click not handled");
+                    Debug.Log(_inputData.ToString());
+                }
+            }
         }
 
         yield return null;
@@ -340,7 +342,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         //see if we have a marker available to spawn them in
         foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
         {
-            if (GetClosestNodeToPosition(spawnPoint.GetSpawnLocation(), out location))
+            if (GetClosestNodeToPosition(spawnPoint.GetSpawnTransform().position, out location))
             {
                 if (spawnPoint.GetTeam() == character.GetTeam())
                 {

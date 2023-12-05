@@ -9,6 +9,8 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Move(CharacterComponent caster, Vector3 destination)
     {
+        CameraRig.Instance.Follow(caster);
+
         CharacterNavigator navigator = caster.GetNavigator();
 
         caster.HandleEvent(null, CharacterEvent.MOVING);
@@ -20,6 +22,8 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
+        CameraRig.Instance.Follow(caster);
+
         yield return Coroutine_RotateTowards(target, caster);
 
         WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
@@ -53,18 +57,24 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Reload(CharacterComponent caster)
     {
+        CameraRig.Instance.Follow(caster);
+
         caster.HandleEvent(AbilityID.Reload, CharacterEvent.ABILITY);
         yield return new WaitForSeconds(_waitTime);
     }
 
     public static IEnumerator Coroutine_HandleAbility_SkipTurn(CharacterComponent caster)
     {
+        CameraRig.Instance.Follow(caster);
+
         caster.HandleEvent(AbilityID.SkipTurn, CharacterEvent.ABILITY);
         yield return new WaitForSeconds(_waitTime);
     }
 
     public static IEnumerator Coroutine_HandleAbility_Heal(CharacterComponent caster)
     {
+        CameraRig.Instance.Follow(caster);
+
         caster.HandleEvent(AbilityID.Heal, CharacterEvent.ABILITY);
         yield return new WaitForSeconds(_waitTime);
     }
