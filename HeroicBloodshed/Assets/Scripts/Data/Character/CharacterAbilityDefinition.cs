@@ -24,7 +24,9 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
-        CameraRig.Instance.GoBetween(caster, target);
+        float waitTime = CameraRig.Instance.GoBetween(caster, target);
+
+        yield return new WaitForSeconds(waitTime + 0.5f); //add a lil extra time 
 
         yield return Coroutine_RotateTowards(target, caster);
 

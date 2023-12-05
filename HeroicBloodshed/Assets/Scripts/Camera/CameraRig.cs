@@ -14,6 +14,8 @@ public class EnvironmentCameraSettings
 
     public float ZoomSpeed = 75;
 
+    public float ZoomDuration = 0.5f;
+
     [Header("Rotation")]
     public float RotationStep = 90;
     public float RotationDuration = 0.35f;
@@ -78,13 +80,13 @@ public class CameraRig : MonoBehaviour
         Update_Movement_Mouse();
     }
 
-    public void GoBetween(CharacterComponent caster, CharacterComponent target)
+    public float GoBetween(CharacterComponent caster, CharacterComponent target)
     {
         Vector3 midwayPoint = Vector3.Lerp(caster.GetWorldLocation(), target.GetWorldLocation(), 0.5f);
 
         GoTo(midwayPoint);
 
-        ZoomOut();
+        return ZoomOut();
     }
 
     public void GoTo(Vector3 location)
@@ -106,11 +108,13 @@ public class CameraRig : MonoBehaviour
         FollowTarget.Release();
     }
 
-    public void ZoomOut()
+    public float ZoomOut()
     {
         StopCoroutine(Coroutine_PerformZoom_Out());
 
         StartCoroutine(Coroutine_PerformZoom_Out());
+
+        return EnvironmentCameraSettings.ZoomDuration;
     }
 
     private void Update_Zoom()
@@ -240,15 +244,14 @@ public class CameraRig : MonoBehaviour
     private IEnumerator Coroutine_PerformZoom_Out()
     {
         float time = 0;
-        float duration = 0.5f;
 
         float initialDistance = _framingTransposer.m_CameraDistance;
 
         float targetDistance = EnvironmentCameraSettings.MaxDistance;
 
-        while(time < duration)
+        while(time < EnvironmentCameraSettings.ZoomDuration)
         {
-            _framingTransposer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / duration);
+            _framingTransposer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / EnvironmentCameraSettings.ZoomDuration);
 
             time += Time.smoothDeltaTime;
 
