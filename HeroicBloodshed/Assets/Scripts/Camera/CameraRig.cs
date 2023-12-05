@@ -78,6 +78,21 @@ public class CameraRig : MonoBehaviour
         Update_Movement_Mouse();
     }
 
+    public void GoBetween(CharacterComponent caster, CharacterComponent target)
+    {
+        Vector3 midwayPoint = Vector3.Lerp(caster.GetWorldLocation(), target.GetWorldLocation(), 0.5f);
+
+        GoTo(midwayPoint);
+
+        ZoomOut();
+    }
+
+    public void GoTo(Vector3 location)
+    {
+        Unfollow();
+        FollowTarget.transform.position = location;
+    }
+
     public void Follow(CharacterComponent character)
     {
         Debug.Log("New Follow Target " + character.GetID());
@@ -91,13 +106,20 @@ public class CameraRig : MonoBehaviour
         FollowTarget.Release();
     }
 
+    public void ZoomOut()
+    {
+        StopCoroutine(Coroutine_PerformZoom_Out());
+
+        StartCoroutine(Coroutine_PerformZoom_Out());
+    }
+
     private void Update_Zoom()
     {
         Vector2 mouseScrollDelta = Input.mouseScrollDelta;
 
         if (mouseScrollDelta.magnitude > 0)
         {
-            float currentDistance =_framingTransposer.m_CameraDistance;
+            float currentDistance =  _framingTransposer.m_CameraDistance;
 
             float targetDistance = EnvironmentCameraSettings.MinDistance;
 
@@ -213,6 +235,29 @@ public class CameraRig : MonoBehaviour
         CM_Main.transform.eulerAngles = new Vector3(45, targetAngle, 0);
 
         _rotating = false;
+    }
+
+    private IEnumerator Coroutine_PerformZoom_Out()
+    {
+        float time = 0;
+        float duration = 0.5f;
+
+        float initialDistance = _framingTransposer.m_CameraDistance;
+
+        float targetDistance = EnvironmentCameraSettings.MaxDistance;
+
+        while(time < duration)
+        {
+            _framingTransposer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / duration);
+
+            time += Time.smoothDeltaTime;
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        _framingTransposer.m_CameraDistance = targetDistance;
+
+        yield return null;
     }
 
     public void SwitchToMainCam()

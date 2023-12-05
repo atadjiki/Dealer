@@ -547,6 +547,26 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         return _navigator.transform.position;
     }
 
+    public Quaternion GetWorldRotation()
+    {
+        return _navigator.transform.rotation;
+    }
+
+    public Vector3 GetWorldEulerAngles()
+    {
+        return _navigator.transform.eulerAngles;
+    }
+
+    public void SetWorldEulerAngles(Vector3 eulerAngles)
+    {
+        _navigator.transform.transform.eulerAngles = eulerAngles;
+    }
+
+    public void SetWorldRotation(Quaternion rotation)
+    {
+        _navigator.transform.rotation = rotation;
+    }
+
     public void ReplenishActionPoints()
     {
         _actionPoints = _baseActionPoints;

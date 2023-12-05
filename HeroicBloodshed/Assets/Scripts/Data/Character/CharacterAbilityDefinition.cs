@@ -11,6 +11,8 @@ public class AbilityHandler : MonoBehaviour
     {
         CameraRig.Instance.Follow(caster);
 
+        yield return new WaitForSeconds(1.0f);
+
         CharacterNavigator navigator = caster.GetNavigator();
 
         caster.HandleEvent(null, CharacterEvent.MOVING);
@@ -22,6 +24,8 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
     {
+        CameraRig.Instance.GoBetween(caster, target);
+
         yield return Coroutine_RotateTowards(target, caster);
 
         WeaponDefinition weaponDef = WeaponDefinition.Get(caster.GetWeaponID());
@@ -95,18 +99,17 @@ public class AbilityHandler : MonoBehaviour
         float currentTime = 0;
         float duration = 0.15f;
 
-        Quaternion casterRotation = caster.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(target.GetWorldLocation() - caster.GetWorldLocation());
 
         while (currentTime < duration)
         {
             currentTime += Time.deltaTime;
-            caster.transform.rotation = Quaternion.Slerp(casterRotation, targetRotation, currentTime / duration);
-            caster.transform.eulerAngles = new Vector3(0, caster.transform.eulerAngles.y, 0);
+            caster.SetWorldRotation(Quaternion.Slerp(caster.GetWorldRotation(), targetRotation, currentTime / duration));
+            caster.SetWorldEulerAngles(new Vector3(0, caster.GetWorldRotation().eulerAngles.y, 0));
             yield return null;
         }
 
-        caster.transform.rotation = targetRotation;
+        caster.SetWorldRotation(targetRotation);
     }
 
     public static IEnumerator Coroutine_HandleDamage(CharacterComponent target, DamageInfo damageInfo)
