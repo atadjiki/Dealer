@@ -311,8 +311,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         switch (stateID)
         {
             case EncounterState.CHOOSE_ACTION:
-                yield return Coroutine_CalculateRadiusBounds();
-                ToggleInputHandlers(true);
+                if(EncounterManager.Instance.ShouldAllowInput())
+                {
+                    yield return Coroutine_CalculateRadiusBounds();
+                    ToggleInputHandlers(true);
+                }
                 break;
             case EncounterState.PERFORM_ACTION:
                 ToggleInputHandlers(false);
