@@ -141,6 +141,8 @@ public static partial class Constants
 
         //Environment
         Environment_DrugHideout,
+
+        EnvironmentCoverDecal,
         
         Encounter_Manager_Audio,
         //Encounter_Manager_CameraRig,

@@ -49,6 +49,43 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
+    public static List<Vector3> GetNeighboringNodes(Bounds bounds)
+    {
+        List<Vector3> neighbors = new List<Vector3>();
+
+        foreach(Vector3 nodePosition in GetNodesInBounds(bounds))
+        {
+            foreach(Vector3 neighbor in GetNeighboringNodes(nodePosition))
+            {
+                if(!neighbors.Contains(neighbor))
+                {
+                    neighbors.Add(neighbor);
+                }
+            }
+        }
+
+        return neighbors;
+    }
+
+    public static List<Vector3> GetNeighboringNodes(Vector3 position)
+    {
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        NNInfoInternal nnInfo = gridGraph.GetNearest(position, BuildConstraint());
+
+        List<Vector3> connections = new List<Vector3>();
+
+        if (nnInfo.node != null)
+        {
+            nnInfo.node.GetConnections(otherNode =>
+            {
+                connections.Add((Vector3) otherNode.position);
+            });
+        }
+
+        return connections;
+    }
+
     public static bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -65,6 +102,20 @@ public class EnvironmentUtil : MonoBehaviour
             result = Vector3.zero;
             return false;
         }
+    }
+
+    public static List<Vector3> GetNodesInBounds(Bounds bounds)
+    {
+        List<Vector3> nodes = new List<Vector3>();
+
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        foreach(GraphNode graphNode in gridGraph.GetNodesInRegion(bounds))
+        {
+            nodes.Add((Vector3)graphNode.position);
+        }
+
+        return nodes;
     }
 
     public static NNConstraint BuildConstraint()

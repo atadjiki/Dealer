@@ -105,7 +105,14 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             Vector3 result;
             if (EnvironmentUtil.GetClosestNodeToPosition(position, out result))
             {
+                obstacle.Setup();
+
                 _obstacles.Add(obstacle);
+
+                foreach(Vector3 node in EnvironmentUtil.GetNodesInBounds(obstacle.GetBounds()))
+                {
+                    obstacle.AddCoverDecal(node);
+                }
             }
             else
             {
@@ -295,6 +302,14 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     {
                         _inputData.RadiusMap.Add(nodePosition, cost);
                     }
+
+                    foreach (EnvironmentObstacle obstacle in _obstacles)
+                    {
+                        bool flag = obstacle.GetNeighbors().Contains(nodePosition);
+
+                        obstacle.UpdateMovementRangeType(rangeType);
+                        obstacle.ToggleDecal(flag);
+                    }
                 }
             }
         }
@@ -390,6 +405,19 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     public List<EnvironmentObstacle> GetObstacles()
     {
         return _obstacles;
+    }
+
+    public EnvironmentObstacle GetObstacleAt(Vector3 position)
+    {
+        foreach(EnvironmentObstacle obstacle in _obstacles)
+        {
+            if(obstacle.ContainsPoint(position))
+            {
+                return obstacle;
+            }
+        }
+
+        return null;
     }
 
     private void ToggleInputHandlers(bool flag)
