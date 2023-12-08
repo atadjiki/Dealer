@@ -43,65 +43,41 @@ public class EnvironmentObstacle : MonoBehaviour
         return _collider.bounds.Contains(point);
     }
 
-    public void AddCoverDecal(Vector3 position)
-    {
-        StartCoroutine(Coroutine_CreateCoverDecal(position));
-    }
+    //public void AddCoverDecal(Vector3 position)
+    //{
+    //    StartCoroutine(Coroutine_CreateCoverDecal(position));
+    //}
 
-    public void ToggleDecal(bool flag)
-    {
-        foreach(EnvironmentCoverDecal decal in _coverDecals.Values)
-        {
-            decal.ToggleVisibility(flag);
-        }
-    }
+    //public void ToggleDecal(bool flag)
+    //{
+    //    foreach(EnvironmentCoverDecal decal in _coverDecals.Values)
+    //    {
+    //        decal.ToggleVisibility(flag);
+    //    }
+    //}
 
-    private IEnumerator Coroutine_CreateCoverDecal(Vector3 position)
-    {
-        ResourceRequest resourceRequest = GetEnvironmentVFX(PrefabID.EnvironmentCoverDecal);
+    //private IEnumerator Coroutine_CreateCoverDecal(Vector3 position)
+    //{
+    //    ResourceRequest resourceRequest = GetEnvironmentVFX(PrefabID.EnvironmentCoverDecal);
 
-        yield return new WaitUntil(() => resourceRequest.isDone);
+    //    yield return new WaitUntil(() => resourceRequest.isDone);
 
-        GameObject prefabObject = Instantiate((GameObject)resourceRequest.asset, this.transform);
+    //    GameObject prefabObject = Instantiate((GameObject)resourceRequest.asset, this.transform);
 
-        prefabObject.transform.position = position;
+    //    prefabObject.transform.position = position;
 
-        yield return new WaitUntil(() => prefabObject.GetComponent<EnvironmentCoverDecal>() != null);
+    //    yield return new WaitUntil(() => prefabObject.GetComponent<EnvironmentCoverDecal>() != null);
 
-        EnvironmentCoverDecal coverDecal = prefabObject.GetComponent<EnvironmentCoverDecal>();
+    //    EnvironmentCoverDecal coverDecal = prefabObject.GetComponent<EnvironmentCoverDecal>();
 
-        coverDecal.Setup(ObstacleType);
+    //    coverDecal.Setup(ObstacleType);
 
-        _coverDecals.Add(position, coverDecal);
+    //    _coverDecals.Add(position, coverDecal);
 
-        PerformCoverDecalOverlapCheck();
+    //    PerformCoverDecalOverlapCheck();
 
-        yield return null;
-    }
-
-    private void PerformCoverDecalOverlapCheck()
-    {
-        if(_coverDecals.Count > 1)
-        {
-         //   Debug.Log("Decals on obstacle: " + this.gameObject.name + " " + _coverDecals.Count);
-
-            foreach (EnvironmentCoverDecal coverDecal in _coverDecals.Values)
-            {
-                foreach(Transform childTransform in coverDecal.GetChildTransforms())
-                {
-                    if(_collider.bounds.Contains(childTransform.position))
-                    {
-                        childTransform.gameObject.SetActive(false);
-                    }
-                    else if(!EnvironmentManager.Instance.IsPositionFree(childTransform.position))
-                    {
-                        childTransform.gameObject.SetActive(false);
-                    }
-                }
-            }
-        }
-
-    }
+    //    yield return null;
+    //}
 
     public void SetNeighbors(List<Vector3> nodeList)
     {

@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
+    [SerializeField] private GameObject Prefab_EnvironmentNode;
+
     //singleton
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
@@ -74,17 +76,21 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         _nodeMap = new Dictionary<Vector3, EnvironmentNode>();
 
+        GameObject nodeMapObject = new GameObject("NodeMap");
+        nodeMapObject.transform.parent = this.transform;
+
         gridGraph.GetNodes((graphNode =>
         {
             if(graphNode.Walkable)
             {
                 Vector3 position = (Vector3)graphNode.position;
-                EnvironmentNode environmentNode = new EnvironmentNode();
+                GameObject nodeObject = Instantiate(Prefab_EnvironmentNode, nodeMapObject.transform);
 
-                environmentNode.position = position;
-                environmentNode.neighbors = EnvironmentUtil.GetNeighboringNodes(position);
+                EnvironmentNode environmentNode = nodeObject.GetComponent<EnvironmentNode>();
+                environmentNode.transform.position = position;
+                environmentNode.SetNeighbors(EnvironmentUtil.GetNeighboringNodes(position));
 
-                _nodeMap.Add((Vector3)graphNode.position, environmentNode);
+                _nodeMap.Add(position, environmentNode);
             }
         }));
     }
@@ -104,7 +110,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
                 if (_nodeMap.ContainsKey(result))
                 {
-                    _nodeMap[result].spawnPoint = spawnPoint;
+                    _nodeMap[result].SetSpawnPoint(spawnPoint);
                 }
             }
             else
@@ -126,13 +132,13 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 if(_nodeMap.ContainsKey(result))
                 {
                     Debug.Log("Obstacle gathered at " + result.ToString());
-                    _nodeMap[result].obstacle = obstacle;
+                    _nodeMap[result].SetObstacle(obstacle);
                 }
 
-                foreach(Vector3 node in EnvironmentUtil.GetNodesInBounds(obstacle.GetBounds()))
-                {
-                    obstacle.AddCoverDecal(node);
-                }
+                //foreach(Vector3 node in EnvironmentUtil.GetNodesInBounds(obstacle.GetBounds()))
+                //{
+                //    obstacle.AddCoverDecal(node);
+                //}
             }
             else
             {
@@ -277,10 +283,10 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
 
-        foreach (EnvironmentObstacle obstacle in GetObstacles())
-        {
-            obstacle.ToggleDecal(false);
-        }
+        //foreach (EnvironmentObstacle obstacle in GetObstacles())
+        //{
+        //    obstacle.ToggleDecal(false);
+        //}
 
         //find the distance between the character and every walkable node in the grid graph (yikes)
         foreach (GraphNode graphNode in gridGraph.GetNodesInRegion(searchBounds))
@@ -327,13 +333,13 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     {
                         _inputData.RadiusMap.Add(nodePosition, cost);
 
-                        foreach (EnvironmentObstacle obstacle in GetObstacles())
-                        {
-                            if(obstacle.IsNeighborOf(nodePosition))
-                            {
-                                obstacle.ToggleDecal(true);
-                            }
-                        }
+                        //foreach (EnvironmentObstacle obstacle in GetObstacles())
+                        //{
+                        //    if(obstacle.IsNeighborOf(nodePosition))
+                        //    {
+                        //        obstacle.ToggleDecal(true);
+                        //    }
+                        //}
                     }
                 }
             }
@@ -428,9 +434,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         foreach(EnvironmentNode environmentNode in _nodeMap.Values)
         {
-            if(environmentNode.spawnPoint != null)
+            if(environmentNode.HasSpawnPoint())
             {
-                spawnPoints.Add(environmentNode.spawnPoint);
+                spawnPoints.Add(environmentNode.GetSpawnPoint());
             }
         }
 
@@ -443,9 +449,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         foreach (EnvironmentNode environmentNode in _nodeMap.Values)
         {
-            if (environmentNode.obstacle != null)
+            if (environmentNode.HasObstacle())
             {
-                obstacles.Add(environmentNode.obstacle);
+                obstacles.Add(environmentNode.GetObstacle());
             }
         }
 
@@ -458,7 +464,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         {
             EnvironmentNode environmentNode = _nodeMap[position];
 
-            return environmentNode.obstacle;
+            return environmentNode.GetObstacle();
         }
 
         return null;
