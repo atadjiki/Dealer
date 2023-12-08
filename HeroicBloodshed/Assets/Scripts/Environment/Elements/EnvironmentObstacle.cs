@@ -17,7 +17,7 @@ public class EnvironmentObstacle : MonoBehaviour
 
     private BoxCollider _collider;
 
-    private List<EnvironmentCoverDecal> _coverDecals;
+    private Dictionary<Vector3, EnvironmentCoverDecal> _coverDecals;
 
     private List<Vector3> _neighbors;
 
@@ -25,7 +25,7 @@ public class EnvironmentObstacle : MonoBehaviour
     {
         _collider = GetComponent<BoxCollider>();
 
-        _coverDecals = new List<EnvironmentCoverDecal>();
+        _coverDecals = new Dictionary<Vector3, EnvironmentCoverDecal>();
     }
 
     public void Setup()
@@ -48,17 +48,9 @@ public class EnvironmentObstacle : MonoBehaviour
         StartCoroutine(Coroutine_CreateCoverDecal(position));
     }
 
-    public void UpdateMovementRangeType(MovementRangeType movementRangeType)
-    {
-        foreach (EnvironmentCoverDecal decal in _coverDecals)
-        {
-            decal.UpdateMovementRangeType(movementRangeType);
-        }
-    }
-
     public void ToggleDecal(bool flag)
     {
-        foreach(EnvironmentCoverDecal decal in _coverDecals)
+        foreach(EnvironmentCoverDecal decal in _coverDecals.Values)
         {
             decal.ToggleVisibility(flag);
         }
@@ -80,7 +72,7 @@ public class EnvironmentObstacle : MonoBehaviour
 
         coverDecal.Setup(ObstacleType);
 
-        _coverDecals.Add(coverDecal);
+        _coverDecals.Add(position, coverDecal);
 
         PerformCoverDecalOverlapCheck();
 
@@ -93,7 +85,7 @@ public class EnvironmentObstacle : MonoBehaviour
         {
             Debug.Log("Decals on obstacle: " + this.gameObject.name + " " + _coverDecals.Count);
 
-            foreach (EnvironmentCoverDecal coverDecal in _coverDecals)
+            foreach (EnvironmentCoverDecal coverDecal in _coverDecals.Values)
             {
                 foreach(Transform childTransform in coverDecal.GetChildTransforms())
                 {
@@ -121,5 +113,10 @@ public class EnvironmentObstacle : MonoBehaviour
     public List<Vector3> GetNeighbors()
     {
         return _neighbors;
+    }
+
+    public bool IsNeighborOf(Vector3 position)
+    {
+        return _neighbors.Contains(position);
     }
 }

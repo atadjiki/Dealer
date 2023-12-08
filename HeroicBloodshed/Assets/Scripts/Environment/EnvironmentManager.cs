@@ -257,6 +257,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
 
+        foreach (EnvironmentObstacle obstacle in _obstacles)
+        {
+            obstacle.ToggleDecal(false);
+        }
+
         //find the distance between the character and every walkable node in the grid graph (yikes)
         foreach (GraphNode graphNode in gridGraph.GetNodesInRegion(searchBounds))
         {
@@ -301,14 +306,14 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     if (!_inputData.RadiusMap.ContainsKey(nodePosition))
                     {
                         _inputData.RadiusMap.Add(nodePosition, cost);
-                    }
 
-                    foreach (EnvironmentObstacle obstacle in _obstacles)
-                    {
-                        bool flag = obstacle.GetNeighbors().Contains(nodePosition);
-
-                        obstacle.UpdateMovementRangeType(rangeType);
-                        obstacle.ToggleDecal(flag);
+                        foreach (EnvironmentObstacle obstacle in _obstacles)
+                        {
+                            if(obstacle.IsNeighborOf(nodePosition))
+                            {
+                                obstacle.ToggleDecal(true);
+                            }
+                        }
                     }
                 }
             }

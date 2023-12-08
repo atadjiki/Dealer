@@ -19,13 +19,6 @@ public class EnvironmentCoverDecal : MonoBehaviour
         UpdateColor(Color.white);
     }
 
-    public void UpdateMovementRangeType(MovementRangeType rangeType)
-    {
-        Color color = GetColor(rangeType);
-
-        UpdateColor(color);
-    }
-
     private void UpdateColor(Color color)
     {
         if (_obstacleType == EnvironmentObstacleType.HalfCover)
@@ -61,9 +54,9 @@ public class EnvironmentCoverDecal : MonoBehaviour
     {
         foreach (MeshRenderer renderer in parentObject.GetComponentsInChildren<MeshRenderer>())
         {
-            if (renderer.sharedMaterial != null)
+            if (renderer.material != null)
             {
-                renderer.sharedMaterial.color = color;
+                renderer.material.color = color;
             }
         }
     }
