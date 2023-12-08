@@ -1107,11 +1107,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.4210687
+      value: 5.8352823
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.071068
+      value: 8.485282
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1148,6 +1148,22 @@ PrefabInstance:
     - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: EnvironmentCameraSettings.ZoomSpeed
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.MaxDistance
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.MinDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.RotationStep
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.DefaultDistance
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: EnvironmentCameraSettings.ScreenEdgeDelta
@@ -1561,7 +1577,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 10
+  m_CameraDistance: 12
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -1576,8 +1592,8 @@ MonoBehaviour:
   m_GroupFramingSize: 0.8
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 8
-  m_MaximumDistance: 24
+  m_MinimumDistance: 4
+  m_MaximumDistance: 12
   m_MinimumFOV: 3
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1

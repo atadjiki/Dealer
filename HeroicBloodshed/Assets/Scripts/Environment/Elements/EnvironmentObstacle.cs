@@ -83,7 +83,7 @@ public class EnvironmentObstacle : MonoBehaviour
     {
         if(_coverDecals.Count > 1)
         {
-            Debug.Log("Decals on obstacle: " + this.gameObject.name + " " + _coverDecals.Count);
+         //   Debug.Log("Decals on obstacle: " + this.gameObject.name + " " + _coverDecals.Count);
 
             foreach (EnvironmentCoverDecal coverDecal in _coverDecals.Values)
             {
@@ -91,12 +91,10 @@ public class EnvironmentObstacle : MonoBehaviour
                 {
                     if(_collider.bounds.Contains(childTransform.position))
                     {
-                        Debug.Log("overlap found");
                         childTransform.gameObject.SetActive(false);
                     }
                     else if(!EnvironmentManager.Instance.IsPositionFree(childTransform.position))
                     {
-                        Debug.Log("tile is not walkable");
                         childTransform.gameObject.SetActive(false);
                     }
                 }

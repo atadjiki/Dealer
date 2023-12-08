@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static Constants;
 
-public class EnvironmentTile : MonoBehaviour
+public class EnvironmentRadiusTile : MonoBehaviour
 {
     [Header("Meshes")]
     [SerializeField] private GameObject Mesh;

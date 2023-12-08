@@ -16,9 +16,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private List<EnvironmentInputHandler> _inputHandlers;
 
-    private List<EnvironmentSpawnPoint> _spawnPoints;
-
-    private List<EnvironmentObstacle> _obstacles;
+    private Dictionary<Vector3, EnvironmentNode> _nodeMap;
 
     private EnvironmentInputData _inputData;
 
@@ -73,23 +71,41 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         AstarPath.active.Scan(gridGraph);
 
         yield return new WaitWhile(() => AstarPath.active.isScanning);
+
+        _nodeMap = new Dictionary<Vector3, EnvironmentNode>();
+
+        gridGraph.GetNodes((graphNode =>
+        {
+            if(graphNode.Walkable)
+            {
+                Vector3 position = (Vector3)graphNode.position;
+                EnvironmentNode environmentNode = new EnvironmentNode();
+
+                environmentNode.position = position;
+                environmentNode.neighbors = EnvironmentUtil.GetNeighboringNodes(position);
+
+                _nodeMap.Add((Vector3)graphNode.position, environmentNode);
+            }
+        }));
     }
 
     private IEnumerator Coroutine_GatherEnvironmentObjects()
     {
         Debug.Log("Gathering Environment Objects...");
 
-        _spawnPoints = new List<EnvironmentSpawnPoint>();
-        _obstacles = new List<EnvironmentObstacle>();
-
         foreach(EnvironmentSpawnPoint spawnPoint in GetComponentsInChildren<EnvironmentSpawnPoint>())
         {
             Vector3 position = spawnPoint.transform.position;
 
             Vector3 result;
-            if(EnvironmentUtil.GetClosestNodeToPosition(position, out result))
+            if(EnvironmentUtil.GetClosestNodeInArea(position, new Vector3(2,2,2), out result))
             {
-                _spawnPoints.Add(spawnPoint);
+                Debug.Log("Spawn Point gathered at " + result.ToString());
+
+                if (_nodeMap.ContainsKey(result))
+                {
+                    _nodeMap[result].spawnPoint = spawnPoint;
+                }
             }
             else
             {
@@ -107,7 +123,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             {
                 obstacle.Setup();
 
-                _obstacles.Add(obstacle);
+                if(_nodeMap.ContainsKey(result))
+                {
+                    Debug.Log("Obstacle gathered at " + result.ToString());
+                    _nodeMap[result].obstacle = obstacle;
+                }
 
                 foreach(Vector3 node in EnvironmentUtil.GetNodesInBounds(obstacle.GetBounds()))
                 {
@@ -257,7 +277,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
 
-        foreach (EnvironmentObstacle obstacle in _obstacles)
+        foreach (EnvironmentObstacle obstacle in GetObstacles())
         {
             obstacle.ToggleDecal(false);
         }
@@ -307,7 +327,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     {
                         _inputData.RadiusMap.Add(nodePosition, cost);
 
-                        foreach (EnvironmentObstacle obstacle in _obstacles)
+                        foreach (EnvironmentObstacle obstacle in GetObstacles())
                         {
                             if(obstacle.IsNeighborOf(nodePosition))
                             {
@@ -357,7 +377,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
-        foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
+        foreach (EnvironmentSpawnPoint spawnPoint in GetSpawnPoints())
         {
             if (EnvironmentUtil.GetClosestNodeInArea(spawnPoint.transform.position, new Vector3(1f,1f, 1f), out location))
             {
@@ -383,7 +403,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         Vector3 result;
         if(EnvironmentUtil.GetClosestNodeToPosition(worldLocation, out result ))
         {
-            foreach (EnvironmentObstacle obstacle in _obstacles)
+            foreach (EnvironmentObstacle obstacle in GetObstacles())
             {
                 if (obstacle.ContainsPoint(result))
                 {
@@ -404,22 +424,41 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     public List<EnvironmentSpawnPoint> GetSpawnPoints()
     {
-        return _spawnPoints;
+        List<EnvironmentSpawnPoint> spawnPoints = new List<EnvironmentSpawnPoint>();
+
+        foreach(EnvironmentNode environmentNode in _nodeMap.Values)
+        {
+            if(environmentNode.spawnPoint != null)
+            {
+                spawnPoints.Add(environmentNode.spawnPoint);
+            }
+        }
+
+        return spawnPoints;
     }
 
     public List<EnvironmentObstacle> GetObstacles()
     {
-        return _obstacles;
+        List<EnvironmentObstacle> obstacles = new List<EnvironmentObstacle>();
+
+        foreach (EnvironmentNode environmentNode in _nodeMap.Values)
+        {
+            if (environmentNode.obstacle != null)
+            {
+                obstacles.Add(environmentNode.obstacle);
+            }
+        }
+
+        return obstacles;
     }
 
     public EnvironmentObstacle GetObstacleAt(Vector3 position)
     {
-        foreach(EnvironmentObstacle obstacle in _obstacles)
+        if(_nodeMap.ContainsKey(position))
         {
-            if(obstacle.ContainsPoint(position))
-            {
-                return obstacle;
-            }
+            EnvironmentNode environmentNode = _nodeMap[position];
+
+            return environmentNode.obstacle;
         }
 
         return null;

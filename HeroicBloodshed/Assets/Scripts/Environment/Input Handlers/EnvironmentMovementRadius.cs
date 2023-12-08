@@ -66,11 +66,11 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     {
         GameObject tilePrefab = Instantiate(Prefab_Tile, this.transform);
 
-        EnvironmentTile environmentTile = tilePrefab.GetComponent<EnvironmentTile>();
+        EnvironmentRadiusTile radiusTile = tilePrefab.GetComponent<EnvironmentRadiusTile>();
 
         tilePrefab.transform.position = position;
 
-        environmentTile.SetState(tileState);
+        radiusTile.SetState(tileState);
 
         _tiles.Add(tilePrefab);
 
