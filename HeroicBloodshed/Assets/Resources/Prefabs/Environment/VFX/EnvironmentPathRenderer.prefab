@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5537757092171474921}
   - component: {fileID: 800609170224458543}
   - component: {fileID: 8923046572602923980}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: EnvironmentPathRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,15 +95,6 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: -0.0008136745
-        outSlope: -0.0008136745
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
         time: 0.20347278
         value: 0.9791666
         inSlope: -0.002608388
@@ -121,15 +112,6 @@ LineRenderer:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -163,14 +145,14 @@ LineRenderer:
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 1
+    numCapVertices: 1
     alignment: 0
-    textureMode: 2
+    textureMode: 3
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 0
