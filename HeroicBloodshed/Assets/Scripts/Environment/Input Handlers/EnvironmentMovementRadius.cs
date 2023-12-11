@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 using UnityEngine;
 using static Constants;
 
@@ -9,7 +8,9 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
     [SerializeField] private GameObject Prefab_Tile;
 
-    private List<GameObject> _tiles;
+    [SerializeField] private GameObject RadiusObject;
+
+    private int _tilesLoaded;
 
     public override void Activate()
     {
@@ -21,18 +22,6 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     public override void Deactivate()
     {
         base.Deactivate();
-
-        if(_tiles != null)
-        {
-            foreach (GameObject tileObject in _tiles)
-            {
-                GameObject.Destroy(tileObject);
-            }
-
-            _tiles.Clear();
-
-            _tiles = null;
-        }
     }
 
     private IEnumerator Coroutine_GenerateRadiusTiles()
@@ -43,36 +32,57 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
         {
             CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
-            _tiles = new List<GameObject>();
+            _tilesLoaded = 0;
+            int tileCount = inputData.RadiusMap.Count;
+
+            float startTime = Time.time;
 
             foreach (KeyValuePair<Vector3, int> pair in inputData.RadiusMap)
             {
-                EnvironmentTileState tileState = EnvironmentTileState.Full;
-
-                if (pair.Value <= currentCharacter.GetMovementRange())
-                {
-
-                    tileState = EnvironmentTileState.Half;
-                }
-
-                StartCoroutine(Coroutine_GenerateTile(pair.Key, tileState));
+                StartCoroutine(Coroutine_GenerateTile(pair.Key));
             }
+
+            yield return new WaitWhile(() => _tilesLoaded < (tileCount-1));
+
+            MeshFilter[] meshFilters = RadiusObject.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+            int i = 0;
+            while (i < meshFilters.Length)
+            {
+                combine[i].mesh = meshFilters[i].mesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.transform.gameObject.SetActive(false);
+
+                i++;
+            }
+
+            Mesh mesh = new Mesh();
+            mesh.CombineMeshes(combine, true, true);
+            mesh.Optimize();
+            UpdateMesh(mesh);
+
+            Debug.Log("Combined " + i + " meshes to create radius in " + (Time.time-startTime) + " seconds");
 
             yield return null;
         }
     }
 
-    private IEnumerator Coroutine_GenerateTile(Vector3 position, EnvironmentTileState tileState)
+    private void UpdateMesh(Mesh mesh)
     {
-        GameObject tilePrefab = Instantiate(Prefab_Tile, this.transform);
+        MeshFilter meshFilter = RadiusObject.GetComponent<MeshFilter>();
+        meshFilter.mesh = mesh;
 
-        EnvironmentRadiusTile radiusTile = tilePrefab.GetComponent<EnvironmentRadiusTile>();
+        RadiusObject.SetActive(true);
+    }
+
+    private IEnumerator Coroutine_GenerateTile(Vector3 position)
+    {
+        GameObject tilePrefab = Instantiate(Prefab_Tile, RadiusObject.transform);
 
         tilePrefab.transform.position = position;
 
-        radiusTile.SetState(tileState);
-
-        _tiles.Add(tilePrefab);
+        _tilesLoaded++;
 
         yield return null;
     }

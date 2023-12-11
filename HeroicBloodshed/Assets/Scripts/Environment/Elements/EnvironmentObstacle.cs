@@ -1,11 +1,5 @@
 using EPOOutline;
-using Pathfinding;
-using Pathfinding.RVO;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using static Constants;
 
 [RequireComponent(typeof(BoxCollider))]

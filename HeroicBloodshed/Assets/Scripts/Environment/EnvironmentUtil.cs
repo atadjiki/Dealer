@@ -48,6 +48,13 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
+    public static List<GraphNode> GetGraphNodesInBounds(Bounds bounds)
+    {
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        return gridGraph.GetNodesInRegion(bounds);
+    }
+
     public static List<GraphNode> GetNeighboringGraphNodesInBounds(Bounds bounds)
     {
         List<GraphNode> neighbors = new List<GraphNode>();
@@ -96,13 +103,6 @@ public class EnvironmentUtil : MonoBehaviour
             result = null;
             return false;
         }
-    }
-
-    public static List<GraphNode> GetGraphNodesInBounds(Bounds bounds)
-    {
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        return gridGraph.GetNodesInRegion(bounds);
     }
 
     public static NNConstraint BuildConstraint()

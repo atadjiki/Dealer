@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-using System;
+
 using static Constants;
-using UnityEngine.EventSystems;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
@@ -144,7 +143,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         if (EnvironmentUtil.CheckIsMouseBlocked()) { yield break; }
 
         //shoot a ray from the camera to the ground
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         foreach(RaycastHit hit in Physics.RaycastAll(ray, 100, LayerMask.GetMask("EnvironmentGround")))
@@ -246,11 +244,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
 
-        //foreach (EnvironmentObstacle obstacle in GetObstacles())
-        //{
-        //    obstacle.ToggleDecal(false);
-        //}
-
         //find the distance between the character and every walkable node in the grid graph (yikes)
         foreach (GraphNode graphNode in gridGraph.GetNodesInRegion(searchBounds))
         {
@@ -295,14 +288,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     if (!_inputData.RadiusMap.ContainsKey(nodePosition))
                     {
                         _inputData.RadiusMap.Add(nodePosition, cost);
-
-                        //foreach (EnvironmentObstacle obstacle in GetObstacles())
-                        //{
-                        //    if(obstacle.IsNeighborOf(nodePosition))
-                        //    {
-                        //        obstacle.ToggleDecal(true);
-                        //    }
-                        //}
                     }
                 }
             }
@@ -342,29 +327,33 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     }
 
     //Helpers/interface 
-    public bool FindSpawnLocationForCharacter(CharacterComponent character, out GraphNode graphNode, out Quaternion rotation)
+    public bool FindSpawnLocationForCharacter(CharacterComponent character)
     {
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
         foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
         {
+            GraphNode graphNode;
             if (EnvironmentUtil.GetClosestGraphNodeInArea(spawnPoint.transform.position, new Vector3(1f,1f, 1f), out graphNode))
             {
                 if (spawnPoint.GetTeam() == character.GetTeam())
                 {
-                    rotation = spawnPoint.transform.rotation;
+                    CharacterNavigator navigator = character.GetNavigator();
+
+                    navigator.TeleportTo((Vector3)graphNode.position);
+                    navigator.Rotate(spawnPoint.transform.rotation);
 
                     return true;
                 }
             }
             else
             {
-                Debug.Log("Couldnt find location to placecharacter");
+                Debug.Log("Couldnt find location to place character");
             }
         }
 
-        graphNode = null;
-        rotation = Quaternion.identity;
+        Debug.Log("Couldnt find location to place character");
+
         return false;
     }
 
