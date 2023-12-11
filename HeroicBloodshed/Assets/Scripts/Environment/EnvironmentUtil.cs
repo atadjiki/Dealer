@@ -7,8 +7,7 @@ using static Constants;
 
 public class EnvironmentUtil : MonoBehaviour
 {
-
-    public static bool GetClosestNodeInArea(Vector3 origin, Vector3 size, out Vector3 result)
+    public static bool GetClosestGraphNodeInArea(Vector3 origin, Vector3 size, out GraphNode result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
@@ -16,9 +15,9 @@ public class EnvironmentUtil : MonoBehaviour
 
         Dictionary<float, GraphNode> NodesInProximity = new Dictionary<float, GraphNode>();
 
-        foreach(GraphNode node in gridGraph.GetNodesInRegion(bounds))
+        foreach (GraphNode node in gridGraph.GetNodesInRegion(bounds))
         {
-            if(node.Walkable)
+            if (node.Walkable)
             {
                 float distance = Vector3.Distance(origin, (Vector3)node.position);
 
@@ -29,33 +28,33 @@ public class EnvironmentUtil : MonoBehaviour
             }
         }
 
-        if(NodesInProximity.Count > 0)
+        if (NodesInProximity.Count > 0)
         {
             Debug.Log("Found " + NodesInProximity.Count + " nodes in area");
 
             KeyValuePair<float, GraphNode> closestNode = new KeyValuePair<float, GraphNode>();
 
-            foreach(KeyValuePair<float, GraphNode> pair in NodesInProximity)
+            foreach (KeyValuePair<float, GraphNode> pair in NodesInProximity)
             {
                 closestNode = pair;
                 break;
             }
 
-            result = (Vector3)closestNode.Value.position;
+            result = closestNode.Value;
             return true;
         }
 
-        result = Vector3.zero;
+        result = null;
         return false;
     }
 
-    public static List<Vector3> GetNeighboringNodes(Bounds bounds)
+    public static List<GraphNode> GetNeighboringGraphNodesInBounds(Bounds bounds)
     {
-        List<Vector3> neighbors = new List<Vector3>();
+        List<GraphNode> neighbors = new List<GraphNode>();
 
-        foreach(Vector3 nodePosition in GetNodesInBounds(bounds))
+        foreach(GraphNode graphNode in GetGraphNodesInBounds(bounds))
         {
-            foreach(Vector3 neighbor in GetNeighboringNodes(nodePosition))
+            foreach(GraphNode neighbor in GetNeighboringGraphNodes(graphNode))
             {
                 if(!neighbors.Contains(neighbor))
                 {
@@ -67,26 +66,21 @@ public class EnvironmentUtil : MonoBehaviour
         return neighbors;
     }
 
-    public static List<Vector3> GetNeighboringNodes(Vector3 position)
+    public static List<GraphNode> GetNeighboringGraphNodes(GraphNode graphNode)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
-        NNInfoInternal nnInfo = gridGraph.GetNearest(position, BuildConstraint());
+        List<GraphNode> neighbors = new List<GraphNode>();
 
-        List<Vector3> connections = new List<Vector3>();
-
-        if (nnInfo.node != null)
+        graphNode.GetConnections(otherNode =>
         {
-            nnInfo.node.GetConnections(otherNode =>
-            {
-                connections.Add((Vector3) otherNode.position);
-            });
-        }
+            neighbors.Add(otherNode);
+        });
 
-        return connections;
+        return neighbors;
     }
 
-    public static bool GetClosestNodeToPosition(Vector3 position, out Vector3 result)
+    public static bool GetClosestGraphNodeToPosition(Vector3 position, out GraphNode result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
@@ -94,28 +88,14 @@ public class EnvironmentUtil : MonoBehaviour
 
         if (nnInfo.node != null)
         {
-            result = (Vector3)nnInfo.node.position;
+            result = nnInfo.node;
             return true;
         }
         else
         {
-            result = Vector3.zero;
+            result = null;
             return false;
         }
-    }
-
-    public static List<Vector3> GetNodesInBounds(Bounds bounds)
-    {
-        List<Vector3> nodes = new List<Vector3>();
-
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        foreach(GraphNode graphNode in gridGraph.GetNodesInRegion(bounds))
-        {
-            nodes.Add((Vector3)graphNode.position);
-        }
-
-        return nodes;
     }
 
     public static List<GraphNode> GetGraphNodesInBounds(Bounds bounds)

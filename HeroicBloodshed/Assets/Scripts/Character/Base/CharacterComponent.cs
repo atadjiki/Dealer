@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
+using Pathfinding;
 
 public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 {
@@ -143,11 +144,11 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _eventReceivers.Add(_animator);
 
         //place the character at an appropriate spawn location
-        Vector3 spawnLocation;
+        GraphNode graphNode;
         Quaternion spawnRotation;
-        if(EnvironmentManager.Instance.FindSpawnLocationForCharacter(this, out spawnLocation, out spawnRotation))
+        if(EnvironmentManager.Instance.FindSpawnLocationForCharacter(this, out graphNode, out spawnRotation))
         {
-            _navigator.TeleportTo(spawnLocation);
+            _navigator.TeleportTo((Vector3)graphNode.position);
             _navigator.Rotate(spawnRotation);
         }
 
