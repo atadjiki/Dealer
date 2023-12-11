@@ -5,23 +5,23 @@ using static Constants;
 
 public static partial class Constants
 {
-    public static Color Col_Yellow = new Color(230, 145, 69);
-    public static Color Col_Red = new Color(223,22,57);
-    public static Color Col_Red_Dark = new Color(138,38,58);
-    public static Color Col_Blue = new Color(181,323,240);
+    public static Color Col_Blue_Light = new Color(0.45098f,  0.83529f,  0.83529f);
 
+    public static Color Col_Yellow_Light = new Color(0.98431f,  0.84706f,  0.47843f);
+
+    public static Color Col_Grey= new Color(0.53333f,  0.53333f,  0.53333f);
 
     public static Color GetColor(MovementRangeType rangeType)
     {
-        switch(rangeType)
+        switch (rangeType)
         {
             case MovementRangeType.Full:
-                return Col_Yellow;
+                return Col_Yellow_Light;
             case MovementRangeType.Half:
-                return Col_Blue;
+                return Col_Blue_Light;
             default:
-                return Color.grey;
+                return Col_Grey;
         }
     }
-    
+
 }

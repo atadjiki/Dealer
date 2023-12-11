@@ -127,7 +127,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     Debug.Log("Obstacle " + obstacle.name + " gathered at " + position.ToString());             
                     _nodeMap[position].SetObstacle(obstacle);
                     graphNode.Walkable = false;
-                    graphNode.Penalty = 1000000000;
                 }
                 else
                 {

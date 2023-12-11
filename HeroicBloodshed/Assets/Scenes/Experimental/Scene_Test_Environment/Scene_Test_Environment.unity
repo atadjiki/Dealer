@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 380760666}
-  m_IndirectSpecularColor: {r: 0.44300318, g: 0.49219626, b: 0.57192606, a: 1}
+  m_IndirectSpecularColor: {r: 0.43699324, g: 0.48467886, b: 0.5649383, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1207,11 +1207,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.0068548
+      value: 5.8352823
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.656854
+      value: 8.485282
       objectReference: {fileID: 0}
     - target: {fileID: 3046150577179141327, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_CameraDistance
@@ -2310,6 +2310,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6392712134276597056, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
       propertyPath: outlineParameters.fillPass.serializedProperties.Array.data[0].Property.ColorValue.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_Full.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_Full.b
+      value: 0.47843137
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_Full.g
+      value: 0.84705883
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_Full.r
+      value: 0.9843137
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_Half.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591512982850494552, guid: f0235c290e5ea4c2782bc1593484e785, type: 3}
+      propertyPath: Color_None.a
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6856,10 +6880,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnvironmentMovementRadius
       objectReference: {fileID: 0}
-    - target: {fileID: 5018356393212954809, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
-      propertyPath: Prefab_Tile
-      value: 
-      objectReference: {fileID: 4547938855032597165, guid: bd894d0a27c2f47da9f01da25790c9fe, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8002,6 +8022,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 368340549482638127}
     m_Modifications:
+    - target: {fileID: 800609170224458543, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
+      propertyPath: Color_Full.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 800609170224458543, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
+      propertyPath: Color_Full.b
+      value: 0.47843137
+      objectReference: {fileID: 0}
+    - target: {fileID: 800609170224458543, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
+      propertyPath: Color_Full.g
+      value: 0.84705883
+      objectReference: {fileID: 0}
+    - target: {fileID: 800609170224458543, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
+      propertyPath: Color_Full.r
+      value: 0.9843137
+      objectReference: {fileID: 0}
+    - target: {fileID: 800609170224458543, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
+      propertyPath: Color_Half.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5537757092171474921, guid: 38eada657e5964501bee9cbcc466bb89, type: 3}
       propertyPath: m_RootOrder
       value: 0

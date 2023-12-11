@@ -37,6 +37,8 @@ public class EnvironmentRadiusTile : MonoBehaviour
                 break;
             case EnvironmentTileState.None:
                 Mesh.SetActive(false);
+                _outline.OutlineParameters.Color = GetColor(MovementRangeType.None);
+                _outline.OutlineLayer = 0;
                 break;
         }
     }
