@@ -5,23 +5,48 @@ using static Constants;
 
 public static partial class Constants
 {
-    public static Color Col_Blue_Light = new Color(0.45098f,  0.83529f,  0.83529f);
+    public static Color Player_Default = new Color(0.44706f,  0.60000f,  0.66275f);
+    public static Color Enemy_Default  = new Color(0.68235f,  0.15294f,  0.17255f);
 
-    public static Color Col_Yellow_Light = new Color(0.98431f,  0.84706f,  0.47843f);
+    public static Color Movement_Half = new Color(0.45098f,  0.83529f,  0.83529f);
 
-    public static Color Col_Grey= new Color(0.53333f,  0.53333f,  0.53333f);
+    public static Color Movement_Full = new Color(0.98431f,  0.84706f,  0.47843f);
+
+    public static Color Movement_None = new Color(0.53333f,  0.53333f,  0.53333f);
 
     public static Color GetColor(MovementRangeType rangeType)
     {
         switch (rangeType)
         {
             case MovementRangeType.Full:
-                return Col_Yellow_Light;
+                return Movement_Full;
             case MovementRangeType.Half:
-                return Col_Blue_Light;
+                return Movement_Half;
             default:
-                return Col_Grey;
+                return Movement_None;
         }
+    }
+
+    public static Color GetColor(TeamID teamID, float opacity)
+    {
+        Color teamColor;
+
+        switch (teamID)
+        {
+            case TeamID.Player:
+                teamColor = Player_Default;
+                break;
+            case TeamID.Enemy:
+                teamColor = Enemy_Default;
+                break;
+            default:
+                teamColor = Color.clear;
+                break;
+        }
+
+        teamColor.a = opacity;
+
+        return teamColor;
     }
 
 }

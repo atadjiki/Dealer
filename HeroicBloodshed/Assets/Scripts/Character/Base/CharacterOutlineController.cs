@@ -13,9 +13,9 @@ public class CharacterOutlineController : MonoBehaviour, ICharacterEventReceiver
 
     public void Setup(CharacterDefinition definition, GameObject parentObject)
     {
-        Constants.TeamID team = Constants.GetTeamByID(definition.ID);
+        TeamID team = GetTeamByID(definition.ID);
 
-        Color teamColor = Constants.GetColorByTeam(team, 1.0f);
+        Color teamColor = GetColor(team, 1.0f);
 
         SetupOutline(teamColor);
         SetupHighlight(teamColor);

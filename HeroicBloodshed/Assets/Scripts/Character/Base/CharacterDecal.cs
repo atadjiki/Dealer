@@ -14,7 +14,7 @@ public class CharacterDecal : MonoBehaviour
 
     public void SetColor(TeamID team)
     {
-        Color teamColor = GetColorByTeam(team, 1.0f);
+        Color teamColor = GetColor(team, 1.0f);
         teamColor.a = 0.2f;
 
         foreach(SpriteRenderer renderer in _renderers)

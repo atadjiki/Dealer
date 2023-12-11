@@ -12,7 +12,7 @@ public class EncounterUITeamBanner : EncounterUIElement
 
     public override void Populate(EncounterModel model)
     {
-        Panel_Backing.color = GetColorByTeam(model.GetCurrentTeam(), 0.25f);
+        Panel_Backing.color = GetColor(model.GetCurrentTeam(), 0.25f);
         Text_Team.text = (model.GetCurrentTeam() + " turn").ToLower();
     }
 

@@ -32,7 +32,7 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
 
         Text_Name.text = GetDisplayString(_character.GetID());
 
-        Panel_Backing.color = GetColorByTeam(_character.GetTeam(), 0.3f);
+        Panel_Backing.color = GetColor(_character.GetTeam(), 0.3f);
         Panel_Backing.gameObject.SetActive(true);
 
         UpdateHealthBar();
