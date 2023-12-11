@@ -23,22 +23,30 @@ public class EnvironmentRadiusTile : MonoBehaviour
     {
         _state = previewState;
 
-        switch(_state)
+        Color color;
+
+        switch (_state)
         {
             case EnvironmentTileState.Full:
                 Mesh.SetActive(true);
-                _outline.OutlineParameters.Color = GetColor(MovementRangeType.Full);
-                _outline.OutlineLayer = 2;
+                color = GetColor(MovementRangeType.Full);
+                _outline.OutlineParameters.Color = color;
+                color.a = 0.25f;
+                _outline.OutlineParameters.FillPass.SetColor("_PublicColor", color);
                 break;
             case EnvironmentTileState.Half:
                 Mesh.SetActive(true);
-                _outline.OutlineParameters.Color = GetColor(MovementRangeType.Half);
-                _outline.OutlineLayer = 1;
+                color = GetColor(MovementRangeType.Half);
+                _outline.OutlineParameters.Color = color;
+                color.a = 0.25f;
+                _outline.OutlineParameters.FillPass.SetColor("_PublicColor", color);
                 break;
             case EnvironmentTileState.None:
                 Mesh.SetActive(false);
-                _outline.OutlineParameters.Color = GetColor(MovementRangeType.None);
-                _outline.OutlineLayer = 0;
+                color = GetColor(MovementRangeType.None);
+                _outline.OutlineParameters.Color = color;
+                color.a = 0.25f;
+                _outline.OutlineParameters.FillPass.SetColor("_PublicColor", color);
                 break;
         }
     }
