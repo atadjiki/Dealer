@@ -64,4 +64,14 @@ public class EnvironmentNode : MonoBehaviour
     {
         return character != null;
     }
+
+    public bool IsOccupied()
+    {
+        return HasCharacter() == true || HasObstacle() == true;
+    }
+
+    public bool IsFree()
+    {
+        return !IsOccupied();
+    }
 }

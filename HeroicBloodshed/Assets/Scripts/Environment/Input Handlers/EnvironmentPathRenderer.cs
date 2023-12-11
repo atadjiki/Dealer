@@ -29,21 +29,15 @@ public class EnvironmentPathRenderer : EnvironmentInputHandler
 
             if (InputData.RangeType != MovementRangeType.None)
             {
-                int length = InputData.PathToHighlightedNode.Count;
+                List<Vector3> positions = InputData.PathToHighlightedNode;
+
+                int length = positions.Count;
 
                 _pathRenderer.positionCount = length;
 
-                Vector3[] positions = InputData.PathToHighlightedNode.ToArray();
-
-                for(int i = 0; i < positions.Length; i++)
-                {
-                    positions[i].y = 0.5f;
-                }
-
-                _pathRenderer.SetPositions(positions);
+                _pathRenderer.SetPositions(positions.ToArray());
 
                 Color pathColor = GetColor(InputData.RangeType);
-                pathColor.a = 0.25f;
                 
                 _pathRenderer.material.color = pathColor;
 

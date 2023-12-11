@@ -57,10 +57,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         AstarPath.active.maxNearestNodeDistance = 12;
 
-        //dispose of the setup navmesh after tiles are built
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-        AstarPath.active.data.RemoveGraph(gridGraph);
-
         StartCoroutine(Coroutine_InputUpdate());
 
         Debug.Log("Environment Ready");
@@ -122,30 +118,25 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         foreach (EnvironmentObstacle obstacle in GetComponentsInChildren<EnvironmentObstacle>())
         {
-            Vector3 position = obstacle.transform.position;
-
-            Vector3 result;
-            if (EnvironmentUtil.GetClosestNodeToPosition(position, out result))
+            foreach(GraphNode graphNode in EnvironmentUtil.GetGraphNodesInBounds(obstacle.GetBounds()))
             {
-                obstacle.Setup();
+                Vector3 position = (Vector3)graphNode.position;
 
-                if(_nodeMap.ContainsKey(result))
+                if (_nodeMap.ContainsKey(position))
                 {
-                    Debug.Log("Obstacle gathered at " + result.ToString());
-                    _nodeMap[result].SetObstacle(obstacle);
+                    Debug.Log("Obstacle " + obstacle.name + " gathered at " + position.ToString());             
+                    _nodeMap[position].SetObstacle(obstacle);
+                    graphNode.Walkable = false;
+                    graphNode.Penalty = 1000000000;
                 }
-
-                //foreach(Vector3 node in EnvironmentUtil.GetNodesInBounds(obstacle.GetBounds()))
-                //{
-                //    obstacle.AddCoverDecal(node);
-                //}
-            }
-            else
-            {
-                Debug.Log("Failed to gather obstacle " + obstacle.name);
-                Destroy(obstacle.gameObject);
+                else
+                {
+                    Debug.LogWarning("Node Map doesnt contain this key ?");
+                }
             }
         }
+
+        yield return new WaitWhile(() => AstarPath.active.isScanning);
 
         yield return null;
     }
@@ -190,8 +181,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             //find the closest node to the mouse location
             if (EnvironmentUtil.GetClosestNodeToPosition(hit.point, out nodePosition))
             {
-                nodePosition.y = 0;
-
                 _inputData.NodePosition = nodePosition;
 
                 //if it's unoccupied, it's ok to highlight/path/click it
@@ -253,6 +242,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         ABPath path = ABPath.Construct(origin, destination);
 
+        path.heuristic = Heuristic.None;
+        path.nnConstraint = EnvironmentUtil.BuildConstraint();
+
         AstarPath.StartPath(path, true);
 
         yield return new WaitUntil(() => path.CompleteState == PathCompleteState.Complete);
@@ -267,8 +259,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 _inputData.PathCost += (int)path.GetTraversalCost(pathNode);
             }
         }
-
-        _inputData.PathToHighlightedNode.Add(destination);
     }
 
     private IEnumerator Coroutine_CalculateRadiusBounds()
@@ -311,7 +301,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             {
                 ABPath path = ABPath.Construct(origin, nodePosition);
 
-                path.heuristic = Heuristic.Euclidean;
+                path.heuristic = Heuristic.None;
                 path.nnConstraint = EnvironmentUtil.BuildConstraint();
 
                 AstarPath.StartPath(path, true);
@@ -390,6 +380,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 if (spawnPoint.GetTeam() == character.GetTeam())
                 {
                     rotation = spawnPoint.transform.rotation;
+
                     return true;
                 }
             }
@@ -407,19 +398,15 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     public bool IsPositionOccupied(Vector3 worldLocation)
     {
         Vector3 result;
-        if(EnvironmentUtil.GetClosestNodeToPosition(worldLocation, out result ))
+        if(EnvironmentUtil.GetClosestNodeToPosition(worldLocation, out result))
         {
-            foreach (EnvironmentObstacle obstacle in GetObstacles())
+            if (_nodeMap.ContainsKey(worldLocation))
             {
-                if (obstacle.ContainsPoint(result))
-                {
-                    return true;
-                }
+                EnvironmentNode environmentNode = _nodeMap[result];
+
+                return environmentNode.IsOccupied();
             }
-
-            //will need to track characters as well TODO
         }
-
         return false;
     }
 

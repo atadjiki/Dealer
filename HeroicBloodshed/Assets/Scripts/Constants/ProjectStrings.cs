@@ -5,6 +5,7 @@ using UnityEngine;
 public static partial class Constants
 {
     public static string LAYER_ENV_GROUND = "EnvironmentGround";
+    public static string LAYER_ENV_OBSTACLE = "EnvironmentObstacle";
 
     public static string GetDisplayString(CharacterEvent characterEvent)
     {
