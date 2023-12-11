@@ -4,11 +4,10 @@ using UnityEngine;
 using Pathfinding;
 
 using static Constants;
+using System;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
-    [SerializeField] private GameObject Prefab_EnvironmentNode;
-
     //singleton
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
@@ -234,7 +233,15 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private IEnumerator Coroutine_CalculateRadiusBounds()
     {
-        _inputData.RadiusMap = new Dictionary<Vector3, int>();
+        _inputData.RadiusMaps = new Dictionary<MovementRangeType, Dictionary<Vector3, int>>();
+
+        foreach (MovementRangeType rangeType in Enum.GetValues(typeof(MovementRangeType)))
+        {
+            if(rangeType != MovementRangeType.None)
+            {
+                _inputData.RadiusMaps.Add(rangeType, new Dictionary<Vector3, int>());
+            }
+        }
 
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
@@ -285,9 +292,9 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 MovementRangeType rangeType;
                 if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
                 {
-                    if (!_inputData.RadiusMap.ContainsKey(nodePosition))
+                    if (!_inputData.RadiusMaps[rangeType].ContainsKey(nodePosition) && rangeType == MovementRangeType.Half)
                     {
-                        _inputData.RadiusMap.Add(nodePosition, cost);
+                        _inputData.RadiusMaps[rangeType].Add(nodePosition, cost);
                     }
                 }
             }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 380760666}
-  m_IndirectSpecularColor: {r: 0.43699324, g: 0.48467886, b: 0.5649383, a: 1}
+  m_IndirectSpecularColor: {r: 0.43699384, g: 0.48467946, b: 0.5649398, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1163,7 +1163,7 @@ MonoBehaviour:
   renderingStrategy: 0
   renderingMode: 0
   outlineLayerMask: -1
-  primaryBufferSizeMode: 2
+  primaryBufferSizeMode: 0
   primaryRendererScale: 1
   primarySizeReference: 500
   blurShift: 1
@@ -1211,15 +1211,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.8352046
+      value: 4.9159017
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.485204
+      value: 7.565901
       objectReference: {fileID: 0}
     - target: {fileID: 3046150577179141327, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_CameraDistance
-      value: 11.99989
+      value: 10.6998
       objectReference: {fileID: 0}
     - target: {fileID: 3321274039668110141, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_Name
@@ -1279,11 +1279,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.8352046
+      value: 4.9159017
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.485204
+      value: 7.565901
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5634,7 +5634,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c52b098129f4fe496394f83af8eb28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab_EnvironmentNode: {fileID: 4547938855032597165, guid: 394015366d272408ab36d5094c1635aa, type: 3}
 --- !u!4 &1984864355037674408
 Transform:
   m_ObjectHideFlags: 0
@@ -6911,10 +6910,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 368340549482638127}
     m_Modifications:
-    - target: {fileID: 1447315823444381787, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: fd02e6d424e3242618328e6650b3bbf9, type: 2}
     - target: {fileID: 1713930472788218253, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -6962,14 +6957,6 @@ PrefabInstance:
     - target: {fileID: 2827662830615982059, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
       propertyPath: m_Name
       value: EnvironmentMovementRadius
-      objectReference: {fileID: 0}
-    - target: {fileID: 4186374067400208051, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 4186374067400208051, guid: 3279effdad4054fd8a53eaf2adcc6efc, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

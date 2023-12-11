@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +5,7 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
-    [SerializeField] private GameObject Prefab_Tile;
-
     [SerializeField] private GameObject RadiusObject;
-
-    private int _tilesLoaded;
 
     public override void Activate()
     {
@@ -28,62 +23,58 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     {
         EnvironmentInputData inputData = EnvironmentManager.Instance.GetInputData();
 
-        if(inputData.RadiusMap != null)
+        if(inputData.RadiusMaps[MovementRangeType.Half] != null)
         {
-            CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-            _tilesLoaded = 0;
-            int tileCount = inputData.RadiusMap.Count;
-
             float startTime = Time.time;
 
-            foreach (KeyValuePair<Vector3, int> pair in inputData.RadiusMap)
+            RadiusObject.SetActive(false);
+
+            CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+            List<MeshFilter> childFilters = new List<MeshFilter>();
+
+            //create a quad for each node in the radius map, and add the mesh filter to our list
+            foreach (KeyValuePair<Vector3, int> pair in inputData.RadiusMaps[MovementRangeType.Half])
             {
-                StartCoroutine(Coroutine_GenerateTile(pair.Key));
+                GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+
+                Destroy(quad.GetComponent<BoxCollider>());
+ 
+                quad.transform.position = RadiusObject.transform.InverseTransformPoint(pair.Key);
+                quad.transform.eulerAngles = new Vector3(90, 0, 0);
+                quad.transform.parent = RadiusObject.transform;
+
+                childFilters.Add(quad.GetComponent<MeshFilter>());
             }
 
-            yield return new WaitWhile(() => _tilesLoaded < (tileCount-1));
+            CombineInstance[] combine = new CombineInstance[childFilters.Count];
 
-            MeshFilter[] meshFilters = RadiusObject.GetComponentsInChildren<MeshFilter>();
-            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
+            //for each filter, add it to the combine instance
             int i = 0;
-            while (i < meshFilters.Length)
+            while (i < childFilters.Count)
             {
-                combine[i].mesh = meshFilters[i].mesh;
-                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-                meshFilters[i].gameObject.transform.gameObject.SetActive(false);
+                combine[i].mesh = childFilters[i].mesh;
+                combine[i].transform = childFilters[i].transform.localToWorldMatrix;
+
+                Destroy(childFilters[i].gameObject);
 
                 i++;
             }
 
+            //create our new mesh from the child meshes
             Mesh mesh = new Mesh();
-            mesh.CombineMeshes(combine, true, true);
+            mesh.CombineMeshes(combine, true);
             mesh.Optimize();
-            UpdateMesh(mesh);
+
+            //pass the new mesh to the parent mesh filter
+            MeshFilter meshFilter = RadiusObject.GetComponent<MeshFilter>();
+            meshFilter.mesh = mesh;
+
+            RadiusObject.SetActive(true);
 
             Debug.Log("Combined " + i + " meshes to create radius in " + (Time.time-startTime) + " seconds");
 
             yield return null;
         }
-    }
-
-    private void UpdateMesh(Mesh mesh)
-    {
-        MeshFilter meshFilter = RadiusObject.GetComponent<MeshFilter>();
-        meshFilter.mesh = mesh;
-
-        RadiusObject.SetActive(true);
-    }
-
-    private IEnumerator Coroutine_GenerateTile(Vector3 position)
-    {
-        GameObject tilePrefab = Instantiate(Prefab_Tile, RadiusObject.transform);
-
-        tilePrefab.transform.position = position;
-
-        _tilesLoaded++;
-
-        yield return null;
     }
 }

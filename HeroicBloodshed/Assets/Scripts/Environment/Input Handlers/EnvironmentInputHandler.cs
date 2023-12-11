@@ -10,7 +10,7 @@ public struct EnvironmentInputData
     public MovementRangeType RangeType;
     public int PathCost;
     public List<Vector3> PathToHighlightedNode;
-    public Dictionary<Vector3, int> RadiusMap;
+    public Dictionary<MovementRangeType, Dictionary<Vector3, int>> RadiusMaps;
 
     public static EnvironmentInputData Build()
     {
@@ -23,7 +23,7 @@ public struct EnvironmentInputData
 
             PathToHighlightedNode = new List<Vector3>(),
 
-            RadiusMap = new Dictionary<Vector3, int>(),
+            RadiusMaps = new Dictionary<MovementRangeType, Dictionary<Vector3, int>>()
         };
     }
 
