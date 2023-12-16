@@ -1,3 +1,4 @@
+using EPOOutline;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,12 +64,17 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
             //create our new mesh from the child meshes
             Mesh mesh = new Mesh();
-            mesh.CombineMeshes(combine, true);
-            mesh.Optimize();
-
+            mesh.CombineMeshes(combine, true, true, false);
+           // mesh.Optimize();
+            
             //pass the new mesh to the parent mesh filter
             MeshFilter meshFilter = RadiusObject.GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
+
+            Outlinable outlinable = RadiusObject.GetComponent<Outlinable>();
+
+            outlinable.OutlineParameters.Color = Color.green;
+            outlinable.TryAddTarget(new OutlineTarget(RadiusObject.GetComponent<MeshRenderer>()));
 
             RadiusObject.SetActive(true);
 
