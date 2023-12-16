@@ -153,8 +153,4 @@ public static partial class Constants
 
         return TeamID.None;
     }
-
-    public enum EnvironmentTileHighlightState { On, Off };
-
-    public enum EnvironmentTileState { Full, Half, None };
 }

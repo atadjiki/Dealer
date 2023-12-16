@@ -78,12 +78,13 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         foreach(EnvironmentSpawnPoint spawnPoint in GetComponentsInChildren<EnvironmentSpawnPoint>())
         {
+            float searchBounds = TILE_SIZE * 2;
             GraphNode graphNode;
-            if(EnvironmentUtil.GetClosestGraphNodeInArea(spawnPoint.transform.position, new Vector3(2, 2, 2), out graphNode))
+            if(EnvironmentUtil.GetClosestGraphNodeInArea(spawnPoint.transform.position, new Vector3(searchBounds, searchBounds, searchBounds), out graphNode))
             {
                 Vector3 position = spawnPoint.transform.position;
 
-                graphNode.Tag = 2;
+                EnvironmentUtil.PaintNodeAs(graphNode, EnvironmentNodeTagType.SpawnLocation);
 
                 _spawnPoints.Add(spawnPoint);
 
@@ -99,7 +100,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             {
                 Vector3 position = (Vector3)graphNode.position;
 
-                graphNode.Tag = 1;
+                EnvironmentUtil.PaintNodeAs(graphNode, EnvironmentNodeTagType.Obstacle);
 
                 _obstacles.Add(obstacle);
 
@@ -154,7 +155,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 _inputData.NodePosition = (Vector3) graphNode.position;
 
                 //if it's unoccupied, it's ok to highlight/path/click it
-                if (IsPositionFree(_inputData.NodePosition))
+                if (EnvironmentUtil.IsPositionFree(_inputData.NodePosition))
                 {
                     _inputData.OnValidTile = true;
 
@@ -270,7 +271,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             Vector3 nodePosition = (Vector3)graphNode.position;
 
             //check if there is an obstacle or character blocking this node
-            if (IsPositionFree(nodePosition))
+            if (EnvironmentUtil.IsPositionFree(nodePosition))
             {
                 ABPath path = ABPath.Construct(origin, nodePosition);
 
@@ -364,24 +365,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return false;
     }
 
-    public bool IsPositionOccupied(Vector3 worldLocation)
-    {
-        GraphNode graphNode;
-        if(EnvironmentUtil.GetClosestGraphNodeToPosition(worldLocation, out graphNode))
-        {
-            if (graphNode.Tag == 1 || graphNode.Tag == 2)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public bool IsPositionFree(Vector3 worldLocation)
-    {
-        return !IsPositionOccupied(worldLocation);
-    }
-
     private void ToggleInputHandlers(bool flag)
     {
         foreach(EnvironmentInputHandler inputHandler in _inputHandlers)
@@ -405,3 +388,4 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return _inputData;
     }
 }
+

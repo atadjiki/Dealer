@@ -185,4 +185,40 @@ public class EnvironmentUtil : MonoBehaviour
 
         return false;
     }
+
+    public static bool IsPositionOccupied(Vector3 worldLocation)
+    {
+        GraphNode graphNode;
+        if (GetClosestGraphNodeToPosition(worldLocation, out graphNode))
+        {
+            if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool IsPositionFree(Vector3 worldLocation)
+    {
+        return !IsPositionOccupied(worldLocation);
+    }
+
+    public static void PaintNodeAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
+    {
+        switch(tagType)
+        {
+            case EnvironmentNodeTagType.Obstacle:
+                graphNode.Tag = TAG_LAYER_OBSTACLE;
+                break;
+            case EnvironmentNodeTagType.Character:
+                graphNode.Tag = TAG_LAYER_CHARACTER;
+                break;
+            case EnvironmentNodeTagType.SpawnLocation:
+                graphNode.Tag = TAG_LAYER_SPAWNLOCATION;
+                break;
+            default:
+                break;
+        }
+    }
 }
