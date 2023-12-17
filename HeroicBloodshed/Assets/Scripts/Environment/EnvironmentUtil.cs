@@ -48,45 +48,6 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
-    public static List<GraphNode> GetGraphNodesInBounds(Bounds bounds)
-    {
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        return gridGraph.GetNodesInRegion(bounds);
-    }
-
-    public static List<GraphNode> GetNeighboringGraphNodesInBounds(Bounds bounds)
-    {
-        List<GraphNode> neighbors = new List<GraphNode>();
-
-        foreach(GraphNode graphNode in GetGraphNodesInBounds(bounds))
-        {
-            foreach(GraphNode neighbor in GetNeighboringGraphNodes(graphNode))
-            {
-                if(!neighbors.Contains(neighbor))
-                {
-                    neighbors.Add(neighbor);
-                }
-            }
-        }
-
-        return neighbors;
-    }
-
-    public static List<GraphNode> GetNeighboringGraphNodes(GraphNode graphNode)
-    {
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-
-        List<GraphNode> neighbors = new List<GraphNode>();
-
-        graphNode.GetConnections(otherNode =>
-        {
-            neighbors.Add(otherNode);
-        });
-
-        return neighbors;
-    }
-
     public static bool GetClosestGraphNodeToPosition(Vector3 position, out GraphNode result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -105,34 +66,39 @@ public class EnvironmentUtil : MonoBehaviour
         }
     }
 
-    public static NNConstraint BuildConstraint()
+    public static bool GetRandomUnoccupiedNode(out GraphNode result)
     {
-        NNConstraint constraint = new NNConstraint();
-        constraint.constrainWalkability = true;
-        constraint.constrainDistance = true;
-        constraint.walkable = true;
-        return constraint;
-    }
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
-    public static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
-    {
-        TeamID teamID = GetTeamByID(characterID);
+        List<GraphNode> candidates = new List<GraphNode>();
 
-        switch (teamID)
+        foreach(GraphNode graphNode in gridGraph.nodes)
         {
-            case TeamID.Player:
-                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-                playerCharacterComponent.SetID(characterID);
-                return playerCharacterComponent;
-            case TeamID.Enemy:
-                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.SetID(characterID);
-                return enemyCharacterComponent;
-            default:
-                return null;
+            if(!IsGraphNodeOccupied(graphNode))
+            {
+                candidates.Add(graphNode);
+            }
         }
+
+        if(candidates.Count > 0)
+        {
+            int random = Random.Range(0, candidates.Count);
+
+            result = candidates[random];
+            return true;
+        }
+
+        result = null;
+        return false;
     }
 
+    public static List<GraphNode> GetGraphNodesInBounds(Bounds bounds)
+    {
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        return gridGraph.GetNodesInRegion(bounds);
+    }
+ 
     public static bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
     {
         int threshold;
@@ -171,39 +137,6 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
-    public static bool CheckIsMouseBlocked()
-    {
-        if (Camera.main == null)
-        {
-            return true;
-        }
-
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static bool IsPositionOccupied(Vector3 worldLocation)
-    {
-        GraphNode graphNode;
-        if (GetClosestGraphNodeToPosition(worldLocation, out graphNode))
-        {
-            if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static bool IsPositionFree(Vector3 worldLocation)
-    {
-        return !IsPositionOccupied(worldLocation);
-    }
-
     public static void PaintNodeAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
     {
         switch(tagType)
@@ -221,4 +154,76 @@ public class EnvironmentUtil : MonoBehaviour
                 break;
         }
     }
+
+    public static NNConstraint BuildConstraint()
+    {
+        NNConstraint constraint = new NNConstraint();
+        constraint.constrainWalkability = true;
+        constraint.constrainDistance = true;
+        constraint.walkable = true;
+        return constraint;
+    }
+
+    public static bool IsPositionOccupied(Vector3 worldLocation)
+    {
+        GraphNode graphNode;
+        if (GetClosestGraphNodeToPosition(worldLocation, out graphNode))
+        {
+            return IsGraphNodeOccupied(graphNode);
+        }
+        return false;
+    }
+
+    public static bool IsGraphNodeOccupied(GraphNode graphNode)
+    {
+        if (graphNode.Walkable)
+        {
+            if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool IsPositionFree(Vector3 worldLocation)
+    {
+        return !IsPositionOccupied(worldLocation);
+    }
+
+    public static bool CheckIsMouseBlocked()
+    {
+        if (Camera.main == null)
+        {
+            return true;
+        }
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
+    {
+        TeamID teamID = GetTeamByID(characterID);
+
+        switch (teamID)
+        {
+            case TeamID.Player:
+                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
+                playerCharacterComponent.SetID(characterID);
+                return playerCharacterComponent;
+            case TeamID.Enemy:
+                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
+                enemyCharacterComponent.SetID(characterID);
+                return enemyCharacterComponent;
+            default:
+                return null;
+        }
+    }
+
 }

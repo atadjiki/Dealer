@@ -337,30 +337,42 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     //Helpers/interface 
     public bool FindSpawnLocationForCharacter(CharacterComponent character)
     {
+        CharacterNavigator navigator = character.GetNavigator();
+
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
         foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
         {
-            GraphNode graphNode;
-            if (EnvironmentUtil.GetClosestGraphNodeInArea(spawnPoint.transform.position, new Vector3(1f,1f, 1f), out graphNode))
+            if (spawnPoint.GetTeam() == character.GetTeam())
             {
-                if (spawnPoint.GetTeam() == character.GetTeam())
-                {
-                    CharacterNavigator navigator = character.GetNavigator();
+                Vector3 defaultPosition = spawnPoint.transform.position;
 
+                GraphNode graphNode;
+                if (EnvironmentUtil.GetClosestGraphNodeInArea(defaultPosition, GetTileScaleVector(), out graphNode))
+                {
                     navigator.TeleportTo((Vector3)graphNode.position);
                     navigator.Rotate(spawnPoint.transform.rotation);
-
                     return true;
                 }
-            }
-            else
-            {
-                Debug.Log("Couldnt find location to place character");
+                else
+                {
+                    Debug.Log("Couldnt find location to place character");
+                }
             }
         }
 
-        Debug.Log("Couldnt find location to place character");
+        GraphNode randomNNode;
+        if (EnvironmentUtil.GetRandomUnoccupiedNode(out randomNNode))
+        {
+            navigator.TeleportTo((Vector3)randomNNode.position);
+            navigator.Rotate(Quaternion.identity);
+            return true;
+        }
+        else
+        {
+            Debug.Log("Couldnt find location to place character");
+
+        }
 
         return false;
     }
