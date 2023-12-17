@@ -74,7 +74,7 @@ public class EnvironmentUtil : MonoBehaviour
 
         foreach(GraphNode graphNode in gridGraph.nodes)
         {
-            if(!IsGraphNodeOccupied(graphNode))
+            if(IsGraphNodeFree(graphNode) && graphNode.Walkable)
             {
                 candidates.Add(graphNode);
             }
@@ -174,14 +174,16 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
+    public static bool IsGraphNodeFree(GraphNode graphNode)
+    {
+        return !IsGraphNodeOccupied(graphNode);
+    }
+
     public static bool IsGraphNodeOccupied(GraphNode graphNode)
     {
-        if (graphNode.Walkable)
+        if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
         {
-            if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
-            {
-                return true;
-            }
+            return true;
         }
 
         return false;

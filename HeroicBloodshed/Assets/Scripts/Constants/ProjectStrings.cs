@@ -131,4 +131,17 @@ public static partial class Constants
                 return abilityID.ToString();
         }
     }
+
+    public static string GetDisplayString(MovementRangeType rangeType)
+    {
+        switch(rangeType)
+        {
+            case MovementRangeType.Full:
+                return "Full";
+            case MovementRangeType.Half:
+                return "Half";
+            default:
+                return rangeType.ToString();
+        }
+    }
 }

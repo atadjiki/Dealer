@@ -6,7 +6,7 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
-    [SerializeField] private GameObject RadiusObject;
+    [SerializeField] private Material TileMaterial;
 
     public override void Activate()
     {
@@ -18,70 +18,58 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     public override void Deactivate()
     {
         base.Deactivate();
+
+        for(int i = 0; i < this.transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
     }
 
     private IEnumerator Coroutine_GenerateRadiusTiles()
     {
         EnvironmentInputData inputData = EnvironmentManager.Instance.GetInputData();
 
-        if(inputData.RadiusMaps[MovementRangeType.Half] != null)
+        foreach(KeyValuePair<MovementRangeType, Dictionary<Vector3, int>> KeyPair in inputData.RadiusMaps)
         {
-            float startTime = Time.time;
+            MovementRangeType rangeType = KeyPair.Key;
+            Dictionary<Vector3, int> radiusMap = KeyPair.Value;
 
-            RadiusObject.SetActive(false);
+            Color rangeColor = GetColor(rangeType);
+            rangeColor.a = 0.2f;
 
-            CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-            List<MeshFilter> childFilters = new List<MeshFilter>();
-
-            //create a quad for each node in the radius map, and add the mesh filter to our list
-            foreach (KeyValuePair<Vector3, int> pair in inputData.RadiusMaps[MovementRangeType.Half])
+            if (radiusMap != null)
             {
-                GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                float startTime = Time.time;
 
-                Destroy(quad.GetComponent<BoxCollider>());
+                //create a child object to house the radius
+                GameObject RadiusObject = new GameObject(GetDisplayString(rangeType));
+                RadiusObject.transform.parent = this.transform;
 
-                quad.transform.position = RadiusObject.transform.InverseTransformPoint(pair.Key);
-                quad.transform.eulerAngles = new Vector3(90, 0, 0);
-                quad.transform.parent = RadiusObject.transform;
-                quad.transform.localScale = GetTileScaleVector();
+                int count = 0;
+                foreach (KeyValuePair<Vector3, int> pair in radiusMap)
+                {
+                    Vector3 nodePosition = pair.Key;
 
-                childFilters.Add(quad.GetComponent<MeshFilter>());
+                    GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+
+                    Destroy(quad.GetComponent<Collider>());
+                    quad.transform.parent = RadiusObject.transform;
+                    quad.transform.localPosition = RadiusObject.transform.InverseTransformPoint(nodePosition);
+                    quad.transform.localPosition += new Vector3(0, 0.15f, 0);
+                    quad.transform.localEulerAngles = new Vector3(90, 0, 0);
+                    quad.transform.localScale = GetTileScaleVector();
+
+                    MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
+                    meshRenderer.material = TileMaterial;
+                    meshRenderer.material.color = rangeColor;
+
+                    count++;
+                }
+
+                Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
+
+                yield return null;
             }
-
-            CombineInstance[] combine = new CombineInstance[childFilters.Count];
-
-            //for each filter, add it to the combine instance
-            int i = 0;
-            while (i < childFilters.Count)
-            {
-                combine[i].mesh = childFilters[i].mesh;
-                combine[i].transform = childFilters[i].transform.localToWorldMatrix;
-
-                Destroy(childFilters[i].gameObject);
-
-                i++;
-            }
-
-            //create our new mesh from the child meshes
-            Mesh mesh = new Mesh();
-            mesh.CombineMeshes(combine, true, true, false);
-           // mesh.Optimize();
-            
-            //pass the new mesh to the parent mesh filter
-            MeshFilter meshFilter = RadiusObject.GetComponent<MeshFilter>();
-            meshFilter.mesh = mesh;
-
-            Outlinable outlinable = RadiusObject.GetComponent<Outlinable>();
-
-            outlinable.OutlineParameters.Color = Color.green;
-            outlinable.TryAddTarget(new OutlineTarget(RadiusObject.GetComponent<MeshRenderer>()));
-
-            RadiusObject.SetActive(true);
-
-            Debug.Log("Combined " + i + " meshes to create radius in " + (Time.time-startTime) + " seconds");
-
-            yield return null;
         }
     }
 }

@@ -293,7 +293,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 MovementRangeType rangeType;
                 if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
                 {
-                    if (!_inputData.RadiusMaps[rangeType].ContainsKey(nodePosition) && rangeType == MovementRangeType.Half)
+                    if (!_inputData.RadiusMaps[rangeType].ContainsKey(nodePosition))
                     {
                         _inputData.RadiusMaps[rangeType].Add(nodePosition, cost);
                     }
@@ -364,6 +364,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         GraphNode randomNNode;
         if (EnvironmentUtil.GetRandomUnoccupiedNode(out randomNNode))
         {
+            Debug.Log("Placing character at random node");
+
             navigator.TeleportTo((Vector3)randomNNode.position);
             navigator.Rotate(Quaternion.identity);
             return true;
