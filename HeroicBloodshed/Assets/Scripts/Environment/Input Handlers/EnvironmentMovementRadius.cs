@@ -40,10 +40,11 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
                 GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
 
                 Destroy(quad.GetComponent<BoxCollider>());
- 
+
                 quad.transform.position = RadiusObject.transform.InverseTransformPoint(pair.Key);
                 quad.transform.eulerAngles = new Vector3(90, 0, 0);
                 quad.transform.parent = RadiusObject.transform;
+                quad.transform.localScale = GetTileScaleVector();
 
                 childFilters.Add(quad.GetComponent<MeshFilter>());
             }
