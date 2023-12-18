@@ -8,9 +8,9 @@ public static partial class Constants
     public static Color Player_Default = new Color(0.44706f,  0.60000f,  0.66275f);
     public static Color Enemy_Default  = new Color(0.68235f,  0.15294f,  0.17255f);
 
-    public static Color Movement_Half = new Color(0.45098f,  0.83529f,  0.83529f);
+    public static Color Movement_Half = new Color(0.314f, 0.776f, 0.969f);
 
-    public static Color Movement_Full = new Color(0.98431f,  0.84706f,  0.47843f);
+    public static Color Movement_Full = new Color(0.98f, 0.808f, 0.282f);
 
     public static Color Movement_None = new Color(0.53333f,  0.53333f,  0.53333f);
 

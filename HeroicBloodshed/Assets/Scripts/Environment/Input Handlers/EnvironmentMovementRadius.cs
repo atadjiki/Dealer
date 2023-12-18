@@ -29,13 +29,20 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     {
         EnvironmentInputData inputData = EnvironmentManager.Instance.GetInputData();
 
-        foreach(KeyValuePair<MovementRangeType, Dictionary<Vector3, int>> KeyPair in inputData.RadiusMaps)
+        Dictionary<MovementRangeType, List<Vector3>> borderMap = new Dictionary<MovementRangeType, List<Vector3>>();
+
+        CharacterNavigator characterNavigator = EncounterManager.Instance.GetCurrentCharacter().GetNavigator();
+
+        //generate our border nodes for reach movement range type
+        foreach (KeyValuePair<MovementRangeType, Dictionary<Vector3, int>> KeyPair in inputData.RadiusMaps)
         {
             MovementRangeType rangeType = KeyPair.Key;
             Dictionary<Vector3, int> radiusMap = KeyPair.Value;
 
             Color rangeColor = GetColor(rangeType);
-            rangeColor.a = 0.5f;
+           // rangeColor.a = 0.2f;
+
+            borderMap.Add(rangeType, new List<Vector3>());
 
             if (radiusMap != null)
             {
@@ -44,55 +51,88 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
                 GameObject RadiusObject = new GameObject(GetDisplayString(rangeType));
                 RadiusObject.transform.parent = this.transform;
 
+                //gather a list of every corner vertex
                 List<Vector3> corners = new List<Vector3>();
-                List<Vector3> borderNodes = new List<Vector3>();
-
                 foreach (KeyValuePair<Vector3, int> pair in radiusMap)
                 {
                     corners.AddRange(CalculateCorners(pair.Key));
                 }
 
-                foreach(Vector3 node in corners)
+                //for each corner, count how many times it occurs, and extract border nodes
+                foreach (Vector3 node in corners)
                 {
                     int occurences = 0;
 
-                    foreach(Vector3 comparison in corners)
+                    foreach (Vector3 comparison in corners)
                     {
                         float distance = Vector3.Distance(node, comparison);
 
-                        if(distance < 0.01f)
+                        if (distance < 0.01f)
                         {
                             occurences++;
                         }
                     }
 
-                    if(occurences <= 2)
+                    if (occurences <= 2)
                     {
-                        borderNodes.Add(node);
+                        borderMap[rangeType].Add(node);
                     }
                 }
 
+                List<Vector3> allowed = new List<Vector3>();
+
                 int count = 0;
-                foreach (Vector3 node in borderNodes)
+                foreach (Vector3 node in borderMap[rangeType])
                 {
-                    if (borderNodes.Contains(node))
+                    bool allow = true;
+                    if (rangeType == MovementRangeType.Full)
                     {
-                        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                        quad.name = node.ToString();
+                        foreach (Vector3 comparison in borderMap[MovementRangeType.Half])
+                        {
+                            float distance = Vector3.Distance(node, comparison);
 
-                        Destroy(quad.GetComponent<Collider>());
-                        quad.transform.parent = RadiusObject.transform;
-                        quad.transform.localPosition = RadiusObject.transform.InverseTransformPoint(node);
-                        quad.transform.localPosition += new Vector3(0, 0.15f, 0);
-                        quad.transform.localEulerAngles = new Vector3(90, 0, 0);
-                        quad.transform.localScale = GetTileScaleVector() / 4;
+                            if (distance < 0.01f)
+                            {
+                                allow = false;
+                                break;
+                            }
+                        }
+                    }
 
-                        MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
-                        meshRenderer.material = TileMaterial;
-                        meshRenderer.material.color = rangeColor;
+                    Vector3 point = RadiusObject.transform.InverseTransformPoint(node);
 
+                    if (allow && !allowed.Contains(point))
+                    {
+                        allowed.Add(point);
                         count++;
                     }
+                }
+
+               // allowed = allowed.OrderBy(point => Mathf.Atan2(point.z - allowed[0].z, point.x - allowed[0].x)).ToList();
+
+                foreach (Vector3 node in inputData.RadiusMaps[rangeType].Keys)
+                {
+                    GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    quad.name = node.ToString();
+
+                    Destroy(quad.GetComponent<Collider>());
+                    quad.transform.parent = RadiusObject.transform;
+                    quad.transform.localPosition = node;
+                    quad.transform.localPosition += new Vector3(0, 0.15f, 0);
+                    quad.transform.localEulerAngles = new Vector3(90, 0, 0);
+                    quad.transform.localScale = GetTileScaleVector();
+
+                    MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
+                    meshRenderer.material = TileMaterial;
+                    meshRenderer.material.color = rangeColor;
+
+                    //Outlinable outline = quad.AddComponent<Outlinable>();
+                    //outline.TryAddTarget(new OutlineTarget(meshRenderer));
+                    //outline.OutlineParameters.Color = Color.white;
+                    //outline.OutlineParameters.BlurShift = 0.5f;
+                    //outline.OutlineParameters.DilateShift = 0.5f;
+                    //outline.OutlineLayer = (int)rangeType;
+                  //  meshRenderer.SetMaterials(new List<Material>());
                 }
 
                 Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
