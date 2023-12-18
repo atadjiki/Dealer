@@ -35,35 +35,64 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
             Dictionary<Vector3, int> radiusMap = KeyPair.Value;
 
             Color rangeColor = GetColor(rangeType);
-            rangeColor.a = 0.2f;
+            rangeColor.a = 0.5f;
 
             if (radiusMap != null)
             {
                 float startTime = Time.time;
 
-                //create a child object to house the radius
                 GameObject RadiusObject = new GameObject(GetDisplayString(rangeType));
                 RadiusObject.transform.parent = this.transform;
 
-                int count = 0;
+                List<Vector3> corners = new List<Vector3>();
+                List<Vector3> borderNodes = new List<Vector3>();
+
                 foreach (KeyValuePair<Vector3, int> pair in radiusMap)
                 {
-                    Vector3 nodePosition = pair.Key;
+                    corners.AddRange(CalculateCorners(pair.Key));
+                }
 
-                    GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                foreach(Vector3 node in corners)
+                {
+                    int occurences = 0;
 
-                    Destroy(quad.GetComponent<Collider>());
-                    quad.transform.parent = RadiusObject.transform;
-                    quad.transform.localPosition = RadiusObject.transform.InverseTransformPoint(nodePosition);
-                    quad.transform.localPosition += new Vector3(0, 0.15f, 0);
-                    quad.transform.localEulerAngles = new Vector3(90, 0, 0);
-                    quad.transform.localScale = GetTileScaleVector();
+                    foreach(Vector3 comparison in corners)
+                    {
+                        float distance = Vector3.Distance(node, comparison);
 
-                    MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
-                    meshRenderer.material = TileMaterial;
-                    meshRenderer.material.color = rangeColor;
+                        if(distance < 0.01f)
+                        {
+                            occurences++;
+                        }
+                    }
 
-                    count++;
+                    if(occurences <= 2)
+                    {
+                        borderNodes.Add(node);
+                    }
+                }
+
+                int count = 0;
+                foreach (Vector3 node in borderNodes)
+                {
+                    if (borderNodes.Contains(node))
+                    {
+                        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                        quad.name = node.ToString();
+
+                        Destroy(quad.GetComponent<Collider>());
+                        quad.transform.parent = RadiusObject.transform;
+                        quad.transform.localPosition = RadiusObject.transform.InverseTransformPoint(node);
+                        quad.transform.localPosition += new Vector3(0, 0.15f, 0);
+                        quad.transform.localEulerAngles = new Vector3(90, 0, 0);
+                        quad.transform.localScale = GetTileScaleVector() / 4;
+
+                        MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
+                        meshRenderer.material = TileMaterial;
+                        meshRenderer.material.color = rangeColor;
+
+                        count++;
+                    }
                 }
 
                 Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
@@ -71,5 +100,19 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
                 yield return null;
             }
         }
+    }
+
+    private Vector3[] CalculateCorners(Vector3 center)
+    {
+        float radius = TILE_SIZE / 2;
+
+        return new Vector3[]
+        {
+            center + new Vector3(radius, 0, radius),
+            center + new Vector3(-radius, 0, radius),
+            center + new Vector3(radius, 0, -radius),
+            center + new Vector3(-radius, 0, -radius),
+
+        };
     }
 }

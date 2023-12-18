@@ -250,7 +250,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         Vector3 origin = currentCharacter.GetWorldLocation();
 
-        Bounds searchBounds = new Bounds(origin, new Vector3(24, 1, 24));
+        Bounds searchBounds = new Bounds(origin, new Vector3(MAX_SEARCH_DISTANCE, 1, MAX_SEARCH_DISTANCE));
 
         //find the distance between the character and every walkable node in the grid graph (yikes)
         foreach (GraphNode graphNode in gridGraph.GetNodesInRegion(searchBounds))
