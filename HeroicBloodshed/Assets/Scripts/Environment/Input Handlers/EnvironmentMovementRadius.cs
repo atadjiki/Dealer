@@ -6,7 +6,7 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
-    [SerializeField] private Material TileMaterial;
+    [SerializeField] private GameObject Prefab_Tile;
 
     public override void Activate()
     {
@@ -112,27 +112,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
                 foreach (Vector3 node in inputData.RadiusMaps[rangeType].Keys)
                 {
-                    GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                    quad.name = node.ToString();
-
-                    Destroy(quad.GetComponent<Collider>());
-                    quad.transform.parent = RadiusObject.transform;
-                    quad.transform.localPosition = node;
-                    quad.transform.localPosition += new Vector3(0, 0.15f, 0);
-                    quad.transform.localEulerAngles = new Vector3(90, 0, 0);
-                    quad.transform.localScale = GetTileScaleVector();
-
-                    MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
-                    meshRenderer.material = TileMaterial;
-                    meshRenderer.material.color = rangeColor;
-
-                    //Outlinable outline = quad.AddComponent<Outlinable>();
-                    //outline.TryAddTarget(new OutlineTarget(meshRenderer));
-                    //outline.OutlineParameters.Color = Color.white;
-                    //outline.OutlineParameters.BlurShift = 0.5f;
-                    //outline.OutlineParameters.DilateShift = 0.5f;
-                    //outline.OutlineLayer = (int)rangeType;
-                  //  meshRenderer.SetMaterials(new List<Material>());
+                    StartCoroutine(GenerateTile(node, RadiusObject.transform, rangeColor));
                 }
 
                 Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
@@ -140,6 +120,24 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
                 yield return null;
             }
         }
+    }
+
+    private IEnumerator GenerateTile(Vector3 position, Transform parent, Color color)
+    {
+        GameObject quad = Instantiate<GameObject>(Prefab_Tile);
+        quad.name = position.ToString();
+
+        quad.transform.parent = parent;
+        quad.transform.localPosition = position;
+        quad.transform.localPosition += new Vector3(0, 0.15f, 0);
+        quad.transform.localScale = GetTileScaleVector();
+
+        MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
+
+        color.a = 0.5f;
+        meshRenderer.material.color = color;
+
+        yield return null;
     }
 
     private Vector3[] CalculateCorners(Vector3 center)
