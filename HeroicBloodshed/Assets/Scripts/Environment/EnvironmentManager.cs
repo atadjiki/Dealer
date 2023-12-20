@@ -23,6 +23,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private bool _allowUpdate = false;
 
+    [SerializeField] bool BuildOnAwake = false;
+
     //Setup
     private void Awake()
     {
@@ -33,6 +35,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         else
         {
             _instance = this;
+        }
+
+        if(BuildOnAwake)
+        {
+            StartCoroutine(Coroutine_Build());
         }
     }
 
@@ -57,6 +64,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         AstarPath.active.maxNearestNodeDistance = 12;
 
         StartCoroutine(Coroutine_InputUpdate());
+
+        _allowUpdate = true;
 
         Debug.Log("Environment Ready");
     }
@@ -159,18 +168,21 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 {
                     _inputData.OnValidTile = true;
 
-                    CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
-
-                    if (currentCharacter != null)
+                    if(EncounterManager.Instance != null && EncounterManager.Instance.GetCurrentCharacter() != null)
                     {
-                        //calculate the cost of the path if we made it to here
-                        yield return Coroutine_CalculatePathCost(currentCharacter.GetWorldLocation(), _inputData.NodePosition);
+                        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
 
-                        MovementRangeType rangeType;
-
-                        if (EnvironmentUtil.IsWithinCharacterRange(_inputData.PathCost, currentCharacter, out rangeType))
+                        if (currentCharacter != null)
                         {
-                            _inputData.RangeType = rangeType;
+                            //calculate the cost of the path if we made it to here
+                            yield return Coroutine_CalculatePathCost(currentCharacter.GetWorldLocation(), _inputData.NodePosition);
+
+                            MovementRangeType rangeType;
+
+                            if (EnvironmentUtil.IsWithinCharacterRange(_inputData.PathCost, currentCharacter, out rangeType))
+                            {
+                                _inputData.RangeType = rangeType;
+                            }
                         }
                     }
                 }

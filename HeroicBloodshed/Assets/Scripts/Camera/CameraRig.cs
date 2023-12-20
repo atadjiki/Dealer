@@ -69,7 +69,7 @@ public class CameraRig : MonoBehaviour
         _framingTransposer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
         _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
 
-        SwitchToOverviewCam();
+        SwitchToMainCam();
     }
 
     private void Update()
