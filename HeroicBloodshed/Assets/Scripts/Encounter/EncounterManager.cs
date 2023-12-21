@@ -374,7 +374,12 @@ public class EncounterManager : MonoBehaviour
 
     public CharacterComponent GetCurrentCharacter()
     {
-        return _model.GetCurrentCharacter();
+        if(IsModelActive())
+        {
+            return _model.GetCurrentCharacter();
+        }
+
+        return null;
     }
 
     public void RequestEventBanner(string message, float duration)
@@ -385,5 +390,10 @@ public class EncounterManager : MonoBehaviour
     public bool ShouldAllowInput()
     {
         return (_model.GetState() == EncounterState.CHOOSE_ACTION && !_model.IsCurrentTeamCPU());
+    }
+
+    public bool IsModelActive()
+    {
+        return _model != null;
     }
 }
