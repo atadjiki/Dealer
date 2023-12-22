@@ -5,6 +5,7 @@ using Pathfinding;
 
 using static Constants;
 using System;
+using Random = UnityEngine.Random;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
@@ -18,12 +19,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private EnvironmentInputData _inputData;
 
-    private List<EnvironmentSpawnPoint> _spawnPoints;
-    private List<EnvironmentObstacle> _obstacles;
-
     private bool _allowUpdate = false;
-
-    [SerializeField] bool BuildOnAwake = false;
 
     //Setup
     private void Awake()
@@ -36,17 +32,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         {
             _instance = this;
         }
-
-        if(BuildOnAwake)
-        {
-            StartCoroutine(Coroutine_Build());
-        }
     }
 
     public IEnumerator Coroutine_Build()
     {
         yield return Coroutine_ScanNavmesh();
-        yield return Coroutine_GatherEnvironmentObjects();
 
         _eventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
 
@@ -65,7 +55,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         StartCoroutine(Coroutine_InputUpdate());
 
-        _allowUpdate = true;
+       // _allowUpdate = true;
 
         Debug.Log("Environment Ready");
     }
@@ -76,50 +66,27 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
         AstarPath.active.Scan(gridGraph);
 
-        yield return new WaitWhile(() => AstarPath.active.isScanning);
-    }
-
-    private IEnumerator Coroutine_GatherEnvironmentObjects()
-    {
-        Debug.Log("Gathering Environment Objects...");
-
-        _spawnPoints = new List<EnvironmentSpawnPoint>();
-
-        foreach(EnvironmentSpawnPoint spawnPoint in GetComponentsInChildren<EnvironmentSpawnPoint>())
+        foreach(GraphNode node in gridGraph.nodes)
         {
-            float searchBounds = TILE_SIZE * 2;
-            GraphNode graphNode;
-            if(EnvironmentUtil.GetClosestGraphNodeInArea(spawnPoint.transform.position, new Vector3(searchBounds, searchBounds, searchBounds), out graphNode))
+            if(node.Tag == TAG_LAYER_WALL)
             {
-                Vector3 position = spawnPoint.transform.position;
+                foreach (GraphNode neighbor in EnvironmentUtil.GetNeighboringNodes(node))
+                {
+                    Vector3 origin = (Vector3)node.position;
+                    Vector3 destination = (Vector3)neighbor.position;
 
-                EnvironmentUtil.PaintNodeAs(graphNode, EnvironmentNodeTagType.SpawnLocation);
+                    //shoot a raycast and see if we hit a wall collider
+                    Ray ray = new Ray(origin, destination);
 
-                _spawnPoints.Add(spawnPoint);
-
-                Debug.Log("Marking node " + position + " with obstacle tag");
-            }
-        }
-
-        _obstacles = new List<EnvironmentObstacle>();
-
-        foreach (EnvironmentObstacle obstacle in GetComponentsInChildren<EnvironmentObstacle>())
-        {
-            foreach(GraphNode graphNode in EnvironmentUtil.GetGraphNodesInBounds(obstacle.GetBounds()))
-            {
-                Vector3 position = (Vector3)graphNode.position;
-
-                EnvironmentUtil.PaintNodeAs(graphNode, EnvironmentNodeTagType.Obstacle);
-
-                _obstacles.Add(obstacle);
-
-                Debug.Log("Marking node " + position + " with obstacle tag");
+                    if (Physics.Linecast(origin, destination, LayerMask.GetMask(LAYER_ENV_WALL)))
+                    {
+                        node.RemoveConnection(neighbor);
+                    }
+                }
             }
         }
 
         yield return new WaitWhile(() => AstarPath.active.isScanning);
-
-        yield return null;
     }
 
     //Environment Input/Interactions
@@ -198,8 +165,6 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         if (Input.GetMouseButton(0))
         {
-            Debug.Log("click");
-
             if (EncounterManager.Instance.ShouldAllowInput())
             {
                 if (_inputData.OnValidTile && _inputData.RangeType != MovementRangeType.None)
@@ -225,7 +190,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         ABPath path = ABPath.Construct(origin, destination);
 
-        path.heuristic = Heuristic.None;
+        path.heuristic = Heuristic.Euclidean;
         path.nnConstraint = EnvironmentUtil.BuildConstraint();
 
         AstarPath.StartPath(path, true);
@@ -302,6 +267,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 }
 
                 //if the path to this node is available, add it to our list 
+
                 MovementRangeType rangeType;
                 if (EnvironmentUtil.IsWithinCharacterRange(cost, currentCharacter, out rangeType))
                 {
@@ -309,6 +275,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                     {
                         _inputData.RadiusMaps[rangeType].Add(nodePosition, cost);
                     }
+
                 }
             }
         }
@@ -353,24 +320,16 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
-        foreach (EnvironmentSpawnPoint spawnPoint in _spawnPoints)
-        {
-            if (spawnPoint.GetTeam() == character.GetTeam())
-            {
-                Vector3 defaultPosition = spawnPoint.transform.position;
 
-                GraphNode graphNode;
-                if (EnvironmentUtil.GetClosestGraphNodeInArea(defaultPosition, GetTileScaleVector(), out graphNode))
-                {
-                    navigator.TeleportTo((Vector3)graphNode.position);
-                    navigator.Rotate(spawnPoint.transform.rotation);
-                    return true;
-                }
-                else
-                {
-                    Debug.Log("Couldnt find location to place character");
-                }
-            }
+        List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWNLOCATION);
+
+        if(SpawnNodes.Count > 0)
+        {
+            int index = Random.Range(0, SpawnNodes.Count - 1);
+            GraphNode spawnNode = SpawnNodes[index];
+
+            navigator.TeleportTo((Vector3)spawnNode.position);
+            return true;
         }
 
         GraphNode randomNNode;

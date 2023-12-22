@@ -137,6 +137,27 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
+    public static List<GraphNode> GetNeighboringNodes(GraphNode node)
+    {
+        List<GraphNode> neighbors = new List<GraphNode>();
+        node.GetConnections(neighbors.Add);
+        return neighbors;
+    }
+
+    public static void PaintNeighboringNodesAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
+    {
+        List<GraphNode> neighbors = new List<GraphNode>();
+        graphNode.GetConnections(neighbors.Add);
+
+        foreach (GraphNode neighbor in neighbors)
+        {
+            if (neighbor.Tag != graphNode.Tag && neighbor.Walkable)
+            {
+                PaintNodeAs(neighbor, tagType);
+            }
+        }
+    }
+
     public static void PaintNodeAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
     {
         switch(tagType)
@@ -149,6 +170,9 @@ public class EnvironmentUtil : MonoBehaviour
                 break;
             case EnvironmentNodeTagType.SpawnLocation:
                 graphNode.Tag = TAG_LAYER_SPAWNLOCATION;
+                break;
+            case EnvironmentNodeTagType.Wall:
+                graphNode.Tag = TAG_LAYER_WALL;
                 break;
             default:
                 break;
@@ -226,6 +250,28 @@ public class EnvironmentUtil : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public static bool IsPathPossible()
+    {
+        return false;
+    }
+
+    public static List<GraphNode> GetNodesWithTag(uint tag)
+    {
+        List<GraphNode> nodes = new List<GraphNode>();
+
+        GridGraph gridGraph = AstarData.active.data.gridGraph;
+
+        foreach(GraphNode node in gridGraph.nodes)
+        {
+            if(node.Tag == tag)
+            {
+                nodes.Add(node);
+            }
+        }
+
+        return nodes;
     }
 
 }

@@ -6,6 +6,7 @@ public static partial class Constants
 {
     public static string LAYER_ENV_GROUND = "EnvironmentGround";
     public static string LAYER_ENV_OBSTACLE = "EnvironmentObstacle";
+    public static string LAYER_ENV_WALL = "EnvironmentWall";
 
     public static string GetDisplayString(CharacterEvent characterEvent)
     {

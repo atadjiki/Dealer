@@ -10,6 +10,7 @@ public static partial class Constants
     public static uint TAG_LAYER_OBSTACLE = 1;
     public static uint TAG_LAYER_CHARACTER = 2;
     public static uint TAG_LAYER_SPAWNLOCATION = 3;
+    public static uint TAG_LAYER_WALL = 4;
 
     public static Vector3 GetTileScaleVector()
     {
