@@ -14,27 +14,34 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();    
+        _animator = GetComponent<Animator>();
     }
 
-    public void SwitchToRagdoll(DamageInfo damageInfo)
+    public void SwitchToRagdoll(DamageInfo damageInfo, float delay)
     {
-        Vector3 impactAngle;
+        StartCoroutine(Coroutine_SwitchToRagdoll(damageInfo, delay));
+    }
 
-        if (damageInfo.caster != null)
-        {
-            CharacterComponent caster = damageInfo.caster;
-            Vector3 casterPos = caster.transform.position;
-            Vector3 targetPos = this.transform.position;
+    private IEnumerator Coroutine_SwitchToRagdoll(DamageInfo damageInfo, float delay)
+    {
+        yield return new WaitForSeconds(delay);
 
-            impactAngle = targetPos - casterPos;
+        //Vector3 impactAngle;
 
-            impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
-        }
-        else
-        {
-            impactAngle = this.transform.forward * -1;
-        }
+        //if (damageInfo.caster != null)
+        //{
+        //    CharacterComponent caster = damageInfo.caster;
+        //    Vector3 casterPos = caster.transform.position;
+        //    Vector3 targetPos = this.transform.position;
+
+        //    impactAngle = targetPos - casterPos;
+
+        //    impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
+        //}
+        //else
+        //{
+        //    impactAngle = this.transform.forward * -1;
+        //}
 
         _animator.enabled = false;
 
@@ -53,22 +60,21 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
             rigidbody.isKinematic = false;
         }
 
-        if(rigidbodies.Length > 0)
+        if (rigidbodies.Length > 0)
         {
             Rigidbody impactedBody = PickImpactedRigidBody();
 
-            float mass = impactedBody.mass;
+            //float mass = impactedBody.mass;
 
-            Vector3 forceVector = impactAngle * mass * 10f;
+            //Vector3 forceVector = impactAngle * mass * 10f;
 
-            impactedBody.AddForce(forceVector, ForceMode.Impulse);
+            //impactedBody.AddForce(forceVector, ForceMode.Impulse);
 
-            Debug.Log("Bullet Force of : " + forceVector.magnitude + " on " + impactedBody.name);
+            //Debug.Log("Bullet Force of : " + forceVector.magnitude + " on " + impactedBody.name);
 
             ProduceBloodSpray(impactedBody.transform);
         }
     }
-
     public Rigidbody PickImpactedRigidBody()
     {
         Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
@@ -107,8 +113,20 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         _weaponID = weapon;
 
+        int layerIndex = GetLayerByWeapon(_weaponID);
+
+        _animator.SetLayerWeight(layerIndex, 1);
+
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+        foreach (Rigidbody rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = true;
+            rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
         GoTo(initialState);
-       
     }
 
     public void GoTo(AnimState state)
@@ -118,19 +136,10 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     public void GoTo(AnimState state, float transitionTime)
     {
-        AnimID anim;
+        string animID = state.ToString();
 
-        if (IsUnarmedAnim(state))
-        {
-            anim = GetUnarmedAnim(state);
-        }
-        else
-        {
-            anim = GetAnimByWeaponType(_weaponID, state);
-        }
-
-        Debug.Log("Animation: " + anim.ToString());
-        _animator.CrossFade(anim.ToString(), transitionTime);
+        Debug.Log("Animation: " + animID);
+        _animator.CrossFade(animID, transitionTime);
     }
 
     public void HandleEvent(object eventData, CharacterEvent characterEvent)
@@ -166,8 +175,8 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
              damageInfo = (DamageInfo)eventData;
         }
 
-        GoTo(AnimState.Dead);
-        SwitchToRagdoll(damageInfo);
+        GoTo(AnimState.Death);
+        SwitchToRagdoll(damageInfo, 0.1f);
     }
 
     public bool CanReceiveCharacterEvents()

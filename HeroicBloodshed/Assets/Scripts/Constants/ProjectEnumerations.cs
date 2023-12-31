@@ -157,37 +157,9 @@ public static partial class Constants
         Hit_Medium,
         Hit_Heavy,
         Heal,
-        SkipTurn,
+        Skip_Turn,
         Interact,
-        Dead,
-    }
-
-    public enum AnimID
-    {
-        //for cutscenes/non combat use
-
-        //locomotion 
-        Anim_Character_Idle,
-        Anim_Character_Walking,
-        Anim_Character_Running,
-
-        //pistol/handgun
-        Anim_Character_Pistol_Idle,
-        Anim_Character_Pistol_Walking,
-        Anim_Character_Pistol_Running,
-        Anim_Character_Pistol_Attack_Single,
-        Anim_Character_Pistol_Hit_Light,
-        Anim_Character_Pistol_Hit_Medium,
-        Anim_Character_Pistol_Hit_Heavy,
-        Anim_Character_Pistol_Reload,
-
-        //Gestures
-        Anim_Character_ButtonPush,
-        Anim_Character_ShoulderRub,
-        Anim_Character_WipingSweat,
-
-        //death
-        Anim_Character_Death
+        Death,
     }
 
     public enum EnvironmentNodeTagType

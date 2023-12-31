@@ -36,8 +36,6 @@ public struct WeaponDefinition
 
     public DamageInfo CalculateDamage(CharacterComponent caster, CharacterComponent target)
     {
-        CharacterDefinition casterDef = CharacterDefinition.Get(caster.GetID());
-
         DamageInfo damageInfo = new DamageInfo();
         damageInfo.caster = caster;
         damageInfo.target = target;
@@ -52,12 +50,17 @@ public struct WeaponDefinition
             TotalDamage += 1;
         }
 
-        //if shot is a crit, add the additional damage to the total 
-        if (casterDef.RollCritChance())
+        if (caster != null)
         {
-            Debug.Log("Critical Hit!");
-            TotalDamage += CritDamage;
-            damageInfo.IsCrit = true;
+            CharacterDefinition casterDef = CharacterDefinition.Get(caster.GetID());
+
+            //if shot is a crit, add the additional damage to the total 
+            if (casterDef.RollCritChance())
+            {
+                Debug.Log("Critical Hit!");
+                TotalDamage += CritDamage;
+                damageInfo.IsCrit = true;
+            }
         }
 
         int targetHealth = target.GetHealth();

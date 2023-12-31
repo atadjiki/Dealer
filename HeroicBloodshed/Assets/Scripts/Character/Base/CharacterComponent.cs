@@ -315,12 +315,12 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 int amount = _baseHealth / 4;
                 _health += amount;
                 _health = Mathf.Clamp(_health, _health, _baseHealth);
-                _animator.GoTo(AnimState.Heal, 1.0f);
+                _animator.GoTo(AnimState.Heal);
                 break;
             }
             case AbilityID.SkipTurn:
             {
-                _animator.GoTo(AnimState.SkipTurn);
+                _animator.GoTo(AnimState.Skip_Turn);
                 break;
             }
             default:
