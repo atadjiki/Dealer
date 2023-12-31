@@ -72,7 +72,7 @@ public class DebugCharacterAnimEditor : Editor
                 {
                     foreach (AbilityID abilityID in Enum.GetValues(typeof(AbilityID)))
                     {
-                        if(abilityID != AbilityID.NONE)
+                        if(abilityID != AbilityID.NONE && abilityID != AbilityID.MoveFull && abilityID != AbilityID.MoveHalf)
                         {
                             if (GUILayout.Button(GetDisplayString(abilityID)))
                             {

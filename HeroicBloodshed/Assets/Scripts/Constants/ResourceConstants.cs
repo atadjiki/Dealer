@@ -116,7 +116,7 @@ public static partial class Constants
     {
         switch(ID)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 return GetTexture(TextureID.Icon_Crosshair);
             case AbilityID.Reload:
                 return GetTexture(TextureID.Icon_Cycle);

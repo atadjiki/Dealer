@@ -103,7 +103,7 @@ public static partial class Constants
     {
         switch (abilityID)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 return "Attack";
             case AbilityID.Heal:
                 return "Heal";
@@ -120,7 +120,7 @@ public static partial class Constants
     {
         switch (abilityID)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 return "Attacking";
             case AbilityID.Heal:
                 return "Healing";

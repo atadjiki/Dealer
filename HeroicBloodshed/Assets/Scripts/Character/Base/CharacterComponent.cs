@@ -139,7 +139,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         //grab animator from model 
         _animator = modelPrefab.GetComponent<CharacterAnimator>();
         yield return new WaitUntil(() => _animator != null);
-        _animator.Setup(AnimState.Idle, _weapon.GetID());
+        _animator.Setup(AnimID.Idle, _weapon.GetID());
         _eventReceivers.Add(_animator);
 
         //stick a wall raycaster on the model
@@ -250,12 +250,12 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Moving()
     { 
-        _animator.GoTo(AnimState.Running);
+        _animator.GoTo(AnimID.Running);
     }
 
     private void HandleEvent_Stopped()
     {
-        _animator.GoTo(AnimState.Idle);
+        _animator.GoTo(AnimID.Idle);
     }
 
 
@@ -274,15 +274,11 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     { 
         if (damageInfo.ActualDamage < damageInfo.BaseDamage)
         {
-            _animator.GoTo(AnimState.Hit_Light);
-        }
-        else if (damageInfo.ActualDamage == damageInfo.BaseDamage)
-        {
-            _animator.GoTo(AnimState.Hit_Medium);
+            _animator.GoTo(AnimID.Hit_Light);
         }
         else
         {
-            _animator.GoTo(AnimState.Hit_Heavy);
+            _animator.GoTo(AnimID.Hit_Hard);
         }
     }
 
@@ -295,19 +291,25 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         switch (abilityID)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
             {
-                _weapon.OnAbility(AbilityID.Attack);
+                _weapon.OnAbility(AbilityID.FireWeapon);
                 if (_weapon.HasAmmo())
                 {
-                    _animator.GoTo(AnimState.Attack_Single);
+                    _animator.GoTo(AnimID.Fire);
                 }
+                break;
+            }
+            case AbilityID.Melee:
+            {
+                _weapon.OnAbility(AbilityID.Melee);
+                _animator.GoTo(AnimID.Melee);
                 break;
             }
             case AbilityID.Reload:
             {
                 _weapon.OnAbility(AbilityID.Reload);
-                _animator.GoTo(AnimState.Reload);
+                _animator.GoTo(AnimID.Reload);
                 break;
             }
             case AbilityID.Heal:
@@ -315,12 +317,17 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 int amount = _baseHealth / 4;
                 _health += amount;
                 _health = Mathf.Clamp(_health, _health, _baseHealth);
-                _animator.GoTo(AnimState.Heal);
+                _animator.GoTo(AnimID.Heal, 0.25f);
                 break;
             }
             case AbilityID.SkipTurn:
             {
-                _animator.GoTo(AnimState.Skip_Turn);
+                _animator.GoTo(AnimID.Skip_Turn, 0.25f);
+                break;
+            }
+            case AbilityID.Grenade:
+            {
+                _animator.GoTo(AnimID.Grenade, 0.25f);
                 break;
             }
             default:

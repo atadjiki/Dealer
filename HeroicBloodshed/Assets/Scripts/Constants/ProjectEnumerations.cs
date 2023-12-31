@@ -64,10 +64,13 @@ public static partial class Constants
 
         MoveHalf,
         MoveFull,
-        Attack,
+        FireWeapon,
+        Melee,
         Reload,
-        Heal,
+        Grenade,
         SkipTurn,
+        Heal,
+        Interact,
     }
 
     public enum TargetType
@@ -146,19 +149,25 @@ public static partial class Constants
         UPDATE //update the turn count, etc 
     }
 
-    public enum AnimState
+    public enum AnimID
     {
         Idle,
+
+        Fire,
+        Melee,
+        Reload,
+
+        Grenade,
+
+        Hit_Light,
+        Hit_Hard,
+
+        Skip_Turn,
+        Heal,
+        Interact,
+
         Walking,
         Running,
-        Reload,
-        Attack_Single,
-        Hit_Light,
-        Hit_Medium,
-        Hit_Heavy,
-        Heal,
-        Skip_Turn,
-        Interact,
         Death,
     }
 

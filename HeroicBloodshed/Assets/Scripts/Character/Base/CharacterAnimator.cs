@@ -109,7 +109,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         Destroy(particleObject);
     }
 
-    public void Setup(AnimState initialState, WeaponID weapon)
+    public void Setup(AnimID initialState, WeaponID weapon)
     {
         _weaponID = weapon;
 
@@ -129,12 +129,12 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         GoTo(initialState);
     }
 
-    public void GoTo(AnimState state)
+    public void GoTo(AnimID state)
     {
         GoTo(state, 0);
     }
 
-    public void GoTo(AnimState state, float transitionTime)
+    public void GoTo(AnimID state, float transitionTime)
     {
         string animID = state.ToString();
 
@@ -175,7 +175,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
              damageInfo = (DamageInfo)eventData;
         }
 
-        GoTo(AnimState.Death);
+        GoTo(AnimID.Death);
         SwitchToRagdoll(damageInfo, 0.1f);
     }
 

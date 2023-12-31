@@ -77,7 +77,7 @@ public class CharacterHandgun : CharacterWeapon
 
         switch(ability)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 {
                     HandleAbility_Attack();
                     break;

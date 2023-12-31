@@ -88,7 +88,7 @@ public class AbilityHandler : MonoBehaviour
     public static IEnumerator Coroutine_FireWeaponAt(DamageInfo damageInfo)
     {
         yield return Coroutine_RotateTowards(damageInfo.caster, damageInfo.target);
-        damageInfo.caster.HandleEvent(AbilityID.Attack, CharacterEvent.ABILITY);
+        damageInfo.caster.HandleEvent(AbilityID.FireWeapon, CharacterEvent.ABILITY);
     }
 
     public static IEnumerator Coroutine_RotateTowards(CharacterComponent caster, CharacterComponent target)

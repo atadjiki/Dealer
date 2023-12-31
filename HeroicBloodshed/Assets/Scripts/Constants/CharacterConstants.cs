@@ -20,7 +20,7 @@ public static partial class Constants
     {
         switch(abilityID)
         {
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 return TargetType.Enemy;
             default:
                 return TargetType.None;
@@ -33,7 +33,7 @@ public static partial class Constants
         {
             AbilityID.MoveHalf,
             AbilityID.MoveFull,
-            AbilityID.Attack,
+            AbilityID.FireWeapon,
             AbilityID.SkipTurn, //all characters have this by default
             AbilityID.Reload,
         };
@@ -54,7 +54,7 @@ public static partial class Constants
             return false;
         }
 
-        if(abilityID == AbilityID.Attack)
+        if(abilityID == AbilityID.FireWeapon)
         {
             if(characterComponent.GetRemainingAmmo() == 0)
             {

@@ -184,7 +184,7 @@ public class EncounterManager : MonoBehaviour
                 }
                 else
                 {
-                    _model.SetActiveAbility(AbilityID.Attack);
+                    _model.SetActiveAbility(AbilityID.FireWeapon);
                 }
             }
             else
@@ -247,7 +247,7 @@ public class EncounterManager : MonoBehaviour
                 Vector3 destination = _model.GetActiveDestination();
                 yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, destination);
                 break;
-            case AbilityID.Attack:
+            case AbilityID.FireWeapon:
                 CharacterComponent target = _model.GetActiveTarget();
                 yield return AbilityHandler.Coroutine_HandleAbility_Attack(caster, target);
                 break;
