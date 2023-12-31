@@ -14,19 +14,7 @@ public class EnvironmentObstacle : MonoBehaviour
 
     private void Awake()
     {
-        Outlinable outline = this.gameObject.AddComponent<Outlinable>();
-
-        foreach(Renderer renderer in GetComponentsInChildren<Renderer>())
-        {
-            OutlineTarget target = new OutlineTarget(renderer);
-            outline.TryAddTarget(target);
-        }
-
-        Color outlineColor = Color.black;
-        outlineColor.a = 0.25f;
-        outline.OutlineParameters.Color = outlineColor;
-        outline.OutlineParameters.DilateShift = 0.25f;
-        outline.OutlineParameters.BlurShift = 0.25f;
+        EnvironmentUtil.AddOutline(this.gameObject, Color.grey, 0.5f);
     }
     
     public Bounds GetBounds()

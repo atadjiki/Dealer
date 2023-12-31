@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using EPOOutline;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -302,4 +303,20 @@ public class EnvironmentUtil : MonoBehaviour
         return nodes;
     }
 
+    public static void AddOutline(GameObject gameObject, Color color, float opacity)
+    {
+        Outlinable outline = gameObject.AddComponent<Outlinable>();
+
+        foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+        {
+            OutlineTarget target = new OutlineTarget(renderer);
+            outline.TryAddTarget(target);
+        }
+
+        Color outlineColor = color;
+        outlineColor.a = opacity;
+        outline.OutlineParameters.Color = outlineColor;
+        outline.OutlineParameters.DilateShift = 0.25f;
+        outline.OutlineParameters.BlurShift = 0.25f;
+    }
 }

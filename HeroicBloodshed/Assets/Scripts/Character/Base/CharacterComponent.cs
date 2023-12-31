@@ -146,7 +146,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _model.gameObject.AddComponent<EnvironmentWallRaycaster>();
 
         //place the character at an appropriate spawn location
-        EnvironmentManager.Instance.FindSpawnLocationForCharacter(this);
+        if(EnvironmentManager.IsActive())
+        {
+            EnvironmentManager.Instance.FindSpawnLocationForCharacter(this);
+        }
 
         if (onSetupComplete != null)
         {

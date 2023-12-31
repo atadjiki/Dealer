@@ -21,6 +21,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private bool _allowUpdate = false;
 
+    public static bool IsActive()
+    {
+        return Instance != null;
+    }
+
     //Setup
     private void Awake()
     {
