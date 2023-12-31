@@ -70,6 +70,7 @@ GameObject:
   - component: {fileID: 4283313664176326035}
   - component: {fileID: 9207466743227826195}
   - component: {fileID: 659450032110452103}
+  - component: {fileID: 7490450638227504339}
   m_Layer: 11
   m_Name: Mesh_Default
   m_TagString: Untagged
@@ -85,8 +86,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9165141646908442651}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1.4999999, y: -0.15, z: 1.5}
+  m_LocalScale: {x: 1, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7702963973358470153}
@@ -161,5 +162,39 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.0000007, y: 3, z: 0.38552245}
+  m_Size: {x: 3.0000007, y: 3, z: 0.1}
   m_Center: {x: -1.4999999, y: 1.5, z: 0}
+--- !u!114 &7490450638227504339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9165141646908442651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efee954c69f0d421086729bb8df1137f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 101352140097985787
+  points:
+  - {x: 1.5, y: 0, z: 1.5}
+  - {x: -4.5, y: 0, z: 1.5}
+  - {x: -4.5, y: 0, z: -1.5}
+  - {x: 1.5, y: 0, z: -1.5}
+  convex: 1
+  minBoundsHeight: 1
+  penaltyDelta: 0
+  modifyWalkability: 0
+  setWalkability: 0
+  applyOnStart: 1
+  applyOnScan: 1
+  updatePhysics: 0
+  resetPenaltyOnPhysics: 1
+  updateErosion: 1
+  modifyTag: 1
+  setTag: 4
+  legacyMode: 0
+  serializedVersion: 1
+  legacyUseWorldSpace: 0
