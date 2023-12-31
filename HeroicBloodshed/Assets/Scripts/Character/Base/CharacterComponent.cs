@@ -107,6 +107,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             weaponPrefab.transform.parent = _weaponAnchor.transform;
 
+            weaponPrefab.transform.localPosition = Vector3.zero;
+            weaponPrefab.transform.localRotation = Quaternion.identity;
+
             _weapon = weaponPrefab.GetComponent<CharacterWeapon>();
 
             _weapon.Setup(_ID, weaponID);
@@ -159,7 +162,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         yield return null;
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData = null)
     {
         if (!_canReceive) { return; }
 
@@ -190,19 +193,15 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
                 HandleEvent_HandleDamage((DamageInfo)eventData);
                 break;
             }
-            case CharacterEvent.HIT:
+            case CharacterEvent.HIT_LIGHT:
+            case CharacterEvent.HIT_HARD:
             {
                 HandleEvent_Hit((DamageInfo)eventData);
                 break;
             }
-            case CharacterEvent.ABILITY:
+            case CharacterEvent.DEATH:
             {
-                HandleEvent_Ability((AbilityID) eventData);
-                break;
-            }
-            case CharacterEvent.KILLED:
-            {
-                HandleEvent_Killed();
+                HandleEvent_Death();
                 break;
             }
             case CharacterEvent.MOVING:
@@ -221,7 +220,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         BroadcastEvent(eventData, characterEvent);
 
-        if(characterEvent == CharacterEvent.KILLED)
+        if(characterEvent == CharacterEvent.DEATH)
         {
             _canReceive = false;
         }
@@ -250,7 +249,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Moving()
     { 
-        _animator.GoTo(AnimID.Running);
+        _animator.GoTo(AnimID.Moving);
     }
 
     private void HandleEvent_Stopped()
@@ -272,17 +271,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     private void HandleEvent_Hit(DamageInfo damageInfo)
     { 
-        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-        {
-            _animator.GoTo(AnimID.Hit_Light);
-        }
-        else
-        {
-            _animator.GoTo(AnimID.Hit_Hard);
-        }
+
     }
 
-    private void HandleEvent_Killed()
+    private void HandleEvent_Death()
     {
         _health = 0;
     }
@@ -341,7 +333,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         foreach(ICharacterEventReceiver eventReceiver in _eventReceivers)
         {
-            eventReceiver.HandleEvent(eventData, characterEvent);
+            eventReceiver.HandleEvent(characterEvent, eventData);
         }
     }
 
@@ -455,7 +447,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         _model = null;
 
-        GameObject.Destroy(modelObject);
+        Destroy(modelObject);
 
         yield return new WaitUntil(() => modelObject == null);
     }
@@ -501,7 +493,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         if (decal != null)
         {
-            GameObject.Destroy(decal.gameObject);
+            Destroy(decal.gameObject);
         }
     }
 

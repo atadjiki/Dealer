@@ -95,10 +95,29 @@ public static partial class Constants
         Death
     };
 
+    public enum AnimID
+    {
+        Idle,
+
+        Fire,
+        Melee,
+        Reload,
+
+        Grenade,
+
+        Hit_Light,
+        Hit_Hard,
+
+        Skip_Turn,
+        Heal,
+        Interact,
+
+        Moving,
+        Death,
+    }
+
     public enum CharacterEvent
     {
-        ABILITY,
-
         SELECTED,
 
         DESELECTED,
@@ -109,9 +128,26 @@ public static partial class Constants
 
         DAMAGE, //triggers a hit or kill event 
 
-        HIT,
+        //correspond to anims
+        IDLE,
 
-        KILLED,
+        FIRE,
+
+        MELEE,
+
+        RELOAD,
+
+        GRENADE,
+
+        HIT_LIGHT,
+
+        HIT_HARD,
+
+        SKIP_TURN,
+
+        HEAL,
+
+        DEATH,
 
         MOVING,
 
@@ -147,28 +183,6 @@ public static partial class Constants
         DESELECT_CURRENT_CHARACTER,//deselect current character and pop them from their team's queue
 
         UPDATE //update the turn count, etc 
-    }
-
-    public enum AnimID
-    {
-        Idle,
-
-        Fire,
-        Melee,
-        Reload,
-
-        Grenade,
-
-        Hit_Light,
-        Hit_Hard,
-
-        Skip_Turn,
-        Heal,
-        Interact,
-
-        Walking,
-        Running,
-        Death,
     }
 
     public enum EnvironmentNodeTagType

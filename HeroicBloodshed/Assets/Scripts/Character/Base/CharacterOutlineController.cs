@@ -73,13 +73,13 @@ public class CharacterOutlineController : MonoBehaviour, ICharacterEventReceiver
         Outline.OutlineParameters.Color = color;
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         if (!_canReceive) { return; }
 
         switch (characterEvent)
         {
-            case CharacterEvent.KILLED:
+            case CharacterEvent.DEATH:
                 ToggleHighlight(false);
                 SetDeadOutline();
                 break;

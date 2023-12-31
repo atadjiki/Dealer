@@ -36,19 +36,19 @@ public class DebugCharacterAnim : MonoBehaviour
         StartCoroutine(characterComponent.Coroutine_Spawn(DebugCharacter));
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData = null)
     {
         if (characterEvent == CharacterEvent.DAMAGE)
         {
             eventData = WeaponDefinition.Get(WeaponID).CalculateDamage(null, characterComponent);
         }
-        else if(characterEvent == CharacterEvent.HIT)
+        else if(characterEvent == CharacterEvent.HIT_LIGHT || characterEvent == CharacterEvent.HIT_HARD)
         {
             DamageInfo damageInfo = new DamageInfo();
             eventData = damageInfo;
         }
 
-        characterComponent.HandleEvent(eventData, characterEvent);
+        characterComponent.HandleEvent(characterEvent, eventData);
     }
 }
 
@@ -68,25 +68,20 @@ public class DebugCharacterAnimEditor : Editor
 
             foreach(CharacterEvent characterEvent in Enum.GetValues(typeof(CharacterEvent)))
             {
-                if (characterEvent == CharacterEvent.ABILITY)
+                switch (characterEvent)
                 {
-                    foreach (AbilityID abilityID in Enum.GetValues(typeof(AbilityID)))
-                    {
-                        if(abilityID != AbilityID.NONE && abilityID != AbilityID.MoveFull && abilityID != AbilityID.MoveHalf)
-                        {
-                            if (GUILayout.Button(GetDisplayString(abilityID)))
-                            {
-                                debugCharacter.HandleEvent(abilityID, characterEvent);
-                            }
-                        }
-                    }
-                }
-                else
-                {
+                    case CharacterEvent.SELECTED:
+                    case CharacterEvent.DESELECTED:
+                    case CharacterEvent.TARGETED:
+                    case CharacterEvent.UNTARGETED:
+                    case CharacterEvent.DAMAGE:
+                        break;
+                    default:
                     if (GUILayout.Button(GetDisplayString(characterEvent)))
                     {
-                        debugCharacter.HandleEvent(null, characterEvent);
+                        debugCharacter.HandleEvent(characterEvent);
                     }
+                    break;
                 }
 
             }

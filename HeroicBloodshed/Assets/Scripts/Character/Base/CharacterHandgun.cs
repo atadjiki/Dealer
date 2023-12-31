@@ -77,11 +77,6 @@ public class CharacterHandgun : CharacterWeapon
 
         switch(ability)
         {
-            case AbilityID.FireWeapon:
-                {
-                    HandleAbility_Attack();
-                    break;
-                }
             case AbilityID.Reload:
                 {
                     _ammo = GetMaxAmmo();
@@ -93,29 +88,30 @@ public class CharacterHandgun : CharacterWeapon
         }
     }
 
-    private void HandleAbility_Attack()
+    protected override void HandleEvent_Fire()
+    {
+        base.HandleEvent_Fire();
+
+        StartCoroutine(Coroutine_Fire());
+    }
+
+    private IEnumerator Coroutine_Fire()
     {
         if(_ammo > 0)
         {
             _ammo--;
-            StartCoroutine(Coroutine_HandleAbility_Attack());
+            int shotCount = _attackDef.CalculateShotCount();
+            for (int i = 0; i < shotCount; i++)
+            {
+                _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+                PlayMuzzleFX();
+                yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
+            }
 
         }
         else
         {
             Debug.Log("Out of ammo!");
-        }
-
-    }
-
-    private IEnumerator Coroutine_HandleAbility_Attack()
-    {
-        int shotCount = _attackDef.CalculateShotCount();
-        for (int i = 0; i < shotCount; i++)
-        {
-            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
-            PlayMuzzleFX();
-            yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
         }
 
     }

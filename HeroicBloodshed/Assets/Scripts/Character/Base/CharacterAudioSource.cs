@@ -53,14 +53,14 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         if (!_canReceive) { return; }
 
         switch(characterEvent)
         {
-            case CharacterEvent.KILLED:
-                HandleEvent_Killed();
+            case CharacterEvent.DEATH:
+                HandleEvent_Death();
                 _canReceive = false;
                 break;
             default:
@@ -68,7 +68,7 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    private void HandleEvent_Killed()
+    private void HandleEvent_Death()
     {
         Play(CharacterAudioType.Death);
     }

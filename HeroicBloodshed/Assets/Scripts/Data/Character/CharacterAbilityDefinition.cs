@@ -15,11 +15,11 @@ public class AbilityHandler : MonoBehaviour
 
         CharacterNavigator navigator = caster.GetNavigator();
 
-        caster.HandleEvent(null, CharacterEvent.MOVING);
+        caster.HandleEvent(CharacterEvent.MOVING);
 
         yield return navigator.Coroutine_MoveToPosition(destination);
 
-        caster.HandleEvent(null, CharacterEvent.STOPPED);
+        caster.HandleEvent(CharacterEvent.STOPPED);
     }
 
     public static IEnumerator Coroutine_HandleAbility_Attack(CharacterComponent caster, CharacterComponent target)
@@ -45,7 +45,7 @@ public class AbilityHandler : MonoBehaviour
         if (damageInfo.IsKill)
         {
             yield return Coroutine_FireWeaponAt(damageInfo);
-            target.HandleEvent(damageInfo, CharacterEvent.KILLED);
+            target.HandleEvent(CharacterEvent.DEATH, damageInfo);
             EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
             CameraRig.Instance.Follow(target);
             yield return new WaitForSeconds(_waitTime * 2);
@@ -54,7 +54,15 @@ public class AbilityHandler : MonoBehaviour
         {
             EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
             yield return Coroutine_FireWeaponAt(damageInfo);
-            target.HandleEvent(damageInfo, CharacterEvent.HIT);
+
+            if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+            {
+                target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
+            }
+            else
+            {
+                target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
+            }
         }
         yield return new WaitForSeconds(_waitTime);
     }
@@ -63,7 +71,7 @@ public class AbilityHandler : MonoBehaviour
     {
         CameraRig.Instance.Follow(caster);
 
-        caster.HandleEvent(AbilityID.Reload, CharacterEvent.ABILITY);
+        caster.HandleEvent(CharacterEvent.RELOAD);
         yield return new WaitForSeconds(_waitTime);
     }
 
@@ -71,7 +79,7 @@ public class AbilityHandler : MonoBehaviour
     {
         CameraRig.Instance.Follow(caster);
 
-        caster.HandleEvent(AbilityID.SkipTurn, CharacterEvent.ABILITY);
+        caster.HandleEvent(CharacterEvent.SKIP_TURN);
         yield return new WaitForSeconds(_waitTime);
     }
 
@@ -79,7 +87,7 @@ public class AbilityHandler : MonoBehaviour
     {
         CameraRig.Instance.Follow(caster);
 
-        caster.HandleEvent(AbilityID.Heal, CharacterEvent.ABILITY);
+        caster.HandleEvent(CharacterEvent.HEAL);
         yield return new WaitForSeconds(_waitTime);
     }
 
@@ -88,7 +96,7 @@ public class AbilityHandler : MonoBehaviour
     public static IEnumerator Coroutine_FireWeaponAt(DamageInfo damageInfo)
     {
         yield return Coroutine_RotateTowards(damageInfo.caster, damageInfo.target);
-        damageInfo.caster.HandleEvent(AbilityID.FireWeapon, CharacterEvent.ABILITY);
+        damageInfo.caster.HandleEvent(CharacterEvent.FIRE);
     }
 
     public static IEnumerator Coroutine_RotateTowards(CharacterComponent caster, CharacterComponent target)
@@ -116,7 +124,7 @@ public class AbilityHandler : MonoBehaviour
 
     public static IEnumerator Coroutine_HandleDamage(CharacterComponent target, DamageInfo damageInfo)
     {
-        target.HandleEvent(damageInfo, CharacterEvent.DAMAGE);
+        target.HandleEvent(CharacterEvent.DAMAGE, damageInfo);
         yield return null;
     }
 }

@@ -45,7 +45,7 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         _rectTransform.position = screenPos;
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         switch (characterEvent)
         {
@@ -58,14 +58,9 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
             case CharacterEvent.DAMAGE:
                 HandleEvent_Damage();
                 break;
-            case CharacterEvent.KILLED:
-                HandleEvent_Killed();
+            case CharacterEvent.DEATH:
+                HandleEvent_Death();
                 break;
-            case CharacterEvent.ABILITY:
-            {
-                HandleEvent_Ability((AbilityID)eventData);
-                break;
-            }
             default:
                 break;
         }
@@ -131,7 +126,7 @@ public class EncounterCharacterUI : MonoBehaviour, ICharacterEventReceiver
         Text_Health.text = health + "/" + baseHealth;
     }
 
-    private void HandleEvent_Killed()
+    private void HandleEvent_Death()
     {
         Panel_Backing.gameObject.SetActive(false);
     }

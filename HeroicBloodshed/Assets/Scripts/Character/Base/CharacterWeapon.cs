@@ -18,14 +18,17 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         _ammo = GetMaxAmmo();
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         if (!_canReceive) { return; }
 
         switch (characterEvent)
         {
-            case CharacterEvent.KILLED:
-                HandleEvent_Dead();
+            case CharacterEvent.FIRE:
+                HandleEvent_Fire();
+                break;
+            case CharacterEvent.DEATH:
+                HandleEvent_Death();
                 _canReceive = false;
                 break;
             default:
@@ -33,7 +36,12 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    private void HandleEvent_Dead()
+    protected virtual void HandleEvent_Fire()
+    {
+
+    }
+
+    private void HandleEvent_Death()
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.isKinematic = false;

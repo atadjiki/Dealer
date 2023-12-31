@@ -115,7 +115,7 @@ public class EncounterManager : MonoBehaviour
 
                 if (character.IsAlive())
                 {
-                    character.HandleEvent(null, CharacterEvent.SELECTED);
+                    character.HandleEvent(CharacterEvent.SELECTED);
                 }
                 break;
             }
@@ -138,7 +138,7 @@ public class EncounterManager : MonoBehaviour
             {
                 CharacterComponent character = _model.GetCurrentCharacter();
                 CameraRig.Instance.Unfollow();
-                character.HandleEvent(null, CharacterEvent.DESELECTED);
+                character.HandleEvent(CharacterEvent.DESELECTED);
                 break;
             }
             case EncounterState.PERFORM_ACTION:
@@ -315,7 +315,7 @@ public class EncounterManager : MonoBehaviour
         {
             foreach (CharacterComponent target in _model.GetAllCharactersInTeam(character.GetTeam()))
             {
-                character.HandleEvent(null, CharacterEvent.UNTARGETED);
+                character.HandleEvent(CharacterEvent.UNTARGETED);
             }
 
             _model.SetTarget(character);
@@ -329,7 +329,7 @@ public class EncounterManager : MonoBehaviour
         //untarget everyone first before assigning a new one
         foreach(CharacterComponent character in _model.GetAllCharactersInTeam(target.GetTeam()))
         {
-            character.HandleEvent(null, CharacterEvent.UNTARGETED);
+            character.HandleEvent(CharacterEvent.UNTARGETED);
         }
 
         CharacterComponent caster = _model.GetCurrentCharacter();
@@ -338,7 +338,7 @@ public class EncounterManager : MonoBehaviour
 
         DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage(caster,target);
 
-        target.HandleEvent(damageInfo, CharacterEvent.TARGETED);
+        target.HandleEvent(CharacterEvent.TARGETED);
     }
 
     private IEnumerator SpawnCharacters()

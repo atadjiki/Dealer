@@ -26,23 +26,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         yield return new WaitForSeconds(delay);
 
-        //Vector3 impactAngle;
-
-        //if (damageInfo.caster != null)
-        //{
-        //    CharacterComponent caster = damageInfo.caster;
-        //    Vector3 casterPos = caster.transform.position;
-        //    Vector3 targetPos = this.transform.position;
-
-        //    impactAngle = targetPos - casterPos;
-
-        //    impactAngle = Vector3.Normalize(impactAngle + (this.transform.forward));
-        //}
-        //else
-        //{
-        //    impactAngle = this.transform.forward * -1;
-        //}
-
         _animator.enabled = false;
 
         foreach (Collider collider in GetComponentsInChildren<Collider>())
@@ -63,14 +46,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         if (rigidbodies.Length > 0)
         {
             Rigidbody impactedBody = PickImpactedRigidBody();
-
-            //float mass = impactedBody.mass;
-
-            //Vector3 forceVector = impactAngle * mass * 10f;
-
-            //impactedBody.AddForce(forceVector, ForceMode.Impulse);
-
-            //Debug.Log("Bullet Force of : " + forceVector.magnitude + " on " + impactedBody.name);
 
             ProduceBloodSpray(impactedBody.transform);
         }
@@ -121,9 +96,12 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         foreach (Rigidbody rigidbody in rigidbodies)
         {
-            rigidbody.isKinematic = true;
-            rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
-            rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            if(rigidbody.gameObject.GetComponent<CharacterWeapon>() == null)
+            {
+                rigidbody.isKinematic = true;
+                rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            }
         }
 
         GoTo(initialState);
@@ -142,29 +120,21 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         _animator.CrossFade(animID, transitionTime);
     }
 
-    public void HandleEvent(object eventData, CharacterEvent characterEvent)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         if (!_canReceive) { return; }
 
         switch (characterEvent)
         {
-            case CharacterEvent.HIT:
-                HandleEvent_Hit(eventData);
-                break;
-            case CharacterEvent.KILLED:
+            case CharacterEvent.DEATH:
                 HandleEvent_Death(eventData);
                 _canReceive = false;
                 break;
             default:
                 break;
         }
-    }
 
-    private void HandleEvent_Hit(object eventData)
-    {
-        Rigidbody impactedBody = PickImpactedRigidBody();
-
-        ProduceBloodSpray(impactedBody.transform);
+        GoTo(GetAnimation(characterEvent));
     }
 
     private void HandleEvent_Death(object eventData)
@@ -175,7 +145,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
              damageInfo = (DamageInfo)eventData;
         }
 
-        GoTo(AnimID.Death);
         SwitchToRagdoll(damageInfo, 0.1f);
     }
 
