@@ -7,6 +7,31 @@ using static Constants;
 
 public class EnvironmentUtil : MonoBehaviour
 {
+    public static void ProcessEnvironment()
+    {
+        Debug.Log("Scanning NavMesh");
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+        AstarPath.active.Scan(gridGraph);
+
+        //remove connections between nodes intersected by walls
+        foreach (GraphNode node in gridGraph.nodes)
+        {
+            if (node.Tag == TAG_LAYER_WALL)
+            {
+                foreach (GraphNode neighbor in GetNeighboringNodes(node))
+                {
+                    Vector3 origin = (Vector3)node.position;
+                    Vector3 destination = (Vector3)neighbor.position;
+
+                    if (Physics.Linecast(origin, destination, LayerMask.GetMask(LAYER_ENV_WALL)))
+                    {
+                        node.RemoveConnection(neighbor);
+                    }
+                }
+            }
+        }
+    }
+
     public static bool GetClosestGraphNodeInArea(Vector3 origin, Vector3 size, out GraphNode result)
     {
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -173,6 +198,9 @@ public class EnvironmentUtil : MonoBehaviour
                 break;
             case EnvironmentNodeTagType.Wall:
                 graphNode.Tag = TAG_LAYER_WALL;
+                break;
+            case EnvironmentNodeTagType.Cover:
+                graphNode.Tag = TAG_LAYER_COVER;
                 break;
             default:
                 break;

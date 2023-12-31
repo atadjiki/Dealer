@@ -62,29 +62,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private IEnumerator Coroutine_ScanNavmesh()
     {
-        Debug.Log("Scanning NavMesh");
-        GridGraph gridGraph = AstarPath.active.data.gridGraph;
-        AstarPath.active.Scan(gridGraph);
-
-        foreach(GraphNode node in gridGraph.nodes)
-        {
-            if(node.Tag == TAG_LAYER_WALL)
-            {
-                foreach (GraphNode neighbor in EnvironmentUtil.GetNeighboringNodes(node))
-                {
-                    Vector3 origin = (Vector3)node.position;
-                    Vector3 destination = (Vector3)neighbor.position;
-
-                    //shoot a raycast and see if we hit a wall collider
-                    Ray ray = new Ray(origin, destination);
-
-                    if (Physics.Linecast(origin, destination, LayerMask.GetMask(LAYER_ENV_WALL)))
-                    {
-                        node.RemoveConnection(neighbor);
-                    }
-                }
-            }
-        }
+        EnvironmentUtil.ProcessEnvironment();
 
         yield return new WaitWhile(() => AstarPath.active.isScanning);
     }

@@ -14,8 +14,6 @@ public class EnvironmentObstacle : MonoBehaviour
 
     private void Awake()
     {
-        _collider = GetComponent<BoxCollider>();
-
         Outlinable outline = this.gameObject.AddComponent<Outlinable>();
 
         foreach(Renderer renderer in GetComponentsInChildren<Renderer>())
@@ -33,6 +31,11 @@ public class EnvironmentObstacle : MonoBehaviour
     
     public Bounds GetBounds()
     {
+        if(_collider == null)
+        {
+            _collider = GetComponent<BoxCollider>();
+        }
+
         return _collider.bounds;
     }
 }

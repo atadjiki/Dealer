@@ -10,6 +10,8 @@ public class EnvironmentTransparencyComponent : MonoBehaviour
     private float MinFadeDistance = 0;
     private float MaxFadeDistance = 16; //if the camera is farther away than this, opacity is 100%
 
+    private bool forceTransparent = false;
+
     private void Awake()
     {
         _renderers = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
@@ -22,14 +24,31 @@ public class EnvironmentTransparencyComponent : MonoBehaviour
         if (Camera.main == null) return;
         if (_renderers == null) return;
 
-        Vector3 cameraPos = Camera.main.transform.position;
+        if(forceTransparent)
+        {
+            SetOpacity(0.75f);
+        }
+        else
+        {
+            Vector3 cameraPos = Camera.main.transform.position;
 
-        float distanceToCamera = Vector3.Distance(cameraPos, this.transform.position);
+            float distanceToCamera = Vector3.Distance(cameraPos, this.transform.position);
 
-        float fadePercentage = Mathf.InverseLerp(MinFadeDistance, MaxFadeDistance, distanceToCamera);
+            float fadePercentage = Mathf.InverseLerp(MinFadeDistance, MaxFadeDistance, distanceToCamera);
 
-        float opacity = _curve.Evaluate(fadePercentage);
+            SetOpacity(_curve.Evaluate(fadePercentage));
+        }
 
+        forceTransparent = false;
+    }
+
+    public void ForceTransparency()
+    {
+        forceTransparent = true;
+    }
+
+    private void SetOpacity(float opacity)
+    {
         foreach (MeshRenderer renderer in _renderers)
         {
             if (renderer.material != null)

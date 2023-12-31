@@ -197,6 +197,7 @@ public static partial class Constants
         SpawnLocation,
         Character,
         Wall,
+        Cover,
     }
 
     public enum EnvironmentObstacleType
