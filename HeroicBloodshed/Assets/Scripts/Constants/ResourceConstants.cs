@@ -10,10 +10,10 @@ public static partial class Constants
         {
             case ModelID.MALE_DEA:
                 return PrefabID.Model_Character_Male_DEA;
+            case ModelID.MALE_GOON:
+                return PrefabID.Model_Character_Male_Goon;
             case ModelID.MALE_GENERIC:
                 return PrefabID.Model_Character_Male_Generic;
-            case ModelID.MALE_GENERIC_ENEMY:
-                return PrefabID.Model_Character_Male_Generic_Enemy;
             default:
                 return PrefabID.INVALID;
         }

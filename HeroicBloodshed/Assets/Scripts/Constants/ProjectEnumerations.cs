@@ -35,9 +35,9 @@ public static partial class Constants
 
         MALE_DEA,
 
-        MALE_GENERIC,
+        MALE_GOON,
 
-        MALE_GENERIC_ENEMY,
+        MALE_GENERIC,
     }
 
     public enum PlayerID
@@ -275,8 +275,8 @@ public static partial class Constants
 
         //Characters
         Model_Character_Male_DEA,
+        Model_Character_Male_Goon,
         Model_Character_Male_Generic,
-        Model_Character_Male_Generic_Enemy,
 
         //Weapons
         Model_Weapon_Pistol,
