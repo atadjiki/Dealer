@@ -168,50 +168,40 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         switch (characterEvent)
         {
-            case CharacterEvent.SELECTED:
-            {
-                HandleEvent_Selected();
-                break;
-            }
-            case CharacterEvent.DESELECTED:
-            {
-                HandleEvent_Deselected();
-                break;
-            }
-            case CharacterEvent.TARGETED:
-            {
-                HandleEvent_Targeted();
-                break;
-            }
-            case CharacterEvent.UNTARGETED:
-            {
-                HandleEvent_Untargeted();
-                break;
-            }
             case CharacterEvent.DAMAGE:
             {
-                HandleEvent_HandleDamage((DamageInfo)eventData);
+                if (IsDead()) { return; }
+
+                DamageInfo damageInfo = (DamageInfo)eventData;
+
+                _health -= Mathf.Abs(damageInfo.ActualDamage);
+
+                _health = Mathf.Clamp(_health, 0, _health);
+
+                SetHealth(_health);
+
                 break;
             }
-            case CharacterEvent.HIT_LIGHT:
-            case CharacterEvent.HIT_HARD:
+            case CharacterEvent.FIRE:
             {
-                HandleEvent_Hit((DamageInfo)eventData);
+                eventData = _weapon.HasAmmo();
+                break;
+            }
+            case CharacterEvent.RELOAD:
+            {
+                eventData = _weapon.CanReload();
                 break;
             }
             case CharacterEvent.DEATH:
             {
-                HandleEvent_Death();
+                _health = 0;
                 break;
             }
-            case CharacterEvent.MOVING:
+            case CharacterEvent.HEAL:
             {
-                HandleEvent_Moving();
-                break;
-            }
-            case CharacterEvent.STOPPED:
-            {
-                HandleEvent_Stopped();
+                int amount = _baseHealth / 4;
+                _health += amount;
+                _health = Mathf.Clamp(_health, _health, _baseHealth);
                 break;
             }
             default:
@@ -223,109 +213,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         if(characterEvent == CharacterEvent.DEATH)
         {
             _canReceive = false;
-        }
-    }
-
-    private void HandleEvent_Selected()
-    {
-       // CreateDecal();
-        _audioSource.Play(CharacterAudioType.Await);
-    }
-
-    private void HandleEvent_Deselected()
-    {
-      //  DestroyDecal();
-    }
-
-    private void HandleEvent_Targeted()
-    {
-
-    }
-
-    private void HandleEvent_Untargeted()
-    {
-
-    }
-
-    private void HandleEvent_Moving()
-    { 
-        _animator.GoTo(AnimID.Moving);
-    }
-
-    private void HandleEvent_Stopped()
-    {
-        _animator.GoTo(AnimID.Idle);
-    }
-
-
-    private void HandleEvent_HandleDamage(DamageInfo damageInfo)
-    {
-        if (IsDead()) { return; }
-
-        _health -= Mathf.Abs(damageInfo.ActualDamage);
-
-        _health = Mathf.Clamp(_health, 0, _health);
-
-        SetHealth(_health);
-    }
-
-    private void HandleEvent_Hit(DamageInfo damageInfo)
-    { 
-
-    }
-
-    private void HandleEvent_Death()
-    {
-        _health = 0;
-    }
-
-    private void HandleEvent_Ability(AbilityID abilityID)
-    {
-        switch (abilityID)
-        {
-            case AbilityID.FireWeapon:
-            {
-                _weapon.OnAbility(AbilityID.FireWeapon);
-                if (_weapon.HasAmmo())
-                {
-                    _animator.GoTo(AnimID.Fire);
-                }
-                break;
-            }
-            case AbilityID.Melee:
-            {
-                _weapon.OnAbility(AbilityID.Melee);
-                _animator.GoTo(AnimID.Melee);
-                break;
-            }
-            case AbilityID.Reload:
-            {
-                _weapon.OnAbility(AbilityID.Reload);
-                _animator.GoTo(AnimID.Reload);
-                break;
-            }
-            case AbilityID.Heal:
-            {
-                int amount = _baseHealth / 4;
-                _health += amount;
-                _health = Mathf.Clamp(_health, _health, _baseHealth);
-                _animator.GoTo(AnimID.Heal, 0.25f);
-                break;
-            }
-            case AbilityID.SkipTurn:
-            {
-                _animator.GoTo(AnimID.Skip_Turn, 0.25f);
-                break;
-            }
-            case AbilityID.Grenade:
-            {
-                _animator.GoTo(AnimID.Grenade, 0.25f);
-                break;
-            }
-            default:
-            {
-                break;
-            }
         }
     }
     
@@ -340,7 +227,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     //Getters and Setters
     public bool HasAbility(AbilityID abilityID)
     {
-        return Constants.GetAllowedAbilities(_ID).Contains(abilityID);
+        return GetAllowedAbilities(_ID).Contains(abilityID);
     }
 
     public void SetID(CharacterID ID)
@@ -591,5 +478,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public int GetMovementRange()
     {
         return _movementRange;
+    }
+
+    public WeaponAttackDefinition GetWeaponAttackDefinition()
+    {
+        return _weapon.GetWeaponAttackDefinition();
     }
 }

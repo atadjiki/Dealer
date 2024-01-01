@@ -14,8 +14,6 @@ public class CharacterHandgun : CharacterWeapon
     private List<AudioClip> SFX_Fire;
     private List<AudioClip> SFX_Reload;
 
-    private WeaponAttackDefinition _attackDef;
-
     private void Awake()
     {
         _muzzleAnchor = GetComponentInChildren<WeaponMuzzleAnchor>();
@@ -25,8 +23,6 @@ public class CharacterHandgun : CharacterWeapon
     public override void Setup(CharacterID characterID, WeaponID ID)
     {
         base.Setup(characterID, ID);
-
-        _attackDef = WeaponAttackDefinition.Get(ID);
 
         StartCoroutine(Coroutine_LoadVFX());
     }
@@ -71,23 +67,6 @@ public class CharacterHandgun : CharacterWeapon
 
     }
 
-    public override void OnAbility(AbilityID ability)
-    {
-        base.OnAbility(ability);
-
-        switch(ability)
-        {
-            case AbilityID.Reload:
-                {
-                    _ammo = GetMaxAmmo();
-                    _audioSource.PlayOneShot(GetRandom(SFX_Reload));
-                    break;
-                }
-            default:
-                break;
-        }
-    }
-
     protected override void HandleEvent_Fire()
     {
         base.HandleEvent_Fire();
@@ -95,19 +74,21 @@ public class CharacterHandgun : CharacterWeapon
         StartCoroutine(Coroutine_Fire());
     }
 
+    protected override void HandleEvent_Reload()
+    {
+        _ammo = GetMaxAmmo();
+        _audioSource.PlayOneShot(GetRandom(SFX_Reload));
+    }
+
     private IEnumerator Coroutine_Fire()
     {
         if(_ammo > 0)
         {
             _ammo--;
-            int shotCount = _attackDef.CalculateShotCount();
-            for (int i = 0; i < shotCount; i++)
-            {
-                _audioSource.PlayOneShot(GetRandom(SFX_Fire));
-                PlayMuzzleFX();
-                yield return new WaitForSecondsRealtime(_attackDef.TimeBetweenShots);
-            }
 
+            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+            PlayMuzzleFX();
+            yield return null;
         }
         else
         {

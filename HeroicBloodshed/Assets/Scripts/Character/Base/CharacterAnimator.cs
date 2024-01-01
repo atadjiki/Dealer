@@ -12,17 +12,21 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
     private bool _canReceive = true;
 
+    private Rigidbody[] _rigidbodies;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+
+        _rigidbodies = GetComponentsInChildren<Rigidbody>();
     }
 
-    public void SwitchToRagdoll(DamageInfo damageInfo, float delay)
+    public void SwitchToRagdoll(float delay)
     {
-        StartCoroutine(Coroutine_SwitchToRagdoll(damageInfo, delay));
+        StartCoroutine(Coroutine_SwitchToRagdoll(delay));
     }
 
-    private IEnumerator Coroutine_SwitchToRagdoll(DamageInfo damageInfo, float delay)
+    private IEnumerator Coroutine_SwitchToRagdoll(float delay)
     {
         yield return new WaitForSeconds(delay);
 
@@ -36,34 +40,28 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
             }
         }
 
-        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-
-        foreach (Rigidbody rigidbody in rigidbodies)
+        foreach (Rigidbody rigidbody in _rigidbodies)
         {
             rigidbody.isKinematic = false;
-        }
-
-        if (rigidbodies.Length > 0)
-        {
-            Rigidbody impactedBody = PickImpactedRigidBody();
-
-            ProduceBloodSpray(impactedBody.transform);
         }
     }
     public Rigidbody PickImpactedRigidBody()
     {
-        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-
-        return rigidbodies[Random.Range(0, rigidbodies.Length)];
+        return _rigidbodies[Random.Range(0, _rigidbodies.Length)];
     }
 
-    private void ProduceBloodSpray(Transform parentTransform)
+    private void ProduceBloodSpray()
     {
-        int randomCount = Random.Range(1, 4);
-
-        for (int i = 0; i < randomCount; i++)
+        if (_rigidbodies.Length > 0)
         {
-            StartCoroutine(Coroutine_ProduceBloodSpray(parentTransform));
+            Rigidbody impactedBody = PickImpactedRigidBody();
+
+            int randomCount = Random.Range(1, 4);
+
+            for (int i = 0; i < randomCount; i++)
+            {
+                StartCoroutine(Coroutine_ProduceBloodSpray(impactedBody.transform));
+            }
         }
     }
 
@@ -76,6 +74,10 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         GameObject prefab = (GameObject)resourceRequest.asset;
 
         GameObject particleObject = Instantiate<GameObject>(prefab, parentTransform);
+
+        float randomScale = Random.Range(0.5f, 2.0f);
+
+        particleObject.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
 
         ParticleSystem particleSystem = prefab.GetComponent<ParticleSystem>();
 
@@ -124,28 +126,39 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         if (!_canReceive) { return; }
 
+        bool valid = true;
+
         switch (characterEvent)
         {
-            case CharacterEvent.DEATH:
-                HandleEvent_Death(eventData);
-                _canReceive = false;
+            case CharacterEvent.HIT_HARD:
+            case CharacterEvent.HIT_LIGHT:
+            {
+                ProduceBloodSpray();
                 break;
+            }
+            case CharacterEvent.FIRE:
+            case CharacterEvent.RELOAD:
+            {
+                valid = (bool)eventData;
+                break;
+            }
+            case CharacterEvent.DEATH:
+            {
+                ProduceBloodSpray();
+                SwitchToRagdoll(0.2f);
+                GoTo(GetAnimation(characterEvent));
+                _canReceive = false;
+                valid = false;
+                break;
+            }
             default:
                 break;
         }
 
-        GoTo(GetAnimation(characterEvent));
-    }
-
-    private void HandleEvent_Death(object eventData)
-    {
-        DamageInfo damageInfo = new DamageInfo();
-        if (eventData != null)
+        if(valid)
         {
-             damageInfo = (DamageInfo)eventData;
+            GoTo(GetAnimation(characterEvent), 0.2f);
         }
-
-        SwitchToRagdoll(damageInfo, 0.1f);
     }
 
     public bool CanReceiveCharacterEvents()

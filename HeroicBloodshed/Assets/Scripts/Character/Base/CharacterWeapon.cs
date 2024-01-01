@@ -11,22 +11,36 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 
     private bool _canReceive = true;
 
+    protected WeaponAttackDefinition _attackDef;
+
+
     public virtual void Setup(CharacterID characterID, WeaponID weaponID)
     {
         _ID = weaponID;
         _characterID = characterID;
         _ammo = GetMaxAmmo();
+
+        _attackDef = WeaponAttackDefinition.Get(_ID);
     }
 
-    public void HandleEvent(CharacterEvent characterEvent, object eventData)
+    public void HandleEvent(CharacterEvent characterEvent, object eventData = null)
     {
         if (!_canReceive) { return; }
 
         switch (characterEvent)
         {
             case CharacterEvent.FIRE:
+            if (HasAmmo())
+            {
                 HandleEvent_Fire();
-                break;
+            }
+            break;
+            case CharacterEvent.RELOAD:
+            if (CanReload())
+            {
+                HandleEvent_Reload();
+            }
+            break;
             case CharacterEvent.DEATH:
                 HandleEvent_Death();
                 _canReceive = false;
@@ -37,6 +51,11 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     }
 
     protected virtual void HandleEvent_Fire()
+    {
+
+    }
+
+    protected virtual void HandleEvent_Reload()
     {
 
     }
@@ -62,9 +81,6 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     {
         return _ID;
     }
-    public virtual void OnAbility(AbilityID ability)
-    {
-    }
 
     public int GetRemainingAmmo()
     {
@@ -83,8 +99,18 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         return _ammo > 0;
     }
 
+    public bool CanReload()
+    {
+        return GetRemainingAmmo() != GetMaxAmmo();
+    }
+
     public bool CanReceiveCharacterEvents()
     {
         return _canReceive;
+    }
+
+    public WeaponAttackDefinition GetWeaponAttackDefinition()
+    {
+        return _attackDef;
     }
 }
