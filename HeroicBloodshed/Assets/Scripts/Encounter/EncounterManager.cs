@@ -240,29 +240,7 @@ public class EncounterManager : MonoBehaviour
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
         yield return new WaitForSeconds(0.5f);
 
-        switch (abilityID)
-        {
-            case AbilityID.MoveHalf:
-            case AbilityID.MoveFull:
-                Vector3 destination = _model.GetActiveDestination();
-                yield return AbilityHandler.Coroutine_HandleAbility_Move(caster, destination);
-                break;
-            case AbilityID.FireWeapon:
-                CharacterComponent target = _model.GetActiveTarget();
-                yield return AbilityHandler.Coroutine_HandleAbility_Attack(caster, target);
-                break;
-            case AbilityID.Reload:
-                yield return AbilityHandler.Coroutine_HandleAbility_Reload(caster);
-                break;
-            case AbilityID.SkipTurn:
-                yield return AbilityHandler.Coroutine_HandleAbility_SkipTurn(caster);
-                break;
-            case AbilityID.Heal:
-                yield return AbilityHandler.Coroutine_HandleAbility_Heal(caster);
-                break;
-            default:
-                break;
-        }
+        AbilityHandler.PerformAbility(abilityID, _model.GetCurrentCharacter(), _model.GetActiveTarget(), _model.GetActiveDestination());
     }
 
     public void OnAbilityCancelled()
@@ -395,5 +373,10 @@ public class EncounterManager : MonoBehaviour
     public bool IsModelActive()
     {
         return _model != null;
+    }
+
+    public static bool IsActive()
+    {
+        return Instance != null;
     }
 }

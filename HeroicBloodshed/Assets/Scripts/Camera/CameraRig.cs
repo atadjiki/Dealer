@@ -275,4 +275,9 @@ public class CameraRig : MonoBehaviour
         CM_Overview.Priority = 10;
     }
 
+    public static bool IsActive()
+    {
+        return Instance != null;
+    }
+
 }

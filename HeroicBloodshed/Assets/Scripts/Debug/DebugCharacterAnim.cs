@@ -3,15 +3,19 @@ using UnityEngine;
 using UnityEditor;
 using static Constants;
 using System;
+using System.Collections;
 
 public class DebugCharacterAnim : MonoBehaviour
 {
-    private CharacterComponent characterComponent;
+    private CharacterComponent casterComponent;
+    private CharacterComponent targetComponent;
 
-    [Header("To Spawn")]
-    [SerializeField] private CharacterDefinition DebugCharacter;
-    [Header("Attacking Weapon")]
-    [SerializeField] private WeaponID WeaponID;
+    [Header("Caster")]
+    [SerializeField] private CharacterDefinition casterDef;
+    [SerializeField] private Transform casterPlate;
+    [Header("Target")]
+    [SerializeField] private CharacterDefinition targetDef;
+    [SerializeField] private Transform targetPlate;
 
     private void Awake()
     {
@@ -20,27 +24,52 @@ public class DebugCharacterAnim : MonoBehaviour
 
     public void Spawn()
     {
+        StartCoroutine(Coroutine_Spawn());
+    }
+
+    public IEnumerator Coroutine_Spawn()
+    {
         //delete the existing character component
-        if(characterComponent != null)
+        DestroyCharacter(ref casterComponent);
+        DestroyCharacter(ref targetComponent);
+
+        casterComponent = SpawnCharacter(casterDef, casterPlate);
+        targetComponent = SpawnCharacter(targetDef, targetPlate);
+
+        yield return new WaitWhile(() => casterComponent == null);
+        yield return new WaitWhile(() => targetComponent == null);
+
+        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(casterComponent, targetComponent));
+        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(targetComponent, casterComponent));
+    }
+
+    private void DestroyCharacter(ref CharacterComponent characterComponent)
+    {
+        if (characterComponent != null)
         {
             Destroy(characterComponent.gameObject);
             characterComponent = null;
         }
+    }
 
-        GameObject characterObject = new GameObject("Debug " + DebugCharacter.ID);
-        characterObject.transform.parent = this.transform;
+    private CharacterComponent SpawnCharacter(CharacterDefinition characterDefinition, Transform plate)
+    {
+        GameObject characterObject = new GameObject("Debug " + characterDefinition.ID);
+        characterObject.transform.parent = plate;
+        characterObject.transform.localPosition = Vector3.zero;
         characterObject.transform.localRotation = Quaternion.identity;
 
+        CharacterComponent characterComponent = characterObject.AddComponent<CharacterComponent>();
+        StartCoroutine(characterComponent.Coroutine_Spawn(characterDefinition));
 
-        characterComponent = characterObject.AddComponent<CharacterComponent>();
-        StartCoroutine(characterComponent.Coroutine_Spawn(DebugCharacter));
+        return characterComponent;
     }
 
     public void HandleEvent(CharacterEvent characterEvent, object eventData = null)
     {
         if (characterEvent == CharacterEvent.DAMAGE)
         {
-            eventData = WeaponDefinition.Get(WeaponID).CalculateDamage(null, characterComponent);
+            eventData = WeaponDefinition.Get(targetDef.AllowedWeapons[0]).CalculateDamage(targetComponent, casterComponent);
         }
         else if(characterEvent == CharacterEvent.HIT_LIGHT || characterEvent == CharacterEvent.HIT_HARD)
         {
@@ -48,7 +77,12 @@ public class DebugCharacterAnim : MonoBehaviour
             eventData = damageInfo;
         }
 
-        characterComponent.HandleEvent(characterEvent, eventData);
+        casterComponent.HandleEvent(characterEvent, eventData);
+    }
+
+    public void HandleAbility(AbilityID abilityID)
+    {
+        StartCoroutine(AbilityHandler.PerformAbility(abilityID, casterComponent, targetComponent, casterComponent.GetWorldLocation()));
     }
 }
 
@@ -64,7 +98,7 @@ public class DebugCharacterAnimEditor : Editor
             DebugCharacterAnim debugCharacter = (DebugCharacterAnim)target;
 
             GUILayout.Space(20);
-            GUILayout.Label("Commands");
+            GUILayout.Label("Character Events");
 
             foreach(CharacterEvent characterEvent in Enum.GetValues(typeof(CharacterEvent)))
             {
@@ -86,6 +120,30 @@ public class DebugCharacterAnimEditor : Editor
 
             }
 
+            GUILayout.Space(20);
+            GUILayout.Label("Abilities");
+            foreach (AbilityID abilityID in Enum.GetValues(typeof(AbilityID)))
+            {
+                switch (abilityID)
+                {
+                    case AbilityID.MoveFull:
+                    case AbilityID.MoveHalf:
+                    case AbilityID.NONE:
+                        break;
+                    default:
+                    {
+                        if (GUILayout.Button(GetDisplayString(abilityID)))
+                        {
+                            debugCharacter.HandleAbility(abilityID);
+                        }
+                        break;
+                    }
+                }
+
+  
+            }
+
+            GUILayout.Space(20);
             if (GUILayout.Button("Respawn"))
             {
                 debugCharacter.Spawn();

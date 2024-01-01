@@ -23,20 +23,27 @@ public struct WeaponAttackDefinition
         switch (_ID)
         {
             case WeaponID.Pistol:
-            case WeaponID.Revolver:
             return new WeaponAttackDefinition()
             {
                 ID = _ID,
                 MinShots = 2,
                 MaxShots = 4,
-                TimeBetweenShots = 0.2f
+                TimeBetweenShots = 0.33f
+            };
+            case WeaponID.Revolver:
+            return new WeaponAttackDefinition()
+            {
+                ID = _ID,
+                MinShots = 1,
+                MaxShots = 2,
+                TimeBetweenShots = 0.75f
             };
             case WeaponID.SMG:
             return new WeaponAttackDefinition()
             {
                 ID = _ID,
-                MinShots = 2,
-                MaxShots = 5,
+                MinShots = 7,
+                MaxShots = 10,
                 TimeBetweenShots = 0.1f
             };
             default:

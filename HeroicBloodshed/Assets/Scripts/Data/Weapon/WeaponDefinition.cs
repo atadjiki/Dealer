@@ -90,7 +90,7 @@ public struct WeaponDefinition
                     BaseDamage = 3,
                     CritDamage = 0,
                     Spread = 2,
-                    Ammo = 2,
+                    Ammo = 30,
                     PlusOneThreshold = 0.25f,
                     MuzzleVFX = new PrefabID[]
                     {
@@ -115,7 +115,7 @@ public struct WeaponDefinition
                     BaseDamage = 3,
                     CritDamage = 2,
                     Spread = 1,
-                    Ammo = 3,
+                    Ammo = 12,
                     PlusOneThreshold = 0,
                     MuzzleVFX = new PrefabID[]
                     {
@@ -144,7 +144,7 @@ public struct WeaponDefinition
                     BaseDamage = 3,
                     CritDamage = 2,
                     Spread = 1,
-                    Ammo = 3,
+                    Ammo = 6,
                     PlusOneThreshold = 0,
                     MuzzleVFX = new PrefabID[]
                     {
