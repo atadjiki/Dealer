@@ -60,17 +60,12 @@ public class CharacterAudioSource : MonoBehaviour, ICharacterEventReceiver
         switch(characterEvent)
         {
             case CharacterEvent.DEATH:
-                HandleEvent_Death();
+                Play(CharacterAudioType.Death);
                 _canReceive = false;
                 break;
             default:
                 break;
         }
-    }
-
-    private void HandleEvent_Death()
-    {
-        Play(CharacterAudioType.Death);
     }
 
     public bool CanReceiveCharacterEvents()

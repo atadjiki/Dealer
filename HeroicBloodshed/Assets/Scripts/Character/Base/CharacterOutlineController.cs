@@ -9,13 +9,15 @@ public class CharacterOutlineController : MonoBehaviour, ICharacterEventReceiver
     [SerializeField] private Outlinable Outline;
     [SerializeField] private Outlinable Highlight;
 
+    private TeamID _team;
+
     private bool _canReceive = true;
 
     public void Setup(CharacterDefinition definition, GameObject parentObject)
     {
-        TeamID team = GetTeamByID(definition.ID);
+        _team = GetTeamByID(definition.ID);
 
-        Color teamColor = GetColor(team, 1.0f);
+        Color teamColor = GetColor(_team, 1.0f);
 
         SetupOutline(teamColor);
         SetupHighlight(teamColor);
@@ -79,13 +81,36 @@ public class CharacterOutlineController : MonoBehaviour, ICharacterEventReceiver
 
         switch (characterEvent)
         {
+            case CharacterEvent.HIT_HARD:
+            case CharacterEvent.HIT_LIGHT:
+                HandleEvent_Hit();
+                break;
             case CharacterEvent.DEATH:
+                HandleEvent_Hit();
                 ToggleHighlight(false);
                 SetDeadOutline();
                 break;
             default:
                 break;
         }
+    }
+
+    private void HandleEvent_Hit()
+    {
+        StartCoroutine(Coroutine_PerformHit());
+    }
+
+    private IEnumerator Coroutine_PerformHit()
+    {
+        Color color = GetColor(_team, 1.0f);
+
+        SetupHighlight(Color.white);
+        ToggleHighlight(true);
+        ToggleOutline(false);
+        yield return new WaitForEndOfFrame();
+        SetupHighlight(color);
+        ToggleHighlight(false);
+        ToggleOutline(true);
     }
 
     public bool CanReceiveCharacterEvents()
