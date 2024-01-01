@@ -182,16 +182,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
                 break;
             }
-            case CharacterEvent.FIRE:
-            {
-                eventData = _weapon.HasAmmo();
-                break;
-            }
-            case CharacterEvent.RELOAD:
-            {
-                eventData = _weapon.CanReload();
-                break;
-            }
             case CharacterEvent.DEATH:
             {
                 _health = 0;
@@ -268,16 +258,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public WeaponID GetWeaponID()
     {
         return _weapon.GetID();
-    }
-
-    public int GetRemainingAmmo()
-    {
-        return _weapon.GetRemainingAmmo();
-    }
-
-    public bool IsAmmoFull()
-    {
-        return _weapon.GetRemainingAmmo() == _weapon.GetMaxAmmo();
     }
 
     public bool IsHealthFull()

@@ -178,14 +178,17 @@ public class EncounterManager : MonoBehaviour
 
             if (_model.AreTargetsAvailable())
             {
-                if(currentCharacter.GetRemainingAmmo() == 0)
-                {
-                    _model.SetActiveAbility(AbilityID.Reload);
-                }
-                else
-                {
-                    _model.SetActiveAbility(AbilityID.FireWeapon);
-                }
+                //TODO
+                //if(currentCharacter.GetRemainingAmmo() == 0)
+                //{
+                //    _model.SetActiveAbility(AbilityID.Reload);
+                //}
+                //else
+                //{
+                //    _model.SetActiveAbility(AbilityID.FireWeapon);
+                //}
+
+                _model.SetActiveAbility(AbilityID.FireWeapon);
             }
             else
             {

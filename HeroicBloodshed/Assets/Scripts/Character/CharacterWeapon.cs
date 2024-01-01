@@ -7,7 +7,6 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
 {
     protected WeaponID _ID;
     protected CharacterID _characterID;
-    protected int _ammo = 0;
 
     private bool _canReceive = true;
 
@@ -18,7 +17,6 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     {
         _ID = weaponID;
         _characterID = characterID;
-        _ammo = GetMaxAmmo();
 
         _attackDef = WeaponAttackDefinition.Get(_ID);
     }
@@ -30,17 +28,11 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
         switch (characterEvent)
         {
             case CharacterEvent.FIRE:
-            if (HasAmmo())
-            {
                 HandleEvent_Fire();
-            }
-            break;
+                break;
             case CharacterEvent.RELOAD:
-            if (CanReload())
-            {
                 HandleEvent_Reload();
-            }
-            break;
+                break;
             case CharacterEvent.DEATH:
                 HandleEvent_Death();
                 _canReceive = false;
@@ -80,28 +72,6 @@ public class CharacterWeapon : MonoBehaviour, ICharacterEventReceiver
     public WeaponID GetID()
     {
         return _ID;
-    }
-
-    public int GetRemainingAmmo()
-    {
-        return _ammo;
-    }
-
-    public int GetMaxAmmo()
-    {
-        WeaponDefinition weaponDefinition = WeaponDefinition.Get(GetID());
-
-        return weaponDefinition.Ammo;
-    }
-
-    public bool HasAmmo()
-    {
-        return _ammo > 0;
-    }
-
-    public bool CanReload()
-    {
-        return GetRemainingAmmo() != GetMaxAmmo();
     }
 
     public bool CanReceiveCharacterEvents()

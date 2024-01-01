@@ -76,25 +76,14 @@ public class CharacterHandgun : CharacterWeapon
 
     protected override void HandleEvent_Reload()
     {
-        _ammo = GetMaxAmmo();
         _audioSource.PlayOneShot(GetRandom(SFX_Reload));
     }
 
     private IEnumerator Coroutine_Fire()
     {
-        if(_ammo > 0)
-        {
-            _ammo--;
-
-            _audioSource.PlayOneShot(GetRandom(SFX_Fire));
-            PlayMuzzleFX();
-            yield return null;
-        }
-        else
-        {
-            Debug.Log("Out of ammo!");
-        }
-
+        _audioSource.PlayOneShot(GetRandom(SFX_Fire));
+        PlayMuzzleFX();
+        yield return null;
     }
 
     private void PlayMuzzleFX()

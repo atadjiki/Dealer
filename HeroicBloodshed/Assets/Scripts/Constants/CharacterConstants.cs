@@ -55,20 +55,13 @@ public static partial class Constants
         }
 
         if(abilityID == AbilityID.FireWeapon)
-        {
-            if(characterComponent.GetRemainingAmmo() == 0)
-            {
-                return false;
-            }
-
+        { 
+            //TODO
             return EncounterManager.Instance.AreTargetsAvailable();
         }
         else if(abilityID == AbilityID.Reload)
         {
-            if(characterComponent.IsAmmoFull())
-            {
-                return false;
-            }
+            //TODO
         }
         else if(abilityID == AbilityID.Heal)
         {

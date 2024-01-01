@@ -262,25 +262,6 @@ public class EnvironmentUtil : MonoBehaviour
         return false;
     }
 
-    public static CharacterComponent AddComponentByTeam(CharacterID characterID, GameObject characterObject)
-    {
-        TeamID teamID = GetTeamByID(characterID);
-
-        switch (teamID)
-        {
-            case TeamID.Player:
-                PlayerCharacterComponent playerCharacterComponent = characterObject.AddComponent<PlayerCharacterComponent>();
-                playerCharacterComponent.SetID(characterID);
-                return playerCharacterComponent;
-            case TeamID.Enemy:
-                EnemyCharacterComponent enemyCharacterComponent = characterObject.AddComponent<EnemyCharacterComponent>();
-                enemyCharacterComponent.SetID(characterID);
-                return enemyCharacterComponent;
-            default:
-                return null;
-        }
-    }
-
     public static bool IsPathPossible()
     {
         return false;

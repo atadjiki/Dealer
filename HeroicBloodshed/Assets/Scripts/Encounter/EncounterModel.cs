@@ -58,11 +58,12 @@ public class EncounterModel : MonoBehaviour
             {
                 GameObject characterObject = new GameObject(teamData.Team + "_" + characterID);
 
-                CharacterComponent characterComponent = EnvironmentUtil.AddComponentByTeam(characterID, characterObject);
-
                 characterObject.transform.parent = this.transform;
                 characterObject.transform.localPosition = Vector3.zero;
                 characterObject.transform.localEulerAngles = Vector3.zero;
+
+                CharacterComponent characterComponent = characterObject.AddComponent<CharacterComponent>();
+                characterComponent.SetID(characterID);
 
                 if (characterComponent != null)
                 {

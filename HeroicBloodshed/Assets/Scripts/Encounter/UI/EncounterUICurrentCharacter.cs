@@ -25,7 +25,7 @@ public class EncounterUICurrentCharacter : EncounterUIElement
 
         Text_Weapon.text = GetDisplayString(currentCharacter.GetWeaponID());
 
-        int ammoCount = currentCharacter.GetRemainingAmmo();
+        int ammoCount = 0; //TODO currentCharacter.GetRemainingAmmo();
 
         for(int i = 0; i < ammoCount; i++)
         {
