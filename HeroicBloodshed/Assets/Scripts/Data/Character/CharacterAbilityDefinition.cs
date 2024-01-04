@@ -34,6 +34,8 @@ public class AbilityHandler : MonoBehaviour
 
     private static IEnumerator Coroutine_HandleAbility_Move(CharacterComponent caster, Vector3 destination)
     {
+        Debug.Log("Handling Ability: Move");
+
         CameraRig.Instance.Follow(caster);
 
         yield return new WaitForSeconds(1.0f);

@@ -17,6 +17,8 @@ public class CharacterNavigator : MonoBehaviour
     {
         ABPath path = ABPath.Construct(this.transform.position, destination);
 
+        Debug.Log("Moving on path to - " + destination.ToString() + " - " + path.GetTotalLength() + " units");
+
         _AI.SetPath(path);
 
         _AI.canMove = true;

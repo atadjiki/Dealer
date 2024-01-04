@@ -243,7 +243,7 @@ public class EncounterManager : MonoBehaviour
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
         yield return new WaitForSeconds(0.5f);
 
-        AbilityHandler.PerformAbility(abilityID, _model.GetCurrentCharacter(), _model.GetActiveTarget(), _model.GetActiveDestination());
+        yield return AbilityHandler.PerformAbility(abilityID, _model.GetCurrentCharacter(), _model.GetActiveTarget(), _model.GetActiveDestination());
     }
 
     public void OnAbilityCancelled()
