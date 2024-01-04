@@ -14,19 +14,6 @@ public static partial class Constants
 
     public static Color Movement_None = new Color(0.53333f,  0.53333f,  0.53333f);
 
-    public static Color GetColor(MovementRangeType rangeType)
-    {
-        switch (rangeType)
-        {
-            case MovementRangeType.Full:
-                return Movement_Full;
-            case MovementRangeType.Half:
-                return Movement_Half;
-            default:
-                return Movement_None;
-        }
-    }
-
     public static Color GetColor(TeamID teamID, float opacity)
     {
         Color teamColor;

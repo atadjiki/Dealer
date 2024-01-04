@@ -6,6 +6,10 @@ using static Constants;
 
 public class EnvironmentTileHighlight : EnvironmentInputHandler
 {
+    [Header("Colors")]
+    [SerializeField] private Color Color_HalfRange;
+    [SerializeField] private Color Color_FullRange;
+
     [SerializeField] private GameObject HighlightDecal;
 
     private MeshRenderer _renderer;
@@ -52,5 +56,19 @@ public class EnvironmentTileHighlight : EnvironmentInputHandler
         {
             _outliner.OutlineParameters.Color = color;
         }
+    }
+
+    private Color GetColor(MovementRangeType rangeType)
+    {
+        if (rangeType == MovementRangeType.Half)
+        {
+            return Color_HalfRange;
+        }
+        else if (rangeType == MovementRangeType.Full)
+        {
+            return Color_FullRange;
+        }
+
+        return Color.clear;
     }
 }

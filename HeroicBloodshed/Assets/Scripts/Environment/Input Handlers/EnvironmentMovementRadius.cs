@@ -131,12 +131,11 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
         quad.transform.parent = parent;
         quad.transform.localPosition = position;
-        quad.transform.localPosition += new Vector3(0, 0.15f, 0);
+        quad.transform.localPosition += new Vector3(0, 0.01f, 0);
         quad.transform.localScale = GetTileScaleVector();
 
         MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
 
-        color.a = 0.75f;
         meshRenderer.material.color = color;
 
         yield return null;
