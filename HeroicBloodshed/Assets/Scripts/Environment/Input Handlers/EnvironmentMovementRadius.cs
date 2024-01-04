@@ -6,7 +6,12 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EnvironmentInputHandler
 {
+    [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_Tile;
+
+    [Header("Colors")]
+    [SerializeField] private Color Color_HalfRange;
+    [SerializeField] private Color Color_FullRange;
 
     public override void Activate()
     {
@@ -38,9 +43,6 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
         {
             MovementRangeType rangeType = KeyPair.Key;
             Dictionary<Vector3, int> radiusMap = KeyPair.Value;
-
-            Color rangeColor = GetColor(rangeType);
-           // rangeColor.a = 0.2f;
 
             borderMap.Add(rangeType, new List<Vector3>());
 
@@ -112,7 +114,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
                 foreach (Vector3 node in inputData.RadiusMaps[rangeType].Keys)
                 {
-                    StartCoroutine(GenerateTile(node, RadiusObject.transform, rangeColor));
+                    StartCoroutine(GenerateTile(node, RadiusObject.transform, GetColor(rangeType)));
                 }
 
                 Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
@@ -134,7 +136,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
         MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
 
-        color.a = 0.5f;
+        color.a = 0.75f;
         meshRenderer.material.color = color;
 
         yield return null;
@@ -152,5 +154,19 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
             center + new Vector3(-radius, 0, -radius),
 
         };
+    }
+
+    private Color GetColor(MovementRangeType rangeType)
+    {
+        if(rangeType == MovementRangeType.Half)
+        {
+            return Color_HalfRange;
+        }
+        else if(rangeType == MovementRangeType.Full)
+        {
+            return Color_FullRange;
+        }
+
+        return Color.clear;
     }
 }

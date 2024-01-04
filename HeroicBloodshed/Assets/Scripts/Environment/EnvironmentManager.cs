@@ -9,6 +9,9 @@ using Random = UnityEngine.Random;
 
 public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 {
+    [Header("Prefabs")]
+    public List<GameObject> Prefabs_InputHandlers;
+
     //singleton
     private static EnvironmentManager _instance;
     public static EnvironmentManager Instance { get { return _instance; } }
@@ -54,7 +57,18 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             yield return eventHandler.Coroutine_PerformSetup();
         }
 
-        _inputHandlers = new List<EnvironmentInputHandler>(GetComponentsInChildren<EnvironmentInputHandler>());
+        _inputHandlers = new List<EnvironmentInputHandler>();
+
+        foreach (GameObject prefab in Prefabs_InputHandlers)
+        {
+            GameObject childObject = Instantiate<GameObject>(prefab, this.transform);
+
+            yield return new WaitUntil(() => childObject.GetComponent<EnvironmentInputHandler>());
+
+            EnvironmentInputHandler inputHandler = childObject.GetComponent<EnvironmentInputHandler>();
+
+            _inputHandlers.Add(inputHandler);
+        }
 
         AstarPath.active.maxNearestNodeDistance = 12;
 
