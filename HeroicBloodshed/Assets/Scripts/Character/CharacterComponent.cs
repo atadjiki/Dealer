@@ -34,8 +34,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     protected CapsuleCollider _collider;
 
-    private CharacterAbilityTable _abilityTable;
-
     private bool _canReceive = true;
 
     public delegate void OnCharacterSetupComplete(CharacterComponent character);

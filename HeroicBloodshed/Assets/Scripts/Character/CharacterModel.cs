@@ -7,8 +7,6 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private GameObject MeshGroup_Main;
 
-    private CapsuleCollider _collider;
-
     public void ToggleModel(bool flag)
     {
         MeshGroup_Main.SetActive(flag);

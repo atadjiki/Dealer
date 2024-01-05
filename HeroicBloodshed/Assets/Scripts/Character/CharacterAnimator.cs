@@ -45,10 +45,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
             rigidbody.isKinematic = false;
         }
     }
-    public Rigidbody PickImpactedRigidBody()
-    {
-        return _rigidbodies[Random.Range(0, _rigidbodies.Length)];
-    }
 
     public void Setup(AnimID initialState, WeaponID weapon)
     {
@@ -107,7 +103,7 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         if(valid)
         {
-            GoTo(GetAnimation(characterEvent), 0.2f);
+            GoTo(GetAnimation(characterEvent));
         }
     }
 
