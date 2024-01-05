@@ -80,6 +80,12 @@ public static partial class Constants
         None,
     }
 
+    public enum BodyPartID
+    {
+        Head, 
+        Torso,
+    }
+
     public enum WeaponID
     {
         None,

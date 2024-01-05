@@ -7,6 +7,13 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private GameObject MeshGroup_Main;
 
+    private List<CharacterBodyPartAnchor> _bodyParts;
+
+    private void Awake()
+    {
+        _bodyParts = new List<CharacterBodyPartAnchor>(GetComponentsInChildren<CharacterBodyPartAnchor>());
+    }
+
     public void ToggleModel(bool flag)
     {
         MeshGroup_Main.SetActive(flag);
@@ -27,17 +34,32 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    public bool CanReceiveCharacterEvents()
+    public Transform GetRandomBodyPart()
     {
-        return true;
+        int index = Random.Range(0, _bodyParts.Count);
+
+        return _bodyParts[index].gameObject.transform;
     }
 
-    private void SpawnBloodSpray()
+    public Transform GetBodyPart(BodyPartID ID)
     {
-        StartCoroutine(Coroutine_ProduceBloodSpray(this.transform));
+        foreach(CharacterBodyPartAnchor bodypart in _bodyParts)
+        {
+            if(bodypart.GetID() == ID)
+            {
+                return bodypart.gameObject.transform;
+            }
+        }
+
+        return this.transform;
     }
 
-    private IEnumerator Coroutine_ProduceBloodSpray(Transform parentTransform)
+    public void SpawnBloodSpray()
+    {
+        StartCoroutine(Coroutine_ProduceBloodSpray());
+    }
+
+    private IEnumerator Coroutine_ProduceBloodSpray()
     {
         ResourceRequest resourceRequest = GetCharacterVFX(PrefabID.VFX_Bloodspray);
 
@@ -45,7 +67,7 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 
         GameObject prefab = (GameObject)resourceRequest.asset;
 
-        GameObject particleObject = Instantiate<GameObject>(prefab, parentTransform);
+        GameObject particleObject = Instantiate<GameObject>(prefab, GetRandomBodyPart());
 
         float randomScale = Random.Range(0.5f, 2.0f);
 
@@ -56,5 +78,10 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
         yield return new WaitForSecondsRealtime(particleSystem.main.duration);
 
         Destroy(particleObject);
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return true;
     }
 }
