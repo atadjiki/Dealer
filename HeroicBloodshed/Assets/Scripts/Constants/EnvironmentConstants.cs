@@ -18,5 +18,5 @@ public static partial class Constants
         return new Vector3(TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
 
-    public static int MAX_SEARCH_DISTANCE = 36; //1.5 * 12 * 2
+    public static int MAX_SEARCH_DISTANCE = 36; //1.5 * 6 * 2
 }

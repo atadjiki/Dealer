@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class CharacterAbilityHandler : MonoBehaviour
+public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 {
     private static float _waitTime = 1.0f;
 
@@ -208,5 +208,15 @@ public class CharacterAbilityHandler : MonoBehaviour
     public void RotateTowards(CharacterComponent target)
     {
         StartCoroutine(Coroutine_RotateTowards(target));
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
+    {
+        return;
+    }
+
+    public bool CanReceiveCharacterEvents()
+    {
+        return false;
     }
 }

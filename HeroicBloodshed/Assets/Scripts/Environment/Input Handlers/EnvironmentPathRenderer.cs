@@ -5,10 +5,6 @@ using static Constants;
 
 public class EnvironmentPathRenderer : EnvironmentInputHandler
 {
-    [Header("Colors")]
-    [SerializeField] private Color Color_HalfRange;
-    [SerializeField] private Color Color_FullRange;
-
     private LineRenderer _pathRenderer;
 
     private void Awake()
@@ -61,19 +57,5 @@ public class EnvironmentPathRenderer : EnvironmentInputHandler
         _pathRenderer.positionCount = 0;
         _pathRenderer.SetPositions(new Vector3[] { });
         _pathRenderer.forceRenderingOff = true;
-    }
-
-    private Color GetColor(MovementRangeType rangeType)
-    {
-        if (rangeType == MovementRangeType.Half)
-        {
-            return Color_HalfRange;
-        }
-        else if (rangeType == MovementRangeType.Full)
-        {
-            return Color_FullRange;
-        }
-
-        return Color.clear;
     }
 }

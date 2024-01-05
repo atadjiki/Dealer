@@ -41,7 +41,11 @@ public struct EnvironmentInputData
 }
 
 public class EnvironmentInputHandler : MonoBehaviour
-{ 
+{
+    [Header("Colors")]
+    [SerializeField] protected Color Color_HalfRange;
+    [SerializeField] protected Color Color_FullRange;
+
     public virtual IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
     {
         yield return null;
@@ -54,5 +58,21 @@ public class EnvironmentInputHandler : MonoBehaviour
     public virtual void Deactivate()
     {
         StopAllCoroutines();
+    }
+
+    protected Color GetColor(MovementRangeType rangeType)
+    {
+        if (rangeType == MovementRangeType.Half)
+        {
+            return Color_HalfRange;
+        }
+        else if (rangeType == MovementRangeType.Full)
+        {
+            return Color_FullRange;
+        }
+        else
+        {
+            return Color.white;
+        }
     }
 }

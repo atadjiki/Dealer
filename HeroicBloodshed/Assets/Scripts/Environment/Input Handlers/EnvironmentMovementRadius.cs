@@ -9,10 +9,6 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_Tile;
 
-    [Header("Colors")]
-    [SerializeField] private Color Color_HalfRange;
-    [SerializeField] private Color Color_FullRange;
-
     public override void Activate()
     {
         base.Activate();
@@ -132,7 +128,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
         quad.transform.parent = parent;
         quad.transform.localPosition = position;
         quad.transform.localPosition += new Vector3(0, 0.01f, 0);
-        quad.transform.localScale = GetTileScaleVector();
+//        quad.transform.localScale = GetTileScaleVector();
 
         MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
 
@@ -153,19 +149,5 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
             center + new Vector3(-radius, 0, -radius),
 
         };
-    }
-
-    private Color GetColor(MovementRangeType rangeType)
-    {
-        if(rangeType == MovementRangeType.Half)
-        {
-            return Color_HalfRange;
-        }
-        else if(rangeType == MovementRangeType.Full)
-        {
-            return Color_FullRange;
-        }
-
-        return Color.clear;
     }
 }

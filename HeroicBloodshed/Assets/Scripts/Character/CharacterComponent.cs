@@ -73,6 +73,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         //create an ability handler for this character
         _abilityHandler = this.gameObject.AddComponent<CharacterAbilityHandler>();
         _abilityHandler.Setup(this);
+        _eventReceivers.Add(_abilityHandler);
 
         //create a navigator for the character
         ResourceRequest navigatorRequest = GetCharacterComponent(PrefabID.Character_Navigator);
