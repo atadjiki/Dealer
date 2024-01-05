@@ -158,16 +158,13 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         int shotCount = attackDef.CalculateShotCount();
         for (int i = 0; i < shotCount; i++)
         {
-            if (!damageInfo.IsKill)
+            if (damageInfo.ActualDamage < damageInfo.BaseDamage)
             {
-                if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-                {
-                    damageInfo.target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
-                }
-                else
-                {
-                    damageInfo.target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
-                }
+                damageInfo.target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
+            }
+            else
+            {
+                damageInfo.target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
             }
 
             damageInfo.caster.HandleEvent(CharacterEvent.FIRE);

@@ -50,42 +50,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         return _rigidbodies[Random.Range(0, _rigidbodies.Length)];
     }
 
-    private void ProduceBloodSpray()
-    {
-        if (_rigidbodies.Length > 0)
-        {
-            Rigidbody impactedBody = PickImpactedRigidBody();
-
-            int randomCount = Random.Range(1, 4);
-
-            for (int i = 0; i < randomCount; i++)
-            {
-                StartCoroutine(Coroutine_ProduceBloodSpray(impactedBody.transform));
-            }
-        }
-    }
-
-    private IEnumerator Coroutine_ProduceBloodSpray(Transform parentTransform)
-    {
-        ResourceRequest resourceRequest = GetCharacterVFX(PrefabID.VFX_Bloodspray);
-
-        yield return new WaitUntil(() => resourceRequest.isDone);
-
-        GameObject prefab = (GameObject)resourceRequest.asset;
-
-        GameObject particleObject = Instantiate<GameObject>(prefab, parentTransform);
-
-        float randomScale = Random.Range(0.5f, 2.0f);
-
-        particleObject.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
-
-        ParticleSystem particleSystem = prefab.GetComponent<ParticleSystem>();
-
-        yield return new WaitForSecondsRealtime(particleSystem.main.duration);
-
-        Destroy(particleObject);
-    }
-
     public void Setup(AnimID initialState, WeaponID weapon)
     {
         _weaponID = weapon;
@@ -118,7 +82,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         string animID = state.ToString();
 
-        Debug.Log("Animation: " + animID);
         _animator.CrossFade(animID, transitionTime);
     }
 
@@ -130,15 +93,8 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         switch (characterEvent)
         {
-            case CharacterEvent.HIT_HARD:
-            case CharacterEvent.HIT_LIGHT:
-            {
-                ProduceBloodSpray();
-                break;
-            }
             case CharacterEvent.DEATH:
             {
-                ProduceBloodSpray();
                 SwitchToRagdoll(0.2f);
                 GoTo(GetAnimation(characterEvent));
                 _canReceive = false;

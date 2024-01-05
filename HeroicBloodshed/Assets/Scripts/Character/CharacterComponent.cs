@@ -95,6 +95,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         yield return new WaitUntil(() => modelRequest.isDone);
         GameObject modelPrefab = Instantiate((GameObject)modelRequest.asset, navigatorObject.transform);
         _model = modelPrefab.GetComponent<CharacterModel>();
+        _eventReceivers.Add(_model);
         yield return new WaitUntil(() => _model != null);
 
         //grab UI anchor from model
@@ -180,16 +181,16 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         {
             case CharacterEvent.DAMAGE:
             {
-                if (IsDead()) { return; }
+                if (IsAlive())
+                {
+                    DamageInfo damageInfo = (DamageInfo)eventData;
 
-                DamageInfo damageInfo = (DamageInfo)eventData;
+                    _health -= Mathf.Abs(damageInfo.ActualDamage);
 
-                _health -= Mathf.Abs(damageInfo.ActualDamage);
+                    _health = Mathf.Clamp(_health, 0, _health);
 
-                _health = Mathf.Clamp(_health, 0, _health);
-
-                SetHealth(_health);
-
+                    SetHealth(_health);
+                }
                 break;
             }
             case CharacterEvent.DEATH:
@@ -209,11 +210,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         }
 
         BroadcastEvent(eventData, characterEvent);
-
-        if(characterEvent == CharacterEvent.DEATH)
-        {
-            _canReceive = false;
-        }
     }
     
     private void BroadcastEvent(object eventData, CharacterEvent characterEvent)
