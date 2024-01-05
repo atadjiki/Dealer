@@ -9,6 +9,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
     //Event Receivers
     protected CharacterModel _model;
+    protected CharacterAbilityHandler _abilityHandler;
     protected CharacterNavigator _navigator;
     protected CharacterWeapon _weapon;
     protected CharacterAnimator _animator;
@@ -68,6 +69,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _movementRange = characterDefinition.MovementRange;
 
         _eventReceivers = new List<ICharacterEventReceiver>();
+
+        //create an ability handler for this character
+        _abilityHandler = this.gameObject.AddComponent<CharacterAbilityHandler>();
+        _abilityHandler.Setup(this);
 
         //create a navigator for the character
         ResourceRequest navigatorRequest = GetCharacterComponent(PrefabID.Character_Navigator);
@@ -465,5 +470,20 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public WeaponAttackDefinition GetWeaponAttackDefinition()
     {
         return _weapon.GetWeaponAttackDefinition();
+    }
+
+    public void RotateTowards(CharacterComponent target)
+    {
+        _abilityHandler.RotateTowards(target);
+    }
+
+    public void PerformAbility(AbilityID abilityID, CharacterComponent target = null, Vector3 destination = new Vector3())
+    {
+        StartCoroutine(_abilityHandler.PerformAbility(abilityID, target, destination));
+    }
+
+    public IEnumerator Coroutine_PerformAbility(AbilityID abilityID, CharacterComponent target = null, Vector3 destination = new Vector3())
+    {
+        yield return _abilityHandler.PerformAbility(abilityID, target, destination);
     }
 }

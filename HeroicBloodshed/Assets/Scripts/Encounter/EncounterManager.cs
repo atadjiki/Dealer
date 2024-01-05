@@ -243,7 +243,7 @@ public class EncounterManager : MonoBehaviour
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
         yield return new WaitForSeconds(0.5f);
 
-        yield return AbilityHandler.PerformAbility(abilityID, _model.GetCurrentCharacter(), _model.GetActiveTarget(), _model.GetActiveDestination());
+        yield return caster.Coroutine_PerformAbility(abilityID, _model.GetActiveTarget(), _model.GetActiveDestination());
     }
 
     public void OnAbilityCancelled()
@@ -315,7 +315,7 @@ public class EncounterManager : MonoBehaviour
 
         CharacterComponent caster = _model.GetCurrentCharacter();
 
-        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(caster, target));
+        caster.RotateTowards(target);
 
         DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage(caster,target);
 

@@ -39,8 +39,8 @@ public class DebugCharacterAnim : MonoBehaviour
         yield return new WaitWhile(() => casterComponent == null);
         yield return new WaitWhile(() => targetComponent == null);
 
-        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(casterComponent, targetComponent));
-        StartCoroutine(AbilityHandler.Coroutine_RotateTowards(targetComponent, casterComponent));
+        casterComponent.RotateTowards(targetComponent);
+        targetComponent.RotateTowards(casterComponent);
     }
 
     private void DestroyCharacter(ref CharacterComponent characterComponent)
@@ -82,7 +82,7 @@ public class DebugCharacterAnim : MonoBehaviour
 
     public void HandleAbility(AbilityID abilityID)
     {
-        StartCoroutine(AbilityHandler.PerformAbility(abilityID, casterComponent, targetComponent, casterComponent.GetWorldLocation()));
+        casterComponent.PerformAbility(abilityID, targetComponent, casterComponent.GetWorldLocation());
     }
 }
 

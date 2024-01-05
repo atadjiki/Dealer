@@ -136,12 +136,6 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
                 ProduceBloodSpray();
                 break;
             }
-            case CharacterEvent.FIRE:
-            case CharacterEvent.RELOAD:
-            {
-                valid = (bool)eventData;
-                break;
-            }
             case CharacterEvent.DEATH:
             {
                 ProduceBloodSpray();
