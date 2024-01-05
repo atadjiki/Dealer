@@ -105,15 +105,17 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         yield return new WaitWhile(() => _weaponAnchor == null);
         if (characterDefinition.AllowedWeapons.Length > 0)
         {
-            WeaponID weaponID = characterDefinition.AllowedWeapons[UnityEngine.Random.Range(0, characterDefinition.AllowedWeapons.Length)];
+            WeaponID weaponID = characterDefinition.AllowedWeapons[Random.Range(0, characterDefinition.AllowedWeapons.Length)];
 
             ResourceRequest weaponRequest = GetWeaponModel(weaponID);
 
             yield return new WaitUntil(() => weaponRequest.isDone);
 
-            GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, _weaponAnchor.transform);
+            Transform anchor = _weaponAnchor.GetOffset(weaponID);
 
-            weaponPrefab.transform.parent = _weaponAnchor.transform;
+            GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, anchor);
+
+            weaponPrefab.transform.parent = anchor;
 
             weaponPrefab.transform.localPosition = Vector3.zero;
             weaponPrefab.transform.localRotation = Quaternion.identity;
