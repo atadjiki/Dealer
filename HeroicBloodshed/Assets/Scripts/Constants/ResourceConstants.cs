@@ -12,8 +12,6 @@ public static partial class Constants
                 return PrefabID.Model_Character_Male_DEA;
             case ModelID.MALE_GOON:
                 return PrefabID.Model_Character_Male_Goon;
-            case ModelID.MALE_GENERIC:
-                return PrefabID.Model_Character_Male_Generic;
             default:
                 return PrefabID.INVALID;
         }

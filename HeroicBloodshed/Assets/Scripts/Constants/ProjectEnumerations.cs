@@ -276,7 +276,6 @@ public static partial class Constants
         //Characters
         Model_Character_Male_DEA,
         Model_Character_Male_Goon,
-        Model_Character_Male_Generic,
 
         //Weapons
         Model_Weapon_Pistol,
