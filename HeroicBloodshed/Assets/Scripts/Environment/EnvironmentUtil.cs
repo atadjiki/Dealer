@@ -170,6 +170,27 @@ public class EnvironmentUtil : MonoBehaviour
         return neighbors;
     }
 
+    public static List<Vector3> GetNodeCoverData(GraphNode node)
+    {
+        Vector3 origin = (Vector3)node.position;
+
+        List<Vector3> CoverDirections = new List<Vector3>();
+
+        foreach (KeyValuePair<Vector3,Vector3> pair in GetCardinalNeighbors(node))
+        {
+            if(Physics.Linecast(origin, pair.Value, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
+            {
+                CoverDirections.Add(pair.Key);
+            }
+            if (Physics.Linecast(origin, pair.Value, LayerMask.GetMask(LAYER_ENV_WALL)))
+            {
+                CoverDirections.Add(pair.Key);
+            }
+        }
+
+        return CoverDirections;
+    }
+
     public static void PaintNeighboringNodesAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
     {
         List<GraphNode> neighbors = new List<GraphNode>();
@@ -299,5 +320,18 @@ public class EnvironmentUtil : MonoBehaviour
         outline.OutlineParameters.Color = outlineColor;
         outline.OutlineParameters.DilateShift = 0.25f;
         outline.OutlineParameters.BlurShift = 0.25f;
+    }
+
+    public static Dictionary<Vector3, Vector3> GetCardinalNeighbors(GraphNode node)
+    {
+        Vector3 origin = (Vector3)node.position;
+
+        return new Dictionary<Vector3, Vector3>()
+        {
+            { Vector3.forward, origin + (Vector3.forward * TILE_SIZE) },
+            { Vector3.forward * -1, origin + (Vector3.forward * TILE_SIZE * -1) },
+            { Vector3.right, origin + (Vector3.right * TILE_SIZE) },
+            { Vector3.right * -1, origin + (Vector3.right * TILE_SIZE * -1) },
+        };
     }
 }

@@ -6,11 +6,11 @@ using static Constants;
 public struct EnvironmentInputData
 {
     public bool OnValidTile;
-    public Vector3 NodePosition;
-    public MovementRangeType RangeType;
-    public int PathCost;
-    public List<Vector3> PathToHighlightedNode;
-    public Dictionary<MovementRangeType, Dictionary<Vector3, int>> RadiusMaps;
+    public Vector3 NodePosition; //currently highlighted tile
+    public MovementRangeType RangeType; //currently highlighted tile's range type
+    public int PathCost; // current path cost
+    public List<Vector3> PathToHighlightedNode; //array of vectors from origin to destination 
+    public Dictionary<MovementRangeType, Dictionary<Vector3, int>> RadiusMaps; //map of each range type to a map of each node and the path cost to that node
 
     public static EnvironmentInputData Build()
     {

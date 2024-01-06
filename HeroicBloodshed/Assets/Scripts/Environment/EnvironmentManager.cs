@@ -22,6 +22,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private EnvironmentInputData _inputData;
 
+    public Dictionary<Vector3, List<Vector3>> _coverMap;
+
     private bool _allowUpdate = false;
 
     public static bool IsActive()
@@ -84,6 +86,25 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         EnvironmentUtil.ProcessEnvironment();
 
         yield return new WaitWhile(() => AstarPath.active.isScanning);
+
+        _coverMap = new Dictionary<Vector3, List<Vector3>>();
+
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+
+        //check each walkable node for its cover values
+        foreach (GraphNode node in gridGraph.nodes)
+        {
+            if (node.Walkable)
+            {
+                Vector3 origin = (Vector3)node.position;
+                List<Vector3> coverDirections = EnvironmentUtil.GetNodeCoverData(node);
+
+                if (coverDirections.Count > 0)
+                {
+                    _coverMap.Add(origin, coverDirections);
+                }
+            }
+        }
     }
 
     //Environment Input/Interactions
@@ -126,6 +147,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             if (EnvironmentUtil.GetClosestGraphNodeToPosition(hit.point, out graphNode))
             {
                 _inputData.NodePosition = (Vector3) graphNode.position;
+
+                EnvironmentUtil.GetNodeCoverData(graphNode);
 
                 //if it's unoccupied, it's ok to highlight/path/click it
                 if (EnvironmentUtil.IsPositionFree(_inputData.NodePosition))
@@ -368,6 +391,11 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     public EnvironmentInputData GetInputData()
     {
         return _inputData;
+    }
+
+    public Dictionary<Vector3, List<Vector3>> GetCoverMap()
+    {
+        return _coverMap;
     }
 }
 
