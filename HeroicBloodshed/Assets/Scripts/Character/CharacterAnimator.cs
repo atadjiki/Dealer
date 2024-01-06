@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using static Constants;
 using UnityEngine;
+using RootMotion.FinalIK;
 
 [RequireComponent(typeof(Animator))]
 public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 {
     private Animator _animator;
+    private AimIK _aimIK;
 
     private WeaponID _weaponID;
 
@@ -17,6 +19,8 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+
+        _aimIK = GetComponentInChildren<AimIK>();
 
         _rigidbodies = GetComponentsInChildren<Rigidbody>();
     }
@@ -46,13 +50,15 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         }
     }
 
-    public void Setup(AnimID initialState, WeaponID weapon)
+    public void Setup(AnimID initialState, WeaponID weapon, Transform offset)
     {
         _weaponID = weapon;
 
         int layerIndex = GetLayerByWeapon(_weaponID);
 
         _animator.SetLayerWeight(layerIndex, 1);
+
+        _aimIK.solver.transform = offset;
 
         Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
 
@@ -81,6 +87,20 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
         _animator.CrossFade(animID, transitionTime);
     }
 
+    private void SetAimIKTarget(CharacterComponent target)
+    {
+        Debug.Log("Aim IK Active");
+
+        _aimIK.solver.target = target.GetRandomBodyPart();
+        _aimIK.solver.IKPositionWeight = 1;
+    }
+
+    private void ResetAimIK()
+    {
+        _aimIK.solver.target = null;
+        _aimIK.solver.IKPositionWeight = 0;
+    }
+
     public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
         if (!_canReceive) { return; }
@@ -89,6 +109,12 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
 
         switch (characterEvent)
         {
+            case CharacterEvent.TARGETING:
+                SetAimIKTarget((CharacterComponent)eventData);
+                break;
+            case CharacterEvent.UNTARGETING:
+                ResetAimIK();
+                break;
             case CharacterEvent.DEATH:
             {
                 SwitchToRagdoll(0.2f);

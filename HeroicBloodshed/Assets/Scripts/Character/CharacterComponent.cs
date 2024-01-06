@@ -101,6 +101,8 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
         //get weapon model for character 
         _weaponAnchor = modelPrefab.GetComponentInChildren<CharacterWeaponAnchor>();
+        Transform weaponAnchorOffset = null;
+
         yield return new WaitWhile(() => _weaponAnchor == null);
         if (characterDefinition.AllowedWeapons.Length > 0)
         {
@@ -110,11 +112,11 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 
             yield return new WaitUntil(() => weaponRequest.isDone);
 
-            Transform anchor = _weaponAnchor.GetOffset(weaponID);
+            weaponAnchorOffset = _weaponAnchor.GetOffset(weaponID);
 
-            GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, anchor);
+            GameObject weaponPrefab = Instantiate((GameObject)weaponRequest.asset, weaponAnchorOffset);
 
-            weaponPrefab.transform.parent = anchor;
+            weaponPrefab.transform.parent = weaponAnchorOffset;
 
             weaponPrefab.transform.localPosition = Vector3.zero;
             weaponPrefab.transform.localRotation = Quaternion.identity;
@@ -151,7 +153,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         //grab animator from model 
         _animator = modelPrefab.GetComponent<CharacterAnimator>();
         yield return new WaitUntil(() => _animator != null);
-        _animator.Setup(AnimID.Idle, _weapon.GetID());
+        _animator.Setup(AnimID.Idle, _weapon.GetID(), weaponAnchorOffset);
         _eventReceivers.Add(_animator);
 
         //stick a wall raycaster on the model
@@ -482,5 +484,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     public IEnumerator Coroutine_PerformAbility(AbilityID abilityID, CharacterComponent target = null, Vector3 destination = new Vector3())
     {
         yield return _abilityHandler.PerformAbility(abilityID, target, destination);
+    }
+
+    public Transform GetRandomBodyPart()
+    {
+        return _model.GetRandomBodyPart();
     }
 }

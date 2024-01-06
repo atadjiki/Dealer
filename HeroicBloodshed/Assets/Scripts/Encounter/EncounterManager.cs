@@ -208,8 +208,6 @@ public class EncounterManager : MonoBehaviour
     {
         if (_model.IsCurrentTeamCPU())
         {
-            CharacterComponent characterComponent = _model.GetCurrentCharacter();
-
             List<CharacterComponent> enemies = _model.GetTargetCandidates();
 
             if (enemies.Count > 0)
@@ -290,16 +288,25 @@ public class EncounterManager : MonoBehaviour
         return _model.AreAlliesAvailable();
     }
 
-    public void SelectTarget(CharacterComponent character)
+    public void SelectTarget(CharacterComponent targetCharacter)
     {
         if(_model.GetState() == EncounterState.CHOOSE_TARGET)
         {
-            foreach (CharacterComponent target in _model.GetAllCharactersInTeam(character.GetTeam()))
+            foreach (CharacterComponent character in _model.GetAllCharactersInTeam(targetCharacter.GetTeam()))
             {
                 character.HandleEvent(CharacterEvent.UNTARGETED);
             }
 
-            _model.SetTarget(character);
+            _model.SetTarget(targetCharacter);
+
+            CharacterComponent currentCharacter = GetCurrentCharacter();
+
+            currentCharacter.HandleEvent(CharacterEvent.UNTARGETING);
+
+            if(currentCharacter != null)
+            {
+                currentCharacter.HandleEvent(CharacterEvent.TARGETING, targetCharacter);
+            }
 
             _model.TransitionState();
         }
@@ -313,13 +320,20 @@ public class EncounterManager : MonoBehaviour
             character.HandleEvent(CharacterEvent.UNTARGETED);
         }
 
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        if (currentCharacter != null)
+        {
+            currentCharacter.HandleEvent(CharacterEvent.UNTARGETING);
+        }
+
         CharacterComponent caster = _model.GetCurrentCharacter();
 
         caster.RotateTowards(target);
 
         DamageInfo damageInfo = WeaponDefinition.Get(caster.GetWeaponID()).CalculateDamage(caster,target);
 
-        target.HandleEvent(CharacterEvent.TARGETED);
+        target.HandleEvent(CharacterEvent.TARGETED, damageInfo);
     }
 
     private IEnumerator SpawnCharacters()

@@ -71,6 +71,8 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         yield return Coroutine_RotateTowards(target);
 
+        _caster.HandleEvent(CharacterEvent.TARGETING, target);
+
         WeaponDefinition weaponDef = WeaponDefinition.Get(_caster.GetWeaponID());
 
         target.ToggleHighlight(false);

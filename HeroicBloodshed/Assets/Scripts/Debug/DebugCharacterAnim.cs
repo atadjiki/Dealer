@@ -108,6 +108,8 @@ public class DebugCharacterAnimEditor : Editor
                     case CharacterEvent.DESELECTED:
                     case CharacterEvent.TARGETED:
                     case CharacterEvent.UNTARGETED:
+                    case CharacterEvent.TARGETING:
+                    case CharacterEvent.UNTARGETING:
                     case CharacterEvent.DAMAGE:
                         break;
                     default:

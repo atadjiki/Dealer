@@ -128,6 +128,10 @@ public static partial class Constants
 
         DESELECTED,
 
+        TARGETING,
+
+        UNTARGETING,
+
         TARGETED,
 
         UNTARGETED,
