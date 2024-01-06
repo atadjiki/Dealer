@@ -39,7 +39,7 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
                 GameObject decalObject = Instantiate<GameObject>(Prefab_CoverDecal, this.transform);
 
                 EnvironmentCoverDecal coverDecal = decalObject.GetComponent<EnvironmentCoverDecal>();
-                coverDecal.Setup(Constants.EnvironmentObstacleType.FullCover);
+                coverDecal.Setup(Constants.EnvironmentObstacleType.HalfCover);
 
                 decalObject.transform.position = origin;
                 decalObject.transform.localEulerAngles = GetEulerAnglesFromDirection(direction);
@@ -57,7 +57,7 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
         }
         else if (direction == Vector3.forward * -1)
         {
-            return new Vector3(0, 0, 0);
+            return new Vector3(0, -180, 0);
         }
         else if (direction == Vector3.right)
         {
@@ -65,7 +65,7 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
         }
         else if (direction == Vector3.right * -1)
         {
-            return new Vector3(0, 90, 0);
+            return new Vector3(0, -90, 0);
         }
 
         return Vector3.zero;

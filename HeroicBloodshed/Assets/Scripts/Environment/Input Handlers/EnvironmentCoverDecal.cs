@@ -9,6 +9,8 @@ public class EnvironmentCoverDecal : MonoBehaviour
     [SerializeField] private Material Mat_Half;
     [SerializeField] private Material Mat_Full;
 
+    [SerializeField] private GameObject Quad;
+
     private MeshRenderer _renderer;
 
     private void Awake()
@@ -21,10 +23,12 @@ public class EnvironmentCoverDecal : MonoBehaviour
         if (obstacleType == EnvironmentObstacleType.FullCover)
         {
             _renderer.material = Mat_Full;
+            Quad.transform.localPosition = new Vector3(0, 2, 0.5f);
         }
         else
         {
             _renderer.material = Mat_Half;
+            Quad.transform.localPosition = new Vector3(0, 1, 0.5f);
         }
     }
 }
