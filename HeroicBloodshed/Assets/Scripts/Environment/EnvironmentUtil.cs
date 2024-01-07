@@ -144,10 +144,10 @@ public class EnvironmentUtil : MonoBehaviour
  
     public static bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
     {
-        int threshold;
+        float threshold;
 
         int AP = character.GetActionPoints();
-        int movementRange = character.GetMovementRange();
+        float movementRange = character.GetMovementRange();
 
         if (AP >= GetAbilityCost(AbilityID.MoveFull))
         {
@@ -354,5 +354,70 @@ public class EnvironmentUtil : MonoBehaviour
             { Vector3.right, origin + (Vector3.right * TILE_SIZE) },
             { Vector3.right * -1, origin + (Vector3.right * TILE_SIZE * -1) },
         };
+    }
+
+    public static int GetDistanceInNodes(Vector3 origin, Vector3 destination)
+    {
+        float distance = Vector3.Distance(origin, destination) / TILE_SIZE;
+
+        Debug.Log("Distance " + distance);
+
+        return Mathf.RoundToInt(distance);
+    }
+
+    public static bool IsNodeExposed(Vector3 origin)
+    {
+        GridGraph gridGraph = AstarData.active.data.gridGraph;
+
+        NNInfoInternal nnInfo = gridGraph.GetNearest(origin);
+
+        bool exposed = true;
+
+        if(nnInfo.node != null)
+        {
+            CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+            List<CharacterComponent> enemies = EncounterManager.Instance.GetAllCharactersInTeam(GetOpposingTeam(currentCharacter.GetTeam()));
+
+            foreach(CharacterComponent enemy in enemies)
+            {
+                if(!IsInWeaponRange(enemy, origin))
+                {
+                    exposed = false;
+                }
+                else if(enemy.IsAlive())
+                {
+                    RaycastHit hitInfo;
+                    if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
+                    {
+                        if (hitInfo.collider != null)
+                        {
+                            exposed = false;
+                        }
+                    }
+                    if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_WALL)))
+                    {
+                        if (hitInfo.collider != null)
+                        {
+                            exposed = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return exposed;
+    }
+
+    public static bool IsInWeaponRange(CharacterComponent caster, CharacterComponent target)
+    {
+        int distance = GetDistanceInNodes(caster.GetWorldLocation(), target.GetWorldLocation());
+        return distance < caster.GetWeaponRange();
+    }
+
+    public static bool IsInWeaponRange(CharacterComponent caster, Vector3 target)
+    {
+        int distance = GetDistanceInNodes(caster.GetWorldLocation(), target);
+        return distance < caster.GetWeaponRange();
     }
 }

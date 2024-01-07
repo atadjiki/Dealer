@@ -42,6 +42,8 @@ public class EncounterManager : MonoBehaviour
 
     private void Build()
     {
+        Application.targetFrameRate = 30;
+
         LoadEncounter();
     }
 
@@ -179,20 +181,8 @@ public class EncounterManager : MonoBehaviour
     {
         if (_model.IsCurrentTeamCPU())
         {
-            CharacterComponent currentCharacter = _model.GetCurrentCharacter();
-
             if (_model.AreTargetsAvailable())
             {
-                //TODO
-                //if(currentCharacter.GetRemainingAmmo() == 0)
-                //{
-                //    _model.SetActiveAbility(AbilityID.Reload);
-                //}
-                //else
-                //{
-                //    _model.SetActiveAbility(AbilityID.FireWeapon);
-                //}
-
                 _model.SetActiveAbility(AbilityID.FireWeapon);
             }
             else

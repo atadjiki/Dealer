@@ -461,9 +461,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         return _actionPoints;
     }
 
-    public int GetMovementRange()
+    public float GetMovementRange()
     {
-        return _movementRange;
+        return _movementRange * TILE_SIZE;
     }
 
     public WeaponAttackDefinition GetWeaponAttackDefinition()
@@ -525,5 +525,10 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         }
 
         return null;
+    }
+
+    public float GetWeaponRange()
+    {
+        return WeaponDefinition.Get(_weapon.GetID()).Range * TILE_SIZE;
     }
 }

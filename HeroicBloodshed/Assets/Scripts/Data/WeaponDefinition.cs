@@ -34,6 +34,8 @@ public struct WeaponDefinition
 
     public float PlusOneThreshold; //0-1
 
+    public int Range;
+
     public DamageInfo CalculateDamage(CharacterComponent caster, CharacterComponent target)
     {
         DamageInfo damageInfo = new DamageInfo();
@@ -92,6 +94,7 @@ public struct WeaponDefinition
                     Spread = 2,
                     Ammo = 30,
                     PlusOneThreshold = 0.25f,
+                    Range = 6,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Auto_Medium,
@@ -117,6 +120,7 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 12,
                     PlusOneThreshold = 0,
+                    Range = 6,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Default,
@@ -146,6 +150,7 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 6,
                     PlusOneThreshold = 0,
+                    Range = 6,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Default,

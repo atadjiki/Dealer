@@ -31,4 +31,11 @@ public class EnvironmentCoverDecal : MonoBehaviour
             Quad.transform.localPosition = new Vector3(0, 0.75f, 0.75f);
         }
     }
+
+    public void SetExposed()
+    {
+        Color color = Color.red;
+        color.a = 0.5f;
+        _renderer.material.color = color;
+    }
 }

@@ -26,7 +26,7 @@ public class EncounterUITargetSelect : EncounterUIElement
         Text_Ability.text = GetDisplayString(model.GetActiveAbility());
 ;
         //add a portrait for each character in the enemy team
-        foreach (CharacterComponent character in model.GetAllCharactersInTeam(TeamID.Enemy))
+        foreach (CharacterComponent character in model.GetTargetCandidates())
         {
             if(character.IsAlive())
             {

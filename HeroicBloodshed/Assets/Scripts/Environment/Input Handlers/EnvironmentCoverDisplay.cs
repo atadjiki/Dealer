@@ -59,7 +59,7 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
         //first gather all the valid nodes near the character
         Vector3 characterPosition = currentCharacter.GetWorldLocation();
 
-        float characterRange = currentCharacter.GetMovementRange() * TILE_SIZE;
+        float characterRange = currentCharacter.GetMovementRange();
 
         Bounds bounds = new Bounds(characterPosition, new Vector3(characterRange, 0, characterRange));
 
@@ -82,10 +82,16 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
                 GameObject decalObject = Instantiate<GameObject>(Prefab_CoverDecal, this.transform);
 
                 EnvironmentCoverDecal coverDecal = decalObject.GetComponent<EnvironmentCoverDecal>();
+
                 coverDecal.Setup(coverData.ObstacleType);
 
                 decalObject.transform.position = origin;
                 decalObject.transform.localEulerAngles = GetEulerAnglesFromDirection(coverData.Direction);
+
+                if(EnvironmentUtil.IsNodeExposed(origin))
+                {
+                    coverDecal.SetExposed();
+                }
 
                 decalObject.SetActive(false);
 
@@ -93,7 +99,6 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
             }
         }
 
-        yield return null;
     }
 
     private Vector3 GetEulerAnglesFromDirection(Vector3 direction)

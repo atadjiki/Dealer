@@ -495,6 +495,8 @@ public class EncounterModel : MonoBehaviour
 
     public List<CharacterComponent> GetTargetCandidates()
     {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
         TeamID opposingTeam = GetOpposingTeam(GetCurrentTeam());
 
         List<CharacterComponent> candidates = new List<CharacterComponent>();
@@ -503,11 +505,14 @@ public class EncounterModel : MonoBehaviour
 
         if(OpposingCharacters != null)
         {
-            foreach (CharacterComponent character in OpposingCharacters)
+            foreach (CharacterComponent enemy in OpposingCharacters)
             {
-                if (character.IsAlive())
+                if (enemy.IsAlive())
                 {
-                    candidates.Add(character);
+                    if (EnvironmentUtil.IsInWeaponRange(currentCharacter, enemy))
+                    {
+                        candidates.Add(enemy);
+                    }
                 }
             }
         }
