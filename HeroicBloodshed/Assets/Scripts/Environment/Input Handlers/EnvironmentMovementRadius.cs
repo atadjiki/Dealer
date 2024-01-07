@@ -32,8 +32,6 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
 
         Dictionary<MovementRangeType, List<Vector3>> borderMap = new Dictionary<MovementRangeType, List<Vector3>>();
 
-        CharacterNavigator characterNavigator = EncounterManager.Instance.GetCurrentCharacter().GetNavigator();
-
         //generate our border nodes for reach movement range type
         foreach (KeyValuePair<MovementRangeType, Dictionary<Vector3, int>> KeyPair in inputData.RadiusMaps)
         {
@@ -128,7 +126,6 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
         quad.transform.parent = parent;
         quad.transform.localPosition = position;
         quad.transform.localPosition += new Vector3(0, 0.01f, 0);
-//        quad.transform.localScale = GetTileScaleVector();
 
         MeshRenderer meshRenderer = quad.GetComponent<MeshRenderer>();
 

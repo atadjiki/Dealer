@@ -97,11 +97,6 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
                 EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
             }
 
-            if (CameraRig.IsActive())
-            {
-                CameraRig.Instance.Follow(target);
-            }
-
             yield return new WaitForSeconds(_waitTime * 2);
         }
         else
