@@ -44,11 +44,16 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         }
     }
 
-    public IEnumerator Coroutine_Build()
+    public IEnumerator Coroutine_EnvironmentUpdate()
     {
         yield return Coroutine_ScanNavmesh();
 
         yield return Coroutine_UpdateCoverMap();
+    }
+
+    public IEnumerator Coroutine_Build()
+    {
+        yield return Coroutine_EnvironmentUpdate();
 
         _eventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
 
@@ -318,13 +323,22 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         switch (stateID)
         {
+            case EncounterState.UPDATE:
+            {
+                yield return Coroutine_EnvironmentUpdate();
+                break;
+            }
             case EncounterState.CHOOSE_ACTION:
-                if(EncounterManager.Instance.ShouldAllowInput())
+            {
+                yield return Coroutine_EnvironmentUpdate();
+
+                if (EncounterManager.Instance.ShouldAllowInput())
                 {
                     yield return Coroutine_CalculateRadiusBounds();
                     ToggleInputHandlers(true);
                 }
                 break;
+            }
             case EncounterState.PERFORM_ACTION:
                 ToggleInputHandlers(false);
                 break;
@@ -350,7 +364,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         if(character.GetTeam() == TeamID.Player)
         {
-            List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWNLOCATION);
+            List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWN);
 
             if (SpawnNodes.Count > 0)
             {

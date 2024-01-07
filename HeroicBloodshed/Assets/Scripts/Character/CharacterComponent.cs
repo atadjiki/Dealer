@@ -502,7 +502,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         List<CharacterComponent> enemies = EncounterManager.Instance.GetAllCharactersInTeam(GetOpposingTeam(GetTeam()));
 
-        if (enemies.Count > 0)
+        if (enemies != null && enemies.Count > 0)
         {
             CharacterComponent closestEnemy = enemies[0];
 

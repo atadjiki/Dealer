@@ -108,13 +108,16 @@ public class EncounterManager : MonoBehaviour
 
         switch (state)
         {
-            case EncounterState.SELECT_CURRENT_CHARACTER:
+            case EncounterState.SETUP_COMPLETE:
             {
                 foreach (CharacterComponent character in _model.GetAllCharacters())
                 {
                     character.FaceNearestEnemy();
                 }
-
+                break;
+            }
+            case EncounterState.SELECT_CURRENT_CHARACTER:
+            {
                 CharacterComponent currentCharacter = _model.GetCurrentCharacter();
 
                 CameraRig.Instance.Follow(currentCharacter);
@@ -185,13 +188,40 @@ public class EncounterManager : MonoBehaviour
     {
         if (_model.IsCurrentTeamCPU())
         {
+            //can we shoot somebody right off the bat?
             if (_model.AreTargetsAvailable())
             {
                 _model.SetActiveAbility(AbilityID.FireWeapon);
             }
             else
             {
-                _model.SetActiveAbility(AbilityID.SkipTurn);
+                //where is our closest enemy
+                CharacterComponent closestTarget = _model.GetClosestEnemy();
+
+                //find a suitable tile near the enemy, preferably behind cover
+                Vector3 destination = EnvironmentUtil.FindClosestNodeInRange(_model.GetCurrentCharacter(), closestTarget);
+
+                //if we can get to this node, move
+                MovementRangeType rangeType;
+                if (EnvironmentUtil.IsWithinCharacterRange(destination, _model.GetCurrentCharacter(), out rangeType))
+                {
+                    _model.SetActiveDestination(destination);
+
+                    if (rangeType == MovementRangeType.Full)
+                    {
+                        _model.SetActiveAbility(AbilityID.MoveFull);
+                    }
+                    else if (rangeType == MovementRangeType.Half)
+                    {
+                        _model.SetActiveAbility(AbilityID.MoveHalf);
+                    }
+                }
+                else
+                {
+                    //else, just skip the turn 
+
+                    _model.SetActiveAbility(AbilityID.SkipTurn);
+                }
             }
 
             //pretend like the CPU is thinking :)
@@ -383,5 +413,10 @@ public class EncounterManager : MonoBehaviour
     public List<CharacterComponent> GetAllCharactersInTeam(TeamID team)
     {
         return _model.GetAllCharactersInTeam(team);
+    }
+
+    public List<CharacterComponent> GetAllCharacters()
+    {
+        return _model.GetAllCharacters();
     }
 }

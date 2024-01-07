@@ -495,6 +495,34 @@ public class EncounterModel : MonoBehaviour
         return false;
     }
 
+    public CharacterComponent GetClosestEnemy()
+    {
+        List<CharacterComponent> enemies = GetOpposingCharacters();
+
+        CharacterComponent closest = null;
+
+        if(enemies.Count > 0)
+        {
+            Vector3 origin = GetCurrentCharacter().GetWorldLocation();
+
+            closest = enemies[0];
+
+            foreach(CharacterComponent enemy in enemies)
+            {
+                float currentDistance = Vector3.Distance(origin, closest.GetWorldLocation());
+
+                float targetDistance = Vector3.Distance(origin, enemy.GetWorldLocation());
+
+                if(targetDistance < currentDistance)
+                {
+                    closest = enemy;
+                }
+            }
+        }
+
+        return closest;
+    }
+
     public List<CharacterComponent> GetTargetCandidates()
     {
         CharacterComponent currentCharacter = GetCurrentCharacter();
@@ -520,6 +548,11 @@ public class EncounterModel : MonoBehaviour
         }
 
         return candidates;
+    }
+
+    public List<CharacterComponent> GetOpposingCharacters()
+    {
+        return GetAllCharactersInTeam(GetOpposingTeam(GetCurrentCharacter()));
     }
 
     public List<CharacterComponent> GetAllCharactersInTeam(TeamID teamID) 

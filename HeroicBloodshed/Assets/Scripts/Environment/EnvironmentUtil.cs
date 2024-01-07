@@ -141,8 +141,25 @@ public class EnvironmentUtil : MonoBehaviour
 
         return gridGraph.GetNodesInRegion(bounds);
     }
- 
-    public static bool IsWithinCharacterRange(int distance, CharacterComponent character, out MovementRangeType rangeType)
+
+    public static bool IsWithinCharacterRange(Vector3 destination, CharacterComponent character, out MovementRangeType rangeType)
+    {
+        Vector3 origin = character.GetWorldLocation();
+
+        ABPath path = ABPath.Construct(origin, destination);
+
+        path.heuristic = Heuristic.Euclidean;
+        path.nnConstraint = BuildConstraint();
+
+        AstarPath.StartPath(path, true);
+
+        path.BlockUntilCalculated();
+
+        return IsWithinCharacterRange(0, character, out rangeType);
+    }
+
+
+    public static bool IsWithinCharacterRange(int pathCost, CharacterComponent character, out MovementRangeType rangeType)
     {
         float threshold;
 
@@ -158,9 +175,9 @@ public class EnvironmentUtil : MonoBehaviour
             threshold = movementRange;
         }
 
-        if (distance <= threshold)
+        if (pathCost <= threshold)
         {
-            if (distance <= character.GetMovementRange())
+            if (pathCost <= character.GetMovementRange())
             {
                 rangeType = MovementRangeType.Half;
             }
@@ -212,44 +229,6 @@ public class EnvironmentUtil : MonoBehaviour
         return CoverDirections;
     }
 
-    public static void PaintNeighboringNodesAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
-    {
-        List<GraphNode> neighbors = new List<GraphNode>();
-        graphNode.GetConnections(neighbors.Add);
-
-        foreach (GraphNode neighbor in neighbors)
-        {
-            if (neighbor.Tag != graphNode.Tag && neighbor.Walkable)
-            {
-                PaintNodeAs(neighbor, tagType);
-            }
-        }
-    }
-
-    public static void PaintNodeAs(GraphNode graphNode, EnvironmentNodeTagType tagType)
-    {
-        switch(tagType)
-        {
-            case EnvironmentNodeTagType.Obstacle:
-                graphNode.Tag = TAG_LAYER_OBSTACLE;
-                break;
-            case EnvironmentNodeTagType.Character:
-                graphNode.Tag = TAG_LAYER_CHARACTER;
-                break;
-            case EnvironmentNodeTagType.SpawnLocation:
-                graphNode.Tag = TAG_LAYER_SPAWNLOCATION;
-                break;
-            case EnvironmentNodeTagType.Wall:
-                graphNode.Tag = TAG_LAYER_WALL;
-                break;
-            case EnvironmentNodeTagType.Cover:
-                graphNode.Tag = TAG_LAYER_COVER;
-                break;
-            default:
-                break;
-        }
-    }
-
     public static NNConstraint BuildConstraint()
     {
         NNConstraint constraint = new NNConstraint();
@@ -276,9 +255,23 @@ public class EnvironmentUtil : MonoBehaviour
 
     public static bool IsGraphNodeOccupied(GraphNode graphNode)
     {
-        if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag == TAG_LAYER_CHARACTER)
+        if (graphNode.Tag == TAG_LAYER_OBSTACLE)
         {
             return true;
+        }
+
+        if(EncounterManager.IsActive())
+        {
+            foreach (CharacterComponent character in EncounterManager.Instance.GetAllCharacters())
+            {
+                if(character.GetNavigator() != null)
+                {
+                    if (character.GetWorldLocation() == (Vector3)graphNode.position)
+                    {
+                        return true;
+                    }
+                }
+            }
         }
 
         return false;
@@ -377,27 +370,30 @@ public class EnvironmentUtil : MonoBehaviour
 
             List<CharacterComponent> enemies = EncounterManager.Instance.GetAllCharactersInTeam(GetOpposingTeam(currentCharacter.GetTeam()));
 
-            foreach(CharacterComponent enemy in enemies)
+            if(enemies != null && enemies.Count > 0)
             {
-                if(!IsInWeaponRange(enemy, origin))
+                foreach (CharacterComponent enemy in enemies)
                 {
-                    exposed = false;
-                }
-                else if(enemy.IsAlive())
-                {
-                    RaycastHit hitInfo;
-                    if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
+                    if (!IsInWeaponRange(enemy, origin))
                     {
-                        if (hitInfo.collider != null)
-                        {
-                            exposed = false;
-                        }
+                        exposed = false;
                     }
-                    if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_WALL)))
+                    else if (enemy.IsAlive())
                     {
-                        if (hitInfo.collider != null)
+                        RaycastHit hitInfo;
+                        if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
                         {
-                            exposed = false;
+                            if (hitInfo.collider != null)
+                            {
+                                exposed = false;
+                            }
+                        }
+                        if (Physics.Linecast(origin, enemy.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_WALL)))
+                        {
+                            if (hitInfo.collider != null)
+                            {
+                                exposed = false;
+                            }
                         }
                     }
                 }
@@ -405,6 +401,55 @@ public class EnvironmentUtil : MonoBehaviour
         }
 
         return exposed;
+    }
+
+    public static GraphNode GetClosestNode(List<GraphNode> nodes, Vector3 origin)
+    {
+        if(nodes.Count > 0)
+        {
+            GraphNode closest = nodes[0];
+
+            foreach(GraphNode node in nodes)
+            {
+                float currentDistance = Vector3.Distance(origin, (Vector3)closest.position);
+                float nodeDistance = Vector3.Distance(origin, (Vector3)node.position);
+
+                if(nodeDistance < currentDistance)
+                {
+                    closest = node;
+                }
+            }
+
+            return closest;
+        }
+
+        return null;
+    }
+
+
+    public static Vector3 FindClosestNodeInRange(CharacterComponent caster, CharacterComponent target)
+    {
+        float range = caster.GetWeaponRange() * 2;
+
+        Bounds bounds = new Bounds(target.GetWorldLocation(), new Vector3(range, 0, range));
+
+        List<GraphNode> nodes = GetGraphNodesInBounds(bounds);
+
+        List<GraphNode> validNodes = new List<GraphNode>();
+
+        foreach(GraphNode node in nodes)
+        {
+            if(!IsGraphNodeOccupied(node))
+            {
+                validNodes.Add(node);
+            }
+        }
+
+        GraphNode closestNode = GetClosestNode(validNodes, caster.GetWorldLocation());
+
+        Debug.DrawLine(caster.GetWorldLocation(), (Vector3)closestNode.position, Color.red, 3f);
+
+        return (Vector3)closestNode.position;
     }
 
     public static bool IsInWeaponRange(CharacterComponent caster, CharacterComponent target)
