@@ -48,6 +48,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
     {
         yield return Coroutine_ScanNavmesh();
 
+        yield return Coroutine_UpdateCoverMap();
+
         _eventHandlers = new List<IEncounterEventHandler>(GetComponentsInChildren<IEncounterEventHandler>());
 
         _eventHandlers.Remove(this);
@@ -86,7 +88,10 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         EnvironmentUtil.ProcessEnvironment();
 
         yield return new WaitWhile(() => AstarPath.active.isScanning);
+    }
 
+    private IEnumerator Coroutine_UpdateCoverMap()
+    {
         _coverMap = new Dictionary<Vector3, List<Vector3>>();
 
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
@@ -105,6 +110,8 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
                 }
             }
         }
+
+        yield return null;
     }
 
     //Environment Input/Interactions
@@ -341,15 +348,18 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         //find a spawn point to place the character
         //see if we have a marker available to spawn them in
 
-        List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWNLOCATION);
-
-        if(SpawnNodes.Count > 0)
+        if(character.GetTeam() == TeamID.Player)
         {
-            int index = Random.Range(0, SpawnNodes.Count - 1);
-            GraphNode spawnNode = SpawnNodes[index];
+            List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWNLOCATION);
 
-            navigator.TeleportTo((Vector3)spawnNode.position);
-            return true;
+            if (SpawnNodes.Count > 0)
+            {
+                int index = Random.Range(0, SpawnNodes.Count - 1);
+                GraphNode spawnNode = SpawnNodes[index];
+
+                navigator.TeleportTo((Vector3)spawnNode.position);
+                return true;
+            }
         }
 
         GraphNode randomNNode;
