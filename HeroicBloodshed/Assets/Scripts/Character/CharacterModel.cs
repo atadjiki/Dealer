@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
+[RequireComponent(typeof(EnvironmentWallRaycaster))]
 public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
 {
     [SerializeField] private GameObject MeshGroup_Main;
 
     private List<CharacterBodyPartAnchor> _bodyParts;
+    private EnvironmentWallRaycaster _wallRaycaster;
 
     private void Awake()
     {
         _bodyParts = new List<CharacterBodyPartAnchor>(GetComponentsInChildren<CharacterBodyPartAnchor>());
+        _wallRaycaster = GetComponent<EnvironmentWallRaycaster>();
     }
 
     public void ToggleModel(bool flag)
@@ -27,6 +30,11 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
             case CharacterEvent.HIT_LIGHT:
                 {
                     SpawnBloodSpray();
+                    break;
+                }
+            case CharacterEvent.DEATH:
+                {
+                    _wallRaycaster.enabled = false;
                     break;
                 }
             default:

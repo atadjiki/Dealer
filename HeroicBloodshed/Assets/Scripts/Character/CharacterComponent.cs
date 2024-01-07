@@ -156,9 +156,6 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         _animator.Setup(AnimID.Idle, _weapon.GetID(), weaponAnchorOffset);
         _eventReceivers.Add(_animator);
 
-        //stick a wall raycaster on the model
-        _model.gameObject.AddComponent<EnvironmentWallRaycaster>();
-
         //place the character at an appropriate spawn location
         if(EnvironmentManager.IsActive())
         {

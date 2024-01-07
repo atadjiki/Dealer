@@ -42,8 +42,6 @@ public class EncounterManager : MonoBehaviour
 
     private void Build()
     {
-        Application.targetFrameRate = 30;
-
         LoadEncounter();
     }
 
