@@ -299,15 +299,6 @@ public class EncounterManager : MonoBehaviour
 
             _model.SetTarget(targetCharacter);
 
-            CharacterComponent currentCharacter = GetCurrentCharacter();
-
-            currentCharacter.HandleEvent(CharacterEvent.UNTARGETING);
-
-            if(currentCharacter != null)
-            {
-                currentCharacter.HandleEvent(CharacterEvent.TARGETING, targetCharacter);
-            }
-
             _model.TransitionState();
         }
     }
@@ -318,13 +309,6 @@ public class EncounterManager : MonoBehaviour
         foreach(CharacterComponent character in _model.GetAllCharactersInTeam(target.GetTeam()))
         {
             character.HandleEvent(CharacterEvent.UNTARGETED);
-        }
-
-        CharacterComponent currentCharacter = GetCurrentCharacter();
-
-        if (currentCharacter != null)
-        {
-            currentCharacter.HandleEvent(CharacterEvent.UNTARGETING);
         }
 
         CharacterComponent caster = _model.GetCurrentCharacter();

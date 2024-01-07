@@ -71,8 +71,6 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         yield return Coroutine_RotateTowards(target);
 
-        _caster.HandleEvent(CharacterEvent.TARGETING, target);
-
         WeaponDefinition weaponDef = WeaponDefinition.Get(_caster.GetWeaponID());
 
         target.ToggleHighlight(false);
@@ -153,6 +151,8 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
     private IEnumerator Coroutine_FireWeaponAt(DamageInfo damageInfo)
     {
+        HandleEvent(CharacterEvent.TARGETING, damageInfo.target);
+
         yield return Coroutine_RotateTowards(damageInfo.target);
 
         WeaponAttackDefinition attackDef = damageInfo.caster.GetWeaponAttackDefinition();
@@ -173,6 +173,8 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
             yield return new WaitForSeconds(attackDef.TimeBetweenShots);
         }
+
+        HandleEvent(CharacterEvent.UNTARGETING, null);
     }
 
     private IEnumerator Coroutine_RotateTowards(CharacterComponent target)
