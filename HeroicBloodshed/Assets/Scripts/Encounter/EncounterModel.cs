@@ -19,7 +19,7 @@ public class EncounterModel : MonoBehaviour
     private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
 
     //create a queue for each team each combat loop
-    private Dictionary<TeamID, Queue<CharacterComponent>> _queues;
+    private Queue<CharacterComponent> _timeline;
 
     private EncounterState _pendingState = EncounterState.INIT;
 
@@ -96,7 +96,7 @@ public class EncounterModel : MonoBehaviour
                 yield return Coroutine_SetupComplete();
                 break;
             case EncounterState.BUILD_QUEUES:
-                yield return Coroutine_BuildQueues();
+                yield return Coroutine_BuildTimeline();
                 break;
             case EncounterState.CHECK_CONDITIONS:
                 yield return Coroutine_CheckConditions();
@@ -156,33 +156,60 @@ public class EncounterModel : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator Coroutine_BuildQueues()
+    private IEnumerator Coroutine_BuildTimeline()
     {
-        _queues = new Dictionary<TeamID, Queue<CharacterComponent>>();
+        _timeline = new Queue<CharacterComponent>();
+
+        Dictionary<TeamID, List<CharacterComponent>> teamLists = new Dictionary<TeamID, List<CharacterComponent>>();
 
         foreach (TeamID team in _characterMap.Keys)
         {
-            string debugString = "Queue - Team: " + team + "{ ";
+            teamLists.Add(team, new List<CharacterComponent>());
 
-            if (_queues.ContainsKey(team) == false)
+            foreach (CharacterComponent characterComponent in _characterMap[team])
             {
-                _queues.Add(team, new Queue<CharacterComponent>()); //create a new queue
-
-                foreach (CharacterComponent characterComponent in _characterMap[team])
+                if (characterComponent.IsAlive())
                 {
-                    if (characterComponent.IsAlive())
-                    {
-                        debugString += characterComponent.GetID() + ", ";
+                    characterComponent.ReplenishActionPoints();
 
-                        characterComponent.ReplenishActionPoints();
-                        _queues[team].Enqueue(characterComponent);
-                    }
+                    teamLists[team].Add(characterComponent);
                 }
-                debugString += " }";
             }
-
-            Debug.Log(debugString);
         }
+
+        int maxCount = 0;
+
+        foreach(List<CharacterComponent> teamList in teamLists.Values)
+        {
+            if(teamList.Count > maxCount)
+            {
+                maxCount = teamList.Count;
+            }
+        }
+
+        for(int i = 0; i < maxCount; i++)
+        {
+            foreach(List<CharacterComponent> teamList in teamLists.Values)
+            {
+                if(i < teamList.Count)
+                {
+                    _timeline.Enqueue(teamList[i]);
+                }
+                else if(teamList.Count > 0)
+                {
+                    _timeline.Enqueue(teamList[i % teamList.Count]);
+                }
+            }
+        }
+
+        string debugstring = "Timeline: \n";
+
+        foreach(CharacterComponent character in _timeline)
+        {
+            debugstring += character.GetID() + " (" + teamLists[character.GetTeam()].IndexOf(character) + ")\n";
+        }
+
+        Debug.Log(debugstring);
 
         SetPendingState(EncounterState.CHECK_CONDITIONS);
         yield return null;
@@ -191,15 +218,17 @@ public class EncounterModel : MonoBehaviour
     private IEnumerator Coroutine_CheckConditions()
     {
         //if any queues are empty, then we are done with the encounter
-        foreach (Queue<CharacterComponent> TeamQueue in _queues.Values)
+        foreach (TeamID team in _characterMap.Keys)
         {
-            if (TeamQueue.Count == 0)
+            if(IsTeamDead(team))
             {
                 //call delegate
                 SetPendingState(EncounterState.DONE);
                 yield break;
             }
         }
+
+        yield return null;
 
         SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
     }
@@ -291,26 +320,32 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_UpdateEncounter()
     {
-        if(AreAllQueuesEmpty() || IsOpposingTeamDead())
-        { 
+        //if the timeline is empty, time for a new round
+        if (IsTimelineEmpty() || IsOpposingTeamDead())
+        {
             IncrementTurnCount();
             ResetTeam();
             SetPendingState(EncounterState.BUILD_QUEUES);
         }
-        //if the current team's queue is empty, it's the next teams turn
-        else if(IsCurrentTeamQueueEmpty())
-        {
-            IncrementTeam();
-            SetPendingState(EncounterState.TEAM_UPDATED);
-        }
-        //if we still have characters left in the current team's queue, do nothing here
+        //if there are still characters in the timeline, keep processing the round
         else
         {
             IncrementTeam();
+            SetPendingState(EncounterState.TEAM_UPDATED);
             SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
         }
 
         yield return null;
+    }
+
+    public bool IsTimelineEmpty()
+    {
+        return _timeline.Count == 0;
+    }
+
+    public bool IsAbilitySelected()
+    {
+        return GetActiveAbility() != AbilityID.NONE;
     }
 
     //
@@ -326,26 +361,6 @@ public class EncounterModel : MonoBehaviour
         }
 
         return result;
-    }
-
-    public bool IsQueueEmpty(TeamID teamID)
-    {
-        if (_queues.ContainsKey(teamID)) { return (_queues[teamID].Count == 0); }
-
-        return false;
-    }
-
-    public bool AreAllQueuesEmpty()
-    {
-        foreach(Queue<CharacterComponent> queue in _queues.Values)
-        {
-            if(queue.Count != 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public bool IsOpposingTeamDead()
@@ -406,8 +421,12 @@ public class EncounterModel : MonoBehaviour
 
     public void SetTarget(CharacterComponent target)
     {
-        Debug.Log("Selected target: " + target.gameObject.name);
-        target.ToggleHighlight(true);
+        if(target != null)
+        {
+            Debug.Log("Selected target: " + target.gameObject.name);
+            target.ToggleHighlight(true);
+
+        }
         _activeTarget = target;
     }
 
@@ -456,15 +475,7 @@ public class EncounterModel : MonoBehaviour
     //characters
     public CharacterComponent GetCurrentCharacter()
     {
-        if(_queues != null)
-        {
-            if (_queues[_currentTeam] != null && _queues[_currentTeam].Count > 0)
-            {
-                return _queues[_currentTeam].Peek();
-            }
-        }
-
-        return null;
+        return _timeline.Peek();
     }
 
     public bool AreTargetsAvailable()
@@ -525,11 +536,9 @@ public class EncounterModel : MonoBehaviour
 
     public void PopCurrentCharacter()
     {
+        _timeline.Dequeue();
         CancelActiveAbility();
     }
-
-    //teams
-    public bool IsCurrentTeamQueueEmpty() { return IsQueueEmpty(_currentTeam); }
 
     public TeamID GetCurrentTeam() { return _currentTeam; }
 

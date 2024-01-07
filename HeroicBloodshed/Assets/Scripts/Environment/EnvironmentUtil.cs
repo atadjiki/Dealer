@@ -360,8 +360,6 @@ public class EnvironmentUtil : MonoBehaviour
     {
         float distance = Vector3.Distance(origin, destination) / TILE_SIZE;
 
-        Debug.Log("Distance " + distance);
-
         return Mathf.RoundToInt(distance);
     }
 
