@@ -88,7 +88,7 @@ public class CharacterOutlineController : MonoBehaviour, ICharacterEventReceiver
             case CharacterEvent.DEATH:
                 HandleEvent_Hit();
                 ToggleHighlight(false);
-                SetDeadOutline();
+               // SetDeadOutline();
                 break;
             default:
                 break;

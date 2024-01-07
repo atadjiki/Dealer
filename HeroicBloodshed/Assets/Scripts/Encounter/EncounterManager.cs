@@ -116,6 +116,7 @@ public class EncounterManager : MonoBehaviour
                 }
 
                 CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+
                 CameraRig.Instance.Follow(currentCharacter);
 
                 if (currentCharacter.IsAlive())
@@ -157,6 +158,11 @@ public class EncounterManager : MonoBehaviour
                 foreach(CharacterComponent character in _model.GetAllCharacters())
                 {
                     character.DestroyEncounterOverhead();
+
+                    if(character.IsAlive())
+                    {
+                            character.HandleEvent(CharacterEvent.HOLSTER);
+                    }
                 }
                 _model.OnStateChanged -= EncounterStateCallback;
                 break;

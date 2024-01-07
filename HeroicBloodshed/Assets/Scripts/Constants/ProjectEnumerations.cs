@@ -120,6 +120,8 @@ public static partial class Constants
 
         Moving,
         Death,
+
+        Holster,
     }
 
     public enum CharacterEvent
@@ -162,6 +164,8 @@ public static partial class Constants
         MOVING,
 
         STOPPED,
+
+        HOLSTER,
     }
 
     public enum EncounterState

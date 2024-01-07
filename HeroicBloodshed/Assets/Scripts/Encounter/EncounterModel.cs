@@ -166,7 +166,6 @@ public class EncounterModel : MonoBehaviour
 
             if (_queues.ContainsKey(team) == false)
             {
-
                 _queues.Add(team, new Queue<CharacterComponent>()); //create a new queue
 
                 foreach (CharacterComponent characterComponent in _characterMap[team])
@@ -307,15 +306,11 @@ public class EncounterModel : MonoBehaviour
         //if we still have characters left in the current team's queue, do nothing here
         else
         {
+            IncrementTeam();
             SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
         }
 
         yield return null;
-    }
-
-    public bool IsAbilitySelected()
-    {
-        return GetActiveAbility() != AbilityID.NONE;
     }
 
     //
@@ -386,7 +381,7 @@ public class EncounterModel : MonoBehaviour
                 _currentTeam = TeamID.Enemy;
                 break;
             case TeamID.Enemy:
-                _currentTeam = TeamID.None;
+                _currentTeam = TeamID.Player;
                 break;
         }
 
@@ -411,12 +406,8 @@ public class EncounterModel : MonoBehaviour
 
     public void SetTarget(CharacterComponent target)
     {
-        if(target != null)
-        {
-            Debug.Log("Selected target: " + target.gameObject.name);
-            target.ToggleHighlight(true);
-
-        }
+        Debug.Log("Selected target: " + target.gameObject.name);
+        target.ToggleHighlight(true);
         _activeTarget = target;
     }
 
@@ -532,11 +523,8 @@ public class EncounterModel : MonoBehaviour
         }
     }
 
-    public List<CharacterComponent> GetAllCharactersInTeamQueue(TeamID teamID) { return new List<CharacterComponent>(_queues[teamID].ToArray()); }
-
     public void PopCurrentCharacter()
     {
-        CharacterComponent dequedCharacter = _queues[_currentTeam].Dequeue();
         CancelActiveAbility();
     }
 

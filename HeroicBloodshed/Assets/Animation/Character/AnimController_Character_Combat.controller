@@ -237,6 +237,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -3121375843331176729}
     m_Position: {x: -300, y: 380, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 7531508121823384716}
+    m_Position: {x: 200, y: 320, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -655836806991578448}
@@ -436,6 +439,9 @@ AnimatorController:
     - serializedVersion: 2
       m_State: {fileID: -3121375843331176729}
       m_Motion: {fileID: 1827226128182048838, guid: 6ee0c97e14a5be84b85d35253947cc20, type: 3}
+    - serializedVersion: 2
+      m_State: {fileID: 7531508121823384716}
+      m_Motion: {fileID: 1827226128182048838, guid: df391d0feed87d44fb646d308d76b4c0, type: 3}
     m_Behaviours: []
     m_BlendingMode: 0
     m_SyncedLayerIndex: 0
@@ -484,6 +490,9 @@ AnimatorController:
     - serializedVersion: 2
       m_State: {fileID: -3121375843331176729}
       m_Motion: {fileID: 1827226128182048838, guid: cb75062374654ac4b9b4260ba1d7fc1a, type: 3}
+    - serializedVersion: 2
+      m_State: {fileID: 7531508121823384716}
+      m_Motion: {fileID: 1827226128182048838, guid: 465a9b2824128434b86a7a61e772bcd3, type: 3}
     m_Behaviours: []
     m_BlendingMode: 0
     m_SyncedLayerIndex: 0
@@ -532,6 +541,9 @@ AnimatorController:
     - serializedVersion: 2
       m_State: {fileID: -3121375843331176729}
       m_Motion: {fileID: 1827226128182048838, guid: d243105369bcd8546be628dd69bdfd18, type: 3}
+    - serializedVersion: 2
+      m_State: {fileID: 7531508121823384716}
+      m_Motion: {fileID: 1827226128182048838, guid: 007f52fde7585404ba1b08d536bb9418, type: 3}
     m_Behaviours: []
     m_BlendingMode: 0
     m_SyncedLayerIndex: 0
@@ -796,6 +808,32 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 0}
+--- !u!1102 &7531508121823384716
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Holster
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1107 &7739850587912116058
 AnimatorStateMachine:
   serializedVersion: 6

@@ -43,6 +43,8 @@ public static partial class Constants
                 return AnimID.Moving;
             case CharacterEvent.DEATH:
                 return AnimID.Death;
+            case CharacterEvent.HOLSTER:
+                return AnimID.Holster;
 
             default:
                 return AnimID.Idle;
