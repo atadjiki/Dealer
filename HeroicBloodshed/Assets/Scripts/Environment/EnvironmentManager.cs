@@ -22,7 +22,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private EnvironmentInputData _inputData;
 
-    public Dictionary<Vector3, List<Vector3>> _coverMap;
+    public Dictionary<Vector3, List<EnvironmentCoverData>> _coverMap;
 
     private bool _allowUpdate = false;
 
@@ -92,7 +92,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
     private IEnumerator Coroutine_UpdateCoverMap()
     {
-        _coverMap = new Dictionary<Vector3, List<Vector3>>();
+        _coverMap = new Dictionary<Vector3, List<EnvironmentCoverData>>();
 
         GridGraph gridGraph = AstarPath.active.data.gridGraph;
 
@@ -102,7 +102,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
             if (node.Walkable)
             {
                 Vector3 origin = (Vector3)node.position;
-                List<Vector3> coverDirections = EnvironmentUtil.GetNodeCoverData(node);
+                List<EnvironmentCoverData> coverDirections = EnvironmentUtil.GetNodeCoverData(node);
 
                 if (coverDirections.Count > 0)
                 {
@@ -403,7 +403,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
         return _inputData;
     }
 
-    public Dictionary<Vector3, List<Vector3>> GetCoverMap()
+    public Dictionary<Vector3, List<EnvironmentCoverData>> GetCoverMap()
     {
         return _coverMap;
     }

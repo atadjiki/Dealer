@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using EPOOutline;
@@ -5,6 +6,22 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Constants;
+
+[Serializable]
+public struct EnvironmentCoverData
+{
+    public Vector3 Direction;
+    public EnvironmentObstacleType ObstacleType;
+
+    public static EnvironmentCoverData Build(Vector3 direction, EnvironmentObstacleType obstacleType)
+    {
+        return new EnvironmentCoverData()
+        {
+            Direction = direction,
+            ObstacleType = obstacleType
+        };
+    }
+}
 
 public class EnvironmentUtil : MonoBehaviour
 {
@@ -108,7 +125,7 @@ public class EnvironmentUtil : MonoBehaviour
 
         if(candidates.Count > 0)
         {
-            int random = Random.Range(0, candidates.Count);
+            int random = UnityEngine.Random.Range(0, candidates.Count);
 
             result = candidates[random];
             return true;
@@ -170,21 +187,25 @@ public class EnvironmentUtil : MonoBehaviour
         return neighbors;
     }
 
-    public static List<Vector3> GetNodeCoverData(GraphNode node)
+    public static List<EnvironmentCoverData> GetNodeCoverData(GraphNode node)
     {
         Vector3 origin = (Vector3)node.position;
 
-        List<Vector3> CoverDirections = new List<Vector3>();
+        List<EnvironmentCoverData> CoverDirections = new List<EnvironmentCoverData>();
 
         foreach (KeyValuePair<Vector3,Vector3> pair in GetCardinalNeighbors(node))
         {
-            if(Physics.Linecast(origin, pair.Value, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
+            RaycastHit hitInfo;
+
+            if(Physics.Linecast(origin, pair.Value, out hitInfo, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
             {
-                CoverDirections.Add(pair.Key);
+                EnvironmentObstacle obstacle = hitInfo.collider.gameObject.GetComponent<EnvironmentObstacle>();
+
+                CoverDirections.Add(EnvironmentCoverData.Build(pair.Key, obstacle.GetObstacleType()));
             }
             if (Physics.Linecast(origin, pair.Value, LayerMask.GetMask(LAYER_ENV_WALL)))
             {
-                CoverDirections.Add(pair.Key);
+                CoverDirections.Add(EnvironmentCoverData.Build(pair.Key, EnvironmentObstacleType.FullCover));
             }
         }
 

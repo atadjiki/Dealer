@@ -1,11 +1,16 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class EnvironmentCoverDisplay : EnvironmentInputHandler
 {
     [Header("Prefab")]
     [SerializeField] private GameObject Prefab_CoverDecal;
+
+    private List<EnvironmentCoverDecal> _coverDecals;
+    private List<Vector3> _validNodes;
 
     public override void Activate()
     {
@@ -18,31 +23,73 @@ public class EnvironmentCoverDisplay : EnvironmentInputHandler
     {
         base.Deactivate();
 
+        _coverDecals.Clear();
+        _validNodes.Clear();
+
         for (int i = 0; i < this.transform.childCount; i++)
         {
             Destroy(transform.GetChild(i).gameObject);
         }
     }
 
+    public override IEnumerator PerformInputUpdate(EnvironmentInputData InputData)
+    {
+        foreach(EnvironmentCoverDecal coverDecal in _coverDecals)
+        {
+            Vector3 decalPos = coverDecal.transform.position;
+
+            bool flag = _validNodes.Contains(decalPos) || decalPos == InputData.NodePosition;
+
+            coverDecal.gameObject.SetActive(flag);
+        }
+
+        yield return null;
+    }
+
     private IEnumerator Coroutine_GenerateCoverDecals()
     {
-        Dictionary<Vector3, List<Vector3>> coverMap = EnvironmentManager.Instance.GetCoverMap();
+        Dictionary<Vector3, List<EnvironmentCoverData>> coverMap = EnvironmentManager.Instance.GetCoverMap();
 
         if (coverMap == null) { yield break; }
 
-        foreach (KeyValuePair<Vector3, List<Vector3>> pair in coverMap)
+        _validNodes = new List<Vector3>();
+
+        CharacterComponent currentCharacter = EncounterManager.Instance.GetCurrentCharacter();
+
+        //first gather all the valid nodes near the character
+        Vector3 characterPosition = currentCharacter.GetWorldLocation();
+
+        float characterRange = currentCharacter.GetMovementRange() * TILE_SIZE;
+
+        Bounds bounds = new Bounds(characterPosition, new Vector3(characterRange, 0, characterRange));
+
+        foreach(GraphNode graphNode in EnvironmentUtil.GetGraphNodesInBounds(bounds))
+        {
+            if(graphNode.Walkable)
+            {
+                _validNodes.Add((Vector3)graphNode.position);
+            }
+        }
+
+        _coverDecals = new List<EnvironmentCoverDecal>();
+
+        foreach (KeyValuePair<Vector3, List<EnvironmentCoverData>> pair in coverMap)
         {
             Vector3 origin = pair.Key;
 
-            foreach(Vector3 direction in pair.Value)
+            foreach (EnvironmentCoverData coverData in pair.Value)
             {
                 GameObject decalObject = Instantiate<GameObject>(Prefab_CoverDecal, this.transform);
 
                 EnvironmentCoverDecal coverDecal = decalObject.GetComponent<EnvironmentCoverDecal>();
-                coverDecal.Setup(Constants.EnvironmentObstacleType.HalfCover);
+                coverDecal.Setup(coverData.ObstacleType);
 
                 decalObject.transform.position = origin;
-                decalObject.transform.localEulerAngles = GetEulerAnglesFromDirection(direction);
+                decalObject.transform.localEulerAngles = GetEulerAnglesFromDirection(coverData.Direction);
+
+                decalObject.SetActive(false);
+
+                _coverDecals.Add(coverDecal);
             }
         }
 

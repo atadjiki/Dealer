@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5926651816442570681}
   - component: {fileID: 1796295199050911164}
   - component: {fileID: 3586950662157058242}
+  - component: {fileID: 5550797536620020377}
   m_Layer: 7
   m_Name: Obstacle_Pillar_Brick_1x1
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   m_Children:
   - {fileID: 3650710241741824193}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5926651816442570681
 MonoBehaviour:
@@ -67,8 +68,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0.75, y: 0, z: -0.75}
+  m_Size: {x: 1.5, y: 3, z: 1.5}
+  m_Center: {x: 0.75, y: 1.5, z: -0.75}
 --- !u!114 &3586950662157058242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,7 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 231098313837271864
+  uniqueID: 120581739694167203
   points:
   - {x: 0, y: 0, z: -1.5}
   - {x: 1.5, y: 0, z: -1.5}
@@ -103,6 +104,20 @@ MonoBehaviour:
   legacyMode: 0
   serializedVersion: 1
   legacyUseWorldSpace: 0
+--- !u!114 &5550797536620020377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3881521808109464000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da784a08b559f624f904dbe1d123ae8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Mat_Opaque: {fileID: 2100000, guid: 95b14bc8a2cc8a240ac460c3d3b9bc79, type: 2}
+  Mat_Transparent: {fileID: 2100000, guid: 39b756c7990377f44b96eb631e28cc62, type: 2}
 --- !u!1 &8496800783292643523
 GameObject:
   m_ObjectHideFlags: 0

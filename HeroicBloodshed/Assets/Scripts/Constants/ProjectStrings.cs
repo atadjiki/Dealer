@@ -87,6 +87,9 @@ public static partial class Constants
     {
         switch (abilityID)
         {
+            case AbilityID.MoveFull:
+            case AbilityID.MoveHalf:
+                return "Move";
             case AbilityID.FireWeapon:
                 return "Attack";
             case AbilityID.Heal:
@@ -104,6 +107,9 @@ public static partial class Constants
     {
         switch (abilityID)
         {
+            case AbilityID.MoveFull:
+            case AbilityID.MoveHalf:
+                return "Moving";
             case AbilityID.FireWeapon:
                 return "Attacking";
             case AbilityID.Heal:

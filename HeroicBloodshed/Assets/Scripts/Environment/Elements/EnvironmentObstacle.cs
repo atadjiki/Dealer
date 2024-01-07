@@ -1,9 +1,10 @@
 using EPOOutline;
+using Pathfinding;
 using UnityEngine;
 using static Constants;
 
 [RequireComponent(typeof(BoxCollider))]
-
+[RequireComponent(typeof(GraphUpdateScene))]
 public class EnvironmentObstacle : MonoBehaviour
 {
     [SerializeField] private EnvironmentObstacleType ObstacleType;

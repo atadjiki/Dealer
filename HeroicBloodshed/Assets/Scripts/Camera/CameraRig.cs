@@ -14,7 +14,7 @@ public class EnvironmentCameraSettings
 
     public float ZoomSpeed = 75;
 
-    public float ZoomDuration = 0.5f;
+    public float ZoomDuration = 1f;
 
     [Header("Rotation")]
     public float RotationStep = 90;

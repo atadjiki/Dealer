@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class EnvironmentTransparencyComponent : MonoBehaviour
 {
+    [Header("Materials")]
+    [SerializeField] private Material Mat_Opaque;
+    [SerializeField] private Material Mat_Transparent;
+
     private List<MeshRenderer> _renderers;
     private AnimationCurve _curve;
 
     private float MinFadeDistance = 0;
-    private float MaxFadeDistance = 16; //if the camera is farther away than this, opacity is 100%
+    private float MaxFadeDistance = 20; //if the camera is farther away than this, opacity is 100%
 
     private bool forceTransparent = false;
 
@@ -16,7 +20,7 @@ public class EnvironmentTransparencyComponent : MonoBehaviour
     {
         _renderers = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
 
-        _curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        _curve = AnimationCurve.EaseInOut(0.25f, 0.25f, 1, 1);
     }
 
     private void Update()
@@ -26,7 +30,7 @@ public class EnvironmentTransparencyComponent : MonoBehaviour
 
         if(forceTransparent)
         {
-            SetOpacity(0.75f);
+            SetOpacity(0.5f);
         }
         else
         {
@@ -42,23 +46,44 @@ public class EnvironmentTransparencyComponent : MonoBehaviour
         forceTransparent = false;
     }
 
+    private void SetOpacity(float opacity)
+    {
+        if(opacity > 0.5f)
+        {
+            if (Mat_Opaque != null)
+            {
+                foreach (MeshRenderer renderer in _renderers)
+                {
+                    if (renderer.material != null)
+                    {
+                        renderer.material = Mat_Opaque;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Mat_Transparent != null)
+            {
+                foreach (MeshRenderer renderer in _renderers)
+                {
+                    if (renderer.material != null)
+                    {
+                        renderer.material = Mat_Transparent;
+
+                        Color color = renderer.material.color;
+
+                        color.a = opacity;
+
+                        renderer.material.color = color;
+                    }
+                }
+            }
+        }
+    }
+
     public void ForceTransparency()
     {
         forceTransparent = true;
-    }
-
-    private void SetOpacity(float opacity)
-    {
-        foreach (MeshRenderer renderer in _renderers)
-        {
-            if (renderer.material != null)
-            {
-                Color color = renderer.material.color;
-
-                color.a = opacity;
-
-                renderer.material.color = color;
-            }
-        }
     }
 }

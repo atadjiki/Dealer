@@ -66,7 +66,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         {
             float waitTime = CameraRig.Instance.GoBetween(_caster, target);
 
-            yield return new WaitForSeconds(waitTime + 0.5f); //add a lil extra time 
+            yield return new WaitForSecondsRealtime(waitTime + 0.5f); //add a lil extra time 
         }
 
         yield return Coroutine_RotateTowards(target);
@@ -157,18 +157,18 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         WeaponAttackDefinition attackDef = damageInfo.caster.GetWeaponAttackDefinition();
 
+        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
+        {
+            damageInfo.target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
+        }
+        else
+        {
+            damageInfo.target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
+        }
+
         int shotCount = attackDef.CalculateShotCount();
         for (int i = 0; i < shotCount; i++)
         {
-            if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-            {
-                damageInfo.target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
-            }
-            else
-            {
-                damageInfo.target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
-            }
-
             damageInfo.caster.HandleEvent(CharacterEvent.FIRE);
 
             yield return new WaitForSeconds(attackDef.TimeBetweenShots);

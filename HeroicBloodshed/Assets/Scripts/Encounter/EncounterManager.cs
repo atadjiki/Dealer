@@ -110,12 +110,17 @@ public class EncounterManager : MonoBehaviour
         {
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
-                CharacterComponent character = _model.GetCurrentCharacter();
-                CameraRig.Instance.Follow(character);
-
-                if (character.IsAlive())
+                foreach (CharacterComponent character in _model.GetAllCharacters())
                 {
-                    character.HandleEvent(CharacterEvent.SELECTED);
+                    character.FaceNearestEnemy();
+                }
+
+                CharacterComponent currentCharacter = _model.GetCurrentCharacter();
+                CameraRig.Instance.Follow(currentCharacter);
+
+                if (currentCharacter.IsAlive())
+                {
+                    currentCharacter.HandleEvent(CharacterEvent.SELECTED);
                 }
                 break;
             }
@@ -379,5 +384,10 @@ public class EncounterManager : MonoBehaviour
     public static bool IsActive()
     {
         return Instance != null;
+    }
+
+    public List<CharacterComponent> GetAllCharactersInTeam(TeamID team)
+    {
+        return _model.GetAllCharactersInTeam(team);
     }
 }

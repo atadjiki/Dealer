@@ -23,12 +23,12 @@ public class EnvironmentCoverDecal : MonoBehaviour
         if (obstacleType == EnvironmentObstacleType.FullCover)
         {
             _renderer.material = Mat_Full;
-            Quad.transform.localPosition = new Vector3(0, 2, 0.5f);
+            Quad.transform.localPosition = new Vector3(0, 1.5f, 0.75f);
         }
         else
         {
             _renderer.material = Mat_Half;
-            Quad.transform.localPosition = new Vector3(0, 1, 0.5f);
+            Quad.transform.localPosition = new Vector3(0, 0.75f, 0.75f);
         }
     }
 }

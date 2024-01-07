@@ -490,4 +490,40 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     {
         return _model.GetRandomBodyPart();
     }
+
+    public void FaceNearestEnemy()
+    {
+        CharacterComponent closestEnemy = GetClosestEnemy();
+
+        if (closestEnemy != null)
+        {
+            RotateTowards(closestEnemy);
+        }
+    }
+
+    public CharacterComponent GetClosestEnemy()
+    {
+        List<CharacterComponent> enemies = EncounterManager.Instance.GetAllCharactersInTeam(GetOpposingTeam(GetTeam()));
+
+        if (enemies.Count > 0)
+        {
+            CharacterComponent closestEnemy = enemies[0];
+
+            float minDistance = Vector3.Distance(GetWorldLocation(), closestEnemy.GetWorldLocation());
+
+            foreach (CharacterComponent enemy in enemies)
+            {
+                float distance = Vector3.Distance(GetWorldLocation(), enemy.GetWorldLocation());
+
+                if (distance < minDistance)
+                {
+                    closestEnemy = enemy;
+                }
+            }
+
+            return closestEnemy;
+        }
+
+        return null;
+    }
 }

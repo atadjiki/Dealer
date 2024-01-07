@@ -50,7 +50,7 @@ public struct CharacterDefinition
                         },
                         AllowedWeapons = new WeaponID[]
                         {
-                            WeaponID.Revolver,
+                            WeaponID.Pistol,
                         },
 
                         BaseHealth = 16,
