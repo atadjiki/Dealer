@@ -36,6 +36,11 @@ public struct WeaponDefinition
 
     public int Range;
 
+    public void CalculateChanceToHit(CharacterComponent caster, CharacterComponent target)
+    {
+
+    }
+
     public DamageInfo CalculateDamage(CharacterComponent caster, CharacterComponent target)
     {
         DamageInfo damageInfo = new DamageInfo();

@@ -34,7 +34,7 @@ public class EnvironmentUtil : MonoBehaviour
         //remove connections between nodes intersected by walls
         foreach (GraphNode node in gridGraph.nodes)
         {
-            if (node.Tag == TAG_LAYER_WALL)
+            if (node.Tag == TAG_LAYER_WALL_DEFAULT || node.Tag ==  TAG_LAYER_WALL_SPAWN)
             {
                 foreach (GraphNode neighbor in GetNeighboringNodes(node))
                 {
@@ -255,18 +255,19 @@ public class EnvironmentUtil : MonoBehaviour
 
     public static bool IsGraphNodeOccupied(GraphNode graphNode)
     {
-        if (graphNode.Tag == TAG_LAYER_OBSTACLE)
+        if (graphNode.Tag == TAG_LAYER_OBSTACLE || graphNode.Tag ==  TAG_LAYER_CHARACTER)
         {
             return true;
         }
 
+        //do additional check if characters are overlapping anything
         if(EncounterManager.IsActive())
         {
-            foreach (CharacterComponent character in EncounterManager.Instance.GetAllCharacters())
+            if(EncounterManager.Instance.GetCurrentState() == EncounterState.CHOOSE_ACTION)
             {
-                if(character.GetNavigator() != null)
+                foreach (CharacterComponent character in EncounterManager.Instance.GetAllCharacters())
                 {
-                    if (character.GetWorldLocation() == (Vector3)graphNode.position)
+                    if(character.GetWorldLocation() == (Vector3) graphNode.position)
                     {
                         return true;
                     }
@@ -315,6 +316,9 @@ public class EnvironmentUtil : MonoBehaviour
                 nodes.Add(node);
             }
         }
+
+
+        Debug.Log("Found " + nodes.Count + " with tag " + tag);
 
         return nodes;
     }

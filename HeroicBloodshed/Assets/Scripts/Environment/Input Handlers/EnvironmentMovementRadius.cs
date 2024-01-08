@@ -111,7 +111,7 @@ public class EnvironmentMovementRadius : EnvironmentInputHandler
                     StartCoroutine(GenerateTile(node, RadiusObject.transform, GetColor(rangeType)));
                 }
 
-                Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
+                //Debug.Log("created " + count + " quads to create radius in " + (Time.time - startTime) + " seconds");
 
                 yield return null;
             }

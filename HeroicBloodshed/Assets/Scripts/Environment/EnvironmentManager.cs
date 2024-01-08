@@ -364,7 +364,7 @@ public class EnvironmentManager: MonoBehaviour, IEncounterEventHandler
 
         if(character.GetTeam() == TeamID.Player)
         {
-            List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_SPAWN);
+            List<GraphNode> SpawnNodes = EnvironmentUtil.GetNodesWithTag(TAG_LAYER_WALL_SPAWN);
 
             if (SpawnNodes.Count > 0)
             {

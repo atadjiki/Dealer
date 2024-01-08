@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6639942704784767848}
   - component: {fileID: 926550569586534442}
   - component: {fileID: 1132402587505718474}
+  - component: {fileID: 298874854702855228}
   m_Layer: 0
   m_Name: Character_Navigator
   m_TagString: Untagged
@@ -103,3 +104,37 @@ MonoBehaviour:
   targetCompatibility: {fileID: 0}
   repathRateCompatibility: NaN
   canSearchCompability: 0
+--- !u!114 &298874854702855228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6949233627637956699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efee954c69f0d421086729bb8df1137f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 8782446584534546460
+  points:
+  - {x: -0.5, y: 0, z: 0.5}
+  - {x: 0.5, y: 0, z: 0.5}
+  - {x: -0.5, y: 0, z: -0.5}
+  - {x: 0.5, y: 0, z: -0.5}
+  convex: 1
+  minBoundsHeight: 1
+  penaltyDelta: 0
+  modifyWalkability: 0
+  setWalkability: 0
+  applyOnStart: 1
+  applyOnScan: 1
+  updatePhysics: 0
+  resetPenaltyOnPhysics: 1
+  updateErosion: 1
+  modifyTag: 1
+  setTag: 5
+  legacyMode: 0
+  serializedVersion: 1
+  legacyUseWorldSpace: 0
