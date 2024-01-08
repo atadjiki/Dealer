@@ -26,12 +26,6 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
     {
         switch (characterEvent)
         {
-            case CharacterEvent.HIT_HARD:
-            case CharacterEvent.HIT_LIGHT:
-                {
-                    SpawnBloodSpray();
-                    break;
-                }
             case CharacterEvent.DEATH:
                 {
                     _wallRaycaster.enabled = false;
@@ -60,32 +54,6 @@ public class CharacterModel : MonoBehaviour, ICharacterEventReceiver
         }
 
         return this.transform;
-    }
-
-    public void SpawnBloodSpray()
-    {
-        StartCoroutine(Coroutine_ProduceBloodSpray());
-    }
-
-    private IEnumerator Coroutine_ProduceBloodSpray()
-    {
-        ResourceRequest resourceRequest = GetCharacterVFX(PrefabID.VFX_Bloodspray);
-
-        yield return new WaitUntil(() => resourceRequest.isDone);
-
-        GameObject prefab = (GameObject)resourceRequest.asset;
-
-        GameObject particleObject = Instantiate<GameObject>(prefab, GetRandomBodyPart());
-
-        float randomScale = Random.Range(0.5f, 2.0f);
-
-        particleObject.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
-
-        ParticleSystem particleSystem = prefab.GetComponent<ParticleSystem>();
-
-        yield return new WaitForSecondsRealtime(particleSystem.main.duration);
-
-        Destroy(particleObject);
     }
 
     public bool CanReceiveCharacterEvents()

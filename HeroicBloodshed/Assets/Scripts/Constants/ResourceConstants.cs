@@ -49,11 +49,6 @@ public static partial class Constants
         return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Components, ID);
     }
 
-    public static ResourceRequest GetCharacterVFX(PrefabID ID)
-    {
-        return GetPrefab(PrefabCategory.Character, PrefabSubcategory.VFX, ID);
-    }
-
     public static ResourceRequest GetCharacterModel(ModelID ID)
     {
         return GetPrefab(PrefabCategory.Character, PrefabSubcategory.Model, GetPrefabID(ID));

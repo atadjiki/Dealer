@@ -15,6 +15,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
     protected CharacterAnimator _animator;
     protected CharacterAudioSource _audioSource;
     protected CharacterOutlineController _outline;
+    protected CharacterVFX _vfx;
     protected EncounterCharacterUI _encounterUI;
 
     private List<ICharacterEventReceiver> _eventReceivers;
@@ -155,6 +156,13 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         GameObject audioSourceObject = Instantiate<GameObject>((GameObject)audioSourceRequest.asset, navigatorObject.transform);
         _audioSource = audioSourceObject.GetComponentInChildren<CharacterAudioSource>();
         _eventReceivers.Add(_audioSource);
+
+        //create a VFX bank
+        ResourceRequest vfxBankRequest = GetCharacterComponent(PrefabID.Character_VFX);
+        yield return new WaitUntil(() => vfxBankRequest.isDone);
+        GameObject vfxBankObject = Instantiate<GameObject>((GameObject)vfxBankRequest.asset, modelPrefab.transform);
+        _vfx = vfxBankObject.GetComponent<CharacterVFX>();
+        _eventReceivers.Add(_vfx);
 
         //grab animator from model 
         _animator = modelPrefab.GetComponent<CharacterAnimator>();

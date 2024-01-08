@@ -262,6 +262,7 @@ public static partial class Constants
         Character_Marker_Player,
         Character_Navigator,
         Character_Outliner,
+        Character_VFX,
 
         //Environment
         Environment_DrugHideout,
@@ -320,8 +321,6 @@ public static partial class Constants
 
         VFX_Smoke_Dense,
         VFX_Smoke_Light,
-
-        VFX_Bloodspray,
 
         //LineRenderers
         LineRenderer_Path,
