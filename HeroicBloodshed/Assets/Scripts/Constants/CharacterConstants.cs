@@ -35,7 +35,7 @@ public static partial class Constants
             AbilityID.MoveFull,
             AbilityID.FireWeapon,
             AbilityID.SkipTurn, //all characters have this by default
-            AbilityID.Reload,
+            //AbilityID.Reload,
         };
 
         //eventually we will add dynamically abilities based on weapon type and team 

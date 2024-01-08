@@ -360,6 +360,36 @@ public class EnvironmentUtil : MonoBehaviour
         return Mathf.RoundToInt(distance);
     }
 
+    public static EnvironmentObstacleType CheckLineOfSight(CharacterComponent caster, CharacterComponent target)
+    {
+        Vector3 origin = caster.GetWorldLocation();
+
+        if (target.IsAlive())
+        {
+            RaycastHit hitInfo;
+            if (Physics.Linecast(origin, target.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_OBSTACLE)))
+            {
+                int distance = GetDistanceInNodes(caster.GetWorldLocation(), hitInfo.point);
+
+                if (hitInfo.collider != null && distance > 1)
+                {
+                    return hitInfo.collider.GetComponent<EnvironmentObstacle>().GetObstacleType();
+                }
+            }
+            if (Physics.Linecast(origin, target.GetWorldLocation(), out hitInfo, LayerMask.GetMask(LAYER_ENV_WALL)))
+            {
+                int distance = GetDistanceInNodes(caster.GetWorldLocation(), hitInfo.point);
+
+                if (hitInfo.collider != null && distance > 1)
+                {
+                    return EnvironmentObstacleType.FullCover;
+                }
+            }
+        }
+
+        return EnvironmentObstacleType.NoCover;
+    }
+
     public static bool IsNodeExposed(Vector3 origin)
     {
         GridGraph gridGraph = AstarData.active.data.gridGraph;

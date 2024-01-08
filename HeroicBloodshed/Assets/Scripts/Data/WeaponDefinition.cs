@@ -36,9 +36,39 @@ public struct WeaponDefinition
 
     public int Range;
 
-    public void CalculateChanceToHit(CharacterComponent caster, CharacterComponent target)
+    public int CalculateChanceToHit(CharacterComponent caster, CharacterComponent target)
     {
+        //Aim(unit stat + modifiers) - Defence(unit stat + modifiers) = total(clamped to 1 %, if negative) +range modifier = final result
+        int aim = caster.GetAim();
 
+        int defense = target.GetDefense();
+
+        //modifiers
+
+        EnvironmentObstacleType obstacleType = EnvironmentUtil.CheckLineOfSight(caster, target);
+        {
+            if(obstacleType == EnvironmentObstacleType.FullCover)
+            {
+                defense += 40;
+                Debug.Log("Target behind full cover, adding 40% defense");
+            }
+            else if(obstacleType == EnvironmentObstacleType.HalfCover)
+            {
+                defense += 20;
+                Debug.Log("Target behind half cover, adding 20% defense");
+            }
+            else
+            {
+                defense -= 20;
+                Debug.Log("Target in the open, subtracting 20% defense");
+            }
+        }
+
+        int percentage = Math.Clamp(aim - defense, 1, 100 );
+
+        Debug.Log("Chance to Hit: " + percentage + "%");
+
+        return percentage;
     }
 
     public DamageInfo CalculateDamage(CharacterComponent caster, CharacterComponent target)
@@ -99,7 +129,7 @@ public struct WeaponDefinition
                     Spread = 2,
                     Ammo = 30,
                     PlusOneThreshold = 0.25f,
-                    Range = 6,
+                    Range = 8,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Auto_Medium,
@@ -125,7 +155,7 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 12,
                     PlusOneThreshold = 0,
-                    Range = 6,
+                    Range = 12,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Default,
@@ -155,7 +185,7 @@ public struct WeaponDefinition
                     Spread = 1,
                     Ammo = 6,
                     PlusOneThreshold = 0,
-                    Range = 6,
+                    Range = 12,
                     MuzzleVFX = new PrefabID[]
                     {
                         PrefabID.VFX_MuzzleFlash_Default,

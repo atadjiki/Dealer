@@ -20,6 +20,10 @@ public struct CharacterDefinition
 
     public int CritChance;
 
+    public int Aim;
+
+    public int Defence;
+
     public bool RollCritChance()
     {
         float roll = UnityEngine.Random.Range(0, 99);
@@ -57,6 +61,8 @@ public struct CharacterDefinition
                         BaseActionPoints = 2,
                         MovementRange = 6,
                         CritChance = 30,
+                        Aim = 65,
+                        Defence = 0,
                     };
                 }
             case CharacterID.PLAYER_2:
@@ -77,6 +83,8 @@ public struct CharacterDefinition
                         BaseActionPoints = 2,
                         MovementRange = 6,
                         CritChance = 30,
+                        Aim = 65,
+                        Defence = 0,
                     };
                 }
             case CharacterID.HENCHMAN:
@@ -86,7 +94,7 @@ public struct CharacterDefinition
                         ID = uniqueID,
                         AllowedModels = new ModelID[]
                         {
-                            ModelID.MALE_GOON,
+                            ModelID.MALE_HENCHMAN,
                         },
                         AllowedWeapons = new WeaponID[]
                         {
@@ -98,6 +106,8 @@ public struct CharacterDefinition
                         BaseActionPoints = 2,
                         MovementRange = 6,
                         CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
                     };
                 }
 
@@ -119,6 +129,8 @@ public struct CharacterDefinition
                         BaseActionPoints = 2,
                         MovementRange = 6,
                         CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
                     };
                 }
             default:
@@ -138,6 +150,8 @@ public struct CharacterDefinition
                         BaseActionPoints = 1,
                         MovementRange = 6,
                         CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
                     };
                 }
         }

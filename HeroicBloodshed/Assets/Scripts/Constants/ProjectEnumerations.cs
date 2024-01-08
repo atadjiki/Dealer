@@ -37,6 +37,8 @@ public static partial class Constants
 
         MALE_GOON,
 
+        MALE_HENCHMAN,
+
         MALE_GENERIC,
     }
 
@@ -290,6 +292,7 @@ public static partial class Constants
         //Characters
         Model_Character_Male_DEA,
         Model_Character_Male_Goon,
+        Model_Character_Male_Henchman,
 
         //Weapons
         Model_Weapon_Pistol,

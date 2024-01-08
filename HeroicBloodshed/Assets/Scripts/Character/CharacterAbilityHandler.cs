@@ -73,39 +73,61 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         WeaponDefinition weaponDef = WeaponDefinition.Get(_caster.GetWeaponID());
 
+        int chanceToHit = weaponDef.CalculateChanceToHit(_caster, target);
+
+        bool success = (Random.Range(1, 100) < chanceToHit);
+
         target.ToggleHighlight(false);
-        DamageInfo damageInfo = weaponDef.CalculateDamage(_caster, target);
 
-        if (damageInfo.IsCrit)
+        StartCoroutine(Coroutine_FireWeaponAt(target));
+
+        if (success)
         {
-            if (EncounterManager.IsActive())
+            DamageInfo damageInfo = weaponDef.CalculateDamage(_caster, target);
+
+            if (damageInfo.IsCrit)
             {
-                EncounterManager.Instance.RequestEventBanner("Critical Hit!", _waitTime);
-            }
-        }
-
-        //its important we kick these off at the same time!
-        StartCoroutine(Coroutine_FireWeaponAt(damageInfo));
-        StartCoroutine(Coroutine_HandleDamage(target, damageInfo));
-
-        if (damageInfo.IsKill)
-        {
-            target.HandleEvent(CharacterEvent.DEATH, damageInfo);
-
-            if (EncounterManager.IsActive())
-            {
-                EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
+                if (EncounterManager.IsActive())
+                {
+                    EncounterManager.Instance.RequestEventBanner("Critical Hit!", _waitTime);
+                }
             }
 
-            yield return new WaitForSeconds(_waitTime * 2);
+            StartCoroutine(Coroutine_HandleDamage(target, damageInfo));
+
+            if (damageInfo.IsKill)
+            {
+                target.HandleEvent(CharacterEvent.DEATH, damageInfo);
+
+                if (EncounterManager.IsActive())
+                {
+                    EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
+                }
+
+                yield return new WaitForSeconds(_waitTime * 2);
+            }
+            else
+            {
+                if (EncounterManager.IsActive())
+                {
+                    EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
+                }
+
+                yield return new WaitForSeconds(_waitTime);
+            }
         }
         else
         {
+            Debug.Log("Miss!");
+
             if (EncounterManager.IsActive())
             {
-                EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
+                EncounterManager.Instance.RequestEventBanner("Missed!", _waitTime);
             }
+
+            yield return new WaitForSeconds(_waitTime);
         }
+
         yield return new WaitForSeconds(_waitTime);
     }
 
@@ -144,27 +166,18 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
     //utility
 
-    private IEnumerator Coroutine_FireWeaponAt(DamageInfo damageInfo)
+    private IEnumerator Coroutine_FireWeaponAt(CharacterComponent target)
     {
-        HandleEvent(CharacterEvent.TARGETING, damageInfo.target);
+        HandleEvent(CharacterEvent.TARGETING, target);
 
-        yield return Coroutine_RotateTowards(damageInfo.target);
+        yield return Coroutine_RotateTowards(target);
 
-        WeaponAttackDefinition attackDef = damageInfo.caster.GetWeaponAttackDefinition();
-
-        if (damageInfo.ActualDamage < damageInfo.BaseDamage)
-        {
-            damageInfo.target.HandleEvent(CharacterEvent.HIT_LIGHT, damageInfo);
-        }
-        else
-        {
-            damageInfo.target.HandleEvent(CharacterEvent.HIT_HARD, damageInfo);
-        }
+        WeaponAttackDefinition attackDef = _caster.GetWeaponAttackDefinition();
 
         int shotCount = attackDef.CalculateShotCount();
         for (int i = 0; i < shotCount; i++)
         {
-            damageInfo.caster.HandleEvent(CharacterEvent.FIRE);
+            _caster.HandleEvent(CharacterEvent.FIRE);
 
             yield return new WaitForSeconds(attackDef.TimeBetweenShots);
         }

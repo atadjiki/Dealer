@@ -1900,15 +1900,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.313709
+      value: 14.142138
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.313709
+      value: 14.142137
       objectReference: {fileID: 0}
     - target: {fileID: 1703816576738960256, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0000014305115
+      value: 0.0000017881393
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.CameraSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.MaxDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.MinDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788603793618814410, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: EnvironmentCameraSettings.DefaultDistance
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2869703739403588486, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_Size.x
@@ -1932,7 +1948,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3046150577179141327, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_CameraDistance
-      value: 16
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3046150577179141327, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_MaximumDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3046150577179141327, guid: 05156c94656d4f944825c624732db36f, type: 3}
+      propertyPath: m_MinimumDistance
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3321274039668110141, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_Name
@@ -2032,15 +2056,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.313709
+      value: 14.142138
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.313709
+      value: 14.142137
       objectReference: {fileID: 0}
     - target: {fileID: 8434413886764474608, guid: 05156c94656d4f944825c624732db36f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0000014305115
+      value: 0.0000017881393
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2228,7 +2252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 109907906253107107, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7490450638227504339, guid: 83e96cb940c2f8d4aa80a65858edc45f, type: 3}
       propertyPath: uniqueID
@@ -2362,7 +2386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 969949972760243393, guid: 2f65d9b1478fe2c40823a538abf15848, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2665042607217519445, guid: 2f65d9b1478fe2c40823a538abf15848, type: 3}
       propertyPath: uniqueID
@@ -2642,7 +2666,7 @@ MonoBehaviour:
   - Team: 1
     Characters: 03000000
   - Team: 2
-    Characters: 01000000
+    Characters: 010000000200000001000000
 --- !u!4 &702965785
 Transform:
   m_ObjectHideFlags: 0
@@ -5688,8 +5712,8 @@ MonoBehaviour:
   - Ground
   - Obstacle
   - Cover
-  - Wall
-  - Spawn
+  - Wall_Default
+  - Wall_Spawn
   - Character
   - 6
   - 7
@@ -6700,33 +6724,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2051177355}
     m_Modifications:
-    - target: {fileID: 1320947816785552625, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: uniqueID
-      value: 6369623611105347013
-      objectReference: {fileID: 0}
-    - target: {fileID: 1320947816785552625, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: applyOnScan
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1320947816785552625, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: applyOnStart
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5941972610000237879, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
       propertyPath: m_Name
       value: Wall_Interior_Door
-      objectReference: {fileID: 0}
-    - target: {fileID: 5941972610000237879, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7815662729933555383, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: setTag
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7815662729933555383, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
-      propertyPath: uniqueID
-      value: 810644157650681809
       objectReference: {fileID: 0}
     - target: {fileID: 8807477776574516592, guid: 0ab89cbb42ee45041b8f5642104935d8, type: 3}
       propertyPath: m_RootOrder
