@@ -110,10 +110,7 @@ public class EncounterManager : MonoBehaviour
         {
             case EncounterState.SETUP_COMPLETE:
             {
-                foreach (CharacterComponent character in _model.GetAllCharacters())
-                {
-                    character.FaceNearestEnemy();
-                }
+                BroadcastCharacterEvent(CharacterEvent.UPDATE);
                 break;
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
@@ -154,6 +151,7 @@ public class EncounterManager : MonoBehaviour
             {
                 CharacterComponent currentCharacter = _model.GetCurrentCharacter();
                 yield return PerformAbility(currentCharacter);
+                BroadcastCharacterEvent(CharacterEvent.UPDATE);
                 break;
             }
             case EncounterState.DONE:
@@ -418,5 +416,13 @@ public class EncounterManager : MonoBehaviour
     public List<CharacterComponent> GetAllCharacters()
     {
         return _model.GetAllCharacters();
+    }
+
+    public void BroadcastCharacterEvent(CharacterEvent characterEvent)
+    {
+        foreach (CharacterComponent character in _model.GetAllCharacters())
+        {
+            character.HandleEvent(characterEvent);
+        }
     }
 }

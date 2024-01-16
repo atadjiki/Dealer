@@ -61,7 +61,7 @@ public struct CharacterDefinition
                         BaseActionPoints = 2,
                         MovementRange = 6,
                         CritChance = 30,
-                        Aim = 65,
+                        Aim = 95,
                         Defence = 0,
                     };
                 }

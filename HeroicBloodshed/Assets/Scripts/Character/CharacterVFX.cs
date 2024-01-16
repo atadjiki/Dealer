@@ -13,7 +13,7 @@ public class CharacterVFX : MonoBehaviour, ICharacterEventReceiver
         {
             case Constants.CharacterEvent.HIT_HARD:
             case Constants.CharacterEvent.HIT_LIGHT:
-                SpawnBloodSpray();
+               // SpawnBloodSpray();
                 break;
             default:
                 break;

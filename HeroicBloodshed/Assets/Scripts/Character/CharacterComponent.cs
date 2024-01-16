@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using static Constants;
 using UnityEngine;
+using static Constants;
 
 public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
 {
@@ -512,14 +512,9 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventReceiver
         return _model.GetRandomBodyPart();
     }
 
-    public void FaceNearestEnemy()
+    public void RotateTowardsNearestTarget()
     {
-        CharacterComponent closestEnemy = GetClosestEnemy();
-
-        if (closestEnemy != null)
-        {
-            RotateTowards(closestEnemy);
-        }
+        _abilityHandler.RotateTowardsNearestTarget();
     }
 
     public CharacterComponent GetClosestEnemy()

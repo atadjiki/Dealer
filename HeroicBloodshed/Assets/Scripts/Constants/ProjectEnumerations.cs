@@ -168,6 +168,8 @@ public static partial class Constants
         STOPPED,
 
         HOLSTER,
+
+        UPDATE,
     }
 
     public enum EncounterState

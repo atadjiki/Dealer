@@ -85,14 +85,6 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         {
             DamageInfo damageInfo = weaponDef.CalculateDamage(_caster, target);
 
-            if (damageInfo.IsCrit)
-            {
-                if (EncounterManager.IsActive())
-                {
-                    EncounterManager.Instance.RequestEventBanner("Critical Hit!", _waitTime);
-                }
-            }
-
             StartCoroutine(Coroutine_HandleDamage(target, damageInfo));
 
             if (damageInfo.IsKill)
@@ -106,8 +98,15 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
                 yield return new WaitForSeconds(_waitTime * 2);
             }
-            else
+            else if (damageInfo.IsCrit)
             {
+                if (EncounterManager.IsActive())
+                {
+                    EncounterManager.Instance.RequestEventBanner("Critical Hit!", _waitTime);
+                }
+            }
+            else {
+
                 if (EncounterManager.IsActive())
                 {
                     EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
@@ -174,8 +173,9 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         WeaponAttackDefinition attackDef = _caster.GetWeaponAttackDefinition();
 
-        int shotCount = attackDef.CalculateShotCount();
-        for (int i = 0; i < shotCount; i++)
+        int shotTotal = attackDef.CalculateShotCount();
+
+        for (int i = 0; i < shotTotal; i++)
         {
             _caster.HandleEvent(CharacterEvent.FIRE);
 
@@ -211,7 +211,42 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
     private IEnumerator Coroutine_HandleDamage(CharacterComponent target, DamageInfo damageInfo)
     {
         target.HandleEvent(CharacterEvent.DAMAGE, damageInfo);
+
+        WeaponAttackDefinition attackDef = _caster.GetWeaponAttackDefinition();
+
+        int hits = 0;
+        int hitTotal = Random.Range(1, attackDef.CalculateShotCount());
+
+        for (int i = 0; i < hitTotal; i++)
+        {
+            if (hits < hitTotal)
+            {
+                if (damageInfo.IsCrit)
+                {
+                    target.HandleEvent(CharacterEvent.HIT_HARD);
+                }
+                else
+                {
+                    target.HandleEvent(CharacterEvent.HIT_LIGHT);
+                }
+
+                hits++;
+            }
+
+            yield return new WaitForSeconds(attackDef.TimeBetweenShots);
+        }
+
         yield return null;
+    }
+
+    public void RotateTowardsNearestTarget()
+    {
+        CharacterComponent closestEnemy = _caster.GetClosestEnemy();
+
+        if (closestEnemy != null)
+        {
+            RotateTowards(closestEnemy);
+        }
     }
 
     public void RotateTowards(CharacterComponent target)
@@ -221,7 +256,14 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
     public void HandleEvent(CharacterEvent characterEvent, object eventData)
     {
-        return;
+        switch(characterEvent)
+        {
+            case CharacterEvent.UPDATE:
+                RotateTowardsNearestTarget();
+                break;
+            default:
+                break;
+        }
     }
 
     public bool CanReceiveCharacterEvents()

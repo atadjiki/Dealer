@@ -84,6 +84,8 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventReceiver
     {
         string animID = state.ToString();
 
+        Debug.Log("Animation: " + animID);
+
         _animator.CrossFade(animID, transitionTime);
     }
 
