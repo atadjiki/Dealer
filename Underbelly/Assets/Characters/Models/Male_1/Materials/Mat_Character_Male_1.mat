@@ -20,7 +20,6 @@ Material:
   - _SCROLLEMISSION_ON
   - _USECOLORADJUSTMENTS_ON
   - _USEGLINT_ON
-  - _USEGRADIENTSHADING_ON
   - _USEHALFTONE_ON
   - _USEMODIFIEDNORMALS_ON
   - _USEOUTLINES_ON
@@ -120,7 +119,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ScreenNoiseTexture:
-        m_Texture: {fileID: 2800000, guid: 16c21e1d4dead9340b721e8be74f0738, type: 3}
+        m_Texture: {fileID: 2800000, guid: dceaa33329378584e83d42c9aea2277a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ScreenNoiseTexture1:
@@ -136,7 +135,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9ba5adfe8377d4545b631bfd09c7458d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample0:
@@ -198,9 +197,9 @@ Material:
     - _EmissionUVSource: 0
     - _EnvironmentReflections: 1
     - _Float0: 1
-    - _FlutterAmount: 2
+    - _FlutterAmount: 56
     - _FlutterFramerate: 60
-    - _FlutterNoiseScale: 0.4
+    - _FlutterNoiseScale: 4.88
     - _FlutterOffset: 0
     - _FlutterSensitivity: 22.5
     - _FlutterSource: 1
@@ -217,9 +216,9 @@ Material:
     - _GradientOffset: 0
     - _GradientSensitivity: 1
     - _GradientSource: 0
-    - _HalftoneMultiplier: 1
+    - _HalftoneMultiplier: 0
     - _HalftoneOffset: 0
-    - _HalftoneScale: 1
+    - _HalftoneScale: 0
     - _HardSurfaceOutline: 0
     - _HardSurfaceOutline1: 1
     - _HueShift: 0
@@ -239,9 +238,9 @@ Material:
     - _NoiseAmount: 0.426
     - _NoiseAmountLight: 0.5
     - _NoiseAmountShadow: 0.5
-    - _NoiseFramerate: 60
+    - _NoiseFramerate: 4
     - _NoiseOffset: 0.5
-    - _NoiseScale: 5
+    - _NoiseScale: 1
     - _NoiseUVSource: 0
     - _NormalMode: 4
     - _NormalMode1: 0.5

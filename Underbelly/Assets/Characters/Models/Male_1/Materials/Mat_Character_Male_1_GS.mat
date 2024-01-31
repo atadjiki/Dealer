@@ -17,13 +17,14 @@ Material:
   - _MULTIPLYBYLIGHTCOLOR_ON
   - _NORMALSURFACEOUTLINE_ON
   - _POSTERIZECOLORS_ON
+  - _POSTERIZELIGHT_ON
   - _SCROLLEMISSION_ON
   - _USECOLORADJUSTMENTS_ON
   - _USEGLINT_ON
+  - _USEGRADIENTSHADING_ON
   - _USEHALFTONE_ON
   - _USEMODIFIEDNORMALS_ON
   - _USEOUTLINES_ON
-  - _USESCREENNOISE_ON
   - _USESHADOWS_ON
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 1
@@ -120,7 +121,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ScreenNoiseTexture:
-        m_Texture: {fileID: 2800000, guid: 16c21e1d4dead9340b721e8be74f0738, type: 3}
+        m_Texture: {fileID: 2800000, guid: dffa968083e73544c98c661c5e6fb4fb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ScreenNoiseTexture1:
@@ -216,7 +217,7 @@ Material:
     - _GlowEffectShadowRatio: 0
     - _GradientOffset: 0
     - _GradientSensitivity: 1
-    - _GradientSource: 0
+    - _GradientSource: 2
     - _HalftoneMultiplier: 1
     - _HalftoneOffset: 0
     - _HalftoneScale: 1
@@ -227,7 +228,7 @@ Material:
     - _InvertDirection: 1
     - _LightRamp: 0.15
     - _LightRampOffset: 0.523
-    - _LightSteps: 5
+    - _LightSteps: 2
     - _LightWrapping: 0.3
     - _LightingMode: 1
     - _LightingOffset: 0
@@ -239,7 +240,7 @@ Material:
     - _NoiseAmount: 0.426
     - _NoiseAmountLight: 0.5
     - _NoiseAmountShadow: 0.5
-    - _NoiseFramerate: 60
+    - _NoiseFramerate: 24
     - _NoiseOffset: 0.5
     - _NoiseScale: 5
     - _NoiseUVSource: 0
@@ -251,7 +252,7 @@ Material:
     - _Parallax: 0.005
     - _PositionSource: 2
     - _PosterizeColors: 1
-    - _PosterizeLight: 0
+    - _PosterizeLight: 1
     - _PuddleScale: 0.38
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -351,7 +352,7 @@ Material:
     - _EmissionColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
     - _EmissionScrolling1: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionScrolling2: {r: 0.1, g: -0.5, b: 0, a: 0}
-    - _FarColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _FarColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
     - _FlutterDirection: {r: 1, g: 0, b: 0, a: 0}
     - _FlutterMask: {r: 0, g: 1, b: 0, a: 0}
     - _GlintColor: {r: 0.20754719, g: 0.20754719, b: 0.008810962, a: 1}
@@ -360,15 +361,15 @@ Material:
     - _GradientChannelMask: {r: 0, g: 1, b: 0, a: 0}
     - _GradientPositionalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _LightColor: {r: 0.9607843, g: 0.9607843, b: 0.8627451, a: 1}
-    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MainColor: {r: 0.9607843, g: 0.9607843, b: 0.8627451, a: 1}
     - _MainColor1: {r: 1, g: 1, b: 1, a: 1}
     - _MainGlowFresnel: {r: 0, g: 0, b: 0, a: 0}
-    - _NearColor: {r: 0.9607843, g: 0.9607843, b: 0.8627451, a: 1}
+    - _NearColor: {r: 1, g: 1, b: 1, a: 1}
     - _Offset1: {r: 0.03, g: 0, b: 0.03, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _PuddleColor: {r: 0.19475657, g: 0.34486926, b: 0.43396226, a: 0}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShadowColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 0}
+    - _ShadowColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
     - _SizeSpeedInterval: {r: 1, g: 1, b: 1, a: 0}
     - _SnowColor: {r: 1, g: 1, b: 1, a: 0}
     - _SparkleColor: {r: 1, g: 1, b: 1, a: 1}
