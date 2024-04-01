@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 [RequireComponent(typeof(BoxCollider))]
 public class EnvironmentDoorSpawnPoint : EnvironmentSpawnPoint
@@ -31,7 +32,7 @@ public class EnvironmentDoorSpawnPoint : EnvironmentSpawnPoint
         DoorMesh.transform.localEulerAngles = new Vector3(0, 90, 0);
         BackingMesh.SetActive(true);
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
 
         DoorMesh.transform.localEulerAngles = Vector3.zero;
         BackingMesh.SetActive(false);

@@ -53,14 +53,14 @@ public class EncounterCanvasManager : EncounterEventReceiver
         yield return null;
     }
 
-    public void ShowEventBanner(string message, float duration = 1.5f)
+    public void ShowEventBanner(string message)
     {
         foreach(EncounterUIElement uIElement in _elements)
         {
             if(uIElement is EncounterEventBanner)
             {
                 EncounterEventBanner eventBanner = (EncounterEventBanner) uIElement;
-                eventBanner.DisplayMessage(message, duration);
+                eventBanner.DisplayMessage(message, DEFAULT_WAIT_TIME);
             }
         }
     }

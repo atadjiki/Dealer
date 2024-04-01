@@ -5,8 +5,6 @@ using static Constants;
 
 public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 {
-    private static float _waitTime = 1.0f;
-
     private CharacterComponent _caster;
 
     public void Setup(CharacterComponent caster)
@@ -49,7 +47,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
         CameraRig.Instance.Follow(_caster);
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
 
         CharacterNavigator navigator = _caster.GetNavigator();
 
@@ -66,7 +64,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         {
             float waitTime = CameraRig.Instance.GoBetween(_caster, target);
 
-            yield return new WaitForSecondsRealtime(waitTime + 0.5f); //add a lil extra time 
+            yield return new WaitForSeconds(DEFAULT_WAIT_TIME); //add a lil extra time 
         }
 
         yield return Coroutine_RotateTowards(target);
@@ -93,26 +91,26 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
                 if (EncounterManager.IsActive())
                 {
-                    EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!", _waitTime * 2);
+                    EncounterManager.Instance.RequestEventBanner(GetDisplayString(target.GetID()) + " killed!");
                 }
 
-                yield return new WaitForSeconds(_waitTime * 2);
+                yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
             }
             else if (damageInfo.IsCrit)
             {
                 if (EncounterManager.IsActive())
                 {
-                    EncounterManager.Instance.RequestEventBanner("Critical Hit!", _waitTime);
+                    EncounterManager.Instance.RequestEventBanner("Critical Hit!");
                 }
             }
             else {
 
                 if (EncounterManager.IsActive())
                 {
-                    EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!", _waitTime);
+                    EncounterManager.Instance.RequestEventBanner(damageInfo.ActualDamage + " Damage!");
                 }
 
-                yield return new WaitForSeconds(_waitTime);
+                yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
             }
         }
         else
@@ -121,13 +119,13 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
 
             if (EncounterManager.IsActive())
             {
-                EncounterManager.Instance.RequestEventBanner("Missed!", _waitTime);
+                EncounterManager.Instance.RequestEventBanner("Missed!");
             }
 
-            yield return new WaitForSeconds(_waitTime);
+            yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
         }
 
-        yield return new WaitForSeconds(_waitTime);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
     }
 
     private IEnumerator Coroutine_HandleAbility_Reload()
@@ -138,7 +136,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         }
 
         _caster.HandleEvent(CharacterEvent.RELOAD);
-        yield return new WaitForSeconds(_waitTime);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
     }
 
     private IEnumerator Coroutine_HandleAbility_SkipTurn()
@@ -149,7 +147,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         }
 
         _caster.HandleEvent(CharacterEvent.SKIP_TURN);
-        yield return new WaitForSeconds(_waitTime);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
     }
 
     private IEnumerator Coroutine_HandleAbility_Heal()
@@ -160,7 +158,7 @@ public class CharacterAbilityHandler : MonoBehaviour, ICharacterEventReceiver
         }
 
         _caster.HandleEvent(CharacterEvent.HEAL);
-        yield return new WaitForSeconds(_waitTime);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
     }
 
     //utility

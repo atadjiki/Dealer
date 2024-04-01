@@ -127,7 +127,7 @@ public class EncounterManager : MonoBehaviour
             }
             case EncounterState.TEAM_UPDATED:
             {
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
                 break;
             }
             case EncounterState.CHOOSE_ACTION:
@@ -223,7 +223,7 @@ public class EncounterManager : MonoBehaviour
             }
 
             //pretend like the CPU is thinking :)
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
 
             _model.TransitionState();
         }
@@ -243,7 +243,7 @@ public class EncounterManager : MonoBehaviour
                 _model.SetTarget(targetCharacter);
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
 
             _model.TransitionState();
         }
@@ -266,7 +266,7 @@ public class EncounterManager : MonoBehaviour
         //UnfollowCharacter();
 
         _canvas.ShowEventBanner(casterName + " " + abilityString + "...");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
 
         yield return caster.Coroutine_PerformAbility(abilityID, _model.GetActiveTarget(), _model.GetActiveDestination());
     }
@@ -388,9 +388,9 @@ public class EncounterManager : MonoBehaviour
         return null;
     }
 
-    public void RequestEventBanner(string message, float duration)
+    public void RequestEventBanner(string message)
     {
-        _canvas.ShowEventBanner(message, duration);
+        _canvas.ShowEventBanner(message);
     }
 
     public bool ShouldAllowInput()
