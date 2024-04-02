@@ -19,8 +19,9 @@ public class EnvironmentCameraSettings
     [Header("Rotation")]
     public float RotationStep = 90;
     public float RotationDuration = 0.35f;
-    
+
     [Header("Movement")]
+    public bool AllowEdgeScroll = false;
     public float CameraSpeed = 15f;
     public float ScreenEdgeDelta = 1;
 }
@@ -165,22 +166,25 @@ public class CameraRig : MonoBehaviour
     {
         Vector3 direction = Vector3.zero;
 
-        if (Input.mousePosition.x >= Screen.width - EnvironmentCameraSettings.ScreenEdgeDelta)
+        if(EnvironmentCameraSettings.AllowEdgeScroll)
         {
-            direction.x = 1;
-        }
-        else if (Input.mousePosition.x <= 0 + EnvironmentCameraSettings.ScreenEdgeDelta)
-        {
-            direction.x = -1;
-        }
+            if (Input.mousePosition.x >= Screen.width - EnvironmentCameraSettings.ScreenEdgeDelta)
+            {
+                direction.x = 1;
+            }
+            else if (Input.mousePosition.x <= 0 + EnvironmentCameraSettings.ScreenEdgeDelta)
+            {
+                direction.x = -1;
+            }
 
-        if (Input.mousePosition.y >= Screen.height - EnvironmentCameraSettings.ScreenEdgeDelta)
-        {
-            direction.z = 1;
-        }
-        else if (Input.mousePosition.y <= 0 + EnvironmentCameraSettings.ScreenEdgeDelta)
-        {
-            direction.z = -1;
+            if (Input.mousePosition.y >= Screen.height - EnvironmentCameraSettings.ScreenEdgeDelta)
+            {
+                direction.z = 1;
+            }
+            else if (Input.mousePosition.y <= 0 + EnvironmentCameraSettings.ScreenEdgeDelta)
+            {
+                direction.z = -1;
+            }
         }
 
         Update_Movement(direction);
