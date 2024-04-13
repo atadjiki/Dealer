@@ -18,7 +18,7 @@ public class EnvironmentUtil
 
         Debug.DrawRay(rayOrigin, Vector3.down, Color.blue, Time.deltaTime, false);
 
-        if (Physics.Raycast(ray, out hitInfo, height*1.5f))
+        if (Physics.Raycast(ray, out hitInfo, height))
         {
             if(hitInfo.collider != null)
             {
