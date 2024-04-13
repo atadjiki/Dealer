@@ -33,6 +33,11 @@ public class EnvironmentDebugNode : MonoBehaviour
         Color color = GetColorByState(state);
 
         SetColor(color);
+
+        Vector3 scale = GetScaleByState(state);
+
+        Mesh.transform.localScale = scale;
+        
     }
 
     private void SetColor(Color color)
@@ -40,6 +45,7 @@ public class EnvironmentDebugNode : MonoBehaviour
         if (_renderer != null)
         {
             _renderer.material.color = color;
+            return;
         }
 
         Debug.Log("Mesh renderer was null!");
@@ -48,6 +54,17 @@ public class EnvironmentDebugNode : MonoBehaviour
     private void SetVisibility(bool flag)
     {
         Mesh.SetActive(flag);
+    }
+
+    private Vector3 GetScaleByState(EnvironmentNodeState state)
+    {
+        switch(state)
+        {
+            case EnvironmentNodeState.Walkable:
+                return new Vector3(0.25f, 0.1f, 0.25f);
+            default:
+                return new Vector3(1.5f, 0.1f, 1.5f);
+        }
     }
 
     private Color GetColorByState(EnvironmentNodeState state)

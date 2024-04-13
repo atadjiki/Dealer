@@ -10,6 +10,7 @@ public class EnvironmentScanner : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject Prefab_Debug_Node;
+    [SerializeField] private GameObject Prefab_Debug_LineRenderer;
 
     private void Awake()
     {
@@ -19,10 +20,6 @@ public class EnvironmentScanner : MonoBehaviour
     private void PerformScan()
     {
         StartCoroutine(Coroutine_PerformScan());
-
-        //first check which tiles are walkable
-
-        //for each walkable tile, scan in 4/6 directions to see the status of their neighbors
     }
 
     private IEnumerator Coroutine_PerformScan()
@@ -31,6 +28,8 @@ public class EnvironmentScanner : MonoBehaviour
         {
             for (int columns = 0; columns < ScanRange; columns++)
             {
+                //first check which tiles are walkable
+
                 GameObject nodeObject = Instantiate<GameObject>(Prefab_Debug_Node, this.transform);
                 EnvironmentDebugNode debugNode = nodeObject.GetComponent<EnvironmentDebugNode>();
 
@@ -41,10 +40,51 @@ public class EnvironmentScanner : MonoBehaviour
 
                 debugNode.SetState(state);
 
+                //for each walkable tile, scan in 4/6 directions to see the status of their neighbors
+
+                PerformNeighborCheck(nodeObject.transform, Vector3.forward);
+                PerformNeighborCheck(nodeObject.transform, Vector3.back);
+                PerformNeighborCheck(nodeObject.transform, Vector3.right);
+                PerformNeighborCheck(nodeObject.transform, Vector3.left);
             }
         }
 
         yield return null;
+    }
+
+    private void PerformNeighborCheck(Transform nodeTransform, Vector3 direction)
+    {
+        Vector3 origin = nodeTransform.position + new Vector3(TileSize / 2, 0.1f, TileSize / 2); ;
+
+        bool obstacleHalfHit = Physics.Raycast(origin, direction, TileSize, Layer_Obstacle_Half);
+        bool obstacleFullHit = Physics.Raycast(origin, direction, TileSize, Layer_Obstacle_Full);
+
+        CreateLineRenderer(nodeTransform, direction, obstacleFullHit || obstacleHalfHit);
+    }
+
+    private void CreateLineRenderer(Transform parent, Vector3 direction, bool hitObstacle)
+    {
+        GameObject lineObject = Instantiate<GameObject>(Prefab_Debug_LineRenderer, parent);
+        lineObject.transform.position = new Vector3(TileSize / 2, 0.1f, TileSize / 2);
+
+        LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
+
+        Vector3 lineEndPosition = parent.position + (direction * TileSize/2);
+
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, parent.position);
+        lineRenderer.SetPosition(1, lineEndPosition);
+
+        if(!hitObstacle)
+        {
+            lineRenderer.colorGradient.colorKeys[0].color = Color.green;
+            lineRenderer.material.color = Color.green;
+        }
+        else
+        {
+            lineRenderer.colorGradient.colorKeys[0].color = Color.red;
+            lineRenderer.material.color = Color.red;
+        }
     }
 
     private EnvironmentNodeState GetNodeState(Vector3 origin)
