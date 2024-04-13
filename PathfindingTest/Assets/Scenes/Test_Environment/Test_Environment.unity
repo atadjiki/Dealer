@@ -2373,7 +2373,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 25
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -10116,7 +10116,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 2118737716}
   m_Lens:
-    FieldOfView: 25
+    FieldOfView: 40
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -13947,7 +13947,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -15502,11 +15502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef77191a52213ba4f871ca92dcb2df9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScanRange: 8
-  Prefab_Debug_Node: {fileID: 6690453385113461387, guid: 7e668ba13a426934f8a6da30fb37f683,
-    type: 3}
-  Prefab_Debug_LineRenderer: {fileID: 2095694438586311023, guid: 09db63cd34bf1c9498b817fd070f00ac,
-    type: 3}
+  MapSize: 12
 --- !u!4 &2118993830
 Transform:
   m_ObjectHideFlags: 0
