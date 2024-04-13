@@ -8,6 +8,7 @@ using static Constants;
 public struct EnvironmentDebugNodeSettings
 {
     public Color Color_Walkable;
+    public Color Color_Unwalkable;
     public Color Color_Obstacle_Half;
     public Color Color_Obstacle_Full;
 }
@@ -55,6 +56,8 @@ public class EnvironmentDebugNode : MonoBehaviour
         {
             case EnvironmentNodeState.Walkable:
                 return Settings.Color_Walkable;
+            case EnvironmentNodeState.Unwalkable:
+                return Settings.Color_Unwalkable;
             case EnvironmentNodeState.Obstacle_Half:
                 return Settings.Color_Obstacle_Half;
             case EnvironmentNodeState.Obstacle_Full:
