@@ -9,20 +9,26 @@ public class EnvironmentTile
 {
     public EnvironmentLayer Layer;
 
-    public Vector3 Origin;
+    public Vector2 Coordinates;
 
-    public EnvironmentTile(Vector3 _origin, EnvironmentLayer _layer)
+    public EnvironmentTile(int _row, int _column, EnvironmentLayer _layer)
     {
-        Origin = _origin;
+        Coordinates = new Vector2(_row, _column);
         Layer = _layer;
     }
 
     public override string ToString()
     {
-        return "Tile " + Origin.ToString() + " - " + Layer.ToString();
+        return "Tile " + GetOrigin().ToString() + " - " + Layer.ToString();
+    }
+
+    public Vector3 GetOrigin()
+    {
+        return EnvironmentUtil.CalculateTileOrigin((int)Coordinates.x, (int)Coordinates.y);
     }
 }
 
+[ExecuteInEditMode]
 public class EnvironmentScanner : MonoBehaviour
 {
     [Header("Settings")]
@@ -32,12 +38,7 @@ public class EnvironmentScanner : MonoBehaviour
 
     private bool _scanComplete;
 
-    private void Awake()
-    {
-        PerformScan();
-    }
-
-    private void Update()
+    private void OnDrawGizmosSelected()
     {
         if (_tileMap != null && _scanComplete)
         {
@@ -49,38 +50,53 @@ public class EnvironmentScanner : MonoBehaviour
 
                     if (tile != null)
                     {
-                        Debug.DrawRay(tile.Origin, Vector3.up, EnvironmentUtil.GetLayerDebugColor(tile.Layer), Time.deltaTime, false);
+                        Color color = EnvironmentUtil.GetLayerDebugColor(tile.Layer);
+                        color.a = 0.25f;
+                        Gizmos.color = color;
+
+                        Gizmos.DrawSphere(tile.GetOrigin(), 0.1f);
+                        Gizmos.DrawWireCube(tile.GetOrigin() + new Vector3(0,ENV_TILE_SIZE/10), new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE/10, ENV_TILE_SIZE));
                     }
                 }
             }
         }
     }
 
-    private void PerformScan()
+    public void PerformScan()
     {
+        StopAllCoroutines();
         StartCoroutine(Coroutine_PerformScan());
     }
 
     private IEnumerator Coroutine_PerformScan()
     {
+        _scanComplete = false;
+
         _tileMap = new EnvironmentTile[MapSize,MapSize];
 
-        for (int rows = 0; rows < MapSize; rows++)
+        //gather all the nodes in the map
+        for (int Row = 0; Row < MapSize; Row++)
         {
-            for (int columns = 0; columns < MapSize; columns++)
+            for (int Column = 0; Column < MapSize; Column++)
             {
                 //first check which tiles are walkable
 
-                Vector3 origin = EnvironmentUtil.CalculateTileOrigin(rows, columns);
+                Vector3 origin = EnvironmentUtil.CalculateTileOrigin(Row, Column);
 
                 EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
+                _tileMap[Row, Column] = new EnvironmentTile(Row, Column, layer);
+            }
+        }
 
-                _tileMap[rows, columns] = new EnvironmentTile(origin, layer);
+        //determine the neighbors for each node in the map
+        for (int Row = 0; Row < MapSize; Row++)
+        {
+            for (int Column = 0; Column < MapSize; Column++)
+            {
+                EnvironmentTile tile =_tileMap[Row,Column];
 
-                //for each walkable tile, scan in 4/6 directions to see the status of their neighbors
-
-                yield return new WaitForFixedUpdate();
+                
             }
         }
 

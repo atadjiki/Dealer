@@ -17,7 +17,7 @@ public class EnvironmentUtil
         Ray ray = new Ray(origin, direction);
         RaycastHit hitInfo;
 
-        Debug.DrawRay(origin, direction, Color.blue, Time.deltaTime, false);
+        //Debug.DrawRay(origin, direction, Color.blue, Time.deltaTime, false);
 
         if (Physics.Raycast(ray, out hitInfo, range))
         {
@@ -27,7 +27,7 @@ public class EnvironmentUtil
 
                 EnvironmentLayer state = GetLayer(layer);
 
-                Debug.DrawRay(origin, Vector3.up, GetLayerDebugColor(state), Time.deltaTime, false);
+               // Debug.DrawRay(hitInfo.point, Vector3.up, GetLayerDebugColor(state), Time.deltaTime, false);
 
                 return state;
             }
