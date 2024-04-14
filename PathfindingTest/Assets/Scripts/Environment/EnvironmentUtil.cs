@@ -81,4 +81,31 @@ public class EnvironmentUtil
                 return Color.clear;
         }
     }
+
+    public static Vector3 GetGridDirection(EnvironmentDirection Direction)
+    {
+        switch (Direction)
+        {
+            case EnvironmentDirection.NORTH:
+                return Vector3.forward;
+            case EnvironmentDirection.SOUTH:
+                return Vector3.back;
+            case EnvironmentDirection.EAST:
+                return Vector3.left;
+            case EnvironmentDirection.WEST:
+                return Vector3.right;
+
+            case EnvironmentDirection.NORTH_EAST:
+                return Vector3.Normalize(Vector3.forward + Vector3.left);
+            case EnvironmentDirection.NORTH_WEST:
+                return Vector3.Normalize(Vector3.forward + Vector3.right);
+            case EnvironmentDirection.SOUTH_EAST:
+                return Vector3.Normalize(Vector3.back + Vector3.left);
+            case EnvironmentDirection.SOUTH_WEST:
+                return Vector3.Normalize(Vector3.back + Vector3.right);
+
+            default:
+                return Vector3.zero;
+        }
+    }
 }

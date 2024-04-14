@@ -55,7 +55,16 @@ public class EnvironmentScanner : MonoBehaviour
                         Gizmos.color = color;
 
                         Gizmos.DrawSphere(tile.GetOrigin(), 0.1f);
-                        Gizmos.DrawWireCube(tile.GetOrigin() + new Vector3(0,ENV_TILE_SIZE/10), new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE/10, ENV_TILE_SIZE));
+                        Gizmos.DrawWireCube(tile.GetOrigin()
+                            + new Vector3(0,ENV_TILE_SIZE/10), new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE/10, ENV_TILE_SIZE));
+
+                        foreach (EnvironmentDirection dir in Enum.GetValues(typeof(EnvironmentDirection)))
+                        {
+                            Vector3 direction = EnvironmentUtil.GetGridDirection(dir);
+
+                            Ray ray = new Ray(tile.GetOrigin(), direction);
+                            Gizmos.DrawRay(ray);
+                        }
                     }
                 }
             }
@@ -95,8 +104,6 @@ public class EnvironmentScanner : MonoBehaviour
             for (int Column = 0; Column < MapSize; Column++)
             {
                 EnvironmentTile tile =_tileMap[Row,Column];
-
-                
             }
         }
 
