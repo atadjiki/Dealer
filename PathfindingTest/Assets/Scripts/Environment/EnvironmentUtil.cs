@@ -5,71 +5,77 @@ using static Constants;
 
 public class EnvironmentUtil
 {
-    public static EnvironmentTileState ScanForHit(Vector3 center)
+    public static EnvironmentLayer CheckTileLayer(Vector3 origin)
     {
-        float height = 3;
+        Vector3 offset = new Vector3(0, 3, 0);
 
-        Vector3 heightOffset = new Vector3(0, height, 0);
+        return PerformRaycast(origin + offset, Vector3.down, offset.magnitude);
+    }
 
-        Vector3 rayOrigin = center + heightOffset;
-
-        Ray ray = new Ray(rayOrigin, Vector3.down);
+    public static EnvironmentLayer PerformRaycast(Vector3 origin, Vector3 direction, float range)
+    {
+        Ray ray = new Ray(origin, direction);
         RaycastHit hitInfo;
 
-        Debug.DrawRay(rayOrigin, Vector3.down, Color.blue, Time.deltaTime, false);
+        Debug.DrawRay(origin, direction, Color.blue, Time.deltaTime, false);
 
-        if (Physics.Raycast(ray, out hitInfo, height))
+        if (Physics.Raycast(ray, out hitInfo, range))
         {
             if(hitInfo.collider != null)
             {
                 int layer = hitInfo.collider.gameObject.layer;
 
-                EnvironmentTileState state = GetTileState(layer);
+                EnvironmentLayer state = GetLayer(layer);
 
-                Debug.DrawRay(center, Vector3.up, GetTileStateColor(state), Time.deltaTime, false);
+                Debug.DrawRay(origin, Vector3.up, GetLayerDebugColor(state), Time.deltaTime, false);
 
                 return state;
             }
         }
 
-        return EnvironmentTileState.None;
+        return EnvironmentLayer.None;
     }
 
-    public static Vector3 CalculateTileCenter(int row, int column)
+    public static Vector3 CalculateTileOrigin(int Row, int Column)
     {
-        Vector3 basePosition = new Vector3(row * ENV_TILE_SIZE, 0, column * ENV_TILE_SIZE);
+        Vector3 tilePivot = new Vector3(Row * ENV_TILE_SIZE, 0, Column * ENV_TILE_SIZE);
 
-        return basePosition + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
+        return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
     }
 
-    public static EnvironmentTileState GetTileState(int layer)
+    public static EnvironmentLayer GetLayer(int Layer)
     {
-        if (layer == LAYER_GROUND)
+        if (Layer == LAYER_GROUND)
         {
-            return EnvironmentTileState.Ground;
+            return EnvironmentLayer.Ground;
         }
-        else if(layer == LAYER_OBSTACLE_HALF)
+        else if(Layer == LAYER_OBSTACLE_HALF)
         {
-            return EnvironmentTileState.Obstacle_Half;
+            return EnvironmentLayer.Obstacle_Half;
         }
-        else if(layer == LAYER_OBSTACLE_FULL)
+        else if(Layer == LAYER_OBSTACLE_FULL)
         {
-            return EnvironmentTileState.Obstacle_Full;
+            return EnvironmentLayer.Obstacle_Full;
         }
 
-        return EnvironmentTileState.None;
+        return EnvironmentLayer.None;
     }
 
-    public static Color GetTileStateColor(EnvironmentTileState State)
+    public static bool IsObstacleLayer(EnvironmentLayer Layer)
     {
-        switch (State)
+        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half);
+    }
+
+    public static Color GetLayerDebugColor(EnvironmentLayer Layer)
+    {
+        switch (Layer)
         {
-            case EnvironmentTileState.Ground:
+            case EnvironmentLayer.Ground:
                 return Color.green;
-            case EnvironmentTileState.Obstacle_Full:
-            case EnvironmentTileState.Obstacle_Half:
+            case EnvironmentLayer.Obstacle_Full:
+            case EnvironmentLayer.Obstacle_Half:
                 return Color.yellow;
-            case EnvironmentTileState.None:
+            case EnvironmentLayer.None:
                 return Color.red;
             default:
                 return Color.clear;

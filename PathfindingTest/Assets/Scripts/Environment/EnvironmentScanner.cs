@@ -7,21 +7,19 @@ using static Constants;
 [Serializable]
 public class EnvironmentTile
 {
-    public EnvironmentTileState State;
+    public EnvironmentLayer Layer;
 
-    public Vector3 Center;
+    public Vector3 Origin;
 
-    public List<EnvironmentTile> Neighbors;
-
-    public EnvironmentTile(Vector3 _center, EnvironmentTileState _state)
+    public EnvironmentTile(Vector3 _origin, EnvironmentLayer _layer)
     {
-        Center = _center;
-        State = _state;
+        Origin = _origin;
+        Layer = _layer;
     }
 
     public override string ToString()
     {
-        return "Tile " + Center.ToString() + " - " + State.ToString();
+        return "Tile " + Origin.ToString() + " - " + Layer.ToString();
     }
 }
 
@@ -43,15 +41,15 @@ public class EnvironmentScanner : MonoBehaviour
     {
         if (_tileMap != null && _scanComplete)
         {
-            for (int rows = 0; rows < MapSize; rows++)
+            for (int Row = 0; Row < MapSize; Row++)
             {
-                for (int columns = 0; columns < MapSize; columns++)
+                for (int Column = 0; Column < MapSize; Column++)
                 {
-                    EnvironmentTile tile = _tileMap[rows, columns];
+                    EnvironmentTile tile = _tileMap[Row, Column];
 
                     if (tile != null)
                     {
-                        Debug.DrawRay(tile.Center, Vector3.up, EnvironmentUtil.GetTileStateColor(tile.State), Time.deltaTime, false);
+                        Debug.DrawRay(tile.Origin, Vector3.up, EnvironmentUtil.GetLayerDebugColor(tile.Layer), Time.deltaTime, false);
                     }
                 }
             }
@@ -73,11 +71,12 @@ public class EnvironmentScanner : MonoBehaviour
             {
                 //first check which tiles are walkable
 
-                Vector3 center = EnvironmentUtil.CalculateTileCenter(rows, columns);
+                Vector3 origin = EnvironmentUtil.CalculateTileOrigin(rows, columns);
 
-                EnvironmentTileState tileState = EnvironmentUtil.ScanForHit(center);
+                EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                _tileMap[rows, columns] = new EnvironmentTile(center, tileState);
+
+                _tileMap[rows, columns] = new EnvironmentTile(origin, layer);
 
                 //for each walkable tile, scan in 4/6 directions to see the status of their neighbors
 
@@ -89,14 +88,4 @@ public class EnvironmentScanner : MonoBehaviour
 
         yield return null;
     }
-
-    private void PerformNeighborCheck(Transform nodeTransform, Vector3 direction)
-    {
-        Vector3 origin = nodeTransform.position + new Vector3(ENV_TILE_SIZE / 2, 0.1f, ENV_TILE_SIZE / 2); ;
-
-        bool obstacleHalfHit = Physics.Raycast(origin, direction, ENV_TILE_SIZE, LAYER_OBSTACLE_HALF);
-        bool obstacleFullHit = Physics.Raycast(origin, direction, ENV_TILE_SIZE, LAYER_OBSTACLE_FULL);
-    }
-
-
 }

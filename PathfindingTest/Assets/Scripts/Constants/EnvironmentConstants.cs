@@ -8,5 +8,5 @@ public static partial class Constants
     public static int LAYER_OBSTACLE_HALF = LayerMask.NameToLayer("OBSTACLE_HALF");
     public static int LAYER_OBSTACLE_FULL = LayerMask.NameToLayer("OBSTACLE_FULL");
 
-    public enum EnvironmentTileState { None, Ground, Obstacle_Half, Obstacle_Full };
+    public enum EnvironmentLayer { None, Ground, Obstacle_Half, Obstacle_Full };
 }
