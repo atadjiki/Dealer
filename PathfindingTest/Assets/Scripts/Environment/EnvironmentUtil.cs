@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,6 @@ public class EnvironmentUtil
         Ray ray = new Ray(origin, direction);
         RaycastHit hitInfo;
 
-        //Debug.DrawRay(origin, direction, Color.blue, Time.deltaTime, false);
-
         if (Physics.Raycast(ray, out hitInfo, range))
         {
             if(hitInfo.collider != null)
@@ -27,8 +26,6 @@ public class EnvironmentUtil
 
                 EnvironmentLayer state = GetLayer(layer);
 
-               // Debug.DrawRay(hitInfo.point, Vector3.up, GetLayerDebugColor(state), Time.deltaTime, false);
-
                 return state;
             }
         }
@@ -36,11 +33,60 @@ public class EnvironmentUtil
         return EnvironmentLayer.None;
     }
 
+    public static EnvironmentTileNeighborMap GenerateNeighborMap(Vector3 origin)
+    {
+        EnvironmentLayer originLayer = CheckTileLayer(origin);
+
+        EnvironmentTileNeighborMap neighborMap = new EnvironmentTileNeighborMap();
+
+        if (IsLayerTraversible(originLayer))
+        {
+            foreach (EnvironmentDirection dir in GetAllDirections())
+            {
+                neighborMap[dir] = PerformNeighborCheck(origin, dir);
+            }
+        }
+
+        return neighborMap;
+    }
+
+    private static bool PerformNeighborCheck(Vector3 origin, EnvironmentDirection dir)
+    {
+        Vector3 direction = GetDirectionVector(dir);
+        Vector3 neighborOrigin = origin + direction;
+        EnvironmentLayer neighborLayer = CheckTileLayer(neighborOrigin);
+
+        //first check that the neighbor is a valid tile in the first place
+
+        Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
+
+        if (IsLayerTraversible(neighborLayer))
+        {
+            //now check that nothing is in the way between this tile and it's neighbor (like walls or corners)
+            if(Physics.Raycast(origin + offset, direction, direction.magnitude))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     public static Vector3 CalculateTileOrigin(int Row, int Column)
     {
         Vector3 tilePivot = new Vector3(Row * ENV_TILE_SIZE, 0, Column * ENV_TILE_SIZE);
 
         return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
+    }
+
+    public static Vector2 CalculateTileCoordinates(Vector3 origin)
+    {
+        origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
+
+        origin /= ENV_TILE_SIZE;
+
+        return new Vector2(origin.x, origin.z);
     }
 
     public static EnvironmentLayer GetLayer(int Layer)
@@ -66,6 +112,84 @@ public class EnvironmentUtil
         return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half);
     }
 
+    public static Vector3 GetDirectionVector(EnvironmentDirection Direction)
+    {
+        Vector3 vector;
+
+        switch (Direction)
+        {
+            case EnvironmentDirection.NORTH:
+                vector = Vector3.forward;
+                break;
+            case EnvironmentDirection.SOUTH:
+                vector = Vector3.back;
+                break;
+            case EnvironmentDirection.EAST:
+                vector = Vector3.left;
+                break;
+            case EnvironmentDirection.WEST:
+                vector = Vector3.right;
+                break;
+
+            case EnvironmentDirection.NORTH_EAST:
+                vector = Vector3.forward + Vector3.left;
+                break;
+            case EnvironmentDirection.NORTH_WEST:
+                vector = Vector3.forward + Vector3.right;
+                break;
+            case EnvironmentDirection.SOUTH_EAST:
+                vector = Vector3.back + Vector3.left;
+                break;
+            case EnvironmentDirection.SOUTH_WEST:
+                vector = Vector3.back + Vector3.right;
+                break;
+
+            default:
+                return Vector3.zero;
+        }
+
+        return vector *= GetDirectionMagnitude(Direction);
+    }
+
+    public static float GetDirectionMagnitude(EnvironmentDirection Direction)
+    {
+        if (IsCardinalDirection(Direction))
+        {
+            return ENV_TILE_SIZE;
+        }
+        else
+        {
+            return Mathf.Sqrt(Mathf.Pow(ENV_TILE_SIZE, 2));
+        }
+    }
+
+    public static bool IsCardinalDirection(EnvironmentDirection Direction)
+    {
+        switch(Direction)
+        {
+            case EnvironmentDirection.NORTH_EAST:
+            case EnvironmentDirection.NORTH_WEST:
+            case EnvironmentDirection.SOUTH_EAST:
+            case EnvironmentDirection.SOUTH_WEST:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    public static bool IsLayerTraversible(EnvironmentLayer Layer)
+    {
+        switch(Layer)
+        {
+            case EnvironmentLayer.Obstacle_Full:
+            case EnvironmentLayer.Obstacle_Half:
+            case EnvironmentLayer.None:
+                return false;
+            default:
+                return true;
+        }
+    }
+
     public static Color GetLayerDebugColor(EnvironmentLayer Layer)
     {
         switch (Layer)
@@ -82,30 +206,18 @@ public class EnvironmentUtil
         }
     }
 
-    public static Vector3 GetGridDirection(EnvironmentDirection Direction)
+    public static Color GetConnectionDebugColor(bool Flag)
     {
-        switch (Direction)
+        if (Flag)
         {
-            case EnvironmentDirection.NORTH:
-                return Vector3.forward;
-            case EnvironmentDirection.SOUTH:
-                return Vector3.back;
-            case EnvironmentDirection.EAST:
-                return Vector3.left;
-            case EnvironmentDirection.WEST:
-                return Vector3.right;
-
-            case EnvironmentDirection.NORTH_EAST:
-                return Vector3.Normalize(Vector3.forward + Vector3.left);
-            case EnvironmentDirection.NORTH_WEST:
-                return Vector3.Normalize(Vector3.forward + Vector3.right);
-            case EnvironmentDirection.SOUTH_EAST:
-                return Vector3.Normalize(Vector3.back + Vector3.left);
-            case EnvironmentDirection.SOUTH_WEST:
-                return Vector3.Normalize(Vector3.back + Vector3.right);
-
-            default:
-                return Vector3.zero;
+            return Color.green;
         }
+
+        return Color.red;
+    }
+
+    public static Array GetAllDirections()
+    {
+        return Enum.GetValues(typeof(EnvironmentDirection));
     }
 }

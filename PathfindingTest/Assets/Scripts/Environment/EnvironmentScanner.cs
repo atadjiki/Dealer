@@ -4,12 +4,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
+[SerializeField]
+public class EnvironmentTileNeighborMap : Dictionary<EnvironmentDirection, bool>
+{
+    public EnvironmentTileNeighborMap()
+    {
+        foreach(EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+        {
+            Add(dir, false);
+        }
+    }
+}
+
 [Serializable]
 public class EnvironmentTile
 {
     public EnvironmentLayer Layer;
 
     public Vector2 Coordinates;
+
+    public EnvironmentTileNeighborMap _neighborMap;
 
     public EnvironmentTile(int _row, int _column, EnvironmentLayer _layer)
     {
@@ -25,6 +39,16 @@ public class EnvironmentTile
     public Vector3 GetOrigin()
     {
         return EnvironmentUtil.CalculateTileOrigin((int)Coordinates.x, (int)Coordinates.y);
+    }
+
+    public EnvironmentTileNeighborMap GetNeighborMap()
+    {
+        return _neighborMap;
+    }
+
+    public void RefreshNeighborMap()
+    {
+        _neighborMap = EnvironmentUtil.GenerateNeighborMap(GetOrigin());
     }
 }
 
@@ -58,12 +82,20 @@ public class EnvironmentScanner : MonoBehaviour
                         Gizmos.DrawWireCube(tile.GetOrigin()
                             + new Vector3(0,ENV_TILE_SIZE/10), new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE/10, ENV_TILE_SIZE));
 
-                        foreach (EnvironmentDirection dir in Enum.GetValues(typeof(EnvironmentDirection)))
+                        if(EnvironmentUtil.IsLayerTraversible(tile.Layer))
                         {
-                            Vector3 direction = EnvironmentUtil.GetGridDirection(dir);
+                            EnvironmentTileNeighborMap neighborMap = tile.GetNeighborMap();
 
-                            Ray ray = new Ray(tile.GetOrigin(), direction);
-                            Gizmos.DrawRay(ray);
+                            foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+                            {
+                                Vector3 direction = EnvironmentUtil.GetDirectionVector(dir)/2;
+
+                                Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(neighborMap[dir]);
+
+                                Vector3 offset = new Vector3(0, 0.1f, 0);
+
+                                Gizmos.DrawLine(tile.GetOrigin() + offset, tile.GetOrigin() + offset + direction);
+                            }
                         }
                     }
                 }
@@ -98,13 +130,9 @@ public class EnvironmentScanner : MonoBehaviour
             }
         }
 
-        //determine the neighbors for each node in the map
-        for (int Row = 0; Row < MapSize; Row++)
+        foreach(EnvironmentTile tile in _tileMap)
         {
-            for (int Column = 0; Column < MapSize; Column++)
-            {
-                EnvironmentTile tile =_tileMap[Row,Column];
-            }
+            tile.RefreshNeighborMap();
         }
 
         _scanComplete = true;
