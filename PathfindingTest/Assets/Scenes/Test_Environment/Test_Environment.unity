@@ -2375,7 +2375,7 @@ Camera:
   far clip plane: 1000
   field of view: 40
   orthographic: 1
-  orthographic size: 6.5
+  orthographic size: 6
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -2398,8 +2398,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 6, y: 20.000002, z: 6.0000043}
+  m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
+  m_LocalPosition: {x: 6, y: 17.320507, z: -4.0000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10079,7 +10079,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1338818444
 Transform:
   m_ObjectHideFlags: 0
@@ -15783,7 +15783,7 @@ GameObject:
   - component: {fileID: 2118993830}
   - component: {fileID: 2118993829}
   m_Layer: 0
-  m_Name: EnvironmentScanner
+  m_Name: EnvironmentDebugGizmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15802,10 +15802,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapSize: 12
-  Debug_ShowTileLayers: 1
-  Debug_ShowTileConnections: 1
-  Debug_ShowNonWalkableNodes: 0
-  Debug_ShowInvalidConnections: 0
+  ShowTileLayers: 1
+  ShowTileConnections: 1
+  ShowNonWalkableNodes: 0
+  ShowInvalidConnections: 0
 --- !u!4 &2118993830
 Transform:
   m_ObjectHideFlags: 0

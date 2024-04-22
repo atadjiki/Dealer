@@ -236,6 +236,7 @@ public class EnvironmentUtil
             case EnvironmentLayer.Ground:
                 return Color.green;
             case EnvironmentLayer.Obstacle_Full:
+                return Color.magenta;
             case EnvironmentLayer.Obstacle_Half:
                 return Color.yellow;
             case EnvironmentLayer.None:
