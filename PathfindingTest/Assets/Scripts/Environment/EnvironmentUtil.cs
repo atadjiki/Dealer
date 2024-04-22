@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
@@ -33,13 +32,32 @@ public class EnvironmentUtil
         return EnvironmentLayer.None;
     }
 
+    public static List<Vector3> GetTileNeighbors(Vector3 origin)
+    {
+        List<Vector3> Neighbors = new List<Vector3>();
+
+        EnvironmentLayer tileLayer = CheckTileLayer(origin);
+
+        if(IsLayerTraversible(tileLayer))
+        {
+            foreach (EnvironmentDirection dir in GetAllDirections())
+            {
+                bool connection = PerformNeighborCheck(origin, dir);
+
+                Neighbors.Add(GetNeighboringTileLocation(origin, dir));
+            }
+        }
+
+        return Neighbors;
+    }
+
     public static EnvironmentTileNeighborMap GenerateNeighborMap(Vector3 origin)
     {
-        EnvironmentLayer originLayer = CheckTileLayer(origin);
+        EnvironmentLayer tileLayer = CheckTileLayer(origin);
 
         EnvironmentTileNeighborMap neighborMap = new EnvironmentTileNeighborMap();
 
-        if (IsLayerTraversible(originLayer))
+        if (IsLayerTraversible(tileLayer))
         {
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
@@ -53,7 +71,7 @@ public class EnvironmentUtil
     private static bool PerformNeighborCheck(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
-        Vector3 neighborOrigin = origin + direction;
+        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
         EnvironmentLayer neighborLayer = CheckTileLayer(neighborOrigin);
 
         //first check that the neighbor is a valid tile in the first place
@@ -71,6 +89,13 @@ public class EnvironmentUtil
             return true;
         }
         return false;
+    }
+
+    public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
+    {
+        Vector3 direction = GetDirectionVector(dir);
+
+        return origin + direction;
     }
 
     public static Vector3 CalculateTileOrigin(int Row, int Column)
@@ -190,7 +215,7 @@ public class EnvironmentUtil
         }
     }
 
-    public static Color GetLayerDebugColor(EnvironmentLayer Layer)
+    public static Color GetLayerDebugColor(EnvironmentLayer Layer, bool ShowInvalidLayer = true)
     {
         switch (Layer)
         {
@@ -200,20 +225,36 @@ public class EnvironmentUtil
             case EnvironmentLayer.Obstacle_Half:
                 return Color.yellow;
             case EnvironmentLayer.None:
-                return Color.red;
+                {
+                    if(ShowInvalidLayer)
+                    {
+                        return Color.red;
+                    }
+                    else
+                    {
+                        return Color.clear;
+                    }
+                }
+
             default:
                 return Color.clear;
         }
     }
 
-    public static Color GetConnectionDebugColor(bool Flag)
+    public static Color GetConnectionDebugColor(bool Flag, bool ShowInvalidConnection = true)
     {
-        if (Flag)
+        if (Flag == true)
         {
             return Color.green;
         }
-
-        return Color.red;
+        else if(ShowInvalidConnection)
+        {
+            return Color.red;
+        }
+        else
+        {
+            return Color.clear;
+        }
     }
 
     public static Array GetAllDirections()

@@ -4,54 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-[SerializeField]
-public class EnvironmentTileNeighborMap : Dictionary<EnvironmentDirection, bool>
-{
-    public EnvironmentTileNeighborMap()
-    {
-        foreach(EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
-        {
-            Add(dir, false);
-        }
-    }
-}
-
-[Serializable]
-public class EnvironmentTile
-{
-    public EnvironmentLayer Layer;
-
-    public Vector2 Coordinates;
-
-    public EnvironmentTileNeighborMap _neighborMap;
-
-    public EnvironmentTile(int _row, int _column, EnvironmentLayer _layer)
-    {
-        Coordinates = new Vector2(_row, _column);
-        Layer = _layer;
-    }
-
-    public override string ToString()
-    {
-        return "Tile " + GetOrigin().ToString() + " - " + Layer.ToString();
-    }
-
-    public Vector3 GetOrigin()
-    {
-        return EnvironmentUtil.CalculateTileOrigin((int)Coordinates.x, (int)Coordinates.y);
-    }
-
-    public EnvironmentTileNeighborMap GetNeighborMap()
-    {
-        return _neighborMap;
-    }
-
-    public void RefreshNeighborMap()
-    {
-        _neighborMap = EnvironmentUtil.GenerateNeighborMap(GetOrigin());
-    }
-}
-
 [ExecuteInEditMode]
 public class EnvironmentScanner : MonoBehaviour
 {
@@ -61,6 +13,12 @@ public class EnvironmentScanner : MonoBehaviour
     private EnvironmentTile[,] _tileMap;
 
     private bool _scanComplete;
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool Debug_ShowTileLayers;
+    [SerializeField] private bool Debug_ShowTileConnections;
+    [SerializeField] private bool Debug_ShowNonWalkableNodes;
+    [SerializeField] private bool Debug_ShowInvalidConnections;
 
     private void OnDrawGizmosSelected()
     {
@@ -74,27 +32,37 @@ public class EnvironmentScanner : MonoBehaviour
 
                     if (tile != null)
                     {
-                        Color color = EnvironmentUtil.GetLayerDebugColor(tile.Layer);
-                        color.a = 0.25f;
-                        Gizmos.color = color;
-
-                        Gizmos.DrawSphere(tile.GetOrigin(), 0.1f);
-                        Gizmos.DrawWireCube(tile.GetOrigin()
-                            + new Vector3(0,ENV_TILE_SIZE/10), new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE/10, ENV_TILE_SIZE));
-
-                        if(EnvironmentUtil.IsLayerTraversible(tile.Layer))
+                        if (Debug_ShowTileLayers)
                         {
-                            EnvironmentTileNeighborMap neighborMap = tile.GetNeighborMap();
+                            Color color = EnvironmentUtil.GetLayerDebugColor(tile.GetLayer(), Debug_ShowNonWalkableNodes);
+                            Gizmos.color = color;
 
-                            foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+                            Gizmos.DrawSphere(tile.GetOrigin(), 0.15f);
+
+                            color.a = 0.1f;
+                            Gizmos.color = color;
+                            float width = ENV_TILE_SIZE * 0.95f;
+                            Gizmos.DrawCube(tile.GetOrigin(), new Vector3(width, 0.1f, width));
+                        }
+
+                        if(Debug_ShowTileConnections)
+                        {
+                            if (EnvironmentUtil.IsLayerTraversible(tile.GetLayer()))
                             {
-                                Vector3 direction = EnvironmentUtil.GetDirectionVector(dir)/2;
+                                EnvironmentTileNeighborMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
 
-                                Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(neighborMap[dir]);
+                                foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+                                {
+                                    bool valid = neighborMap[dir];
 
-                                Vector3 offset = new Vector3(0, 0.1f, 0);
+                                    Vector3 direction = EnvironmentUtil.GetDirectionVector(dir) / 2;
 
-                                Gizmos.DrawLine(tile.GetOrigin() + offset, tile.GetOrigin() + offset + direction);
+                                    Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(valid, Debug_ShowInvalidConnections);
+
+                                    Vector3 offset = new Vector3(0, 0.1f, 0);
+
+                                    Gizmos.DrawLine(tile.GetOrigin() + offset, tile.GetOrigin() + offset + direction);
+                                }
                             }
                         }
                     }
@@ -132,7 +100,19 @@ public class EnvironmentScanner : MonoBehaviour
 
         foreach(EnvironmentTile tile in _tileMap)
         {
-            tile.RefreshNeighborMap();
+            List<Vector3> neighorVectors = EnvironmentUtil.GetTileNeighbors(tile.GetOrigin());
+
+            foreach(Vector3 neighborVector in neighorVectors)
+            {
+                Vector2 coordinates = EnvironmentUtil.CalculateTileCoordinates(neighborVector);
+
+                if(_tileMap.Length > coordinates.x && _tileMap.Length > coordinates.y)
+                {
+                    EnvironmentTile neighbor = _tileMap[(int)coordinates.x, (int)coordinates.y];
+
+                    tile.AddNeighbor(neighbor);
+                }
+            }
         }
 
         _scanComplete = true;
