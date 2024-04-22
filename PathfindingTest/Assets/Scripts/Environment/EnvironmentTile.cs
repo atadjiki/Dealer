@@ -3,17 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentTileNeighborMap : Dictionary<EnvironmentDirection, bool>
-{
-    public EnvironmentTileNeighborMap()
-    {
-        foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
-        {
-            Add(dir, false);
-        }
-    }
-}
-
 public class EnvironmentTile
 {
     private EnvironmentLayer _layer;

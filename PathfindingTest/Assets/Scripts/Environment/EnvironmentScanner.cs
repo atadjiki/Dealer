@@ -49,7 +49,7 @@ public class EnvironmentScanner : MonoBehaviour
                         {
                             if (EnvironmentUtil.IsLayerTraversible(tile.GetLayer()))
                             {
-                                EnvironmentTileNeighborMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
+                                EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
 
                                 foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
                                 {
@@ -106,7 +106,7 @@ public class EnvironmentScanner : MonoBehaviour
             {
                 Vector2 coordinates = EnvironmentUtil.CalculateTileCoordinates(neighborVector);
 
-                if(_tileMap.Length > coordinates.x && _tileMap.Length > coordinates.y)
+                if(AreValidCoordinates(coordinates))
                 {
                     EnvironmentTile neighbor = _tileMap[(int)coordinates.x, (int)coordinates.y];
 
@@ -118,5 +118,20 @@ public class EnvironmentScanner : MonoBehaviour
         _scanComplete = true;
 
         yield return null;
+    }
+
+    public bool AreValidCoordinates(Vector2 coords)
+    {
+        if(coords.x < 0 || coords.y < 0)
+        {
+            return false;
+        }
+
+        if(coords.x >= MapSize || coords.y >= MapSize)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

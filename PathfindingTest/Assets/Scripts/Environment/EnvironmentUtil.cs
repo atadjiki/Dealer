@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
+public class EnvironmentTileConnectionMap : Dictionary<EnvironmentDirection, bool>
+{
+    public EnvironmentTileConnectionMap()
+    {
+        foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+        {
+            Add(dir, false);
+        }
+    }
+}
+
 public class EnvironmentUtil
 {
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
@@ -44,18 +55,21 @@ public class EnvironmentUtil
             {
                 bool connection = PerformNeighborCheck(origin, dir);
 
-                Neighbors.Add(GetNeighboringTileLocation(origin, dir));
+                if(connection)
+                {
+                    Neighbors.Add(GetNeighboringTileLocation(origin, dir));
+                }
             }
         }
 
         return Neighbors;
     }
 
-    public static EnvironmentTileNeighborMap GenerateNeighborMap(Vector3 origin)
+    public static EnvironmentTileConnectionMap GenerateNeighborMap(Vector3 origin)
     {
         EnvironmentLayer tileLayer = CheckTileLayer(origin);
 
-        EnvironmentTileNeighborMap neighborMap = new EnvironmentTileNeighborMap();
+        EnvironmentTileConnectionMap neighborMap = new EnvironmentTileConnectionMap();
 
         if (IsLayerTraversible(tileLayer))
         {
