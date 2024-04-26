@@ -142,13 +142,16 @@ public class EnvironmentUtil
         {
             return EnvironmentLayer.Obstacle_Full;
         }
-
+        else if(Layer == LAYER_WALL)
+        {
+            return EnvironmentLayer.Wall;
+        }
         return EnvironmentLayer.None;
     }
 
     public static bool IsObstacleLayer(EnvironmentLayer Layer)
     {
-        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half);
+        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half) || Layer == EnvironmentLayer.Wall;
     }
 
     public static Vector3 GetDirectionVector(EnvironmentDirection Direction)
@@ -220,6 +223,7 @@ public class EnvironmentUtil
     {
         switch(Layer)
         {
+            case EnvironmentLayer.Wall:
             case EnvironmentLayer.Obstacle_Full:
             case EnvironmentLayer.Obstacle_Half:
             case EnvironmentLayer.None:
@@ -235,6 +239,7 @@ public class EnvironmentUtil
         {
             case EnvironmentLayer.Ground:
                 return Color.green;
+            case EnvironmentLayer.Wall:
             case EnvironmentLayer.Obstacle_Full:
                 return Color.magenta;
             case EnvironmentLayer.Obstacle_Half:
