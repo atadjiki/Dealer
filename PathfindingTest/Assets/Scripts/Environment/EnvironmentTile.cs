@@ -25,7 +25,7 @@ public class EnvironmentTile
 
     public Vector3 GetOrigin()
     {
-        return EnvironmentUtil.CalculateTileOrigin((int)_coordinates.x, (int)_coordinates.y);
+        return CalculateTileOrigin((int)_coordinates.x, (int)_coordinates.y);
     }
 
     public Vector2 GetCoordinates()

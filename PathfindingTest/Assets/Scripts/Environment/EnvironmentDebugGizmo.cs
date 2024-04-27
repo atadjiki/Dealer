@@ -8,34 +8,33 @@ using static Constants;
 public class EnvironmentDebugGizmo : MonoBehaviour
 {
     [Header("Settings")]
-    public int MapSize = 8; //in multiples of unit size
+    public int GridSize = 8; //in multiples of unit size
 
-    private EnvironmentTile[,] _tileMap;
+    private EnvironmentTile[,] _tileGrid;
 
     private bool _scanComplete;
 
     [Header("Debug Settings")]
-    [SerializeField] private bool ShowTileLayers = true;
-    [SerializeField] private bool ShowTileConnections = true;
-    [SerializeField] private bool ShowNonWalkableNodes = false;
+    [SerializeField] private bool ShowTraversibles = true;
+    [SerializeField] private bool ShowNonTraversibles = false;
+    [SerializeField] private bool ShowValidConnections = true;
     [SerializeField] private bool ShowInvalidConnections = false;
-//    [SerializeField] private bool ShowCover = false;
 
     private void OnDrawGizmosSelected()
     {
-        if (_tileMap != null && _scanComplete)
+        if (_tileGrid != null && _scanComplete)
         {
-            for (int Row = 0; Row < MapSize; Row++)
+            for (int Row = 0; Row < GridSize; Row++)
             {
-                for (int Column = 0; Column < MapSize; Column++)
+                for (int Column = 0; Column < GridSize; Column++)
                 {
-                    EnvironmentTile tile = _tileMap[Row, Column];
+                    EnvironmentTile tile = _tileGrid[Row, Column];
 
                     if (tile != null)
                     {
-                        if (ShowTileLayers)
+                        if (ShowTraversibles || ShowNonTraversibles)
                         {
-                            Color color = EnvironmentUtil.GetLayerDebugColor(tile.GetLayer(), ShowNonWalkableNodes);
+                            Color color = GetLayerDebugColor(tile.GetLayer(), ShowTraversibles, ShowNonTraversibles);
                             Gizmos.color = color;
 
                             Gizmos.DrawSphere(tile.GetOrigin(), 0.15f);
@@ -46,23 +45,21 @@ public class EnvironmentDebugGizmo : MonoBehaviour
                             Gizmos.DrawCube(tile.GetOrigin(), new Vector3(width, 0.1f, width));
                         }
 
-                        if(ShowTileConnections)
+                        if(ShowValidConnections || ShowInvalidConnections)
                         {
-                            if (EnvironmentUtil.IsLayerTraversible(tile.GetLayer()))
+                            if (IsLayerTraversible(tile.GetLayer()))
                             {
                                 EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
 
-                                foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
+                                foreach (EnvironmentDirection dir in GetAllDirections())
                                 {
-                                    bool isNeighborTraversible = neighborMap.HasPathToNeighbor(dir);
+                                    EnvironmentTileConnectionInfo info = neighborMap[dir];
 
-                                    Vector3 direction = EnvironmentUtil.GetDirectionVector(dir) / 2;
+                                    Vector3 direction = GetDirectionVector(dir) / 2;
 
-                                    Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(isNeighborTraversible, ShowInvalidConnections);
+                                    Gizmos.color = GetConnectionDebugColor(info, ShowValidConnections, ShowInvalidConnections);
 
-                                    Vector3 offset = new Vector3(0, 0.1f, 0);
-
-                                    Gizmos.DrawLine(tile.GetOrigin() + offset, tile.GetOrigin() + offset + direction);
+                                    Gizmos.DrawLine(tile.GetOrigin() + new Vector3(0, 0.1f, 0), tile.GetOrigin() + new Vector3(0, 0.1f, 0) + direction);
                                 }
                             }
                         }
@@ -82,34 +79,34 @@ public class EnvironmentDebugGizmo : MonoBehaviour
     {
         _scanComplete = false;
 
-        _tileMap = new EnvironmentTile[MapSize,MapSize];
+        _tileGrid = new EnvironmentTile[GridSize,GridSize];
 
         //gather all the nodes in the map
-        for (int Row = 0; Row < MapSize; Row++)
+        for (int Row = 0; Row < GridSize; Row++)
         {
-            for (int Column = 0; Column < MapSize; Column++)
+            for (int Column = 0; Column < GridSize; Column++)
             {
                 //first check which tiles are walkable
 
-                Vector3 origin = EnvironmentUtil.CalculateTileOrigin(Row, Column);
+                Vector3 origin = CalculateTileOrigin(Row, Column);
 
                 EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                _tileMap[Row, Column] = new EnvironmentTile(Row, Column, layer);
+                _tileGrid[Row, Column] = new EnvironmentTile(Row, Column, layer);
             }
         }
 
-        foreach(EnvironmentTile tile in _tileMap)
+        foreach(EnvironmentTile tile in _tileGrid)
         {
             List<Vector3> neighorVectors = EnvironmentUtil.GetTileNeighbors(tile.GetOrigin());
 
             foreach(Vector3 neighborVector in neighorVectors)
             {
-                Vector2 coordinates = EnvironmentUtil.CalculateTileCoordinates(neighborVector);
+                Vector2 coordinates = CalculateTileCoordinates(neighborVector);
 
                 if(AreValidCoordinates(coordinates))
                 {
-                    EnvironmentTile neighbor = _tileMap[(int)coordinates.x, (int)coordinates.y];
+                    EnvironmentTile neighbor = _tileGrid[(int)coordinates.x, (int)coordinates.y];
 
                     tile.AddNeighbor(neighbor);
                 }
@@ -128,7 +125,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
             return false;
         }
 
-        if(coords.x >= MapSize || coords.y >= MapSize)
+        if(coords.x >= GridSize || coords.y >= GridSize)
         {
             return false;
         }
