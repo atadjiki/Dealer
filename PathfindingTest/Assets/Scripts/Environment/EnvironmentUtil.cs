@@ -3,14 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentTileConnectionMap : Dictionary<EnvironmentDirection, bool>
+[Serializable]
+public struct EnvironmentTileConnectionInfo
+{
+    public EnvironmentLayer Layer;
+    public bool IsObstructed;
+
+    public static EnvironmentTileConnectionInfo Build()
+    {
+        return new EnvironmentTileConnectionInfo()
+        {
+            Layer = EnvironmentLayer.None,
+            IsObstructed = false,
+        };
+    }
+}
+
+public class EnvironmentTileConnectionMap : Dictionary<EnvironmentDirection, EnvironmentTileConnectionInfo>
 {
     public EnvironmentTileConnectionMap()
     {
         foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
         {
-            Add(dir, false);
+            Add(dir, EnvironmentTileConnectionInfo.Build());
         }
+    }
+
+    public bool HasPathToNeighbor(EnvironmentDirection dir)
+    {
+        return EnvironmentUtil.IsLayerTraversible(this[dir].Layer) && !this[dir].IsObstructed;
     }
 }
 
@@ -18,7 +39,7 @@ public class EnvironmentUtil
 {
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
     {
-        Vector3 offset = new Vector3(0, 3, 0);
+        Vector3 offset = new Vector3(0, ENV_TILE_SIZE*2, 0);
 
         return PerformRaycast(origin + offset, Vector3.down, offset.magnitude);
     }
@@ -53,9 +74,9 @@ public class EnvironmentUtil
         {
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
-                bool connection = PerformNeighborCheck(origin, dir);
+                EnvironmentTileConnectionInfo info = CheckNeighborConnection(origin, dir);
 
-                if(connection)
+                if(!info.IsObstructed)
                 {
                     Neighbors.Add(GetNeighboringTileLocation(origin, dir));
                 }
@@ -75,34 +96,33 @@ public class EnvironmentUtil
         {
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
-                neighborMap[dir] = PerformNeighborCheck(origin, dir);
+
+                neighborMap[dir] = CheckNeighborConnection(origin, dir);
             }
         }
 
         return neighborMap;
     }
 
-    private static bool PerformNeighborCheck(Vector3 origin, EnvironmentDirection dir)
+    private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
         Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
-        EnvironmentLayer neighborLayer = CheckTileLayer(neighborOrigin);
+
+        EnvironmentTileConnectionInfo info = EnvironmentTileConnectionInfo.Build();
+        info.Layer = CheckTileLayer(neighborOrigin);
 
         //first check that the neighbor is a valid tile in the first place
 
         Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
 
-        if (IsLayerTraversible(neighborLayer))
+        if (IsLayerTraversible(info.Layer))
         {
             //now check that nothing is in the way between this tile and it's neighbor (like walls or corners)
-            if(Physics.Raycast(origin + offset, direction, direction.magnitude))
-            {
-                return false;
-            }
-
-            return true;
+            info.IsObstructed = Physics.Raycast(origin + offset, direction, direction.magnitude);
         }
-        return false;
+
+        return info;
     }
 
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
@@ -149,7 +169,7 @@ public class EnvironmentUtil
         return EnvironmentLayer.None;
     }
 
-    public static bool IsObstacleLayer(EnvironmentLayer Layer)
+    public static bool IsLayerObstacle(EnvironmentLayer Layer)
     {
         return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half) || Layer == EnvironmentLayer.Wall;
     }

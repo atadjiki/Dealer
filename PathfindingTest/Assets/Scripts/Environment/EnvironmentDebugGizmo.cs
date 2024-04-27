@@ -19,6 +19,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
     [SerializeField] private bool ShowTileConnections = true;
     [SerializeField] private bool ShowNonWalkableNodes = false;
     [SerializeField] private bool ShowInvalidConnections = false;
+//    [SerializeField] private bool ShowCover = false;
 
     private void OnDrawGizmosSelected()
     {
@@ -53,11 +54,11 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                                 foreach (EnvironmentDirection dir in EnvironmentUtil.GetAllDirections())
                                 {
-                                    bool valid = neighborMap[dir];
+                                    bool isNeighborTraversible = neighborMap.HasPathToNeighbor(dir);
 
                                     Vector3 direction = EnvironmentUtil.GetDirectionVector(dir) / 2;
 
-                                    Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(valid, ShowInvalidConnections);
+                                    Gizmos.color = EnvironmentUtil.GetConnectionDebugColor(isNeighborTraversible, ShowInvalidConnections);
 
                                     Vector3 offset = new Vector3(0, 0.1f, 0);
 
