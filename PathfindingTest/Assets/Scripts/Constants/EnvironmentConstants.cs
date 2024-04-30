@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static partial class Constants
@@ -29,12 +30,52 @@ public static partial class Constants
     }
 
     public static Vector2 CalculateTileCoordinates(Vector3 origin)
-    {
+    { 
         origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
 
         origin /= ENV_TILE_SIZE;
 
         return new Vector2(origin.x, origin.z);
+    }
+
+    public static Vector3[] CalculateTileEdge(Vector3 origin, EnvironmentDirection dir)
+    {
+        float length = ENV_TILE_SIZE / 2;
+
+        if(dir == EnvironmentDirection.NORTH)
+        {
+            return new Vector3[]
+            {
+                origin + new Vector3(  length, 0, length ),
+                origin + new Vector3( -length, 0, length )
+            };
+        }
+        else if(dir == EnvironmentDirection.SOUTH)
+        {
+            return new Vector3[]
+            {
+                origin + new Vector3(  length, 0, -length ),
+                origin + new Vector3( -length, 0, -length )
+            };
+        }
+        else if (dir == EnvironmentDirection.WEST)
+        {
+            return new Vector3[]
+            {
+                origin + new Vector3(  length, 0,  length ),
+                origin + new Vector3(  length, 0, -length )
+            };
+        }
+        else if (dir == EnvironmentDirection.EAST)
+        {
+            return new Vector3[]
+            {
+                origin + new Vector3(  -length, 0,  length ),
+                origin + new Vector3(  -length, 0, -length )
+            };
+        }
+
+        return null;
     }
 
     public static bool IsLayerObstacle(EnvironmentLayer Layer)
@@ -189,6 +230,17 @@ public static partial class Constants
     public static Array GetAllDirections()
     {
         return Enum.GetValues(typeof(EnvironmentDirection));
+    }
+
+    public static List<EnvironmentDirection> GetCardinalDirections()
+    {
+        return new List<EnvironmentDirection>()
+        {
+            EnvironmentDirection.NORTH,
+            EnvironmentDirection.SOUTH,
+            EnvironmentDirection.EAST,
+            EnvironmentDirection.WEST
+        };
     }
 
     public static EnvironmentLayer GetLayer(int Layer)

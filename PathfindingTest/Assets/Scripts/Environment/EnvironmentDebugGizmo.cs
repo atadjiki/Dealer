@@ -19,6 +19,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
     [SerializeField] private bool ShowNonTraversibles = false;
     [SerializeField] private bool ShowValidConnections = true;
     [SerializeField] private bool ShowInvalidConnections = false;
+    [SerializeField] private bool ShowCover = true;
 
     private void OnDrawGizmosSelected()
     {
@@ -45,12 +46,13 @@ public class EnvironmentDebugGizmo : MonoBehaviour
                             Gizmos.DrawCube(tile.GetOrigin(), new Vector3(width, 0.1f, width));
                         }
 
-                        if(ShowValidConnections || ShowInvalidConnections)
+                        EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
+
+
+                        if (ShowValidConnections || ShowInvalidConnections)
                         {
                             if (IsLayerTraversible(tile.GetLayer()))
                             {
-                                EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
-
                                 foreach (EnvironmentDirection dir in GetAllDirections())
                                 {
                                     EnvironmentTileConnectionInfo info = neighborMap[dir];
@@ -60,6 +62,26 @@ public class EnvironmentDebugGizmo : MonoBehaviour
                                     Gizmos.color = GetConnectionDebugColor(info, ShowValidConnections, ShowInvalidConnections);
 
                                     Gizmos.DrawLine(tile.GetOrigin() + new Vector3(0, 0.1f, 0), tile.GetOrigin() + new Vector3(0, 0.1f, 0) + direction);
+                                }
+                            }
+                        }
+
+                        if(ShowCover)
+                        {
+                            if (IsLayerTraversible(tile.GetLayer()))
+                            {
+                                foreach (EnvironmentDirection dir in GetCardinalDirections())
+                                {
+                                    EnvironmentTileConnectionInfo info = neighborMap[dir];
+
+                                    if(info.IsObstructed)
+                                    {
+                                        Vector3[] edge = CalculateTileEdge(tile.GetOrigin(), dir);
+
+                                        Gizmos.color = GetConnectionDebugColor(info);
+
+                                        Gizmos.DrawLineList(edge);
+                                    }
                                 }
                             }
                         }
