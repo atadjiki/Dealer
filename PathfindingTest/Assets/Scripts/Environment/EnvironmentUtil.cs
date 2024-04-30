@@ -58,11 +58,11 @@ public class EnvironmentUtil
         {
             if(hitInfo.collider != null)
             {
-                int layer = hitInfo.collider.gameObject.layer;
+                int layerMask = hitInfo.collider.gameObject.layer;
 
-                EnvironmentLayer state = GetLayer(layer);
+                EnvironmentLayer layer = GetLayer(layerMask);
 
-                return state;
+                return layer;
             }
         }
 
@@ -81,10 +81,7 @@ public class EnvironmentUtil
             {
                 EnvironmentTileConnectionInfo info = CheckNeighborConnection(origin, dir);
 
-                if(info.IsValid())
-                {
-                    Neighbors.Add(GetNeighboringTileLocation(origin, dir));
-                }
+                Neighbors.Add(GetNeighboringTileLocation(origin, dir));
             }
         }
 

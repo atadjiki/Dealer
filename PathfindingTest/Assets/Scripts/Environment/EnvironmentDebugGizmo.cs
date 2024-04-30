@@ -33,6 +33,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                     if (tile != null)
                     {
+                        //draw a square for each tile 
                         if (ShowTraversibles || ShowNonTraversibles)
                         {
                             Color color = GetLayerDebugColor(tile.GetLayer(), ShowTraversibles, ShowNonTraversibles);
@@ -48,7 +49,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                         EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(tile.GetOrigin());
 
-
+                        //for each tile, draw the possible connections(i.e, is a move possible)
                         if (ShowValidConnections || ShowInvalidConnections)
                         {
                             if (IsLayerTraversible(tile.GetLayer()))
@@ -68,7 +69,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                         if(ShowCover)
                         {
-                            if (IsLayerTraversible(tile.GetLayer()))
+                            if (tile.GetLayer() != EnvironmentLayer.None)
                             {
                                 foreach (EnvironmentDirection dir in GetCardinalDirections())
                                 {
@@ -78,7 +79,9 @@ public class EnvironmentDebugGizmo : MonoBehaviour
                                     {
                                         Vector3[] edge = CalculateTileEdge(tile.GetOrigin(), dir);
 
-                                        Gizmos.color = GetConnectionDebugColor(info);
+                                        EnvironmentCover cover = GetCoverType(info);
+
+                                        Gizmos.color = GetCoverDebugColor(cover);
 
                                         Gizmos.DrawLineList(edge);
                                     }

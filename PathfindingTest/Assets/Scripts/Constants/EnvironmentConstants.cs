@@ -15,6 +15,8 @@ public static partial class Constants
 
     public enum EnvironmentDirection { NORTH, SOUTH, WEST, EAST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST }
 
+    public enum EnvironmentCover { None, Half, Full };
+
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
@@ -177,9 +179,7 @@ public static partial class Constants
                 }
             case EnvironmentLayer.Wall:
             case EnvironmentLayer.Obstacle_Full:
-                return Color.magenta;
             case EnvironmentLayer.Obstacle_Half:
-                return Color.yellow;
             case EnvironmentLayer.None:
                 {
                     if (ShowNonTraversibles)
@@ -204,27 +204,39 @@ public static partial class Constants
             return Color.green;
         }
 
-        if (ShowInvalidConnections)
+        if (ShowInvalidConnections && !info.IsValid())
         {
-            if (info.Layer == EnvironmentLayer.Obstacle_Full)
-            {
-                return Color.red;
-            }
-            else if (info.Layer == EnvironmentLayer.Obstacle_Half)
-            {
-                return Color.yellow;
-            }
-            else if (info.Layer == EnvironmentLayer.Wall)
-            {
-                return Color.red;
-            }
-            else if(info.IsObstructed && info.Layer == EnvironmentLayer.None)
-            {
-                return Color.red;
-            }
+            return Color.red;
         }
 
         return Color.clear;
+    }
+
+    public static Color GetCoverDebugColor(EnvironmentCover cover)
+    {
+        switch(cover)
+        {
+            case EnvironmentCover.Half:
+                return Color.yellow;
+            case EnvironmentCover.Full:
+                return Color.magenta;
+            default:
+                return Color.clear;
+        }
+    }
+
+    public static EnvironmentCover GetCoverType(EnvironmentTileConnectionInfo info)
+    {
+        if (info.Layer == EnvironmentLayer.Obstacle_Half)
+        {
+            return EnvironmentCover.Half;
+        }
+        else if (info.Layer == EnvironmentLayer.Obstacle_Full || info.IsObstructed)
+        {
+            return EnvironmentCover.Full;
+        }
+
+        return EnvironmentCover.None;
     }
 
     public static Array GetAllDirections()
