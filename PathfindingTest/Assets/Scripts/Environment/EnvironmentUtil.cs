@@ -79,8 +79,6 @@ public class EnvironmentUtil
         {
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
-                EnvironmentTileConnectionInfo info = CheckNeighborConnection(origin, dir);
-
                 Neighbors.Add(GetNeighboringTileLocation(origin, dir));
             }
         }
