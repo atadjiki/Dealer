@@ -11,9 +11,9 @@ public class EnvironmentDebugGizmoEditor : Editor
         EnvironmentDebugGizmo debugGizmo = (EnvironmentDebugGizmo)target;
         DrawDefaultInspector();
 
-        if(GUILayout.Button("Scan"))
-        {
-            debugGizmo.PerformScan();
-        }
+        //if(GUILayout.Button("Scan"))
+        //{
+        //    debugGizmo.PerformScan();
+        //}
     }
 }

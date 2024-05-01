@@ -31,15 +31,6 @@ public static partial class Constants
         return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
     }
 
-    public static Vector2 CalculateTileCoordinates(Vector3 origin)
-    { 
-        origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
-
-        origin /= ENV_TILE_SIZE;
-
-        return new Vector2(origin.x, origin.z);
-    }
-
     public static Vector3[] CalculateTileEdge(Vector3 origin, EnvironmentDirection dir)
     {
         float length = ENV_TILE_SIZE / 2;
@@ -78,11 +69,6 @@ public static partial class Constants
         }
 
         return null;
-    }
-
-    public static bool IsLayerObstacle(EnvironmentLayer Layer)
-    {
-        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half) || Layer == EnvironmentLayer.Wall;
     }
 
     public static Vector3 GetDirectionVector(EnvironmentDirection Direction)
@@ -124,16 +110,18 @@ public static partial class Constants
         return vector *= GetDirectionMagnitude(Direction);
     }
 
-    public static float GetDirectionMagnitude(EnvironmentDirection Direction)
+    public static Vector2 CalculateTileCoordinates(Vector3 origin)
     {
-        if (IsCardinalDirection(Direction))
-        {
-            return ENV_TILE_SIZE;
-        }
-        else
-        {
-            return Mathf.Sqrt(Mathf.Pow(ENV_TILE_SIZE, 2));
-        }
+        origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
+
+        origin /= ENV_TILE_SIZE;
+
+        return new Vector2(origin.x, origin.z);
+    }
+
+    public static bool IsLayerObstacle(EnvironmentLayer Layer)
+    {
+        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half) || Layer == EnvironmentLayer.Wall;
     }
 
     public static bool IsCardinalDirection(EnvironmentDirection Direction)
@@ -161,6 +149,33 @@ public static partial class Constants
                 return false;
             default:
                 return true;
+        }
+    }
+
+    public static bool AreValidCoordinates(Vector2 coords, int width)
+    {
+        if (coords.x < 0 || coords.y < 0)
+        {
+            return false;
+        }
+
+        if (coords.x >= width || coords.y >= width)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static float GetDirectionMagnitude(EnvironmentDirection Direction)
+    {
+        if (IsCardinalDirection(Direction))
+        {
+            return ENV_TILE_SIZE;
+        }
+        else
+        {
+            return Mathf.Sqrt(Mathf.Pow(ENV_TILE_SIZE, 2));
         }
     }
 
@@ -235,8 +250,10 @@ public static partial class Constants
         {
             return EnvironmentCover.Full;
         }
-
-        return EnvironmentCover.None;
+        else
+        {
+            return EnvironmentCover.None;
+        }
     }
 
     public static Array GetAllDirections()
@@ -256,7 +273,8 @@ public static partial class Constants
     }
 
     public static EnvironmentLayer GetLayer(int Layer)
-    {
+    { 
+
         if (Layer == LAYER_GROUND)
         {
             return EnvironmentLayer.Ground;
@@ -273,6 +291,9 @@ public static partial class Constants
         {
             return EnvironmentLayer.Wall;
         }
-        return EnvironmentLayer.None;
+        else
+        {
+            return EnvironmentLayer.None;
+        }
     }
 }
