@@ -1739,6 +1739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a6b4cdfea0a94522bfdc744bba61d0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Width: 12
 --- !u!4 &154403942
 Transform:
   m_ObjectHideFlags: 0
@@ -14096,7 +14097,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAACIn+udJm5jNAAAAD0AAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNUz0LPUUVBKL0osyCgGChiAOKWZKSB2dCyQU1JZkOqXmJsKEagFAFBLAQItABQAAAgIAACIn+udJm5jNAAAAD0AAAAJACQAAAAAAAAAAAAAAAAAAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAEAAQBbAAAAfwAAAAAA
+    dataString: UEsDBBQAAAgIAACIn+tAM9sGlgAAAMIAAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFTUsOgjAQvUoza02KAhL3hqUmeIGBTnGS0pJSNNJwd4su3L3/i9DPrOAsooAnmpkShLwtikOJWqNUXdUe9zIrVSVzrGRX4CmTINadALYcGM2NLJrwTkWZRDeSTTD4mRKzOHwX72xI1B7HByRVeXzVvAxu+ifZatd0nshefwsazbQZE/l0wgupi+LgfEMhsO23KsQV1g9QSwMEFAAACAgAAIif67DpU5NgAAAAawAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw1TPQs9RRUEovSizIKAYKGII4pZkpIHa0kkmSqamRWWJaWqJBSrJFkrGugaFZioWBSaKFQbJpormhgVIsUH1JZUGqX2JuKkRPSGZOqjvIOKXYWgBQSwECLQAUAAAICAAAiJ/rQDPbBpYAAADCAAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAiJ/rsOlTk2AAAABrAAAACQAkAAAAAAAAAAAAAADjAAAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAI4BAAAAAA==
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
@@ -14121,7 +14122,39 @@ MonoBehaviour:
     _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
     _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
     _AreaColors: []
-  tagNames: []
+  tagNames:
+  - Ground
+  - Obstacle_Half
+  - Obstacle_Full
+  - Wall
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 29
+  - 30
+  - 31
   heuristic: 2
   heuristicScale: 1
   threadCount: 1
@@ -14135,7 +14168,7 @@ MonoBehaviour:
     seed: 0
     pivotPointRoot: {fileID: 0}
     spreadOutCount: 1
-  showGraphs: 0
+  showGraphs: 1
 --- !u!4 &1698494244
 Transform:
   m_ObjectHideFlags: 0
@@ -18648,12 +18681,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridSize: 12
-  DrawGizmos: 0
+  DrawGizmos: 1
   ShowTraversibles: 0
   ShowNonTraversibles: 0
-  ShowValidConnections: 1
+  ShowValidConnections: 0
   ShowInvalidConnections: 0
-  ShowCover: 0
+  ShowCover: 1
 --- !u!4 &2118993830
 Transform:
   m_ObjectHideFlags: 0
