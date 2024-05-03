@@ -1710,51 +1710,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 151798271}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &154403940
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 154403942}
-  - component: {fileID: 154403941}
-  m_Layer: 0
-  m_Name: EnvironmentGraphBuilder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &154403941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 154403940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a6b4cdfea0a94522bfdc744bba61d0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Width: 12
---- !u!4 &154403942
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 154403940}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &155476044
 GameObject:
   m_ObjectHideFlags: 0
@@ -14097,7 +14052,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAACIn+tAM9sGlgAAAMIAAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFTUsOgjAQvUoza02KAhL3hqUmeIGBTnGS0pJSNNJwd4su3L3/i9DPrOAsooAnmpkShLwtikOJWqNUXdUe9zIrVSVzrGRX4CmTINadALYcGM2NLJrwTkWZRDeSTTD4mRKzOHwX72xI1B7HByRVeXzVvAxu+ifZatd0nshefwsazbQZE/l0wgupi+LgfEMhsO23KsQV1g9QSwMEFAAACAgAAIif67DpU5NgAAAAawAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw1TPQs9RRUEovSizIKAYKGII4pZkpIHa0kkmSqamRWWJaWqJBSrJFkrGugaFZioWBSaKFQbJpormhgVIsUH1JZUGqX2JuKkRPSGZOqjvIOKXYWgBQSwECLQAUAAAICAAAiJ/rQDPbBpYAAADCAAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAiJ/rsOlTk2AAAABrAAAACQAkAAAAAAAAAAAAAADjAAAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAI4BAAAAAA==
+    dataString: UEsDBBQAAAgIAACIn+tvXbPvoAAAAM8AAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFjUEOgkAMRa8y6VoTGAKCe8NSE7xAZQo0GQcyDBIh3N2iC3evv32/K8xsQgdnFeuDgnZiI7wqeKGdSBDq4kF40mme5o2OsuSo0ySJNWUZRRQbKkBtYrLjwGhv5NCGt4iRhP1ATjD4iWRy+Pw23tmSKj0OHUhqPM4lL89+/F+ya/qq9kTu+mto0I77YiQvT3ghczEcel9RCOzaXYV1g+0DUEsDBBQAAAgIAACIn+uPAymdYAAAAGsAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNUz0LPUUVBKL0osyCgGChiCOKWZKSB2tFKyZVJqormRqYWpRZqRgZmxrpGpsbGhUaqZWapBqmFKqqVSLFB9SWVBql9ibipET0hmTqo7yDil2FoAUEsBAi0AFAAACAgAAIif629ds++gAAAAzwAAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAIif648DKZ1gAAAAawAAAAkAJAAAAAAAAAAAAAAA7QAAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAACYAQAAAAA=
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
@@ -18667,7 +18622,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2118993829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19489,5 +19444,4 @@ SceneRoots:
   - {fileID: 2019599320}
   - {fileID: 447608009}
   - {fileID: 2118993830}
-  - {fileID: 154403942}
   - {fileID: 1698494244}

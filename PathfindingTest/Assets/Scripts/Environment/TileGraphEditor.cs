@@ -8,5 +8,7 @@ public class TileGraphEditor : GraphEditor
     public override void OnInspectorGUI(NavGraph target)
     {
         var graph = target as TileGraph;
+
+        graph.width = EditorGUILayout.IntField("Width", graph.width);
     }
 }
