@@ -14030,7 +14030,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1698494244}
-  - component: {fileID: 1698494243}
+  - component: {fileID: 1698494245}
   m_Layer: 0
   m_Name: Pathfinding
   m_TagString: Untagged
@@ -14038,7 +14038,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1698494243
+--- !u!4 &1698494244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698494242}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1698494245
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14052,18 +14067,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAACIn+tvXbPvoAAAAM8AAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFjUEOgkAMRa8y6VoTGAKCe8NSE7xAZQo0GQcyDBIh3N2iC3evv32/K8xsQgdnFeuDgnZiI7wqeKGdSBDq4kF40mme5o2OsuSo0ySJNWUZRRQbKkBtYrLjwGhv5NCGt4iRhP1ATjD4iWRy+Pw23tmSKj0OHUhqPM4lL89+/F+ya/qq9kTu+mto0I77YiQvT3ghczEcel9RCOzaXYV1g+0DUEsDBBQAAAgIAACIn+uPAymdYAAAAGsAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNUz0LPUUVBKL0osyCgGChiCOKWZKSB2tFKyZVJqormRqYWpRZqRgZmxrpGpsbGhUaqZWapBqmFKqqVSLFB9SWVBql9ibipET0hmTqo7yDil2FoAUEsBAi0AFAAACAgAAIif629ds++gAAAAzwAAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAIif648DKZ1gAAAAawAAAAkAJAAAAAAAAAAAAAAA7QAAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAACYAQAAAAA=
+    dataString: UEsDBBQAAAgIAACIn+s6dkAXoAAAAM4AAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFjcEOgjAMhl9l6VmTiYDg3XDUBF9gsA6ajEHGkAjh3S168Pb1b7+/K8ykQwtXkR0ENBNpxlXAS9kJGSGRpsqkkiY6STSX7BhnMknjujLxOU6jPAexsUmOAin7QKdseLMoOewHdIzBT8iTU9238UkWReHV0AKn2qu5oKXrx/8lOdOXtUd091+DUXbcFyN6fkIL6pum0PsSQyDX7CqsG2wfUEsDBBQAAAgIAACIn+sxqolAYAAAAGsAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNUz0LPUUVBKL0osyCgGChiCOKWZKSB2tJKpQVqShUGiQZqRoUFqmrmFromFgamZSXJSmomxiZmRpaVSLFB9SWVBql9ibipET0hmTqo7yDil2FoAUEsBAi0AFAAACAgAAIif6zp2QBegAAAAzgAAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAIif6zGqiUBgAAAAawAAAAkAJAAAAAAAAAAAAAAA7QAAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAACYAQAAAAA=
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
-  showUnwalkableNodes: 1
+  showUnwalkableNodes: 0
   debugMode: 0
   debugFloor: 0
   debugRoof: 1
   manualDebugFloorRoof: 0
   showSearchTree: 0
-  unwalkableNodeDebugSize: 0.3
-  logPathResults: 1
+  unwalkableNodeDebugSize: 0.5
+  logPathResults: 2
   maxNearestNodeDistance: 100
   scanOnStartup: 1
   fullGetNearestSearch: 0
@@ -14110,7 +14125,7 @@ MonoBehaviour:
   - 29
   - 30
   - 31
-  heuristic: 2
+  heuristic: 1
   heuristicScale: 1
   threadCount: 1
   maxFrameTime: 10
@@ -14124,21 +14139,6 @@ MonoBehaviour:
     pivotPointRoot: {fileID: 0}
     spreadOutCount: 1
   showGraphs: 1
---- !u!4 &1698494244
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1698494242}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1699333823
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pathfinding;
 using UnityEngine;
 
 public static partial class Constants
@@ -22,6 +23,13 @@ public static partial class Constants
         Vector3 direction = GetDirectionVector(dir);
 
         return origin + direction;
+    }
+
+    public static Int2 GetNeighboringTileCoordinates(Vector3 origin, EnvironmentDirection dir)
+    {
+        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+
+        return CalculateTileCoordinates(neighborOrigin);
     }
 
     public static Vector3 CalculateTileOrigin(int Row, int Column)
@@ -110,13 +118,13 @@ public static partial class Constants
         return vector *= GetDirectionMagnitude(Direction);
     }
 
-    public static Vector2 CalculateTileCoordinates(Vector3 origin)
+    public static Int2 CalculateTileCoordinates(Vector3 origin)
     {
         origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
 
         origin /= ENV_TILE_SIZE;
 
-        return new Vector2(origin.x, origin.z);
+        return new Int2((int)origin.x, (int)origin.z);
     }
 
     public static bool IsLayerObstacle(EnvironmentLayer Layer)
@@ -152,7 +160,7 @@ public static partial class Constants
         }
     }
 
-    public static bool AreValidCoordinates(Vector2 coords, int width)
+    public static bool AreValidCoordinates(Int2 coords, int width)
     {
         if (coords.x < 0 || coords.y < 0)
         {
@@ -259,6 +267,11 @@ public static partial class Constants
     public static Array GetAllDirections()
     {
         return Enum.GetValues(typeof(EnvironmentDirection));
+    }
+
+    public static int GetDirectionCount()
+    {
+        return GetAllDirections().Length;
     }
 
     public static List<EnvironmentDirection> GetCardinalDirections()
