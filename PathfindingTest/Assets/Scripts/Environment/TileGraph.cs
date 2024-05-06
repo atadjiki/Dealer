@@ -6,6 +6,7 @@ using Pathfinding;
 using Pathfinding.Serialization;
 using Pathfinding.Util;
 using static Constants;
+using Pathfinding.Drawing;
 
 [JsonOptIn]
 // Make sure the class is not stripped out when using code stripping (see https://docs.unity3d.com/Manual/ManagedCodeStripping.html)
@@ -13,8 +14,14 @@ using static Constants;
 // Inherit our new graph from a base graph type
 public class TileGraph : NavGraph
 {
-    [JsonMember]
-    public int width = 12;
+    [JsonMember] public int Width = 12;
+
+    [JsonMember] public bool ShowConnections = true;
+    [JsonMember] public bool ShowLayers = true;
+    [JsonMember] public bool ShowCover = true;
+    [JsonMember] public float LayerOpacity = 0.1f;
+    [JsonMember] public float CoverOpacity = 1.0f;
+    [JsonMember] public float LineWidth = 2;
 
     // Here we will store all nodes in the graph
     public PointNode[] nodes;
@@ -29,7 +36,7 @@ public class TileGraph : NavGraph
         node.position = (Int3)position;
         node.GraphIndex = graphIndex;
         node.Walkable = IsLayerTraversible(layer);
-        node.Tag = GetTag(layer);
+        node.Tag = GetPathfindingTag(layer);
         return node;
     }
 
@@ -37,7 +44,7 @@ public class TileGraph : NavGraph
     {
         if(nodes != null)
         {
-            return nodes[Row * width + Column];
+            return nodes[Row * Width + Column];
         }
 
         return null;
@@ -56,9 +63,9 @@ public class TileGraph : NavGraph
 
             List<PointNode> nodes = new List<PointNode>();
 
-            for (int Row = 0; Row < graph.width; Row++)
+            for (int Row = 0; Row < graph.Width; Row++)
             {
-                for (int Column = 0; Column < graph.width; Column++)
+                for (int Column = 0; Column < graph.Width; Column++)
                 {
                     Vector3 origin = CalculateTileOrigin(Row, Column);
 
@@ -70,13 +77,13 @@ public class TileGraph : NavGraph
                 }
             }
 
-            for (int Row = 0; Row < graph.width; Row++)
+            for (int Row = 0; Row < graph.Width; Row++)
             {
-                for (int Column = 0; Column < graph.width; Column++)
+                for (int Column = 0; Column < graph.Width; Column++)
                 {
                     Vector3 origin = CalculateTileOrigin(Row, Column);
 
-                    PointNode node = nodes[(Row * graph.width) + Column];
+                    PointNode node = nodes[(Row * graph.Width) + Column];
 
                     EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
@@ -92,9 +99,9 @@ public class TileGraph : NavGraph
 
                         Int2 coords = GetNeighboringTileCoordinates(origin, dir);
 
-                        if (AreValidCoordinates(coords, graph.width))
+                        if (AreValidCoordinates(coords, graph.Width))
                         {
-                            PointNode neighbor = nodes[(coords.x * graph.width) + coords.y];
+                            PointNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
 
                             bool valid = info.IsValid();
 
@@ -127,20 +134,73 @@ public class TileGraph : NavGraph
         }
     }
 
-    private uint GetTag(EnvironmentLayer layer)
+    public override void OnDrawGizmos(DrawingData gizmos, bool drawNodes, RedrawScope redrawScope)
     {
-        switch(layer)
+        if(ShowConnections)
         {
-            case EnvironmentLayer.Ground:
-                return 0;
-            case EnvironmentLayer.Obstacle_Half:
-                return 1;
-            case EnvironmentLayer.Obstacle_Full:
-                return 2;
-            case EnvironmentLayer.Wall:
-                return 3;
+            base.OnDrawGizmos(gizmos, drawNodes, redrawScope);
+
         }
 
-        return 0;
+        DrawingData.Hasher hasher = DrawingData.Hasher.Create(this);
+
+        using (var builder = gizmos.GetBuilder(hasher))
+        {
+            GetNodes(node =>
+            {
+                Vector3 origin = (Vector3)node.position;
+                EnvironmentLayer layer = GetLayerByTag(node.Tag);
+
+                if(layer != EnvironmentLayer.None)
+                {
+                    if (ShowLayers)
+                    {
+                        Color color = GetLayerDebugColor(layer, true, false);
+                        color.a = LayerOpacity;
+
+                        using (builder.WithColor(color))
+                        {
+                            builder.SolidBox(origin, new Unity.Mathematics.float3(ENV_TILE_SIZE, 0.01f, ENV_TILE_SIZE));
+                        }
+                    }
+
+                    if (ShowCover)
+                    {
+                        EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
+
+                        foreach (EnvironmentDirection dir in GetCardinalDirections())
+                        {
+                            EnvironmentTileConnectionInfo info = neighborMap[dir];
+
+                            if (info.IsObstructed)
+                            {
+                                Vector3[] edge = CalculateTileEdge(origin, dir);
+
+                                EnvironmentCover cover = GetCoverType(info);
+
+                                Color color = GetCoverDebugColor(cover);
+                                color.a = CoverOpacity;
+
+                                using (builder.WithColor(color))
+                                {
+                                    using (builder.WithLineWidth(LineWidth))
+                                    {
+                                        float height = GetCoverHeight(cover);
+
+                                        Vector3 center = (edge[0] + edge[1]) / 2; ;
+
+                                        center += new Vector3(0, 3*height/4, 0);
+
+                                        Vector3 normal = -1 * GetDirectionVector(dir);
+
+                                        builder.PlaneWithNormal(center, normal, height);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 }

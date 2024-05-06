@@ -187,7 +187,7 @@ public static partial class Constants
         }
     }
 
-    public static Color GetLayerDebugColor(EnvironmentLayer Layer, bool ShowTraversibles, bool ShowNonTraversibles = true)
+    public static Color GetLayerDebugColor(EnvironmentLayer Layer, bool ShowTraversibles = true, bool ShowNonTraversibles = true)
     {
         switch (Layer)
         {
@@ -200,9 +200,10 @@ public static partial class Constants
                 {
                     return Color.clear;
                 }
-            case EnvironmentLayer.Wall:
             case EnvironmentLayer.Obstacle_Full:
+                return Color.red;
             case EnvironmentLayer.Obstacle_Half:
+                return Color.yellow;
             case EnvironmentLayer.None:
                 {
                     if (ShowNonTraversibles)
@@ -245,6 +246,19 @@ public static partial class Constants
                 return Color.magenta;
             default:
                 return Color.clear;
+        }
+    }
+
+    public static float GetCoverHeight(EnvironmentCover cover)
+    {
+        switch(cover)
+        {
+            case EnvironmentCover.Half:
+                return ENV_TILE_SIZE / 2;
+            case EnvironmentCover.Full:
+                return ENV_TILE_SIZE;
+            default:
+                return 0;
         }
     }
 
@@ -308,5 +322,50 @@ public static partial class Constants
         {
             return EnvironmentLayer.None;
         }
+    }
+
+    public static EnvironmentLayer GetLayerByTag(uint Tag)
+    {
+
+        if (Tag == 0)
+        {
+            return EnvironmentLayer.Ground;
+        }
+        else if (Tag == 1)
+        {
+            return EnvironmentLayer.Obstacle_Half;
+        }
+        else if (Tag == 2)
+        {
+            return EnvironmentLayer.Obstacle_Full;
+        }
+        else if (Tag == 3)
+        {
+            return EnvironmentLayer.Wall;
+        }
+        else
+        {
+            return EnvironmentLayer.None;
+        }
+    }
+
+
+    public static uint GetPathfindingTag(EnvironmentLayer layer)
+    {
+        switch (layer)
+        {
+            case EnvironmentLayer.Ground:
+                return 0;
+            case EnvironmentLayer.Obstacle_Half:
+                return 1;
+            case EnvironmentLayer.Obstacle_Full:
+                return 2;
+            case EnvironmentLayer.Wall:
+                return 3;
+            case EnvironmentLayer.None:
+                return 4;
+        }
+
+        return 0;
     }
 }

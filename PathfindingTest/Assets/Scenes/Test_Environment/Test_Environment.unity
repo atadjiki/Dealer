@@ -2778,7 +2778,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 40
-  orthographic: 1
+  orthographic: 0
   orthographic size: 8
   m_Depth: 0
   m_CullingMask:
@@ -14067,7 +14067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAACIn+s6dkAXoAAAAM4AAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFFjcEOgjAMhl9l6VmTiYDg3XDUBF9gsA6ajEHGkAjh3S168Pb1b7+/K8ykQwtXkR0ENBNpxlXAS9kJGSGRpsqkkiY6STSX7BhnMknjujLxOU6jPAexsUmOAin7QKdseLMoOewHdIzBT8iTU9238UkWReHV0AKn2qu5oKXrx/8lOdOXtUd091+DUXbcFyN6fkIL6pum0PsSQyDX7CqsG2wfUEsDBBQAAAgIAACIn+sxqolAYAAAAGsAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNUz0LPUUVBKL0osyCgGChiCOKWZKSB2tJKpQVqShUGiQZqRoUFqmrmFromFgamZSXJSmomxiZmRpaVSLFB9SWVBql9ibipET0hmTqo7yDil2FoAUEsBAi0AFAAACAgAAIif6zp2QBegAAAAzgAAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAIif6zGqiUBgAAAAawAAAAkAJAAAAAAAAAAAAAAA7QAAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAACYAQAAAAA=
+    dataString: UEsDBBQAAAgIAACQn+t0r8OQ1AAAAEoBAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFNj0+PgkAMxb/KpGd3AwZY8Wo2Xkw0wWTPIy3SZOyQYdAo4bvvgH9vr7++9rU9/DH6GpYqns8UFLW9rKwIlZ6ttAF719GjsdFXciOrtGnp5T6Te/smz7bRJftroNF3HODk+YRj1IaFntljfewYg+wVnLXpKEjALE6jFA9xkhFhln7NqyjPFz8LOmRJiUkOagiTLOxZmx2JNveAAG1D8j5L9GnauGdDau10U0Og6PRlzbeT/XiUpbJF6Yhke9/wfLYlF0L4RviL7K0ryHuW4zgK/QDDP1BLAwQUAAAICAAAkJ/rkqG6QWAAAABrAAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDVM9Cz1FFQSi9KLMgoBgoYgjilmSkgdrRSipmhqYFpSpKhiVlqaoqZqa5RmoGlpYW5RWqSmUlyiomlUixQfUllQapfYm4qRE9IZk6qO8g4pdhaAFBLAQItABQAAAgIAACQn+t0r8OQ1AAAAEoBAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+uSobpBYAAAAGsAAAAJACQAAAAAAAAAAAAAACEBAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAzAEAAAAA
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
@@ -14076,7 +14076,7 @@ MonoBehaviour:
   debugFloor: 0
   debugRoof: 1
   manualDebugFloorRoof: 0
-  showSearchTree: 0
+  showSearchTree: 1
   unwalkableNodeDebugSize: 0.5
   logPathResults: 2
   maxNearestNodeDistance: 100
@@ -14085,12 +14085,12 @@ MonoBehaviour:
   prioritizeGraphs: 0
   prioritizeGraphsLimit: 1
   colorSettings:
-    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
-    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
+    _SolidColor: {r: 0, g: 1, b: 0, a: 1}
+    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.101960786}
     _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
-    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
+    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 1}
     _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
-    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
+    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 1}
     _AreaColors: []
   tagNames:
   - Ground
