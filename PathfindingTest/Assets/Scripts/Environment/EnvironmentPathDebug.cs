@@ -7,7 +7,7 @@ using static Constants;
 public class EnvironmentPathDebug : MonoBehaviour
 {
     private Seeker _seeker;
-    private AIPath _AI;
+    private AILerp _AI;
 
     private TileGraph _graph;
 
@@ -15,9 +15,8 @@ public class EnvironmentPathDebug : MonoBehaviour
     {
         _seeker = GetComponentInChildren<Seeker>();
 
-        _AI = GetComponentInChildren<AIPath>();
+        _AI = GetComponentInChildren<AILerp>();
         _AI.canSearch = false;
-        _AI.radius = ENV_TILE_SIZE / 2;
 
         _graph = (TileGraph)AstarPath.active.graphs[0];
 
