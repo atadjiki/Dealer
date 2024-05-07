@@ -11,8 +11,9 @@ public static partial class Constants
     public static int LAYER_OBSTACLE_HALF = LayerMask.NameToLayer("OBSTACLE_HALF");
     public static int LAYER_OBSTACLE_FULL = LayerMask.NameToLayer("OBSTACLE_FULL");
     public static int LAYER_WALL = LayerMask.NameToLayer("WALL");
+    public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
 
-    public enum EnvironmentLayer { None, Ground, Obstacle_Half, Obstacle_Full, Wall };
+    public enum EnvironmentLayer { None, Ground, Obstacle_Half, Obstacle_Full, Wall, Character };
 
     public enum EnvironmentDirection { NORTH, SOUTH, WEST, EAST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST }
 
@@ -77,6 +78,11 @@ public static partial class Constants
         }
 
         return null;
+    }
+
+    public static Vector3 GetCoverNormal(EnvironmentDirection Direction)
+    {
+        return -1 * GetDirectionVector(Direction);
     }
 
     public static Vector3 GetDirectionVector(EnvironmentDirection Direction)
@@ -155,6 +161,8 @@ public static partial class Constants
             case EnvironmentLayer.Obstacle_Half:
             case EnvironmentLayer.None:
                 return false;
+            case EnvironmentLayer.Character:
+                return true;
             default:
                 return true;
         }
@@ -204,6 +212,8 @@ public static partial class Constants
                 return Color.red;
             case EnvironmentLayer.Obstacle_Half:
                 return Color.yellow;
+            case EnvironmentLayer.Character:
+                return Color.cyan;
             case EnvironmentLayer.None:
                 {
                     if (ShowNonTraversibles)
@@ -318,6 +328,10 @@ public static partial class Constants
         {
             return EnvironmentLayer.Wall;
         }
+        else if (Layer == LAYER_CHARACTER)
+        {
+            return EnvironmentLayer.Character;
+        }
         else
         {
             return EnvironmentLayer.None;
@@ -343,6 +357,10 @@ public static partial class Constants
         {
             return EnvironmentLayer.Wall;
         }
+        else if(Tag == 4)
+        {
+            return EnvironmentLayer.Character;
+        }
         else
         {
             return EnvironmentLayer.None;
@@ -362,8 +380,10 @@ public static partial class Constants
                 return 2;
             case EnvironmentLayer.Wall:
                 return 3;
-            case EnvironmentLayer.None:
+            case EnvironmentLayer.Character:
                 return 4;
+            case EnvironmentLayer.None:
+                return 5;
         }
 
         return 0;

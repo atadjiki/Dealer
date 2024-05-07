@@ -191,7 +191,7 @@ public class TileGraph : NavGraph
 
                                         center += new Vector3(0, 3*height/4, 0);
 
-                                        Vector3 normal = -1 * GetDirectionVector(dir);
+                                        Vector3 normal = GetCoverNormal(dir);
 
                                         builder.PlaneWithNormal(center, normal, height);
                                     }
