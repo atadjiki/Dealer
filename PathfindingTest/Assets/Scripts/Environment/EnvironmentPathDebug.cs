@@ -10,12 +10,15 @@ public class EnvironmentPathDebug : MonoBehaviour
 
     private Seeker _seeker;
     private AIPath _AI;
+
     private TileGraph _graph;
 
     private void Awake()
     {
-        _seeker = GetComponent<Seeker>();
-        _AI = GetComponent<AIPath>();
+        _seeker = GetComponentInChildren<Seeker>();
+
+        _AI = GetComponentInChildren<AIPath>();
+        _AI.canSearch = false;
 
         _graph = (TileGraph) AstarPath.active.graphs[0];
 
@@ -24,19 +27,14 @@ public class EnvironmentPathDebug : MonoBehaviour
 
     private IEnumerator Coroutine_AttemptPath(Vector3 start, Vector3 end)
     {
-        ABPath path = new ABPath();
-        path.startPoint = start;
-        path.endPoint = end;
-
         Debug.Log("Starting path from   " + start.ToString() + " to " + end.ToString());
-        _seeker.StartPath(path, OnPathComplete);
-
+        ABPath path = ABPath.Construct(start, end, OnPathComplete);
+        _AI.SetPath(path);
         yield return null;
     }
 
     private void OnPathComplete(Path path)
     {
-        Debug.Log("Path Complete!   " + path.ToString());
-        _AI.SetPath(path);
+        Debug.Log("Path calculated: " + path.vectorPath.Count + " nodes total");
     }
 }
