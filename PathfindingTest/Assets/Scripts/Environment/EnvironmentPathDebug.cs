@@ -11,7 +11,7 @@ public class EnvironmentPathDebug : MonoBehaviour
 
     private TileGraph _graph;
 
-    private void Awake()
+    private void Start()
     {
         _seeker = GetComponentInChildren<Seeker>();
 
