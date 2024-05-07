@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using static Constants;
 
 public class EnvironmentPathDebug : MonoBehaviour
 {
-    [SerializeField] private Transform Start;
-    [SerializeField] private Transform End;
-
     private Seeker _seeker;
     private AIPath _AI;
 
@@ -19,22 +17,40 @@ public class EnvironmentPathDebug : MonoBehaviour
 
         _AI = GetComponentInChildren<AIPath>();
         _AI.canSearch = false;
+        _AI.radius = ENV_TILE_SIZE / 2;
 
-        _graph = (TileGraph) AstarPath.active.graphs[0];
+        _graph = (TileGraph)AstarPath.active.graphs[0];
 
-        StartCoroutine(Coroutine_AttemptPath(Start.position, End.position));
+        StartCoroutine(Coroutine_AttemptRandomPath());
     }
 
-    private IEnumerator Coroutine_AttemptPath(Vector3 start, Vector3 end)
+    private IEnumerator Coroutine_AttemptRandomPath()
     {
-        Debug.Log("Starting path from   " + start.ToString() + " to " + end.ToString());
-        ABPath path = ABPath.Construct(start, end, OnPathComplete);
-        _AI.SetPath(path);
-        yield return null;
+        while(true)
+        {
+            GraphNode end = _graph.GetRandomNode();
+
+            Debug.Log("Starting path from   " + _AI.position + " to " + end.position);
+
+            ABPath path = ABPath.Construct(_AI.position, ((Vector3)end.position), OnPathComplete);
+            _AI.SetPath(path);
+
+            yield return new WaitForSeconds(0.2f);
+
+            _AI.canMove = true;
+
+            yield return new WaitUntil(() => _AI.reachedEndOfPath);
+
+            Debug.Log("Reached destination");
+
+            _AI.canMove = false;
+
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 
     private void OnPathComplete(Path path)
     {
-        Debug.Log("Path calculated: " + path.vectorPath.Count + " nodes total");
+        //Debug.Log("Path calculated: " + path.vectorPath.Count + " nodes total");
     }
 }

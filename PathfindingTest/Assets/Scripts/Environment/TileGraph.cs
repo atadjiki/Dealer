@@ -40,6 +40,18 @@ public class TileGraph : NavGraph
         return node;
     }
 
+    public PointNode GetRandomNode()
+    {
+        if(nodes != null)
+        {
+            int random = Random.Range(0, nodes.Length);
+
+            return nodes[random];
+        }
+
+        return null;
+    }
+
     PointNode GetNode(int Row, int Column)
     {
         if(nodes != null)
