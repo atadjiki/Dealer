@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(StateMachine))]
 public class EncounterStateController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private StateMachine _stateMachine;
+
+    private void Awake()
     {
-        
+        _stateMachine = GetComponent<StateMachine>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
     }
 }
