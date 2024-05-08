@@ -5,12 +5,12 @@ using static Constants;
 
 public class CharacterComponent : MonoBehaviour
 {
-    private EnvironmentNavigator _navigator;
+    private CharacterNavigator _navigator;
     private CharacterAnimator _animator;
 
     private void Awake()
     {
-        _navigator = GetComponentInChildren<EnvironmentNavigator>();
+        _navigator = GetComponentInChildren<CharacterNavigator>();
         _navigator.DestinationReachedCallback += OnDestinationReached;
 
         _animator = GetComponentInChildren<CharacterAnimator>();
@@ -27,12 +27,12 @@ public class CharacterComponent : MonoBehaviour
         _animator.SetAnim(CharacterAnim.Running);
     }
 
-    public void OnDestinationReached(EnvironmentNavigator navigator)
+    public void OnDestinationReached(CharacterNavigator navigator)
     {
         _animator.SetAnim(CharacterAnim.Idle);
     }
 
-    public EnvironmentNavigator GetNavigator()
+    public CharacterNavigator GetNavigator()
     {
         return _navigator;
     }

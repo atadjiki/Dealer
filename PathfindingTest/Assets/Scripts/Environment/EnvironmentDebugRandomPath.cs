@@ -7,7 +7,7 @@ using static Constants;
 public class EnvironmentDebugRandomPath : MonoBehaviour
 {
     private CharacterComponent _character;
-    private EnvironmentNavigator _navigator;
+    private CharacterNavigator _navigator;
     private TileGraph _graph;
 
     private void Start()
@@ -49,7 +49,7 @@ public class EnvironmentDebugRandomPath : MonoBehaviour
         yield return null;
     }
 
-    private void OnDestinationReached(EnvironmentNavigator navigator)
+    private void OnDestinationReached(CharacterNavigator navigator)
     {
         Debug.Log("Attempting new random path!");
 
