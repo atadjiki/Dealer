@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using static Constants;
 
 [RequireComponent(typeof(AILerp))]
 public class CharacterNavigator : MonoBehaviour
@@ -15,6 +16,8 @@ public class CharacterNavigator : MonoBehaviour
     private void Awake()
     {
         _seeker = GetComponentInChildren<Seeker>();
+
+        _seeker.traversableTags = GetTraversibleTagMask();
 
         _AI = GetComponentInChildren<AILerp>();
         _AI.canSearch = false;

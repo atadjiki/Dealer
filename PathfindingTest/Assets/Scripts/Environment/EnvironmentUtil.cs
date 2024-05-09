@@ -8,25 +8,25 @@ using static Constants;
 public struct EnvironmentTileConnectionInfo
 {
     public EnvironmentLayer Layer;
-    public bool IsObstructed;
+    public EnvironmentLayer Obstruction;
 
     public static EnvironmentTileConnectionInfo Build()
     {
         return new EnvironmentTileConnectionInfo()
         {
             Layer = EnvironmentLayer.NONE,
-            IsObstructed = false,
+            Obstruction = EnvironmentLayer.NONE,
         };
     }
 
     public bool IsValid()
     {
-        return IsLayerTraversible(Layer) && !IsObstructed;
+        return IsLayerTraversible(Layer) && Obstruction == EnvironmentLayer.NONE;
     }
 
     public bool ProvidesCover()
     {
-        return IsLayerObstacle(Layer) && IsObstructed;
+        return IsLayerObstacle(Layer) && IsLayerCover(Obstruction);
     }
 }
 
@@ -138,7 +138,7 @@ public class EnvironmentUtil
         {
             EnvironmentTileConnectionInfo info = neighborMap[dir];
 
-            if (info.IsObstructed)
+            if (IsLayerCover(info.Obstruction))
             {
                 return true;
             }
@@ -196,8 +196,8 @@ public class EnvironmentUtil
 
         Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
 
-        //now check that nothing is in the way between this tile and it's neighbor (like walls or corners)
-        info.IsObstructed = Physics.Raycast(origin + offset, direction, direction.magnitude);
+        //now check that nothing is in the way between this tile and its neighbor (like walls or corners)
+        info.Obstruction = PerformRaycast(origin + offset, direction, direction.magnitude);
 
         return info;
     }

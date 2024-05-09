@@ -132,6 +132,11 @@ public static partial class Constants
         return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF);
     }
 
+    public static bool IsLayerCover(EnvironmentLayer Layer)
+    {
+        return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF || Layer == EnvironmentLayer.WALL);
+    }
+
     public static bool IsCardinalDirection(EnvironmentDirection Direction)
     {
         switch (Direction)
@@ -269,7 +274,7 @@ public static partial class Constants
         {
             return EnvironmentCover.HALF;
         }
-        else if (info.Layer == EnvironmentLayer.OBSTACLE_FULL || info.IsObstructed)
+        else if (info.Layer == EnvironmentLayer.OBSTACLE_FULL || IsLayerCover(info.Obstruction))
         {
             return EnvironmentCover.FULL;
         }
@@ -356,6 +361,11 @@ public static partial class Constants
         {
             return EnvironmentLayer.NONE;
         }
+    }
+
+    public static int GetTraversibleTagMask()
+    {
+        return 1 << 0;
     }
 
 

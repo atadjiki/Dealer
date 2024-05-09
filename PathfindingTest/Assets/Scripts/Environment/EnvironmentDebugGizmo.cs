@@ -76,7 +76,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
                             {
                                 EnvironmentTileConnectionInfo info = neighborMap[dir];
 
-                                if (info.IsObstructed)
+                                if (IsLayerCover(info.Obstruction))
                                 {
                                     Vector3[] edge = CalculateTileEdge(origin, dir);
 
