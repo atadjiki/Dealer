@@ -51,12 +51,12 @@ public class CharacterComponent : MonoBehaviour
     public void MoveTo(Vector3 destination)
     {
         _navigator.MoveTo(destination);
-        _animator.SetAnim(CharacterAnim.Moving);
+        _animator.SetAnim(CharacterAnim.MOVING);
     }
 
     public void OnDestinationReached(CharacterNavigator navigator)
     {
-        _animator.SetAnim(CharacterAnim.Idle);
+        _animator.SetAnim(CharacterAnim.IDLE);
 
     }
 

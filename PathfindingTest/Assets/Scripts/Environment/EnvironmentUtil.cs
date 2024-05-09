@@ -13,7 +13,7 @@ public struct EnvironmentTileConnectionInfo
     {
         return new EnvironmentTileConnectionInfo()
         {
-            Layer = EnvironmentLayer.None,
+            Layer = EnvironmentLayer.NONE,
             IsObstructed = false,
         };
     }
@@ -66,7 +66,7 @@ public class EnvironmentUtil
             }
         }
 
-        return EnvironmentLayer.None;
+        return EnvironmentLayer.NONE;
     }
 
     public static List<Vector3> GetTileNeighbors(Vector3 origin)

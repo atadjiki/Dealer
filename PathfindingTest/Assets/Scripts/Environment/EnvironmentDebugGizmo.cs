@@ -70,7 +70,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                     if (ShowCover)
                     {
-                        if (layer != EnvironmentLayer.None)
+                        if (layer != EnvironmentLayer.NONE)
                         {
                             foreach (EnvironmentDirection dir in GetCardinalDirections())
                             {

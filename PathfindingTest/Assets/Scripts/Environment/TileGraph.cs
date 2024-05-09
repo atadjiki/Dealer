@@ -180,7 +180,7 @@ public class TileGraph : NavGraph
                 Vector3 origin = (Vector3)node.position;
                 EnvironmentLayer layer = GetLayerByTag(node.Tag);
 
-                if(layer != EnvironmentLayer.None)
+                if(layer != EnvironmentLayer.NONE)
                 {
                     if (ShowLayers)
                     {

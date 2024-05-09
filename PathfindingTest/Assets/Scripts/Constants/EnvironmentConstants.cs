@@ -129,7 +129,7 @@ public static partial class Constants
 
     public static bool IsLayerObstacle(EnvironmentLayer Layer)
     {
-        return (Layer == EnvironmentLayer.Obstacle_Full || Layer == EnvironmentLayer.Obstacle_Half) || Layer == EnvironmentLayer.Wall;
+        return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF);
     }
 
     public static bool IsCardinalDirection(EnvironmentDirection Direction)
@@ -150,13 +150,10 @@ public static partial class Constants
     {
         switch (Layer)
         {
-            case EnvironmentLayer.Wall:
-            case EnvironmentLayer.Obstacle_Full:
-            case EnvironmentLayer.Obstacle_Half:
-            case EnvironmentLayer.None:
+            case EnvironmentLayer.OBSTACLE_HALF:
+            case EnvironmentLayer.OBSTACLE_FULL:
+            case EnvironmentLayer.NONE:
                 return false;
-            case EnvironmentLayer.Character:
-                return true;
             default:
                 return true;
         }
@@ -193,7 +190,7 @@ public static partial class Constants
     {
         switch (Layer)
         {
-            case EnvironmentLayer.Ground:
+            case EnvironmentLayer.GROUND:
                 if (ShowTraversibles)
                 {
                     return Color.green;
@@ -202,13 +199,13 @@ public static partial class Constants
                 {
                     return Color.clear;
                 }
-            case EnvironmentLayer.Obstacle_Full:
+            case EnvironmentLayer.OBSTACLE_FULL:
                 return Color.red;
-            case EnvironmentLayer.Obstacle_Half:
+            case EnvironmentLayer.OBSTACLE_HALF:
                 return Color.yellow;
-            case EnvironmentLayer.Character:
+            case EnvironmentLayer.CHARACTER:
                 return Color.cyan;
-            case EnvironmentLayer.None:
+            case EnvironmentLayer.NONE:
                 {
                     if (ShowNonTraversibles)
                     {
@@ -244,9 +241,9 @@ public static partial class Constants
     {
         switch(cover)
         {
-            case EnvironmentCover.Half:
+            case EnvironmentCover.HALF:
                 return Color.yellow;
-            case EnvironmentCover.Full:
+            case EnvironmentCover.FULL:
                 return Color.magenta;
             default:
                 return Color.clear;
@@ -257,9 +254,9 @@ public static partial class Constants
     {
         switch(cover)
         {
-            case EnvironmentCover.Half:
+            case EnvironmentCover.HALF:
                 return ENV_TILE_SIZE / 2;
-            case EnvironmentCover.Full:
+            case EnvironmentCover.FULL:
                 return ENV_TILE_SIZE;
             default:
                 return 0;
@@ -268,17 +265,17 @@ public static partial class Constants
 
     public static EnvironmentCover GetCoverType(EnvironmentTileConnectionInfo info)
     {
-        if (info.Layer == EnvironmentLayer.Obstacle_Half)
+        if (info.Layer == EnvironmentLayer.OBSTACLE_HALF)
         {
-            return EnvironmentCover.Half;
+            return EnvironmentCover.HALF;
         }
-        else if (info.Layer == EnvironmentLayer.Obstacle_Full || info.IsObstructed)
+        else if (info.Layer == EnvironmentLayer.OBSTACLE_FULL || info.IsObstructed)
         {
-            return EnvironmentCover.Full;
+            return EnvironmentCover.FULL;
         }
         else
         {
-            return EnvironmentCover.None;
+            return EnvironmentCover.NONE;
         }
     }
 
@@ -308,27 +305,27 @@ public static partial class Constants
 
         if (Layer == LAYER_GROUND)
         {
-            return EnvironmentLayer.Ground;
+            return EnvironmentLayer.GROUND;
         }
         else if (Layer == LAYER_OBSTACLE_HALF)
         {
-            return EnvironmentLayer.Obstacle_Half;
+            return EnvironmentLayer.OBSTACLE_HALF;
         }
         else if (Layer == LAYER_OBSTACLE_FULL)
         {
-            return EnvironmentLayer.Obstacle_Full;
+            return EnvironmentLayer.OBSTACLE_FULL;
         }
         else if (Layer == LAYER_WALL)
         {
-            return EnvironmentLayer.Wall;
+            return EnvironmentLayer.WALL;
         }
         else if (Layer == LAYER_CHARACTER)
         {
-            return EnvironmentLayer.Character;
+            return EnvironmentLayer.CHARACTER;
         }
         else
         {
-            return EnvironmentLayer.None;
+            return EnvironmentLayer.NONE;
         }
     }
 
@@ -337,27 +334,27 @@ public static partial class Constants
 
         if (Tag == 0)
         {
-            return EnvironmentLayer.Ground;
+            return EnvironmentLayer.GROUND;
         }
         else if (Tag == 1)
         {
-            return EnvironmentLayer.Obstacle_Half;
+            return EnvironmentLayer.OBSTACLE_HALF;
         }
         else if (Tag == 2)
         {
-            return EnvironmentLayer.Obstacle_Full;
+            return EnvironmentLayer.OBSTACLE_FULL;
         }
         else if (Tag == 3)
         {
-            return EnvironmentLayer.Wall;
+            return EnvironmentLayer.WALL;
         }
         else if(Tag == 4)
         {
-            return EnvironmentLayer.Character;
+            return EnvironmentLayer.CHARACTER;
         }
         else
         {
-            return EnvironmentLayer.None;
+            return EnvironmentLayer.NONE;
         }
     }
 
@@ -366,17 +363,17 @@ public static partial class Constants
     {
         switch (layer)
         {
-            case EnvironmentLayer.Ground:
+            case EnvironmentLayer.GROUND:
                 return 0;
-            case EnvironmentLayer.Obstacle_Half:
+            case EnvironmentLayer.OBSTACLE_HALF:
                 return 1;
-            case EnvironmentLayer.Obstacle_Full:
+            case EnvironmentLayer.OBSTACLE_FULL:
                 return 2;
-            case EnvironmentLayer.Wall:
+            case EnvironmentLayer.WALL:
                 return 3;
-            case EnvironmentLayer.Character:
+            case EnvironmentLayer.CHARACTER:
                 return 4;
-            case EnvironmentLayer.None:
+            case EnvironmentLayer.NONE:
                 return 5;
         }
 
