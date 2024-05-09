@@ -13,12 +13,6 @@ public static partial class Constants
     public static int LAYER_WALL = LayerMask.NameToLayer("WALL");
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
 
-    public enum EnvironmentLayer { None, Ground, Obstacle_Half, Obstacle_Full, Wall, Character };
-
-    public enum EnvironmentDirection { NORTH, SOUTH, WEST, EAST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST }
-
-    public enum EnvironmentCover { None, Half, Full };
-
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);

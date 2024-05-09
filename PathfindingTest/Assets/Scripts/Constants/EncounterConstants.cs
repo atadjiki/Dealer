@@ -4,11 +4,4 @@ using UnityEngine;
 
 public static partial class Constants
 {
-    public enum EncounterState
-    {
-        INIT,
-        CHOOSE_ACTION,
-        PERFORM_ACTION,
-        DONE,
-    }
 }
