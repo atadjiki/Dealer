@@ -8,9 +8,9 @@ public class CharacterData : ScriptableObject
 {
     public CharacterID ID;
 
-    public GameObject Navigator;
+    public float MovementSpeed;
 
-    public GameObject CameraFollow;
+    public Vector3 CameraFollowOffset;
 
     public GameObject Model;
 }

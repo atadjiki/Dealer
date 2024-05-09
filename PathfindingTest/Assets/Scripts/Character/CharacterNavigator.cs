@@ -12,7 +12,7 @@ public class CharacterNavigator : MonoBehaviour
     private Seeker _seeker;
     private AILerp _AI;
 
-    private void Start()
+    private void Awake()
     {
         _seeker = GetComponentInChildren<Seeker>();
 
@@ -26,6 +26,16 @@ public class CharacterNavigator : MonoBehaviour
         StopAllCoroutines();
 
         StartCoroutine(Coroutine_MoveTo(destination));
+    }
+
+    public void Teleport(Vector3 destination)
+    {
+        _AI.Teleport(destination);
+    }
+
+    public void SetSpeed(float speed)
+    {
+        _AI.speed = speed;
     }
 
     private IEnumerator Coroutine_MoveTo(Vector3 destination)

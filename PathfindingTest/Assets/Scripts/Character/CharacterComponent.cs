@@ -19,27 +19,37 @@ public class CharacterComponent : MonoBehaviour
         StartCoroutine(Coroutine_Setup(data));
     }
 
+    //construct the character using their defined data
     private IEnumerator Coroutine_Setup(CharacterData data)
     {
         _ID = data.ID;
 
         //create a navigator for the character
-        GameObject navigatorObject = Instantiate<GameObject>(data.Navigator, this.transform);
-
-        _navigator = navigatorObject.GetComponent<CharacterNavigator>();
+        GameObject navigatorObject = new GameObject("Navigator");
+        navigatorObject.transform.parent = this.transform;
+        _navigator = navigatorObject.AddComponent<CharacterNavigator>();
+        yield return new WaitUntil( () => _navigator != null );
         _navigator.DestinationReachedCallback += OnDestinationReached;
+        _navigator.SetSpeed(data.MovementSpeed);
 
         //load the model and animator for this character
         GameObject modelObject = Instantiate<GameObject>(data.Model, navigatorObject.transform);
-
         _model = modelObject.GetComponent<CharacterModel>();
+        yield return new WaitUntil(() => _model != null);
         _animator = modelObject.GetComponent<CharacterAnimator>();
+        yield return new WaitUntil(() => _animator != null);
 
         //place a camera follow target for the character
-        GameObject cameraFollowObject = Instantiate<GameObject>(data.CameraFollow, navigatorObject.transform);
+        GameObject cameraFollowObject = new GameObject("Camera Follow");
+        cameraFollowObject.transform.parent = navigatorObject.transform;
+        cameraFollowObject.transform.localPosition = data.CameraFollowOffset;
+        _cameraFollow = cameraFollowObject.AddComponent<CharacterCameraFollow>();
+        yield return new WaitUntil(() => _cameraFollow != null);
 
-        _cameraFollow = cameraFollowObject.GetComponent<CharacterCameraFollow>();
+        Vector3 spawnLocation = EncounterUtil.GetRandomTile();
+        Teleport(spawnLocation);
 
+        Debug.Log("Character " + data.ID + " spawned at " + spawnLocation.ToString());
         yield return null;
     }
 
@@ -48,6 +58,7 @@ public class CharacterComponent : MonoBehaviour
         _navigator.DestinationReachedCallback -= OnDestinationReached;
     }
 
+    //Movement interface
     public void MoveTo(Vector3 destination)
     {
         _navigator.MoveTo(destination);
@@ -58,6 +69,11 @@ public class CharacterComponent : MonoBehaviour
     {
         _animator.SetAnim(CharacterAnim.IDLE);
 
+    }
+
+    public void Teleport(Vector3 destination)
+    {
+        _navigator.Teleport(destination);
     }
 
     public CharacterNavigator GetNavigator()
