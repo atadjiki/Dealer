@@ -40,13 +40,30 @@ public class TileGraph : NavGraph
         return node;
     }
 
+    public List<PointNode> GetWalkableNodes()
+    {
+        List<PointNode> walkables = new List<PointNode>();
+
+        foreach(PointNode node in nodes)
+        {
+            if(node.Walkable)
+            {
+                walkables.Add(node);
+            }
+        }
+
+        return walkables;
+    }
+
     public PointNode GetRandomNode()
     {
         if(nodes != null)
         {
-            int random = Random.Range(0, nodes.Length);
+            List<PointNode> walkables = GetWalkableNodes();
 
-            return nodes[random];
+            int random = Random.Range(0, walkables.Count);
+
+            return walkables[random];
         }
 
         return null;

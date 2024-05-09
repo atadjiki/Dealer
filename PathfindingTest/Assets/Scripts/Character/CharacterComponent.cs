@@ -1,20 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
 using static Constants;
 
 public class CharacterComponent : MonoBehaviour
 {
-    private CharacterNavigator _navigator;
-    private CharacterAnimator _animator;
+    private CharacterID _ID;
 
-    private void Awake()
+    private CharacterNavigator _navigator;
+
+    private CharacterAnimator _animator;
+    private CharacterModel _model;
+
+    private CharacterCameraFollow _cameraFollow;
+
+    public void Setup(CharacterData data)
     {
-        _navigator = GetComponentInChildren<CharacterNavigator>();
+        StartCoroutine(Coroutine_Setup(data));
+    }
+
+    private IEnumerator Coroutine_Setup(CharacterData data)
+    {
+        _ID = data.ID;
+
+        //create a navigator for the character
+        GameObject navigatorObject = Instantiate<GameObject>(data.Navigator, this.transform);
+
+        _navigator = navigatorObject.GetComponent<CharacterNavigator>();
         _navigator.DestinationReachedCallback += OnDestinationReached;
 
-        _animator = GetComponentInChildren<CharacterAnimator>();
+        //load the model and animator for this character
+        GameObject modelObject = Instantiate<GameObject>(data.Model, navigatorObject.transform);
+
+        _model = modelObject.GetComponent<CharacterModel>();
+        _animator = modelObject.GetComponent<CharacterAnimator>();
+
+        //place a camera follow target for the character
+        GameObject cameraFollowObject = Instantiate<GameObject>(data.CameraFollow, navigatorObject.transform);
+
+        _cameraFollow = cameraFollowObject.GetComponent<CharacterCameraFollow>();
+
+        yield return null;
     }
 
     private void OnDestroy()
@@ -25,7 +51,7 @@ public class CharacterComponent : MonoBehaviour
     public void MoveTo(Vector3 destination)
     {
         _navigator.MoveTo(destination);
-        _animator.SetAnim(CharacterAnim.Running);
+        _animator.SetAnim(CharacterAnim.Moving);
     }
 
     public void OnDestinationReached(CharacterNavigator navigator)
