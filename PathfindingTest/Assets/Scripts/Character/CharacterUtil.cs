@@ -7,7 +7,7 @@ public class CharacterUtil : MonoBehaviour
 {
     public static CharacterComponent BuildCharacterObject(CharacterData data, Transform parent)
     {
-        GameObject characterObject = new GameObject(data.ID.ToString());
+        GameObject characterObject = new GameObject("Character_" + data.ID.ToString().ToLowerInvariant());
         characterObject.transform.parent = parent;
 
         CharacterComponent characterComponent = characterObject.AddComponent<CharacterComponent>();

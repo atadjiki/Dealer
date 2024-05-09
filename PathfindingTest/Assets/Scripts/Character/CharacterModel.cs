@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class CharacterModel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private List<GameObject> Meshes;
 
-    // Update is called once per frame
-    void Update()
+    public void ToggleVisibility(bool flag)
     {
-        
+        foreach(GameObject mesh in Meshes)
+        {
+            mesh.SetActive(flag);
+        }
     }
 }

@@ -14,13 +14,8 @@ public class CharacterComponent : MonoBehaviour
 
     private CharacterCameraFollow _cameraFollow;
 
-    public void Setup(CharacterData data)
-    {
-        StartCoroutine(Coroutine_Setup(data));
-    }
-
     //construct the character using their defined data
-    private IEnumerator Coroutine_Setup(CharacterData data)
+    public IEnumerator Coroutine_Setup(CharacterData data)
     {
         _ID = data.ID;
 
@@ -46,10 +41,6 @@ public class CharacterComponent : MonoBehaviour
         _cameraFollow = cameraFollowObject.AddComponent<CharacterCameraFollow>();
         yield return new WaitUntil(() => _cameraFollow != null);
 
-        Vector3 spawnLocation = EncounterUtil.GetRandomTile();
-        Teleport(spawnLocation);
-
-        Debug.Log("Character " + data.ID + " spawned at " + spawnLocation.ToString());
         yield return null;
     }
 
@@ -76,8 +67,18 @@ public class CharacterComponent : MonoBehaviour
         _navigator.Teleport(destination);
     }
 
+    public Vector3 GetWorldLocation()
+    {
+        return _navigator.GetWorldLocation();
+    }
+
     public CharacterNavigator GetNavigator()
     {
         return _navigator;
+    }
+
+    public void ToggleVisibility(bool flag)
+    {
+        _model.ToggleVisibility(flag);
     }
 }

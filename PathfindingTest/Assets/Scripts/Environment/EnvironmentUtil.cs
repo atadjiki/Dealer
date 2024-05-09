@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pathfinding;
 using UnityEngine;
 using static Constants;
 
@@ -96,6 +97,86 @@ public class EnvironmentUtil
         }
 
         return neighborMap;
+    }
+
+    public static TileGraph GetEnvironmentGraph()
+    {
+        TileGraph graph = (TileGraph)AstarPath.active.data.FindGraphOfType(typeof(TileGraph));
+
+        return graph;
+    }
+
+    public static Vector3 GetRandomTile()
+    {
+        TileGraph graph = GetEnvironmentGraph();
+
+        PointNode node = graph.GetRandomNode();
+
+        if (node != null)
+        {
+            return (Vector3)node.position;
+        }
+        else
+        {
+            Debug.LogError("Random node was null!");
+            return Vector3.zero;
+        }
+    }
+
+    public static bool IsTileCoverAdjaecent(Vector3 origin)
+    {
+        EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
+
+        foreach (EnvironmentDirection dir in GetCardinalDirections())
+        {
+            EnvironmentTileConnectionInfo info = neighborMap[dir];
+
+            if (info.IsObstructed)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static List<Vector3> GetCoverAdjaecentTiles()
+    {
+        TileGraph graph = GetEnvironmentGraph();
+
+        List<Vector3> tiles = new List<Vector3>();
+
+        foreach(PointNode node in graph.GetWalkableNodes())
+        {
+            Vector3 nodePos = ((Vector3)node.position);
+
+            if(IsTileCoverAdjaecent(nodePos))
+            {
+                tiles.Add(nodePos);
+            }
+        }
+
+        return tiles;
+    }
+
+    public static Vector3 GetClosest(Vector3 origin, List<Vector3> points)
+    {
+        Vector3 closest = Vector3.positiveInfinity;
+
+        foreach(Vector3 point in points)
+        {
+            if(Vector3.Distance(origin, point) <= Vector3.Distance(origin, closest))
+            {
+                closest = point;
+            }
+        }
+
+        return closest;
+    }
+
+    public static Vector3 GetClosestTileWithCover(Vector3 origin)
+    {
+        return GetClosest(origin, GetCoverAdjaecentTiles());
     }
 
     private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)

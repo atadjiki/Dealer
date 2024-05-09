@@ -12,9 +12,6 @@ public class EncounterModel : MonoBehaviour
     //who should we spawn, etc
     [SerializeField] private EncounterSetupData SetupData;
 
-    //what characters are we allowed to spawn?
-    [SerializeField] private List<CharacterData> Characters;
-
     //collections
     //when setup is performed, store spawned characters
     private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
@@ -77,17 +74,21 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_Init()
     {
-        foreach (CharacterData data in Characters)
+        foreach(CharacterID ID in SetupData.Characters)
         {
-            if (SetupData.ToSpawn == data.ID)
+            CharacterData data = ResourceUtil.GetCharacterData(ID);
+
+            if (data != null)
             {
                 CharacterComponent character = CharacterUtil.BuildCharacterObject(data, this.transform);
 
-                Vector3 spawnLocation = EncounterUtil.GetRandomTile();
+                yield return character.Coroutine_Setup(data);
 
-                character.transform.position = spawnLocation;
-
-                character.Setup(data);
+                Vector3 spawnLocation = EnvironmentUtil.GetRandomTile();
+                character.Teleport(spawnLocation);
+                Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
+                character.MoveTo(destination);
+                Debug.Log("Character " + data.ID + " spawned at " + spawnLocation.ToString());
             }
         }
 

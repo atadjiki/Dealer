@@ -33,6 +33,11 @@ public class CharacterNavigator : MonoBehaviour
         _AI.Teleport(destination);
     }
 
+    public Vector3 GetWorldLocation()
+    {
+        return _AI.position;
+    }
+
     public void SetSpeed(float speed)
     {
         _AI.speed = speed;
