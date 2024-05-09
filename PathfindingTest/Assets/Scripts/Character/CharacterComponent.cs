@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 using static Constants;
 
 public class CharacterComponent : MonoBehaviour
@@ -30,6 +31,7 @@ public class CharacterComponent : MonoBehaviour
     public void OnDestinationReached(CharacterNavigator navigator)
     {
         _animator.SetAnim(CharacterAnim.Idle);
+
     }
 
     public CharacterNavigator GetNavigator()

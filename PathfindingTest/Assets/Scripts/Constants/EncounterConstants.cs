@@ -4,5 +4,11 @@ using UnityEngine;
 
 public static partial class Constants
 {
-    public enum RandomPatrolState { Start, End };
+    public enum EncounterState
+    {
+        INIT,
+        CHOOSE_ACTION,
+        PERFORM_ACTION,
+        DONE,
+    }
 }
