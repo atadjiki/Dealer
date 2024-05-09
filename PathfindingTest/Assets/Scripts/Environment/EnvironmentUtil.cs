@@ -106,6 +106,13 @@ public class EnvironmentUtil
         return graph;
     }
 
+    public static void Scan()
+    {
+        TileGraph graph = GetEnvironmentGraph();
+
+        AstarPath.active.Scan(graph);
+    }
+
     public static Vector3 GetRandomTile()
     {
         TileGraph graph = GetEnvironmentGraph();

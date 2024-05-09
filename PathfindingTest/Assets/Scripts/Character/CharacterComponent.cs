@@ -59,7 +59,7 @@ public class CharacterComponent : MonoBehaviour
     public void OnDestinationReached(CharacterNavigator navigator)
     {
         _animator.SetAnim(CharacterAnim.IDLE);
-
+        EnvironmentUtil.Scan();
     }
 
     public void Teleport(Vector3 destination)
