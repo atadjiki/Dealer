@@ -34,6 +34,18 @@ public static partial class Constants
         return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
     }
 
+    public static List<Vector3[]> GetTileEdges(Vector3 origin)
+    {
+        List<Vector3[]> edges = new List<Vector3[]>();
+
+        foreach(EnvironmentDirection dir in GetCardinalDirections())
+        {
+            edges.Add(CalculateTileEdge(origin, dir));
+        }
+
+        return edges;
+    }
+
     public static Vector3[] CalculateTileEdge(Vector3 origin, EnvironmentDirection dir)
     {
         float length = ENV_TILE_SIZE / 2;
