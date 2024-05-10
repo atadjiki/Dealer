@@ -99,6 +99,18 @@ public class EnvironmentUtil
         return neighborMap;
     }
 
+    public static Bounds GetEnvironmentBounds()
+    {
+
+        TileGraph graph = GetEnvironmentGraph();
+
+        Vector3 center = Vector3.zero;
+
+        Vector3 size = new Vector3(ENV_TILE_SIZE * graph.Width, 0, ENV_TILE_SIZE * graph.Width);
+
+        return new Bounds(center, size);
+    }
+
     public static TileGraph GetEnvironmentGraph()
     {
         TileGraph graph = (TileGraph)AstarPath.active.data.FindGraphOfType(typeof(TileGraph));
@@ -111,6 +123,20 @@ public class EnvironmentUtil
         TileGraph graph = GetEnvironmentGraph();
 
         AstarPath.active.Scan(graph);
+    }
+
+    public static bool GetNearestTile(Vector3 origin, out Vector3 nearest)
+    {
+        NNInfo info = AstarPath.active.GetNearest(origin);
+
+        if(info.node != null)
+        {
+            nearest = ((Vector3)info.node.position);
+            return true;
+        }
+
+        nearest = Vector3.zero;
+        return false;
     }
 
     public static Vector3 GetRandomTile()

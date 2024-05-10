@@ -14,28 +14,22 @@ public class EncounterModel : MonoBehaviour
 
     //collections
     //when setup is performed, store spawned characters
-    private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
+   // private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
 
     //create a queue for each team each combat loop
-    private Queue<CharacterComponent> _timeline;
+ //   private Queue<CharacterComponent> _timeline;
 
     private EncounterState _pendingState = EncounterState.INIT;
 
     private bool _busy = false;
 
-    private int _turnCount;
+    //private int _turnCount;
 
-    private TeamID _currentTeam;
+    //private TeamID _currentTeam;
 
-    private AbilityID _activeAbility = AbilityID.NONE;
-    private CharacterComponent _activeTarget = null;
-    private Vector3 _activeDestination = Vector3.zero;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(Coroutine_Init());
-    }
+    //private AbilityID _activeAbility = AbilityID.NONE;
+    //private CharacterComponent _activeTarget = null;
+    //private Vector3 _activeDestination = Vector3.zero;
 
     public void TransitionState()
     {
