@@ -27,4 +27,9 @@ public class ResourceUtil : MonoBehaviour
     {
         return new List<CharacterData>(Resources.LoadAll<CharacterData>("Data/EncounterSetup"));
     }
+
+    public static ColorPalette GetColorPalette()
+    {
+        return Resources.Load<ColorPalette>("Data/ColorPalette");
+    }
 }
