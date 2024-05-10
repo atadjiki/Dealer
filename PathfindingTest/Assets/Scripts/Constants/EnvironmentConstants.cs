@@ -389,4 +389,14 @@ public static partial class Constants
 
         return 0;
     }
+
+    public static Vector3 GetTileSize()
+    {
+        return new Vector3(ENV_TILE_SIZE, 0, ENV_TILE_SIZE);
+    }
+
+    public static int CalculateGScore(int distance)
+    {
+        return distance * 1000;
+    }
 }

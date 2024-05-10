@@ -212,6 +212,24 @@ public class EnvironmentUtil
         return GetClosest(origin, GetCoverAdjaecentTiles());
     }
 
+    public static List<Vector3> GetTilesWithinDistance(Vector3 origin, int distance)
+    {
+        List<Vector3> tiles = new List<Vector3>();
+
+        int gScore = CalculateGScore(distance);
+
+        ConstantPath cpath = ConstantPath.Construct(origin, gScore);
+        AstarPath.StartPath(cpath);
+        cpath.BlockUntilCalculated();
+
+        foreach(GraphNode node in cpath.allNodes)
+        {
+            tiles.Add(((Vector3)node.position));
+        }
+
+        return tiles;
+    }
+
     private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
