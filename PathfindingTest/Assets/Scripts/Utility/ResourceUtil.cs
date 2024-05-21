@@ -23,6 +23,11 @@ public class ResourceUtil : MonoBehaviour
         return null;
     }
 
+    public static EncounterPrefabData GetEncounterPrefabs()
+    {
+        return Resources.Load<EncounterPrefabData>("Data/EncounterPrefab/Default");
+    }
+
     public static List<CharacterData> GetAllEncounterSetupData()
     {
         return new List<CharacterData>(Resources.LoadAll<CharacterData>("Data/EncounterSetup"));
