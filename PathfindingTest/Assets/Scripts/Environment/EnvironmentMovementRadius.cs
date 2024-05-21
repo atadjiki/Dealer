@@ -1,23 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Haze;
+using HighlightPlus;
 using static Constants;
 
 public class EnvironmentMovementRadius : MonoBehaviour
 {
+    [SerializeField] private Material OutlineMaterial;
+    [SerializeField] private HighlightProfile OutlineSettings;
+
     private int distance = 12;
     private List<Vector3> tiles;
-    private LineRenderer LineRenderer;
+
+    private MeshRenderer _renderer;
+    private MeshFilter _filter;
+    private HighlightEffect _outline;
 
     private void Awake()
     {
+        _renderer = this.gameObject.AddComponent<MeshRenderer>();
+        _renderer.material = OutlineMaterial;
+        _filter = this.gameObject.AddComponent<MeshFilter>();
+
+        CreateRadiusMesh();
+    }
+
+    private void CreateRadiusMesh()
+    {
+        //TODO: eventually change this to current characters position
         Vector3 origin = this.transform.position;
 
         tiles = EnvironmentUtil.GetTilesWithinDistance(origin, distance);
 
         //create a quad for each tile
-        foreach(Vector3 tile in tiles)
+        foreach (Vector3 tile in tiles)
         {
             GameObject quadObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
             quadObject.transform.parent = this.transform;
@@ -43,20 +59,13 @@ public class EnvironmentMovementRadius : MonoBehaviour
 
         Mesh mesh = new Mesh();
         mesh.CombineMeshes(combine);
-        transform.GetComponent<MeshFilter>().mesh = mesh;
+        _filter.mesh = mesh;
+
+        _outline = this.gameObject.AddComponent<HighlightEffect>();
+        _outline.profile = OutlineSettings;
+        _outline.ProfileLoad(OutlineSettings);
+        _outline.highlighted = true;
+
         transform.gameObject.SetActive(true);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if(Application.isPlaying)
-        {
-            foreach (Vector3 tile in tiles)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawCube(tile, GetTileSize());
-            }
-        }
-
     }
 }
