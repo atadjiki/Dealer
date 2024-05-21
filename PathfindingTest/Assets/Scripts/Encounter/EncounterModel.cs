@@ -9,9 +9,6 @@ public class EncounterModel : MonoBehaviour
     public delegate void EncounterStateDelegate();
     public EncounterStateDelegate OnStateChanged;
 
-    //who should we spawn, etc
-    [SerializeField] private EncounterSetupData SetupData;
-
     //collections
     //when setup is performed, store spawned characters
    // private Dictionary<TeamID, List<CharacterComponent>> _characterMap;
@@ -68,24 +65,6 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_Init()
     {
-        foreach(CharacterID ID in SetupData.Characters)
-        {
-            CharacterData data = ResourceUtil.GetCharacterData(ID);
-
-            if (data != null)
-            {
-                CharacterComponent character = CharacterUtil.BuildCharacterObject(data, this.transform);
-
-                yield return character.Coroutine_Setup(data);
-
-                Vector3 spawnLocation = EnvironmentUtil.GetRandomTile();
-                character.Teleport(spawnLocation);
-                Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
-                character.MoveTo(destination);
-                Debug.Log("Character " + data.ID + " spawned at " + spawnLocation.ToString());
-            }
-        }
-
         yield return null;
     }
 
