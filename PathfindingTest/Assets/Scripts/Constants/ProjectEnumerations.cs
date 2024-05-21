@@ -56,15 +56,17 @@ public static partial class Constants
     public enum AbilityID
     {
         NONE,
-        MOVE,
+        MOVE_HALF,
+        MOVE_FULL,
+        FIRE_WEAPON,
     }
 
     //Encounter
     public enum EncounterState
     {
-        INIT,
+        NONE,
 
-        INTRO,
+        INIT,
 
         SETUP_COMPLETE,//waiting for encounter to begin
 
@@ -89,5 +91,12 @@ public static partial class Constants
         DESELECT_CURRENT_CHARACTER,//deselect current character and pop them from their team's queue
 
         UPDATE //update the turn count, etc 
+    }
+
+    public enum TargetType
+    {
+        Enemy,
+        Ally,
+        None,
     }
 }

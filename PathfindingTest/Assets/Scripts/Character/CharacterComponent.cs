@@ -81,4 +81,29 @@ public class CharacterComponent : MonoBehaviour
     {
         _model.ToggleVisibility(flag);
     }
+
+    public bool IsAlive()
+    {
+        return true;
+    }
+
+    public bool IsDead()
+    {
+        return false;
+    }
+
+    public bool HasActionPoints()
+    {
+        return true;
+    }
+
+    public void DecrementActionPoints(int amount)
+    {
+
+    }
+
+    public CharacterID GetID()
+    {
+        return _ID;
+    }
 }

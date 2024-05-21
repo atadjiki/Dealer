@@ -93,14 +93,14 @@ public class CameraRig : MonoBehaviour
 
     public void Follow(CharacterComponent character)
     {
-       // Debug.Log("New Follow Target " + character.GetID());
+        Debug.Log("New Follow Target " + character.GetID());
       
-      //  FollowTarget.AttachToCharacter(character);
+        _followTarget.AttachToCharacter(character);
     }
 
     public void Unfollow()
     {
-        //FollowTarget.Release();
+        _followTarget.Release();
     }
 
     public float ZoomOut()
