@@ -410,7 +410,7 @@ public static partial class Constants
 
     public static Vector3 GetTileScale()
     {
-        return new Vector3(ENV_TILE_SIZE, 1, ENV_TILE_SIZE);
+        return new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE, ENV_TILE_SIZE);
     }
 
     public static int CalculateGScore(int distance)
