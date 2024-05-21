@@ -5,32 +5,51 @@ using static Constants;
 
 public class EnvironmentTileSelect : MonoBehaviour
 {
-    private void Update()
-    {
+    [SerializeField] private Material TileMaterial;
 
+    private GameObject _quad;
+
+    private void Start()
+    {
+        CreateTileQuad();
     }
 
-    private void OnDrawGizmosSelected()
+    private void Update()
     {
-        TileGraph graph = EnvironmentUtil.GetEnvironmentGraph();
+        if (_quad == null) return;
 
-        if (graph != null && Camera.main != null)
+
+        EnvironmentTileRaycastInfo info;
+
+        if(EnvironmentUtil.GetTileBeneathMouse(out info))
         {
-            Vector3 mousePosition = Input.mousePosition;
-
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100))
+            if(info.layer == EnvironmentLayer.CHARACTER || info.layer == EnvironmentLayer.GROUND)
             {
-                Vector3 nearest;
-                if (EnvironmentUtil.GetNearestTile(hit.point, out nearest))
-                {
-                    //Debug.Log("Nearest: " + nearest.ToString());
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawCube(nearest, GetTileSize());
-                }
-            }
+                _quad.transform.position = info.position;
+                _quad.SetActive(true);
+                return;
+            }    
         }
+
+        _quad.SetActive(false);
+    }
+
+    private void CreateTileQuad()
+    {
+        _quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        _quad.transform.parent = this.transform;
+
+        _quad.transform.localEulerAngles = new Vector3(90, 0, 0);
+        _quad.transform.localScale = GetTileScale();
+
+        Destroy(_quad.GetComponent<MeshCollider>());
+
+        _quad.layer = LAYER_DECAL;
+
+        MeshRenderer renderer = _quad.GetComponent<MeshRenderer>();
+
+        renderer.material = TileMaterial;
+
+        _quad.SetActive(false);
     }
 }

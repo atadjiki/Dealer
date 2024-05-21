@@ -4,6 +4,23 @@ using Pathfinding;
 using UnityEngine;
 using static Constants;
 
+
+[Serializable]
+public struct EnvironmentTileRaycastInfo
+{
+    public Vector3 position;
+    public EnvironmentLayer layer;
+
+    public static EnvironmentTileRaycastInfo Build()
+    {
+        return new EnvironmentTileRaycastInfo()
+        {
+            position = Vector3.zero,
+            layer = EnvironmentLayer.NONE
+        };
+    }
+}
+
 [Serializable]
 public struct EnvironmentTileConnectionInfo
 {
@@ -228,6 +245,36 @@ public class EnvironmentUtil
         }
 
         return tiles;
+    }
+
+    public static bool GetTileBeneathMouse(out EnvironmentTileRaycastInfo info)
+    {
+        info = EnvironmentTileRaycastInfo.Build();
+
+        TileGraph graph = GetEnvironmentGraph();
+
+        if (graph != null && Camera.main != null)
+        {
+            Vector3 mousePosition = Input.mousePosition;
+
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+            foreach (RaycastHit hit in Physics.RaycastAll(ray, 100))
+            {
+                if (hit.collider.gameObject.layer == LAYER_GROUND)
+                {
+                    Vector3 nearest;
+                    if (GetNearestTile(hit.point, out nearest))
+                    {
+                        info.layer = CheckTileLayer(nearest);
+                        info.position = nearest;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)

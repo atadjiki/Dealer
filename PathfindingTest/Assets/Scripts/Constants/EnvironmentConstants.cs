@@ -7,6 +7,7 @@ public static partial class Constants
 {
     public static float ENV_TILE_SIZE = 1.5f;
 
+    public static int LAYER_DECAL = LayerMask.NameToLayer("Decal");
     public static int LAYER_GROUND = LayerMask.NameToLayer("GROUND");
     public static int LAYER_OBSTACLE_HALF = LayerMask.NameToLayer("OBSTACLE_HALF");
     public static int LAYER_OBSTACLE_FULL = LayerMask.NameToLayer("OBSTACLE_FULL");
@@ -405,6 +406,11 @@ public static partial class Constants
     public static Vector3 GetTileSize()
     {
         return new Vector3(ENV_TILE_SIZE, 0, ENV_TILE_SIZE);
+    }
+
+    public static Vector3 GetTileScale()
+    {
+        return new Vector3(ENV_TILE_SIZE, 1, ENV_TILE_SIZE);
     }
 
     public static int CalculateGScore(int distance)
