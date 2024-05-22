@@ -17,10 +17,6 @@ public struct EncounterStateData
 
     public int TurnCount;
 
-    public AbilityID ActiveAbility;
-    public CharacterComponent ActiveTarget;
-    public Vector3 ActiveDestination;
-
     public bool Busy;
 
     public CharacterComponent GetCurrentCharacter()
@@ -127,10 +123,6 @@ public struct EncounterStateData
 
             TurnCount = 0,
 
-            ActiveAbility = AbilityID.NONE,
-            ActiveTarget = null,
-            ActiveDestination = Vector3.zero,
-
             Busy = false
         };
     }
@@ -169,19 +161,20 @@ public class EncounterStateMachine: MonoBehaviour
         OnAbilityChosen -= AbilityChosenCallback;
     }
 
-    public void AbilityChosenCallback(AbilityID ID, object data)
+    public void AbilityChosenCallback(AbilityID ability, object data)
     {
-        _state.ActiveAbility = ID;
+        SetActiveAbility(ability);
 
-        switch (ID)
+        switch (ability)
         {
             case AbilityID.MOVE_FULL:
             case AbilityID.MOVE_HALF:
+            {
                 Vector3 destination = ((Vector3)data);
                 Debug.Log("Destination chosen at " + destination.ToString());
-                _state.ActiveDestination = destination;
-                HandleState(EncounterState.PERFORM_ACTION);
+                HandleState(EncounterState.CHOOSE_ACTION);
                 break;
+            }
             default:
                 break;
         }
@@ -194,7 +187,7 @@ public class EncounterStateMachine: MonoBehaviour
 
     private IEnumerator Coroutine_StateChangeCallback(EncounterState state)
     {
-       // yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(1.5f);
 
         switch (state)
         {
@@ -208,7 +201,6 @@ public class EncounterStateMachine: MonoBehaviour
             case EncounterState.CHOOSE_ACTION:
                 EncounterUtil.CreatePathDisplay(GetCurrentCharacterLocation());
                 EncounterUtil.CreateMovementRadius();
-                EncounterUtil.CreateClickHandler();
                 Debug.Log("Waiting for player input");
                 //if it's the player's turn, wait for input
                 //if enemy turn, let the ai choose an ability and transition
@@ -383,7 +375,7 @@ public class EncounterStateMachine: MonoBehaviour
     private IEnumerator Coroutine_ChooseAction()
     {
         //check if we need to choose a target for this action
-        AbilityID abilityID = GetActiveAbility();
+        AbilityID abilityID = AbilityID.NONE;// GetActiveAbility();
 
         switch (GetTargetType(abilityID))
         {
@@ -417,7 +409,7 @@ public class EncounterStateMachine: MonoBehaviour
     {
         CharacterComponent currentCharacter = GetCurrentCharacter();
 
-        currentCharacter.DecrementActionPoints(GetAbilityCost(GetActiveAbility()));
+       //TODO currentCharacter.DecrementActionPoints(GetAbilityCost(GetActiveAbility()));
 
         if (currentCharacter.HasActionPoints())
         {
@@ -469,6 +461,13 @@ public class EncounterStateMachine: MonoBehaviour
         }
     }
 
+    public void SetActiveAbility(AbilityID ability)
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        currentCharacter.SetActiveAbility(ability);
+    }
+
     //State interface
     public CharacterComponent GetCurrentCharacter()
     {
@@ -488,11 +487,6 @@ public class EncounterStateMachine: MonoBehaviour
     public bool IsCurrentCharacterAlive()
     {
         return _state.IsCurrentCharacterAlive();
-    }
-
-    public AbilityID GetActiveAbility()
-    {
-        return _state.ActiveAbility;
     }
 
     public int IncrementTurnCount()

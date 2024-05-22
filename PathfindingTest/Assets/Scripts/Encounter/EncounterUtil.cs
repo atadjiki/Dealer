@@ -44,12 +44,4 @@ public class EncounterUtil : MonoBehaviour
 
         return Instantiate<GameObject>(prefabData.CameraRig);
     }
-
-    public static GameObject CreateClickHandler()
-    {
-        GameObject gameObject = new GameObject("Click Handler");
-        gameObject.AddComponent<EnvironmentClickHandler>();
-
-        return gameObject;
-    }
 }

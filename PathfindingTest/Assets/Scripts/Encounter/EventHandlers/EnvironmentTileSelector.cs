@@ -28,7 +28,6 @@ public class EnvironmentTileSelector : EncounterEventHandler
     {
         if (_quad == null) return;
 
-
         EnvironmentTileRaycastInfo info;
 
         if(EnvironmentUtil.GetTileBeneathMouse(out info))
@@ -37,6 +36,12 @@ public class EnvironmentTileSelector : EncounterEventHandler
             {
                 _quad.transform.position = info.position;
                 _quad.SetActive(true);
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    EncounterStateMachine.OnAbilityChosen.Invoke(AbilityID.MOVE_FULL, info.position);
+                }
+
                 return;
             }    
         }
