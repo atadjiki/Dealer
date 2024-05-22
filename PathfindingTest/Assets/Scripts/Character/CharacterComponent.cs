@@ -137,13 +137,6 @@ public class CharacterComponent : MonoBehaviour
         _navigator.DestinationReachedCallback -= OnDestinationReached;
     }
 
-    //Movement interface
-    public void MoveTo(Vector3 destination)
-    {
-        _navigator.MoveTo(destination);
-        _animator.SetAnim(CharacterAnim.MOVING);
-    }
-
     public void OnDestinationReached(CharacterNavigator navigator)
     {
         _animator.SetAnim(CharacterAnim.IDLE);
@@ -201,6 +194,11 @@ public class CharacterComponent : MonoBehaviour
         _state.ActiveDestination = destination;
     }
 
+    public AbilityID GetActiveAbility()
+    {
+        return _state.ActiveAbility;
+    }
+
     public void SetActiveAbility(AbilityID ID)
     {
         _state.ActiveAbility = ID;
@@ -209,6 +207,42 @@ public class CharacterComponent : MonoBehaviour
     public CharacterID GetID()
     {
         return _ID;
+    }
+
+    public IEnumerator Coroutine_PerformAbility(AbilityID abilityID)
+    {
+        switch(abilityID)
+        {
+            case AbilityID.MOVE_FULL:
+            case AbilityID.MOVE_HALF:
+                yield return Coroutine_HandleAbility_Move();
+                break;
+            default:
+                break;
+        }
+
+        yield return new WaitForSecondsRealtime(1.5f);
+    }
+
+    public IEnumerator Coroutine_PerformAbility()
+    {
+        yield return Coroutine_PerformAbility(GetActiveAbility());
+    }
+
+    private IEnumerator Coroutine_HandleAbility_Move()
+    {
+        Debug.Log("Handling Ability: Move");
+
+        CameraRig.Instance.Follow(this);
+
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        //TODO HandleEvent(CharacterEvent.MOVING);
+        _animator.SetAnim(CharacterAnim.MOVING);
+
+        yield return _navigator.Coroutine_MoveTo(_state.ActiveDestination);
+
+        //TODO HandleEvent(CharacterEvent.STOPPED);
     }
 
     //Gizmos

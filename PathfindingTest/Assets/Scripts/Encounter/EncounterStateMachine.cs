@@ -35,6 +35,20 @@ public struct EncounterStateData
         return null;
     }
 
+    public void PopCurrentCharacter()
+    {
+        if (TeamQueues != null)
+        {
+            if (TeamQueues[CurrentTeam] != null)
+            {
+                if (TeamQueues[CurrentTeam].Count > 0)
+                {
+                    TeamQueues[CurrentTeam].Dequeue();
+                }
+            }
+        }
+    }
+
     public bool IsCurrentCharacterAlive()
     {
         return GetCurrentCharacter().IsAlive();
@@ -171,7 +185,7 @@ public class EncounterStateMachine: MonoBehaviour
             case AbilityID.MOVE_HALF:
             {
                 Vector3 destination = ((Vector3)data);
-                Debug.Log("Destination chosen at " + destination.ToString());
+                SetActiveDestination(destination);
                 HandleState(EncounterState.CHOOSE_ACTION);
                 break;
             }
@@ -187,33 +201,70 @@ public class EncounterStateMachine: MonoBehaviour
 
     private IEnumerator Coroutine_StateChangeCallback(EncounterState state)
     {
-        yield return new WaitForSecondsRealtime(1.5f);
+        //yield return new WaitForSecondsRealtime(1.5f);
 
         switch (state)
         {
-            case EncounterState.SELECT_CURRENT_CHARACTER:
-                CameraRig.Instance.Follow(GetCurrentCharacter());
-                HandleState(state);
+            case EncounterState.SETUP_COMPLETE:
+            {
+                //BroadcastCharacterEvent(CharacterEvent.UPDATE);
                 break;
+            }
+            case EncounterState.SELECT_CURRENT_CHARACTER:
+            {
+                EnvironmentUtil.Scan();
+
+                CharacterComponent currentCharacter;
+                GetCurrentCharacter(out currentCharacter);
+
+                CameraRig.Instance.Follow(currentCharacter);
+
+                if (currentCharacter.IsAlive())
+                {
+                    //TODO currentCharacter.HandleEvent(CharacterEvent.SELECTED);
+                }
+                break;
+            }
+            case EncounterState.TEAM_UPDATED:
+            {
+                yield return new WaitForSecondsRealtime(1.5f);
+                break;
+            }
             case EncounterState.DESELECT_CURRENT_CHARACTER:
+            {
                 CameraRig.Instance.Unfollow();
                 break;
+            }
             case EncounterState.CHOOSE_ACTION:
+            {
+                EncounterUtil.CreateTileSelector();
                 EncounterUtil.CreatePathDisplay(GetCurrentCharacterLocation());
                 EncounterUtil.CreateMovementRadius();
                 Debug.Log("Waiting for player input");
                 //if it's the player's turn, wait for input
                 //if enemy turn, let the ai choose an ability and transition
-                break;
+                yield break;
+            }
             case EncounterState.CHOOSE_TARGET:
+            {
                 //if it's the player's turn, wait for input
                 Debug.Log("Waiting for player input");
                 //if enemy turn, let the ai choose a target
+                yield break;
+            }
+            case EncounterState.PERFORM_ACTION:
+            {
+                CharacterComponent currentCharacter;
+                GetCurrentCharacter(out currentCharacter);
+                yield return PerformAbility(currentCharacter);
+                //TODO BroadcastCharacterEvent(CharacterEvent.UPDATE);
                 break;
+            }
             default:
-                HandleState(state);
                 break;
         }
+
+        HandleState(state);
 
         yield return null;
     }
@@ -311,8 +362,6 @@ public class EncounterStateMachine: MonoBehaviour
         //kick off a camera rig
         EncounterUtil.CreateCameraRig();
 
-        EncounterUtil.CreateTileSelector();
-
         SetPendingState(EncounterState.SETUP_COMPLETE);
     }
 
@@ -375,7 +424,7 @@ public class EncounterStateMachine: MonoBehaviour
     private IEnumerator Coroutine_ChooseAction()
     {
         //check if we need to choose a target for this action
-        AbilityID abilityID = AbilityID.NONE;// GetActiveAbility();
+        AbilityID abilityID = GetActiveAbility();
 
         switch (GetTargetType(abilityID))
         {
@@ -399,6 +448,26 @@ public class EncounterStateMachine: MonoBehaviour
         yield return null;
     }
 
+    public IEnumerator PerformAbility(CharacterComponent caster)
+    {
+        AbilityID abilityID = GetActiveAbility();
+
+        //TODO
+        //string casterName = GetDisplayString(caster.GetID());
+        //string abilityString = GetEventString(abilityID);
+
+        //Debug.Log(casterName + " " + abilityString + "...");
+
+        //TODO caster.PlayAudio(CharacterAudioType.Confirm);
+
+        //UnfollowCharacter();
+
+        //_canvas.ShowEventBanner(casterName + " " + abilityString + "...");
+        //yield return new WaitForSeconds(DEFAULT_WAIT_TIME);
+
+        yield return caster.Coroutine_PerformAbility();
+    }
+
     private IEnumerator Coroutine_CancelAction()
     {
         SetPendingState(EncounterState.CHOOSE_ACTION);
@@ -407,29 +476,31 @@ public class EncounterStateMachine: MonoBehaviour
 
     private IEnumerator Coroutine_PerformAction()
     {
-        CharacterComponent currentCharacter = GetCurrentCharacter();
-
-       //TODO currentCharacter.DecrementActionPoints(GetAbilityCost(GetActiveAbility()));
-
-        if (currentCharacter.HasActionPoints())
+        CharacterComponent currentCharacter;
+        if(GetCurrentCharacter(out currentCharacter))
         {
-            SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
-        }
-        else
-        {
-            SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
+            //TODO currentCharacter.DecrementActionPoints(GetAbilityCost(GetActiveAbility()));
+
+            if (currentCharacter.HasActionPoints())
+            {
+                SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
+            }
+            else
+            {
+                SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
+            }
         }
 
         yield return null;
     }
 
-    //private IEnumerator Coroutine_DeselectCurrentCharacter()
-    //{
-    //    PopCurrentCharacter();
+    private IEnumerator Coroutine_DeselectCurrentCharacter()
+    {
+        PopCurrentCharacter();
 
-    //    SetPendingState(EncounterState.UPDATE);
-    //    yield return null;
-    //}
+        SetPendingState(EncounterState.UPDATE);
+        yield return null;
+    }
 
     //private IEnumerator Coroutine_UpdateEncounter()
     //{
@@ -461,24 +532,76 @@ public class EncounterStateMachine: MonoBehaviour
         }
     }
 
+    public AbilityID GetActiveAbility()
+    {
+        CharacterComponent currentCharacter;
+        if(GetCurrentCharacter(out currentCharacter))
+        {
+            return currentCharacter.GetActiveAbility();
+        }
+
+        return AbilityID.NONE;
+    }
+
     public void SetActiveAbility(AbilityID ability)
     {
-        CharacterComponent currentCharacter = GetCurrentCharacter();
+        CharacterComponent currentCharacter;
+        if (GetCurrentCharacter(out currentCharacter))
+        {
+            currentCharacter.SetActiveAbility(ability);
+        }
+    }
 
-        currentCharacter.SetActiveAbility(ability);
+    public void SetActiveDestination(Vector3 destination)
+    {
+        CharacterComponent currentCharacter;
+        if (GetCurrentCharacter(out currentCharacter))
+        {
+            currentCharacter.SetActiveDestination(destination);
+        }
     }
 
     //State interface
-    public CharacterComponent GetCurrentCharacter()
+
+    public void PopCurrentCharacter()
     {
-        return _state.GetCurrentCharacter();
+        CancelActiveAbility();
+        _state.PopCurrentCharacter();
+
+    }
+
+    public void CancelActiveAbility()
+    {
+        CharacterComponent currentCharacter;
+        if(GetCurrentCharacter(out currentCharacter))
+        {
+            currentCharacter.ResetForTurn();
+
+            SetPendingState(EncounterState.CANCEL_ACTION);
+        }
+    }
+
+    public bool GetCurrentCharacter(out CharacterComponent character)
+    {
+        character = _state.GetCurrentCharacter();
+
+        if(character != null)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Current character was null!");
+            return false;
+        }
     }
 
     public Vector3 GetCurrentCharacterLocation()
     {
-        if(GetCurrentCharacter() != null)
+        CharacterComponent currentCharacter;
+        if(GetCurrentCharacter(out currentCharacter))
         {
-            return GetCurrentCharacter().GetWorldLocation();
+            return currentCharacter.GetWorldLocation();
         }
 
         return Vector3.zero;

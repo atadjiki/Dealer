@@ -18,7 +18,7 @@ public class EnvironmentTileSelector : EncounterEventHandler
 
     protected override void OnStateChangedCallback(EncounterState state)
     {
-        if (state == EncounterState.DONE)
+        if (state == EncounterState.PERFORM_ACTION)
         {
             Destroy(this.gameObject);
         }

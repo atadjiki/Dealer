@@ -12,6 +12,7 @@ public class CharacterNavigator : MonoBehaviour
 
     private Seeker _seeker;
     private AILerp _AI;
+    private bool _pathCalculated;
 
     private void Awake()
     {
@@ -22,13 +23,6 @@ public class CharacterNavigator : MonoBehaviour
         _AI = GetComponentInChildren<AILerp>();
         _AI.canSearch = false;
         _AI.canMove = false;
-    }
-
-    public void MoveTo(Vector3 destination)
-    {
-        StopAllCoroutines();
-
-        StartCoroutine(Coroutine_MoveTo(destination));
     }
 
     public void Teleport(Vector3 destination)
@@ -46,12 +40,16 @@ public class CharacterNavigator : MonoBehaviour
         _AI.speed = speed;
     }
 
-    private IEnumerator Coroutine_MoveTo(Vector3 destination)
+    public IEnumerator Coroutine_MoveTo(Vector3 destination)
     {
+        _pathCalculated = false;
+
         Vector3 origin = _AI.position;
 
         ABPath path = ABPath.Construct(origin, destination, OnPathComplete);
         _AI.SetPath(path);
+
+        yield return new WaitUntil(() => _pathCalculated);
 
         Debug.Log("Starting path from   " + _AI.position + " to " + destination);
         yield return new WaitForFixedUpdate();
@@ -62,7 +60,9 @@ public class CharacterNavigator : MonoBehaviour
 
         Debug.Log("Reached destination");
 
-        if(DestinationReachedCallback != null)
+        Teleport(destination);
+
+        if (DestinationReachedCallback != null)
         {
             DestinationReachedCallback.Invoke(this);
         }
@@ -71,5 +71,6 @@ public class CharacterNavigator : MonoBehaviour
     private void OnPathComplete(Path path)
     {
         Debug.Log("Path calculated: " + path.vectorPath.Count + " nodes total");
+        _pathCalculated = true;
     }
 }

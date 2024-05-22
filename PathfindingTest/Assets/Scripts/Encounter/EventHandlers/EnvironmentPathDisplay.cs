@@ -20,7 +20,7 @@ public class EnvironmentPathDisplay : EncounterEventHandler
 
     protected override void OnStateChangedCallback(EncounterState state)
     {
-        if(state == EncounterState.PERFORM_ACTION)
+        if (state == EncounterState.PERFORM_ACTION)
         {
             Destroy(this.gameObject);
         }

@@ -44,7 +44,9 @@ public class EnvironmentDebugRandomPath : MonoBehaviour
 
         Vector3 destination = (Vector3) end.position;
 
-        _character.MoveTo(destination);
+        _character.SetActiveDestination(destination);
+
+        yield return _character.Coroutine_PerformAbility(AbilityID.MOVE_FULL);
 
         yield return null;
     }

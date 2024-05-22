@@ -137,6 +137,8 @@ public class EnvironmentUtil
 
     public static void Scan()
     {
+        Debug.Log("Environment Scan");
+
         TileGraph graph = GetEnvironmentGraph();
 
         AstarPath.active.Scan(graph);
