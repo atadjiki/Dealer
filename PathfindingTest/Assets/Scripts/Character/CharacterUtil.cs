@@ -5,7 +5,7 @@ using static Constants;
 
 public class CharacterUtil : MonoBehaviour
 {
-    public static CharacterComponent BuildCharacterObject(CharacterData data, Transform parent)
+    public static CharacterComponent BuildCharacterObject(CharacterDefinition data, Transform parent)
     {
         GameObject characterObject = new GameObject("Character_" + data.ID.ToString().ToLowerInvariant());
         characterObject.transform.parent = parent;

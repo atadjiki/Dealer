@@ -44,4 +44,10 @@ public class EncounterUtil : MonoBehaviour
 
         return Instantiate<GameObject>(prefabData.CameraRig);
     }
+
+    public static EncounterModel CreateEncounterModel()
+    {
+        GameObject gameObject = new GameObject("Encounter Model");
+        return gameObject.AddComponent<EncounterModel>();
+    }
 }

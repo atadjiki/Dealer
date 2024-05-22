@@ -38,6 +38,7 @@ public static partial class Constants
 
     public enum TeamID
     {
+        NONE,
         PLAYER,
         ENEMY
     }
@@ -45,6 +46,19 @@ public static partial class Constants
     public enum CharacterID
     {
         DEBUGBERT, //the default blue skeleton from Mixamo!
+    }
+
+    public enum ModelID
+    {
+        NONE,
+
+        MALE_DEA,
+
+        MALE_GOON,
+
+        MALE_HENCHMAN,
+
+        MALE_GENERIC,
     }
 
     public enum CharacterAnim

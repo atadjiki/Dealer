@@ -5,14 +5,14 @@ using static Constants;
 
 public class ResourceUtil : MonoBehaviour
 {
-    public static List<CharacterData> GetAllCharacterData()
+    public static List<CharacterDefinition> GetAllCharacterData()
     {
-        return new List<CharacterData>(Resources.LoadAll<CharacterData>("Data/Character"));
+        return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/Character"));
     }
 
-    public static CharacterData GetCharacterData(CharacterID ID)
+    public static CharacterDefinition GetCharacterData(CharacterID ID)
     {
-        foreach(CharacterData data in GetAllCharacterData())
+        foreach(CharacterDefinition data in GetAllCharacterData())
         {
             if(data.ID == ID)
             {
@@ -23,14 +23,21 @@ public class ResourceUtil : MonoBehaviour
         return null;
     }
 
+    public static GameObject GetModel(ModelID ID)
+    {
+        CharacterModelData data = Resources.Load<CharacterModelData>("Data/CharacterModelData");
+
+        return data.GetModel(ID);
+    }
+
     public static EncounterPrefabData GetEncounterPrefabs()
     {
         return Resources.Load<EncounterPrefabData>("Data/EncounterPrefab/Default");
     }
 
-    public static List<CharacterData> GetAllEncounterSetupData()
+    public static List<CharacterDefinition> GetAllEncounterSetupData()
     {
-        return new List<CharacterData>(Resources.LoadAll<CharacterData>("Data/EncounterSetup"));
+        return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/EncounterSetup"));
     }
 
     public static ColorPalette GetColorPalette()

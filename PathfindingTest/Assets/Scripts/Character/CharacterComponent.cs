@@ -55,13 +55,13 @@ public struct CharacterStateData
 
     public void ResetForTurn(CharacterID ID)
     {
-        CharacterData data = ResourceUtil.GetCharacterData(ID);
+        CharacterDefinition def = ResourceUtil.GetCharacterData(ID);
 
         ActiveAbility = AbilityID.NONE;
         ActiveTarget = null;
         ActiveDestination = Vector3.zero;
 
-        ActionPoints = data.ActionPoints;
+        ActionPoints = def.BaseActionPoints;
     }
 
     public string GetInfoString()
@@ -74,15 +74,15 @@ public struct CharacterStateData
 
     public static CharacterStateData Build(CharacterID ID)
     {
-        CharacterData data = ResourceUtil.GetCharacterData(ID);
+        CharacterDefinition def = ResourceUtil.GetCharacterData(ID);
 
         return new CharacterStateData()
         {
             ActiveAbility = AbilityID.NONE,
             ActiveTarget = null,
             ActiveDestination = Vector3.zero,
-            Health = data.Health,
-            ActionPoints = data.ActionPoints,
+            Health = def.BaseHealth,
+            ActionPoints = def.BaseActionPoints
         };
     }
 }
@@ -102,9 +102,9 @@ public class CharacterComponent : MonoBehaviour
     private CharacterStateData _state;
 
     //construct the character using their defined data
-    public IEnumerator Coroutine_Setup(CharacterData data)
+    public IEnumerator Coroutine_Setup(CharacterDefinition def)
     {
-        _ID = data.ID;
+        _ID = def.ID;
 
         _state = CharacterStateData.Build(_ID);
 
@@ -117,7 +117,7 @@ public class CharacterComponent : MonoBehaviour
         _navigator = navigatorObject.AddComponent<CharacterNavigator>();
         yield return new WaitUntil( () => _navigator != null );
         _navigator.DestinationReachedCallback += OnDestinationReached;
-        _navigator.SetSpeed(data.MovementSpeed);
+        _navigator.SetSpeed(def.MovementSpeed);
 
         //place a capsule on the character for pathfinding purposes
         _graphCollider = navigatorObject.AddComponent<CapsuleCollider>();
@@ -126,18 +126,13 @@ public class CharacterComponent : MonoBehaviour
         _graphCollider.height = ENV_TILE_SIZE;
 
         //load the model and animator for this character
-        GameObject modelObject = Instantiate<GameObject>(data.Model, navigatorObject.transform);
+        GameObject modelPrefab = ResourceUtil.GetModel(def.GetRandomModel());
+
+        GameObject modelObject = Instantiate<GameObject>(modelPrefab, navigatorObject.transform);
         _model = modelObject.GetComponent<CharacterModel>();
         yield return new WaitUntil(() => _model != null);
         _animator = modelObject.GetComponent<CharacterAnimator>();
         yield return new WaitUntil(() => _animator != null);
-
-        //place a camera follow target for the character
-        GameObject cameraFollowObject = new GameObject("Camera Follow");
-        cameraFollowObject.transform.parent = navigatorObject.transform;
-        cameraFollowObject.transform.localPosition = data.CameraFollowOffset;
-        _cameraFollow = cameraFollowObject.AddComponent<CharacterCameraFollow>();
-        yield return new WaitUntil(() => _cameraFollow != null);
 
         yield return null;
     }
@@ -229,6 +224,11 @@ public class CharacterComponent : MonoBehaviour
         _graphCollider.enabled = true;
     }
 
+    public IEnumerator Coroutine_PerformAbility()
+    {
+        yield return Coroutine_PerformAbility(GetActiveAbility());
+    }
+
     public IEnumerator Coroutine_PerformAbility(AbilityID abilityID)
     {
         switch(abilityID)
@@ -241,12 +241,9 @@ public class CharacterComponent : MonoBehaviour
                 break;
         }
 
-        yield return new WaitForSecondsRealtime(1.5f);
-    }
+        DecrementActionPoints(abilityID);
 
-    public IEnumerator Coroutine_PerformAbility()
-    {
-        yield return Coroutine_PerformAbility(GetActiveAbility());
+        yield return null;
     }
 
     private IEnumerator Coroutine_HandleAbility_Move()

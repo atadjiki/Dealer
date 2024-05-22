@@ -25,4 +25,23 @@ public static partial class Constants
                 return TargetType.None;
         }
     }
+
+    //public static TeamID GetOpposingTeam(CharacterComponent characterComponent)
+    //{
+    //    return GetOpposingTeam(GetTeamByID(characterComponent.GetID()));
+    //}
+
+    public static TeamID GetOpposingTeam(TeamID team)
+    {
+        if (team == TeamID.PLAYER)
+        {
+            return TeamID.ENEMY;
+        }
+        else if (team == TeamID.ENEMY)
+        {
+            return TeamID.PLAYER;
+        }
+
+        return TeamID.NONE;
+    }
 }

@@ -17,12 +17,12 @@ public class EncounterEventHandler : MonoBehaviour
 
     protected virtual void Setup()
     {
-        EncounterStateMachine.OnStateChanged += OnStateChangedCallback;
+        EncounterModel.OnStateChanged += OnStateChangedCallback;
     }
 
     protected virtual void Dispose()
     {
-        EncounterStateMachine.OnStateChanged -= OnStateChangedCallback;
+        EncounterModel.OnStateChanged -= OnStateChangedCallback;
     }
 
     protected virtual void OnStateChangedCallback(EncounterState state) { }
