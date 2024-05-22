@@ -168,6 +168,7 @@ public static partial class Constants
     {
         switch (Layer)
         {
+            case EnvironmentLayer.CHARACTER:
             case EnvironmentLayer.OBSTACLE_HALF:
             case EnvironmentLayer.OBSTACLE_FULL:
             case EnvironmentLayer.NONE:

@@ -157,11 +157,26 @@ public class EncounterStateMachine: MonoBehaviour
     //private vars
     private EncounterStateData _state;
 
+    //singleton
+    private static EncounterStateMachine _instance;
+    public static EncounterStateMachine Instance { get { return _instance; } }
+
     private void Awake()
     {
-        //check if we have pathfinding data?
-        EnvironmentUtil.Scan();
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
 
+        Build();
+    }
+
+    private void Build()
+    {
         OnStateChanged += StateChangeCallback;
 
         OnAbilityChosen += AbilityChosenCallback;
@@ -212,10 +227,11 @@ public class EncounterStateMachine: MonoBehaviour
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
-                EnvironmentUtil.Scan();
-
                 CharacterComponent currentCharacter;
                 GetCurrentCharacter(out currentCharacter);
+
+                currentCharacter.OnSelected();
+                EnvironmentUtil.Scan();
 
                 CameraRig.Instance.Follow(currentCharacter);
 
@@ -233,6 +249,12 @@ public class EncounterStateMachine: MonoBehaviour
             case EncounterState.DESELECT_CURRENT_CHARACTER:
             {
                 CameraRig.Instance.Unfollow();
+
+                CharacterComponent currentCharacter;
+                GetCurrentCharacter(out currentCharacter);
+
+                currentCharacter.OnDeselected();
+
                 break;
             }
             case EncounterState.CHOOSE_ACTION:
@@ -655,5 +677,10 @@ public class EncounterStateMachine: MonoBehaviour
             GUI.contentColor = Color.green;
             GUI.Label(new Rect(Screen.width - TextWidth, 10, TextWidth, 22), _state.CurrentState.ToString());
         }
+    }
+
+    public static bool IsActive()
+    {
+        return _instance != null;
     }
 }

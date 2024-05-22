@@ -92,6 +92,7 @@ public class CharacterComponent : MonoBehaviour
     private CharacterID _ID;
 
     private CharacterNavigator _navigator;
+    private CapsuleCollider _graphCollider;
 
     private CharacterAnimator _animator;
     private CharacterModel _model;
@@ -107,13 +108,22 @@ public class CharacterComponent : MonoBehaviour
 
         _state = CharacterStateData.Build(_ID);
 
+        this.gameObject.layer = LAYER_CHARACTER;
+
         //create a navigator for the character
         GameObject navigatorObject = new GameObject("Navigator");
         navigatorObject.transform.parent = this.transform;
+        navigatorObject.layer = LAYER_CHARACTER;
         _navigator = navigatorObject.AddComponent<CharacterNavigator>();
         yield return new WaitUntil( () => _navigator != null );
         _navigator.DestinationReachedCallback += OnDestinationReached;
         _navigator.SetSpeed(data.MovementSpeed);
+
+        //place a capsule on the character for pathfinding purposes
+        _graphCollider = navigatorObject.AddComponent<CapsuleCollider>();
+        _graphCollider.isTrigger = true;
+        _graphCollider.radius = ENV_TILE_SIZE / 2;
+        _graphCollider.height = ENV_TILE_SIZE;
 
         //load the model and animator for this character
         GameObject modelObject = Instantiate<GameObject>(data.Model, navigatorObject.transform);
@@ -207,6 +217,16 @@ public class CharacterComponent : MonoBehaviour
     public CharacterID GetID()
     {
         return _ID;
+    }
+
+    public void OnSelected()
+    {
+        _graphCollider.enabled = false;
+    }
+
+    public void OnDeselected()
+    {
+        _graphCollider.enabled = true;
     }
 
     public IEnumerator Coroutine_PerformAbility(AbilityID abilityID)
