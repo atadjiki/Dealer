@@ -77,6 +77,8 @@ public class EncounterStateMachine: MonoBehaviour
 
     private IEnumerator Coroutine_StateChangeCallback(EncounterState state)
     {
+        //yield return new WaitForSecondsRealtime(1.0f);
+
         switch (state)
         {
             case EncounterState.SETUP_COMPLETE:

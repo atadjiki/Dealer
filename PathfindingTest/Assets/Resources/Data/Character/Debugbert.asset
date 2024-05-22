@@ -9,12 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168e68b76ab6b41adadf9271aac6b014, type: 3}
+  m_Script: {fileID: 11500000, guid: acd6bab23b79f418a8a65ec2723d900f, type: 3}
   m_Name: Debugbert
   m_EditorClassIdentifier: 
   ID: 0
-  Health: 10
-  ActionPoints: 2
+  AllowedModels: 04000000
+  BaseHealth: 1
+  BaseActionPoints: 2
+  MovementRange: 6
   MovementSpeed: 3
-  CameraFollowOffset: {x: 0, y: 2, z: 0}
-  Model: {fileID: 4375865846402460303, guid: 83ff5a0ee6c4e47318dc82edc9026c8c, type: 3}
+  CritChance: 0
+  Aim: 65
+  Defence: 0

@@ -8,7 +8,7 @@ public struct EncounterStateData
 {
     public Dictionary<TeamID, List<CharacterComponent>> CharacterMap;
 
-    public Dictionary<TeamID, Queue<CharacterComponent>> TeamQueues;
+    public Queue<CharacterComponent> Timeline;
 
     public EncounterState CurrentState;
     public TeamID CurrentTeam;
@@ -20,16 +20,11 @@ public struct EncounterStateData
 
     public void PopCurrentCharacter()
     {
-        if (TeamQueues != null)
-        {
-            if (TeamQueues[CurrentTeam] != null)
-            {
-                if (TeamQueues[CurrentTeam].Count > 0)
-                {
-                    TeamQueues[CurrentTeam].Dequeue();
-                }
-            }
-        }
+        Debug.Log("Popping current character");
+
+        Timeline.Dequeue();
+
+        Debug.Log(MakeTimelineString());
     }
 
     public bool IsCurrentCharacterAlive()
@@ -39,18 +34,7 @@ public struct EncounterStateData
 
     public CharacterComponent GetCurrentCharacter()
     {
-        if (TeamQueues != null)
-        {
-            if (TeamQueues[CurrentTeam] != null)
-            {
-                if (TeamQueues[CurrentTeam].Count > 0)
-                {
-                    return TeamQueues[CurrentTeam].Peek();
-                }
-            }
-        }
-
-        return null;
+        return Timeline.Peek();
     }
 
     public List<CharacterComponent> GetAllCharacters()
@@ -70,30 +54,35 @@ public struct EncounterStateData
         return CharacterMap[team];
     }
 
-    public void BuildAllTeamQueues()
+    public void BuildTimeline()
     {
         foreach (TeamID team in CharacterMap.Keys)
         {
-            BuildTeamQueue(team);
+            foreach (CharacterComponent character in CharacterMap[team])
+            {
+                if (character.IsAlive())
+                {
+                    Timeline.Enqueue(character);
+                }
+            }
         }
+
+        Debug.Log(MakeTimelineString());
     }
 
-    public void BuildTeamQueue(TeamID team)
+    public string MakeTimelineString()
     {
-        TeamQueues[team].Clear();
+        string debugString = "Timeline: ";
 
-        string debugString = team.ToString() + " Queue: ";
-
-        foreach (CharacterComponent character in CharacterMap[team])
+        foreach (CharacterComponent character in Timeline.ToArray())
         {
             if (character.IsAlive())
             {
-                TeamQueues[team].Enqueue(character);
                 debugString += character.GetID().ToString() + " ";
             }
         }
 
-        Debug.Log(debugString);
+        return debugString;
     }
 
     public bool AreAnyTeamsDead()
@@ -114,6 +103,11 @@ public struct EncounterStateData
 
     public bool IsTeamDead(TeamID team)
     {
+        if(CharacterMap[team].Count == 0)
+        {
+            return false;
+        }
+
         foreach (CharacterComponent character in CharacterMap[team])
         {
             if (character.IsAlive())
@@ -128,15 +122,7 @@ public struct EncounterStateData
 
     public bool IsTimelineEmpty()
     {
-        foreach (Queue<CharacterComponent> queue in TeamQueues.Values)
-        {
-            if (queue.Count > 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return (Timeline.Count == 0);
     }
 
     public TeamID IncrementTeam()
@@ -175,15 +161,10 @@ public struct EncounterStateData
             CharacterMap = new Dictionary<TeamID, List<CharacterComponent>>()
             {
                 { TeamID.PLAYER, new List<CharacterComponent>() },
-                { TeamID.ENEMY,  new List<CharacterComponent>() }
+                { TeamID.ENEMY, new List<CharacterComponent>() }
             },
 
-            TeamQueues = new Dictionary<TeamID, Queue<CharacterComponent>>()
-            {
-                { TeamID.PLAYER, new Queue<CharacterComponent>() },
-                { TeamID.ENEMY,  new Queue<CharacterComponent>() },
-
-            },
+            Timeline = new Queue<CharacterComponent>(),
 
             CurrentState = EncounterState.NONE,
             CurrentTeam = TeamID.PLAYER,

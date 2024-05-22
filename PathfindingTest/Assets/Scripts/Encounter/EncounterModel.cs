@@ -133,7 +133,7 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_BuildQueues()
     {
-        _state.BuildAllTeamQueues();
+        _state.BuildTimeline();
 
         SetPendingState(EncounterState.CHECK_CONDITIONS);
 
@@ -310,7 +310,6 @@ public class EncounterModel : MonoBehaviour
     {
         CancelActiveAbility();
         _state.PopCurrentCharacter();
-
     }
 
     public Vector3 GetCurrentCharacterLocation()

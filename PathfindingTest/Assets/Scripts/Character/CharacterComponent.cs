@@ -42,15 +42,11 @@ public struct CharacterStateData
         int cost = GetAbilityCost(ability);
 
         ActionPoints -= cost;
-
-        ActionPoints = Mathf.Clamp(ActionPoints, 0, ActionPoints);
     }
 
     public void AdjustHealth(int amount)
     {
         Health += amount;
-
-        Health = Mathf.Clamp(Health, 0, Health);
     }
 
     public void ResetForTurn(CharacterID ID)
@@ -96,8 +92,6 @@ public class CharacterComponent : MonoBehaviour
 
     private CharacterAnimator _animator;
     private CharacterModel _model;
-
-    private CharacterCameraFollow _cameraFollow;
 
     private CharacterStateData _state;
 
