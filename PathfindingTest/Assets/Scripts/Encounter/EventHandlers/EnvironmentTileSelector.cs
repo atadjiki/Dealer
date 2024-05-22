@@ -3,15 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
-public class EnvironmentTileSelect : MonoBehaviour
+public class EnvironmentTileSelector : EncounterEventHandler
 {
     [SerializeField] private Material TileMaterial;
 
     private GameObject _quad;
 
-    private void Start()
+    protected override void Setup()
     {
+        base.Setup();
+
         CreateTileQuad();
+    }
+
+    protected override void OnStateChangedCallback(EncounterState state)
+    {
+        if (state == EncounterState.DONE)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void Update()

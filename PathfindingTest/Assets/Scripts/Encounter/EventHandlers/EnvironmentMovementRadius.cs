@@ -4,7 +4,7 @@ using UnityEngine;
 using HighlightPlus;
 using static Constants;
 
-public class EnvironmentMovementRadius : MonoBehaviour
+public class EnvironmentMovementRadius : EncounterEventHandler
 {
     [SerializeField] private Material OutlineMaterial;
     [SerializeField] private HighlightProfile OutlineSettings;
@@ -16,13 +16,23 @@ public class EnvironmentMovementRadius : MonoBehaviour
     private MeshFilter _filter;
     private HighlightEffect _outline;
 
-    private void Awake()
+    protected override void Setup()
     {
+        base.Setup();
+
         _renderer = this.gameObject.AddComponent<MeshRenderer>();
         _renderer.material = OutlineMaterial;
         _filter = this.gameObject.AddComponent<MeshFilter>();
 
         CreateRadiusMesh();
+    }
+
+    protected override void OnStateChangedCallback(EncounterState state)
+    {
+        if (state == EncounterState.PERFORM_ACTION)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void CreateRadiusMesh()

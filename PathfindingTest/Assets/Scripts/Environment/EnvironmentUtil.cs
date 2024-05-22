@@ -247,6 +247,15 @@ public class EnvironmentUtil
         return tiles;
     }
 
+    public static List<Vector3> CalculatePath(Vector3 origin, Vector3 destination)
+    {
+        ABPath path = ABPath.Construct(origin, destination);
+        AstarPath.StartPath(path);
+        path.BlockUntilCalculated();
+
+        return path.vectorPath;
+    }
+
     public static bool GetTileBeneathMouse(out EnvironmentTileRaycastInfo info)
     {
         info = EnvironmentTileRaycastInfo.Build();

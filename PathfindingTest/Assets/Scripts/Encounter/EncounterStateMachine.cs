@@ -56,15 +56,18 @@ public struct EncounterStateData
     {
         TeamQueues[team].Clear();
 
-        foreach(CharacterComponent character in CharacterMap[team])
+        string debugString = team.ToString() + " Queue: ";
+
+        foreach (CharacterComponent character in CharacterMap[team])
         {
             if(character.IsAlive())
             {
                 TeamQueues[team].Enqueue(character);
+                debugString += character.GetID().ToString() + " ";
             }
         }
 
-        Debug.Log(team.ToString() + " Queue: " + TeamQueues[team].ToString());
+        Debug.Log(debugString);
     }
 
     public bool AreAnyTeamsDead()
@@ -137,24 +140,25 @@ public class EncounterStateMachine: MonoBehaviour
 {
     //event handling
     public delegate void EncounterStateDelegate(EncounterState State);
-    public EncounterStateDelegate OnStateChanged;
+    public static EncounterStateDelegate OnStateChanged;
+
+    public delegate void EncounterAbilityDelegate(AbilityID ID, object data);
+    public static EncounterAbilityDelegate OnAbilityChosen;
 
     //who should we spawn, etc
     [SerializeField] private EncounterSetupData SetupData;
 
     //private vars
     private EncounterStateData _state;
-    private EncounterPrefabData _prefabData;
 
     private void Awake()
     {
-        //load our prefabs 
-        _prefabData = ResourceUtil.GetEncounterPrefabs();
-
         //check if we have pathfinding data?
         EnvironmentUtil.Scan();
 
         OnStateChanged += StateChangeCallback;
+
+        OnAbilityChosen += AbilityChosenCallback;
 
         HandleState(EncounterState.INIT);
     }
@@ -162,6 +166,25 @@ public class EncounterStateMachine: MonoBehaviour
     private void OnDestroy()
     {
         OnStateChanged -= StateChangeCallback;
+        OnAbilityChosen -= AbilityChosenCallback;
+    }
+
+    public void AbilityChosenCallback(AbilityID ID, object data)
+    {
+        _state.ActiveAbility = ID;
+
+        switch (ID)
+        {
+            case AbilityID.MOVE_FULL:
+            case AbilityID.MOVE_HALF:
+                Vector3 destination = ((Vector3)data);
+                Debug.Log("Destination chosen at " + destination.ToString());
+                _state.ActiveDestination = destination;
+                HandleState(EncounterState.PERFORM_ACTION);
+                break;
+            default:
+                break;
+        }
     }
 
     public void StateChangeCallback(EncounterState state)
@@ -175,9 +198,19 @@ public class EncounterStateMachine: MonoBehaviour
 
         switch (state)
         {
+            case EncounterState.SELECT_CURRENT_CHARACTER:
+                CameraRig.Instance.Follow(GetCurrentCharacter());
+                HandleState(state);
+                break;
+            case EncounterState.DESELECT_CURRENT_CHARACTER:
+                CameraRig.Instance.Unfollow();
+                break;
             case EncounterState.CHOOSE_ACTION:
-                //if it's the player's turn, wait for input
+                EncounterUtil.CreatePathDisplay(GetCurrentCharacterLocation());
+                EncounterUtil.CreateMovementRadius();
+                EncounterUtil.CreateClickHandler();
                 Debug.Log("Waiting for player input");
+                //if it's the player's turn, wait for input
                 //if enemy turn, let the ai choose an ability and transition
                 break;
             case EncounterState.CHOOSE_TARGET:
@@ -284,9 +317,9 @@ public class EncounterStateMachine: MonoBehaviour
         }
 
         //kick off a camera rig
-        Instantiate<GameObject>(_prefabData.CameraRig);
+        EncounterUtil.CreateCameraRig();
 
-        Instantiate<GameObject>(_prefabData.TileSelector);
+        EncounterUtil.CreateTileSelector();
 
         SetPendingState(EncounterState.SETUP_COMPLETE);
     }
@@ -440,6 +473,16 @@ public class EncounterStateMachine: MonoBehaviour
     public CharacterComponent GetCurrentCharacter()
     {
         return _state.GetCurrentCharacter();
+    }
+
+    public Vector3 GetCurrentCharacterLocation()
+    {
+        if(GetCurrentCharacter() != null)
+        {
+            return GetCurrentCharacter().GetWorldLocation();
+        }
+
+        return Vector3.zero;
     }
 
     public bool IsCurrentCharacterAlive()
