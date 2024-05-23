@@ -9,9 +9,9 @@ public class EnvironmentTileSelector : EncounterEventHandler
 
     private GameObject _quad;
 
-    protected override void Setup()
+    protected override void OnAwake()
     {
-        base.Setup();
+        base.OnAwake();
 
         CreateTileQuad();
     }

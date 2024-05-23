@@ -9,22 +9,19 @@ public class EnvironmentMovementRadius : EncounterEventHandler
     [SerializeField] private Material OutlineMaterial;
     [SerializeField] private HighlightProfile OutlineSettings;
 
-    private int distance = 12;
-    private List<Vector3> tiles;
+    private List<Vector3> _range;
 
     private MeshRenderer _renderer;
     private MeshFilter _filter;
     private HighlightEffect _outline;
 
-    protected override void Setup()
+    protected override void OnAwake()
     {
-        base.Setup();
+        base.OnAwake();
 
         _renderer = this.gameObject.AddComponent<MeshRenderer>();
         _renderer.material = OutlineMaterial;
         _filter = this.gameObject.AddComponent<MeshFilter>();
-
-        CreateRadiusMesh();
     }
 
     protected override void OnStateChangedCallback(EncounterState state)
@@ -35,15 +32,17 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         }
     }
 
+    public void Setup(CharacterComponent character)
+    {
+        _range = EnvironmentUtil.GetCharacterRange(character);
+
+        CreateRadiusMesh();
+    }
+
     private void CreateRadiusMesh()
     {
-        //TODO: eventually change this to current characters position
-        Vector3 origin = this.transform.position;
-
-        tiles = EnvironmentUtil.GetTilesWithinDistance(origin, distance);
-
         //create a quad for each tile
-        foreach (Vector3 tile in tiles)
+        foreach (Vector3 tile in _range)
         {
             GameObject quadObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
             quadObject.transform.parent = this.transform;

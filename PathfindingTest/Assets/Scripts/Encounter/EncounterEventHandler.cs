@@ -7,7 +7,7 @@ public class EncounterEventHandler : MonoBehaviour
 {
     private void Awake()
     {
-        Setup();
+        OnAwake();
     }
 
     private void OnDestroy()
@@ -15,7 +15,7 @@ public class EncounterEventHandler : MonoBehaviour
         Dispose();
     }
 
-    protected virtual void Setup()
+    protected virtual void OnAwake()
     {
         EncounterModel.OnStateChanged += OnStateChangedCallback;
     }

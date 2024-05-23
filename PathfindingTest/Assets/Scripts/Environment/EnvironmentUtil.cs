@@ -231,11 +231,17 @@ public class EnvironmentUtil
         return GetClosest(origin, GetCoverAdjaecentTiles());
     }
 
-    public static List<Vector3> GetTilesWithinDistance(Vector3 origin, int distance)
+    public static List<Vector3> GetCharacterRange(CharacterComponent character)
+    {
+        CharacterDefinition def = ResourceUtil.GetCharacterData(character.GetID());
+        return EnvironmentUtil.GetTilesWithinRange(character.GetWorldLocation(), def.MovementRange);
+    }
+
+    public static List<Vector3> GetTilesWithinRange(Vector3 origin, int range)
     {
         List<Vector3> tiles = new List<Vector3>();
 
-        int gScore = CalculateGScore(distance);
+        int gScore = CalculateGScore(range);
 
         ConstantPath cpath = ConstantPath.Construct(origin, gScore);
         AstarPath.StartPath(cpath);
@@ -247,6 +253,15 @@ public class EnvironmentUtil
         }
 
         return tiles;
+    }
+
+    public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location)
+    {
+        CharacterDefinition def = ResourceUtil.GetCharacterData(character.GetID());
+
+        List<Vector3> range = GetTilesWithinRange(character.GetWorldLocation(), def.MovementRange);
+
+        return range.Contains(location);
     }
 
     public static List<Vector3> CalculatePath(Vector3 origin, Vector3 destination)

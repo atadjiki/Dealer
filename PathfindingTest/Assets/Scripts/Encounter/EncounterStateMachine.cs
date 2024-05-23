@@ -120,11 +120,12 @@ public class EncounterStateMachine: MonoBehaviour
             }
             case EncounterState.CHOOSE_ACTION:
             {
-                Vector3 currentCharacterPos = _model.GetCurrentCharacterLocation();
+                CharacterComponent currentCharacter;
+                _model.GetCurrentCharacter(out currentCharacter);
 
                 EncounterUtil.CreateTileSelector();
-                EncounterUtil.CreatePathDisplay(currentCharacterPos);
-                EncounterUtil.CreateMovementRadius();
+                EncounterUtil.CreatePathDisplay(currentCharacter);
+                EncounterUtil.CreateMovementRadius(currentCharacter);
                 Debug.Log("Waiting for player input");
                 //if it's the player's turn, wait for input
                 //if enemy turn, let the ai choose an ability and transition

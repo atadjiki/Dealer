@@ -6,20 +6,6 @@ using Pathfinding;
 //Interface for State Graphs (visual scripting) to use 
 public class EncounterUtil : MonoBehaviour
 {
-    public static GameObject CreatePathDisplay(Vector3 origin)
-    {
-        Debug.Log("Creating path display");
-
-        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
-
-        GameObject gameObject = Instantiate<GameObject>(prefabData.PathDisplay);
-        gameObject.transform.position = origin;
-
-        EnvironmentPathDisplay pathDisplay = gameObject.GetComponent <EnvironmentPathDisplay>();
-
-        return gameObject;
-    }
-
     public static GameObject CreateTileSelector()
     {
         Debug.Log("Creating tile selector");
@@ -29,13 +15,32 @@ public class EncounterUtil : MonoBehaviour
         return Instantiate<GameObject>(prefabData.TileSelector);
     }
 
-    public static GameObject CreateMovementRadius()
+    public static GameObject CreatePathDisplay(CharacterComponent character)
+    {
+        Debug.Log("Creating path display");
+
+        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+
+        GameObject gameObject = Instantiate<GameObject>(prefabData.PathDisplay);
+
+        EnvironmentPathDisplay pathDisplay = gameObject.GetComponent<EnvironmentPathDisplay>();
+        pathDisplay.Setup(character);
+
+        return gameObject;
+    }
+
+    public static GameObject CreateMovementRadius(CharacterComponent character)
     {
         Debug.Log("Creating movement radius");
 
         EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
 
-        return Instantiate<GameObject>(prefabData.MovementRadius);
+        GameObject gameObject = Instantiate<GameObject>(prefabData.MovementRadius);
+
+        EnvironmentMovementRadius movementRadius = gameObject.GetComponent<EnvironmentMovementRadius>();
+        movementRadius.Setup(character);
+
+        return gameObject;
     }
 
     public static GameObject CreateCameraRig()

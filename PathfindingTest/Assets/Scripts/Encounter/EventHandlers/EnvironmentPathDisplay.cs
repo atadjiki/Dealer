@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 using static Constants;
 
 public class EnvironmentPathDisplay : EncounterEventHandler
@@ -9,13 +10,29 @@ public class EnvironmentPathDisplay : EncounterEventHandler
 
     private LineRenderer _lineRenderer;
 
-    protected override void Setup()
+    private Vector3 _origin;
+    private List<Vector3> _range;
+
+    protected override void OnAwake()
     {
-        base.Setup();
+        base.OnAwake();
 
         this.gameObject.layer = LAYER_DECAL;
+    }
 
-        SetupLineRenderer();
+    public void Setup(CharacterComponent character)
+    {
+        //set the origin
+        _origin = character.GetWorldLocation();
+
+        //figure out what the range is for this character
+        _range = EnvironmentUtil.GetCharacterRange(character);
+
+        //setup the line renderer
+        _lineRenderer = this.gameObject.AddComponent<LineRenderer>();
+        _lineRenderer.material = LineMaterial;
+        _lineRenderer.startWidth = 0.1f;
+        _lineRenderer.endWidth = 0.1f;
     }
 
     protected override void OnStateChangedCallback(EncounterState state)
@@ -26,24 +43,14 @@ public class EnvironmentPathDisplay : EncounterEventHandler
         }
     }
 
-    private void SetupLineRenderer()
-    {
-        _lineRenderer = this.gameObject.AddComponent<LineRenderer>();
-        _lineRenderer.material = LineMaterial;
-        _lineRenderer.startWidth = 0.1f;
-        _lineRenderer.endWidth = 0.1f;
-
-    }
-
     private void Update()
     {
-        Vector3 origin = this.transform.position;
         EnvironmentTileRaycastInfo info;
         if(EnvironmentUtil.GetTileBeneathMouse(out info))
         {
-            if(info.layer == EnvironmentLayer.GROUND)
+            if(info.layer == EnvironmentLayer.GROUND && _range.Contains(info.position))
             {
-                List<Vector3> nodes = EnvironmentUtil.CalculatePath(origin, info.position);
+                List<Vector3> nodes = EnvironmentUtil.CalculatePath(_origin, info.position);
 
                 _lineRenderer.positionCount = nodes.Count;
                 _lineRenderer.SetPositions(nodes.ToArray());

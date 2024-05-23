@@ -414,8 +414,8 @@ public static partial class Constants
         return new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE, ENV_TILE_SIZE);
     }
 
-    public static int CalculateGScore(int distance)
+    public static int CalculateGScore(int range)
     {
-        return distance * 1000;
+        return range * 1000;
     }
 }
