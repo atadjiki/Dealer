@@ -11,7 +11,10 @@ public class EnvironmentTileSelector : EncounterEventHandler
     {
         base.OnAwake();
 
-        CreateTileQuad();
+        MaterialLibrary matLib = MaterialLibrary.Get();
+
+        _quad = EnvironmentUtil.CreateTileQuad(matLib.TileSelector, this.transform);
+        _quad.SetActive(false);
     }
 
     protected override void OnStateChangedCallback(EncounterStateData stateData)
@@ -43,27 +46,6 @@ public class EnvironmentTileSelector : EncounterEventHandler
                 return;
             }    
         }
-
-        _quad.SetActive(false);
-    }
-
-    private void CreateTileQuad()
-    {
-        _quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        _quad.transform.parent = this.transform;
-
-        _quad.transform.localEulerAngles = new Vector3(90, 0, 0);
-        _quad.transform.localScale = GetTileScale();
-
-        Destroy(_quad.GetComponent<MeshCollider>());
-
-        _quad.layer = LAYER_DECAL;
-
-        MeshRenderer renderer = _quad.GetComponent<MeshRenderer>();
-
-        MaterialLibrary matLib = MaterialLibrary.Get();
-
-        renderer.material = matLib.TileSelector;
 
         _quad.SetActive(false);
     }

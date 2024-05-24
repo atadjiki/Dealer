@@ -67,6 +67,7 @@ public class EncounterStateMachine: MonoBehaviour
             {
                 Vector3 destination = ((Vector3)data);
                 _data.SetActiveDestination(destination);
+                EncounterUtil.CreateDestinationHighlight(destination);
                 EncounterModel.Transition(_data);
                 break;
             }
@@ -132,13 +133,15 @@ public class EncounterStateMachine: MonoBehaviour
             {
                 CharacterComponent currentCharacter = _data.GetCurrentCharacter();
 
-                currentCharacter.OnSelected();
-                EnvironmentUtil.Scan();
-
-                CameraRig.Instance.Follow(currentCharacter);
-
                 if (currentCharacter.IsAlive())
                 {
+                    currentCharacter.OnSelected();
+                    EnvironmentUtil.Scan();
+
+                    CameraRig.Instance.Follow(currentCharacter);
+
+                    EncounterUtil.CreateCharacterHighlight(currentCharacter);
+
                     //TODO currentCharacter.HandleEvent(CharacterEvent.SELECTED);
                 }
                 break;
