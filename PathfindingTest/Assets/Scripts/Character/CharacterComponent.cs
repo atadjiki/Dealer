@@ -246,7 +246,7 @@ public class CharacterComponent : MonoBehaviour
 
         CameraRig.Instance.Follow(this);
 
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSeconds(0.2f);
 
         //TODO HandleEvent(CharacterEvent.MOVING);
         _animator.SetAnim(CharacterAnim.MOVING);

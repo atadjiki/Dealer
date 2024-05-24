@@ -37,6 +37,8 @@ public static partial class Constants
         {
             case CharacterID.DEBUGBERT:
                 return TeamID.PLAYER;
+            case CharacterID.ENEMYBERT:
+                return TeamID.ENEMY;
         }
 
         return TeamID.NONE;

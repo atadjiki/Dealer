@@ -46,19 +46,17 @@ public static partial class Constants
     public enum CharacterID
     {
         DEBUGBERT, //the default blue skeleton from Mixamo!
+
+        ENEMYBERT,
     }
 
     public enum ModelID
     {
         NONE,
 
-        MALE_DEA,
+        MALE_GENERIC_PLAYER,
 
-        MALE_GOON,
-
-        MALE_HENCHMAN,
-
-        MALE_GENERIC,
+        MALE_GENERIC_ENEMY
     }
 
     public enum CharacterAnim
