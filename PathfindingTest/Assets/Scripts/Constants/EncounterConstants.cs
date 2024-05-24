@@ -26,10 +26,26 @@ public static partial class Constants
         }
     }
 
-    //public static TeamID GetOpposingTeam(CharacterComponent characterComponent)
-    //{
-    //    return GetOpposingTeam(GetTeamByID(characterComponent.GetID()));
-    //}
+    public static TeamID GetTeam(CharacterComponent character)
+    {
+        return GetTeamByID(character.GetID());
+    }
+
+    public static TeamID GetTeamByID(CharacterID ID)
+    {
+        switch (ID)
+        {
+            case CharacterID.DEBUGBERT:
+                return TeamID.PLAYER;
+        }
+
+        return TeamID.NONE;
+    }
+
+    public static TeamID GetOpposingTeam(CharacterComponent characterComponent)
+    {
+        return GetOpposingTeam(GetTeamByID(characterComponent.GetID()));
+    }
 
     public static TeamID GetOpposingTeam(TeamID team)
     {

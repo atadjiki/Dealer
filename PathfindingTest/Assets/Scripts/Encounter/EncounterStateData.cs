@@ -14,7 +14,6 @@ public struct EncounterStateData
     public Queue<CharacterComponent> Timeline;
 
     public EncounterState CurrentState;
-    public TeamID CurrentTeam;
 
     public int TurnCount;
 
@@ -132,33 +131,16 @@ public struct EncounterStateData
         return (Timeline.Count == 0);
     }
 
-    public TeamID IncrementTeam()
-    {
-        switch (CurrentTeam)
-        {
-            case TeamID.PLAYER:
-                CurrentTeam = TeamID.ENEMY;
-                break;
-            case TeamID.ENEMY:
-                CurrentTeam = TeamID.PLAYER;
-                break;
-        }
-
-        Debug.Log("Current Team: " + CurrentTeam);
-
-        return CurrentTeam;
-    }
-
     public bool IsOpposingTeamDead()
     {
-        return IsTeamDead(GetOpposingTeam(CurrentTeam));
+        return IsTeamDead(GetOpposingTeam(GetCurrentTeam()));
     }
 
-    public void ResetTeam()
+    public TeamID GetCurrentTeam()
     {
-        CurrentTeam = TeamID.PLAYER;
+        CharacterComponent currentCharacter = GetCurrentCharacter();
 
-        Debug.Log("Current Team: " + CurrentTeam);
+        return GetTeam(currentCharacter);
     }
 
     public static EncounterStateData Build()
@@ -174,7 +156,6 @@ public struct EncounterStateData
             Timeline = new Queue<CharacterComponent>(),
 
             CurrentState = EncounterState.NONE,
-            CurrentTeam = TeamID.PLAYER,
 
             TurnCount = 0,
         };

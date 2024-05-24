@@ -100,13 +100,11 @@ public class EncounterModel : MonoBehaviour
                 if (stateData.IsTimelineEmpty() || stateData.IsOpposingTeamDead())
                 {
                     stateData.IncrementTurnCount();
-                    stateData.ResetTeam();
                     stateData.SetPendingState(EncounterState.BUILD_QUEUES);
                 }
                 //if there are still characters in the timeline, keep processing the round
                 else
                 {
-                    stateData.IncrementTeam();
                     stateData.SetPendingState(EncounterState.TEAM_UPDATED);
                     stateData.SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
                 }
