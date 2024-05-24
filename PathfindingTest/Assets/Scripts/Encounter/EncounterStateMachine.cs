@@ -42,7 +42,7 @@ public class EncounterStateMachine: MonoBehaviour
 
         EncounterModel.OnStateChanged += StateChangeCallback;
 
-        _model.StartModel();
+        _model.Enter();
     }
 
     private void OnDestroy()

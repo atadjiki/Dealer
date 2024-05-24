@@ -10,7 +10,7 @@ public class EncounterModel : MonoBehaviour
 
     private EncounterStateData _state;
 
-    public void StartModel()
+    public void Enter()
     {
         //make a fresh state data for the encounter
         _state = EncounterStateData.Build();
@@ -26,58 +26,49 @@ public class EncounterModel : MonoBehaviour
 
     public void HandleState(EncounterState pendingState)
     {
-        StartCoroutine(Coroutine_HandleState(pendingState));
-    }
-
-    //State transition functions:
-
-    private IEnumerator Coroutine_HandleState(EncounterState pendingState)
-    {
-        _state.Busy = true;
-
         switch (pendingState)
         {
             case EncounterState.INIT:
-                yield return Coroutine_HandleInit();
+                Init();
                 break;
             case EncounterState.SETUP_START:
-                yield return Coroutine_HandleSetupStart();
+                SetupStart();
                 break;
             case EncounterState.SETUP_COMPLETE:
-                yield return Coroutine_SetupComplete();
+                SetupComplete();
                 break;
             case EncounterState.BUILD_QUEUES:
-                yield return Coroutine_BuildQueues();
+                BuildQueues();
                 break;
             case EncounterState.CHECK_CONDITIONS:
-                yield return Coroutine_CheckConditions();
+                CheckConditions();
                 break;
             case EncounterState.SELECT_CURRENT_CHARACTER:
-                yield return Coroutine_SelectCurrentCharacter();
+                SelectCurrentCharacter();
                 break;
             case EncounterState.TEAM_UPDATED:
-                yield return Coroutine_TeamUpdated();
+                TeamUpdated();
                 break;
             case EncounterState.CHOOSE_ACTION:
-                yield return Coroutine_ChooseAction();
+                ChooseAction();
                 break;
             case EncounterState.CHOOSE_TARGET:
-                yield return Coroutine_ChooseTarget();
+                ChooseTarget();
                 break;
             case EncounterState.CANCEL_ACTION:
-                yield return Coroutine_CancelAction();
+                CancelAction();
                 break;
             case EncounterState.PERFORM_ACTION:
-                yield return Coroutine_PerformAction();
+                PerformAction();
                 break;
             case EncounterState.DESELECT_CURRENT_CHARACTER:
-                yield return Coroutine_DeselectCurrentCharacter();
+                DeselectCurrentCharacter();
                 break;
             case EncounterState.UPDATE:
-                yield return Coroutine_UpdateEncounter();
+                UpdateEncounter();
                 break;
             case EncounterState.DONE:
-                yield return Coroutine_Done();
+                Done();
                 break;
             default:
                 Debug.Log("No state transition available!");
@@ -85,67 +76,55 @@ public class EncounterModel : MonoBehaviour
         }
 
         BroadcastState();
-
-        _state.Busy = false;
-
-        yield return null;
     }
 
-    private IEnumerator Coroutine_HandleInit()
+    //State transition functions:
+    private void Init()
     {
         SetPendingState(EncounterState.SETUP_START);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_HandleSetupStart()
+    private void SetupStart()
     {
         SetPendingState(EncounterState.SETUP_COMPLETE);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_SetupComplete()
+    private void SetupComplete()
     {
         SetPendingState(EncounterState.BUILD_QUEUES);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_BuildQueues()
+    private void BuildQueues()
     {
         _state.BuildTimeline();
 
         SetPendingState(EncounterState.CHECK_CONDITIONS);
-
-        yield return null;
     }
 
-    private IEnumerator Coroutine_CheckConditions()
+    private void CheckConditions()
     {
         //if any queues are empty, then we are done with the encounter
         if (_state.AreAnyTeamsDead())
         {
             //call delegate
             SetPendingState(EncounterState.DONE);
-            yield break;
+            return;
         }
 
-        yield return null;
-
         SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
     }
 
-    private IEnumerator Coroutine_Done()
+    private void Done()
     {
         SetPendingState(EncounterState.DONE);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_TeamUpdated()
+    private void TeamUpdated()
     {
         SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_SelectCurrentCharacter()
+    private void SelectCurrentCharacter()
     {
         if (IsCurrentCharacterAlive())
         {
@@ -155,11 +134,9 @@ public class EncounterModel : MonoBehaviour
         {
             SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
         }
-
-        yield return null;
     }
 
-    private IEnumerator Coroutine_ChooseAction()
+    private void ChooseAction()
     {
         //check if we need to choose a target for this action
         AbilityID abilityID = GetActiveAbility();
@@ -176,23 +153,19 @@ public class EncounterModel : MonoBehaviour
                 SetPendingState(EncounterState.CHOOSE_TARGET);
                 break;
         }
-
-        yield return null;
     }
 
-    private IEnumerator Coroutine_ChooseTarget()
+    private void ChooseTarget()
     {
         SetPendingState(EncounterState.PERFORM_ACTION);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_CancelAction()
+    private void CancelAction()
     {
         SetPendingState(EncounterState.CHOOSE_ACTION);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_PerformAction()
+    private void PerformAction()
     {
         CharacterComponent currentCharacter;
         if (GetCurrentCharacter(out currentCharacter))
@@ -206,19 +179,16 @@ public class EncounterModel : MonoBehaviour
                 SetPendingState(EncounterState.DESELECT_CURRENT_CHARACTER);
             }
         }
-
-        yield return null;
     }
 
-    private IEnumerator Coroutine_DeselectCurrentCharacter()
+    private void DeselectCurrentCharacter()
     {
         PopCurrentCharacter();
 
         SetPendingState(EncounterState.UPDATE);
-        yield return null;
     }
 
-    private IEnumerator Coroutine_UpdateEncounter()
+    private void UpdateEncounter()
     {
         //if the timeline is empty, time for a new round
         if (_state.IsTimelineEmpty() || _state.IsOpposingTeamDead())
@@ -234,8 +204,6 @@ public class EncounterModel : MonoBehaviour
             SetPendingState(EncounterState.TEAM_UPDATED);
             SetPendingState(EncounterState.SELECT_CURRENT_CHARACTER);
         }
-
-        yield return null;
     }
 
     //Helpers

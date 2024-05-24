@@ -95,7 +95,7 @@ Transform:
   m_GameObject: {fileID: 2177568752954124581}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -3, y: 14.142136, z: -3.9999998}
+  m_LocalPosition: {x: -15.500001, y: 31.819805, z: -16.500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -136,7 +136,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 15
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -307,7 +307,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 40
+  field of view: 15
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -345,7 +345,7 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
@@ -517,9 +517,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CM_Main: {fileID: 2343443694761970915}
   EnvironmentCameraSettings:
-    MaxDistance: 20
-    DefaultDistance: 10
-    MinDistance: 5
+    MaxDistance: 45
+    DefaultDistance: 30
+    MinDistance: 15
     ZoomSpeed: 75
     ZoomDuration: 1
     RotationStep: 90
@@ -594,7 +594,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 20
+  m_CameraDistance: 45
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -609,8 +609,8 @@ MonoBehaviour:
   m_GroupFramingSize: 0.8
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 10
-  m_MaximumDistance: 30
+  m_MinimumDistance: 15
+  m_MaximumDistance: 45
   m_MinimumFOV: 3
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
@@ -735,7 +735,7 @@ Transform:
   m_GameObject: {fileID: 8916054881249622895}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -3, y: 14.142136, z: -3.9999998}
+  m_LocalPosition: {x: -15.500001, y: 31.819805, z: -16.500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -763,7 +763,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 323277219517148225}
   m_Lens:
-    FieldOfView: 40
+    FieldOfView: 15
     OrthographicSize: 5
     NearClipPlane: 0.1
     FarClipPlane: 5000
