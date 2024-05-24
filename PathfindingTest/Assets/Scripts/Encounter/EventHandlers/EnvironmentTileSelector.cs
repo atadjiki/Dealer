@@ -14,9 +14,9 @@ public class EnvironmentTileSelector : EncounterEventHandler
         CreateTileQuad();
     }
 
-    protected override void OnStateChangedCallback(EncounterState state)
+    protected override void OnStateChangedCallback(EncounterStateData stateData)
     {
-        if (state == EncounterState.PERFORM_ACTION)
+        if (stateData.GetCurrentState() == EncounterState.PERFORM_ACTION)
         {
             Destroy(this.gameObject);
         }

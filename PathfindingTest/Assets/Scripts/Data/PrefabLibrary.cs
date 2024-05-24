@@ -27,6 +27,7 @@ public class PrefabLibrary : ScriptableObject
 
     public static PrefabLibrary Load()
     {
+        Debug.Log("Loading PrefabLibrary");
         return Resources.Load<PrefabLibrary>("Data/Libraries/PrefabLibrary");
     }
 }

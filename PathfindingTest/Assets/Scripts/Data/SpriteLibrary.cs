@@ -22,6 +22,7 @@ public class SpriteLibrary : ScriptableObject
 
     public static SpriteLibrary Load()
     {
+        Debug.Log("Loading SpriteLibrary");
         return Resources.Load<SpriteLibrary>("Data/Libraries/SpriteLibrary");
     }
 }

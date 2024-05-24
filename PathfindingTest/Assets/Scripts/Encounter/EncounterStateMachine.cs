@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using static Constants;
 
@@ -12,7 +13,7 @@ public class EncounterStateMachine: MonoBehaviour
     [SerializeField] private EncounterSetupData SetupData;
 
     //private vars
-    private EncounterModel _model;
+    private EncounterStateData _data;
 
     //singleton
     private static EncounterStateMachine _instance;
@@ -40,27 +41,24 @@ public class EncounterStateMachine: MonoBehaviour
         //scan the environment
         EnvironmentUtil.Scan();
 
-        //kick off a model
-        _model = EncounterUtil.CreateEncounterModel();
-
         //assign any listeners
-        EncounterModel.OnStateChanged += StateChangeCallback;
+        EncounterStateData.OnStateChanged += StateChangeCallback;
         OnAbilityChosen += AbilityChosenCallback;
 
         //TODO eventually we will tie this to user input
-        _model.Enter();
+        EncounterModel.Init();
     }
 
     private void OnDestroy()
     {
         //unassign any listers
-        EncounterModel.OnStateChanged -= StateChangeCallback;
+        EncounterStateData.OnStateChanged -= StateChangeCallback;
         OnAbilityChosen -= AbilityChosenCallback;
     }
 
     public void AbilityChosenCallback(AbilityID ability, object data)
     {
-        _model.SetActiveAbility(ability);
+        _data.SetActiveAbility(ability);
 
         switch (ability)
         {
@@ -68,8 +66,8 @@ public class EncounterStateMachine: MonoBehaviour
             case AbilityID.MOVE_HALF:
             {
                 Vector3 destination = ((Vector3)data);
-                _model.SetActiveDestination(destination);
-                _model.HandleState(EncounterState.CHOOSE_ACTION);
+                _data.SetActiveDestination(destination);
+                EncounterModel.Transition(_data);
                 break;
             }
             default:
@@ -77,14 +75,20 @@ public class EncounterStateMachine: MonoBehaviour
         }
     }
 
-    public void StateChangeCallback(EncounterState state)
+    public void StateChangeCallback(EncounterStateData stateData)
     {
-        StartCoroutine(Coroutine_StateChangeCallback(state));
+        StartCoroutine(Coroutine_StateChangeCallback(stateData));
     }
 
-    private IEnumerator Coroutine_StateChangeCallback(EncounterState state)
+    private IEnumerator Coroutine_StateChangeCallback(EncounterStateData Data)
     {
         //yield return new WaitForSecondsRealtime(1.0f);
+
+        _data = Data;
+
+        EncounterState state = _data.GetCurrentState();
+
+        Debug.Log("StateMachineCallback " + state);
 
         switch (state)
         {
@@ -106,11 +110,11 @@ public class EncounterStateMachine: MonoBehaviour
                             Vector3 randomLocation = EnvironmentUtil.GetRandomTile();
                             character.Teleport(randomLocation);
 
-                            Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
-                            character.Teleport(destination);
-                            Debug.Log("Character " + characterData.ID + " spawned at " + destination.ToString());
+                            //Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
+                            //character.Teleport(destination);
+                            Debug.Log("Character " + characterData.ID + " spawned at " + randomLocation.ToString());
 
-                            _model.AddCharacter(teamData.Team, character);
+                            _data.AddCharacter(teamData.Team, character);
                         }
                     }
                 }
@@ -126,8 +130,7 @@ public class EncounterStateMachine: MonoBehaviour
             }
             case EncounterState.SELECT_CURRENT_CHARACTER:
             {
-                CharacterComponent currentCharacter;
-                _model.GetCurrentCharacter(out currentCharacter);
+                CharacterComponent currentCharacter = _data.GetCurrentCharacter();
 
                 currentCharacter.OnSelected();
                 EnvironmentUtil.Scan();
@@ -149,8 +152,7 @@ public class EncounterStateMachine: MonoBehaviour
             {
                 CameraRig.Instance.Unfollow();
 
-                CharacterComponent currentCharacter;
-                _model.GetCurrentCharacter(out currentCharacter);
+                CharacterComponent currentCharacter = _data.GetCurrentCharacter();
 
                 currentCharacter.OnDeselected();
 
@@ -158,8 +160,7 @@ public class EncounterStateMachine: MonoBehaviour
             }
             case EncounterState.CHOOSE_ACTION:
             {
-                CharacterComponent currentCharacter;
-                _model.GetCurrentCharacter(out currentCharacter);
+                CharacterComponent currentCharacter = _data.GetCurrentCharacter();
 
                 EncounterUtil.CreateTileSelector();
                 EncounterUtil.CreatePathDisplay(currentCharacter);
@@ -178,8 +179,7 @@ public class EncounterStateMachine: MonoBehaviour
             }
             case EncounterState.PERFORM_ACTION:
             {
-                CharacterComponent currentCharacter;
-                _model.GetCurrentCharacter(out currentCharacter);
+                CharacterComponent currentCharacter = _data.GetCurrentCharacter();
                 yield return PerformAbility(currentCharacter);
                 //TODO BroadcastCharacterEvent(CharacterEvent.UPDATE);
                 break;
@@ -188,14 +188,14 @@ public class EncounterStateMachine: MonoBehaviour
                 break;
         }
 
-        _model.HandleState(state);
+        EncounterModel.Transition(_data);
 
         yield return null;
     }
 
     public IEnumerator PerformAbility(CharacterComponent caster)
     {
-        AbilityID abilityID = _model.GetActiveAbility();
+        AbilityID abilityID = _data.GetActiveAbility();
 
         //TODO
         //string casterName = GetDisplayString(caster.GetID());
@@ -213,8 +213,61 @@ public class EncounterStateMachine: MonoBehaviour
         yield return caster.Coroutine_PerformAbility();
     }
 
+    //Helpers
+    public bool GetCurrentCharacter(out CharacterComponent character)
+    {
+        character = _data.GetCurrentCharacter();
+
+        if (character != null)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Current character was null!");
+            return false;
+        }
+    }
+
+    public Vector3 GetCurrentCharacterLocation()
+    {
+        CharacterComponent currentCharacter;
+        if (GetCurrentCharacter(out currentCharacter))
+        {
+            return currentCharacter.GetWorldLocation();
+        }
+
+        return Vector3.zero;
+    }
+
     public static bool IsActive()
     {
         return _instance != null;
+    }
+
+    //Debug 
+    private void OnDrawGizmosSelected()
+    {
+        if (Application.isPlaying)
+        {
+            CharacterComponent currentCharacter = _data.GetCurrentCharacter();
+
+            if (currentCharacter != null)
+            {
+                Gizmos.color = Color.green;
+                Handles.color = Color.green;
+                Handles.Label(currentCharacter.GetWorldLocation(), currentCharacter.GetID().ToString());
+            }
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (Application.isPlaying)
+        {
+            int TextWidth = 200;
+            GUI.contentColor = Color.green;
+            GUI.Label(new Rect(Screen.width - TextWidth, 10, TextWidth, 22), _data.CurrentState.ToString());
+        }
     }
 }

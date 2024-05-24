@@ -29,6 +29,7 @@ public class MaterialLibrary : ScriptableObject
 
     public static MaterialLibrary Load()
     {
+        Debug.Log("Loading MaterialLibrary");
         return Resources.Load<MaterialLibrary>("Data/Libraries/MaterialLibrary");
     }
 }

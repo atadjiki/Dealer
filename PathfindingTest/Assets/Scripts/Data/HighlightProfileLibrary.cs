@@ -25,6 +25,7 @@ public class HighlightProfileLibrary : ScriptableObject
 
     public static HighlightProfileLibrary Load()
     {
+        Debug.Log("Loading HighlightProfileLibrary");
         return Resources.Load<HighlightProfileLibrary>("Data/Libraries/HighlightProfileLibrary");
     }
 }

@@ -46,6 +46,7 @@ public class ColorLibrary : ScriptableObject
 
     public static ColorLibrary Load()
     {
+        Debug.Log("Loading ColorLibrary");
         return Resources.Load<ColorLibrary>("Data/Libraries/ColorLibrary");
     }
 }

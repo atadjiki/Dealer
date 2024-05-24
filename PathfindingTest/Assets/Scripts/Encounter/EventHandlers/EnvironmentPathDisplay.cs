@@ -35,9 +35,9 @@ public class EnvironmentPathDisplay : EncounterEventHandler
         _lineRenderer.endWidth = 0.1f;
     }
 
-    protected override void OnStateChangedCallback(EncounterState state)
+    protected override void OnStateChangedCallback(EncounterStateData stateData)
     {
-        if (state == EncounterState.PERFORM_ACTION)
+        if (stateData.GetCurrentState() == EncounterState.PERFORM_ACTION)
         {
             Destroy(this.gameObject);
         }

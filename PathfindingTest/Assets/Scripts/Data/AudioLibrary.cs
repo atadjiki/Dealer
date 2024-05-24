@@ -22,6 +22,7 @@ public class AudioLibrary : ScriptableObject
 
     public static AudioLibrary Load()
     {
+        Debug.Log("Loading AudioLibrary");
         return Resources.Load<AudioLibrary>("Data/Libraries/AudioLibrary");
     }
 }

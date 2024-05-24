@@ -6,6 +6,9 @@ using static Constants;
 [Serializable]
 public struct EncounterStateData
 {
+    public delegate void EncounterStateDelegate(EncounterStateData State);
+    public static EncounterStateDelegate OnStateChanged;
+
     public Dictionary<TeamID, List<CharacterComponent>> CharacterMap;
 
     public Queue<CharacterComponent> Timeline;
@@ -17,10 +20,16 @@ public struct EncounterStateData
 
     public bool Busy;
 
+    public void AddCharacter(TeamID team, CharacterComponent character)
+    {
+        CharacterMap[team].Add(character);
+    }
 
     public void PopCurrentCharacter()
     {
         Debug.Log("Popping current character");
+
+        CancelActiveAbility();
 
         Timeline.Dequeue();
 
@@ -171,5 +180,70 @@ public struct EncounterStateData
 
             TurnCount = 0,
         };
+    }
+
+    public EncounterState GetCurrentState()
+    {
+        return CurrentState;
+    }
+
+    public void SetPendingState(EncounterState state)
+    {
+        if (state != CurrentState)
+        {
+            CurrentState = state;
+        }
+        else
+        {
+            Debug.Log("Cannot transition to the same state! " + state);
+        }
+    }
+
+    public void BroadcastState()
+    {
+        Debug.Log("Encounter State: " + CurrentState.ToString());
+
+        if (OnStateChanged != null)
+        {
+            OnStateChanged.Invoke(this);
+        }
+    }
+
+    public void CancelActiveAbility()
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+        currentCharacter.ResetForTurn();
+        SetPendingState(EncounterState.CANCEL_ACTION);
+    }
+
+    public int IncrementTurnCount()
+    {
+        Debug.Log("Turn Count: " + (TurnCount + 1));
+        return TurnCount++;
+    }
+
+    public AbilityID GetActiveAbility()
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+        return currentCharacter.GetActiveAbility();
+    }
+
+    public void SetActiveAbility(AbilityID ability)
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+        currentCharacter.SetActiveAbility(ability);
+    }
+
+    public void SetActiveDestination(Vector3 destination)
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+        currentCharacter.SetActiveDestination(destination);
+    }
+
+    public bool AreActionPointsAvailable()
+    {
+        CharacterComponent currentCharacter = GetCurrentCharacter();
+
+        return currentCharacter.HasActionPoints();
     }
 }
