@@ -10,20 +10,19 @@ public class EncounterUtil : MonoBehaviour
     {
         Debug.Log("Creating tile selector");
 
-        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+        GameObject gameObject = new GameObject("EnvironmentTileSelector");
+        EnvironmentTileSelector tileSelector = gameObject.AddComponent<EnvironmentTileSelector>();
 
-        return Instantiate<GameObject>(prefabData.TileSelector);
+        return gameObject;
     }
 
     public static GameObject CreatePathDisplay(CharacterComponent character)
     {
         Debug.Log("Creating path display");
 
-        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+        GameObject gameObject = new GameObject("EnvironmentPathDisplay");
 
-        GameObject gameObject = Instantiate<GameObject>(prefabData.PathDisplay);
-
-        EnvironmentPathDisplay pathDisplay = gameObject.GetComponent<EnvironmentPathDisplay>();
+        EnvironmentPathDisplay pathDisplay = gameObject.AddComponent<EnvironmentPathDisplay>();
         pathDisplay.Setup(character);
 
         return gameObject;
@@ -33,11 +32,9 @@ public class EncounterUtil : MonoBehaviour
     {
         Debug.Log("Creating movement radius");
 
-        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+        GameObject gameObject = new GameObject("EnvironmentMovementRadius");
 
-        GameObject gameObject = Instantiate<GameObject>(prefabData.MovementRadius);
-
-        EnvironmentMovementRadius movementRadius = gameObject.GetComponent<EnvironmentMovementRadius>();
+        EnvironmentMovementRadius movementRadius = gameObject.AddComponent<EnvironmentMovementRadius>();
         movementRadius.Setup(character);
 
         return gameObject;

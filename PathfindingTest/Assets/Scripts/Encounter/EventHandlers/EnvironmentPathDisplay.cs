@@ -6,8 +6,6 @@ using static Constants;
 
 public class EnvironmentPathDisplay : EncounterEventHandler
 {
-    [SerializeField] private Material LineMaterial;
-
     private LineRenderer _lineRenderer;
 
     private Vector3 _origin;
@@ -28,9 +26,11 @@ public class EnvironmentPathDisplay : EncounterEventHandler
         //figure out what the range is for this character
         _range = EnvironmentUtil.GetCharacterRange(character);
 
+        MaterialLibrary matLib = MaterialLibrary.Get();
+
         //setup the line renderer
         _lineRenderer = this.gameObject.AddComponent<LineRenderer>();
-        _lineRenderer.material = LineMaterial;
+        _lineRenderer.material = matLib.PathDisplay;
         _lineRenderer.startWidth = 0.1f;
         _lineRenderer.endWidth = 0.1f;
     }

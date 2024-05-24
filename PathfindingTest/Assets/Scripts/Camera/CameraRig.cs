@@ -270,9 +270,9 @@ public class CameraRig : MonoBehaviour
     {
         if(!IsActive())
         {
-            EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+            PrefabLibrary library = PrefabLibrary.Get();
 
-            Instantiate<GameObject>(prefabData.CameraRig);
+            Instantiate<GameObject>(library.CameraRig);
         }
     }
 

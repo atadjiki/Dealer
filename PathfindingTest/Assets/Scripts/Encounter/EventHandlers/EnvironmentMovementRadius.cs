@@ -6,9 +6,6 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EncounterEventHandler
 {
-    [SerializeField] private Material OutlineMaterial;
-    [SerializeField] private HighlightProfile OutlineSettings;
-
     private List<Vector3> _range;
 
     private MeshRenderer _renderer;
@@ -19,8 +16,10 @@ public class EnvironmentMovementRadius : EncounterEventHandler
     {
         base.OnAwake();
 
+        MaterialLibrary matLib = MaterialLibrary.Get();
+
         _renderer = this.gameObject.AddComponent<MeshRenderer>();
-        _renderer.material = OutlineMaterial;
+        _renderer.material = matLib.MovementRadius;
         _filter = this.gameObject.AddComponent<MeshFilter>();
     }
 
@@ -70,9 +69,11 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         mesh.CombineMeshes(combine);
         _filter.mesh = mesh;
 
+        HighlightProfileLibrary highlightLib = HighlightProfileLibrary.Get();
+
         _outline = this.gameObject.AddComponent<HighlightEffect>();
-        _outline.profile = OutlineSettings;
-        _outline.ProfileLoad(OutlineSettings);
+        _outline.profile = highlightLib.MovementRadius;
+        _outline.ProfileLoad(highlightLib.MovementRadius);
         _outline.highlighted = true;
 
         transform.gameObject.SetActive(true);

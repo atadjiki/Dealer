@@ -5,8 +5,6 @@ using static Constants;
 
 public class EnvironmentTileSelector : EncounterEventHandler
 {
-    [SerializeField] private Material TileMaterial;
-
     private GameObject _quad;
 
     protected override void OnAwake()
@@ -63,7 +61,9 @@ public class EnvironmentTileSelector : EncounterEventHandler
 
         MeshRenderer renderer = _quad.GetComponent<MeshRenderer>();
 
-        renderer.material = TileMaterial;
+        MaterialLibrary matLib = MaterialLibrary.Get();
+
+        renderer.material = matLib.TileSelector;
 
         _quad.SetActive(false);
     }

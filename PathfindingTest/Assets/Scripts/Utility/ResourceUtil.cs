@@ -5,6 +5,16 @@ using static Constants;
 
 public class ResourceUtil : MonoBehaviour
 {
+    public static void LoadLibraries()
+    {
+        AudioLibrary.Get();
+        ColorLibrary.Get();
+        HighlightProfileLibrary.Get();
+        MaterialLibrary.Get();
+        PrefabLibrary.Get();
+        SpriteLibrary.Get();
+    }
+
     public static List<CharacterDefinition> GetAllCharacterData()
     {
         return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/Character"));
@@ -30,18 +40,8 @@ public class ResourceUtil : MonoBehaviour
         return data.GetModel(ID);
     }
 
-    public static EncounterPrefabData GetEncounterPrefabs()
-    {
-        return Resources.Load<EncounterPrefabData>("Data/EncounterPrefab/Default");
-    }
-
     public static List<CharacterDefinition> GetAllEncounterSetupData()
     {
         return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/EncounterSetup"));
-    }
-
-    public static ColorPalette GetColorPalette()
-    {
-        return Resources.Load<ColorPalette>("Data/ColorPalette");
     }
 }

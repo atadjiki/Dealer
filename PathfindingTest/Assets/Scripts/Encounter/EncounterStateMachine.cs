@@ -34,19 +34,26 @@ public class EncounterStateMachine: MonoBehaviour
 
     private void Build()
     {
-        OnAbilityChosen += AbilityChosenCallback;
+        //cache our libraries
+        ResourceUtil.LoadLibraries();
 
+        //scan the environment
         EnvironmentUtil.Scan();
 
+        //kick off a model
         _model = EncounterUtil.CreateEncounterModel();
 
+        //assign any listeners
         EncounterModel.OnStateChanged += StateChangeCallback;
+        OnAbilityChosen += AbilityChosenCallback;
 
+        //TODO eventually we will tie this to user input
         _model.Enter();
     }
 
     private void OnDestroy()
     {
+        //unassign any listers
         EncounterModel.OnStateChanged -= StateChangeCallback;
         OnAbilityChosen -= AbilityChosenCallback;
     }
