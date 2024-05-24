@@ -4,7 +4,7 @@ using UnityEngine;
 using static Constants;
 
 [Serializable]
-public struct EncounterStateData
+public struct EncounterStateData 
 {
     public delegate void EncounterStateDelegate(EncounterStateData State);
     public static EncounterStateDelegate OnStateChanged;
@@ -17,8 +17,6 @@ public struct EncounterStateData
     public TeamID CurrentTeam;
 
     public int TurnCount;
-
-    public bool Busy;
 
     public void AddCharacter(TeamID team, CharacterComponent character)
     {
