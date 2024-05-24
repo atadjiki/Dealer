@@ -170,8 +170,6 @@ public struct EncounterStateData
             CurrentTeam = TeamID.PLAYER,
 
             TurnCount = 0,
-
-            Busy = false
         };
     }
 }

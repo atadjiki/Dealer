@@ -43,13 +43,6 @@ public class EncounterUtil : MonoBehaviour
         return gameObject;
     }
 
-    public static GameObject CreateCameraRig()
-    {
-        EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
-
-        return Instantiate<GameObject>(prefabData.CameraRig);
-    }
-
     public static EncounterModel CreateEncounterModel()
     {
         GameObject gameObject = new GameObject("Encounter Model");

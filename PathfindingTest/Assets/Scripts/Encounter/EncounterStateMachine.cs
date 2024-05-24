@@ -42,7 +42,7 @@ public class EncounterStateMachine: MonoBehaviour
 
         EncounterModel.OnStateChanged += StateChangeCallback;
 
-        _model.StartModel(SetupData);
+        _model.StartModel();
     }
 
     private void OnDestroy()
@@ -81,6 +81,37 @@ public class EncounterStateMachine: MonoBehaviour
 
         switch (state)
         {
+            case EncounterState.SETUP_START:
+            {
+                //spawn our characters 
+                foreach (EncounterTeamData teamData in SetupData.Teams)
+                {
+                    foreach (CharacterID ID in teamData.Characters)
+                    {
+                        CharacterDefinition characterData = ResourceUtil.GetCharacterData(ID);
+
+                        if (characterData != null)
+                        {
+                            CharacterComponent character = CharacterUtil.BuildCharacterObject(characterData, this.transform);
+
+                            yield return character.Coroutine_Setup(characterData);
+
+                            Vector3 randomLocation = EnvironmentUtil.GetRandomTile();
+                            character.Teleport(randomLocation);
+
+                            Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
+                            character.Teleport(destination);
+                            Debug.Log("Character " + characterData.ID + " spawned at " + destination.ToString());
+
+                            _model.AddCharacter(teamData.Team, character);
+                        }
+                    }
+                }
+
+                //kick off a camera rig if one isnt in the scene
+                CameraRig.Launch();
+                break;
+            }
             case EncounterState.SETUP_COMPLETE:
             {
                 //BroadcastCharacterEvent(CharacterEvent.UPDATE);

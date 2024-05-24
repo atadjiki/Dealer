@@ -266,4 +266,14 @@ public class CameraRig : MonoBehaviour
         return Instance != null;
     }
 
+    public static void Launch()
+    {
+        if(!IsActive())
+        {
+            EncounterPrefabData prefabData = ResourceUtil.GetEncounterPrefabs();
+
+            Instantiate<GameObject>(prefabData.CameraRig);
+        }
+    }
+
 }

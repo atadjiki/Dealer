@@ -8,13 +8,10 @@ public class EncounterModel : MonoBehaviour
     public delegate void EncounterStateDelegate(EncounterState State);
     public static EncounterStateDelegate OnStateChanged;
 
-    private EncounterSetupData _setupData;
     private EncounterStateData _state;
 
-    public void StartModel(EncounterSetupData setupData)
+    public void StartModel()
     {
-        _setupData = setupData;
-
         //make a fresh state data for the encounter
         _state = EncounterStateData.Build();
 
@@ -42,6 +39,9 @@ public class EncounterModel : MonoBehaviour
         {
             case EncounterState.INIT:
                 yield return Coroutine_HandleInit();
+                break;
+            case EncounterState.SETUP_START:
+                yield return Coroutine_HandleSetupStart();
                 break;
             case EncounterState.SETUP_COMPLETE:
                 yield return Coroutine_SetupComplete();
@@ -93,34 +93,12 @@ public class EncounterModel : MonoBehaviour
 
     private IEnumerator Coroutine_HandleInit()
     {
-        //spawn our characters 
-        foreach (EncounterTeamData teamData in _setupData.Teams)
-        {
-            foreach (CharacterID ID in teamData.Characters)
-            {
-                CharacterDefinition characterData = ResourceUtil.GetCharacterData(ID);
+        SetPendingState(EncounterState.SETUP_START);
+        yield return null;
+    }
 
-                if (characterData != null)
-                {
-                    CharacterComponent character = CharacterUtil.BuildCharacterObject(characterData, this.transform);
-
-                    yield return character.Coroutine_Setup(characterData);
-
-                    Vector3 randomLocation = EnvironmentUtil.GetRandomTile();
-                    character.Teleport(randomLocation);
-
-                    Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());
-                    character.Teleport(destination);
-                    Debug.Log("Character " + characterData.ID + " spawned at " + destination.ToString());
-
-                    AddCharacter(teamData.Team, character);
-                }
-            }
-        }
-
-        //kick off a camera rig
-        EncounterUtil.CreateCameraRig();
-
+    private IEnumerator Coroutine_HandleSetupStart()
+    {
         SetPendingState(EncounterState.SETUP_COMPLETE);
         yield return null;
     }

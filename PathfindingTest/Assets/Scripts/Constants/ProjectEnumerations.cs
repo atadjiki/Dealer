@@ -82,6 +82,8 @@ public static partial class Constants
 
         INIT,
 
+        SETUP_START,
+
         SETUP_COMPLETE,//waiting for encounter to begin
 
         BUILD_QUEUES,//build queues to see which characters have actions this turn
