@@ -62,33 +62,44 @@ public struct EncounterStateData
 
     public void BuildTimeline()
     {
+        Timeline.Clear();
+
+        Dictionary<TeamID, Queue<CharacterComponent>> teamQueues = new Dictionary<TeamID, Queue<CharacterComponent>>();
+
+        int Total = 0;
+
+        //make a temporary queue for each team
         foreach (TeamID team in CharacterMap.Keys)
         {
-            foreach (CharacterComponent character in CharacterMap[team])
+            teamQueues.Add(team, new Queue<CharacterComponent>());
+        }
+
+        //add eligible characters
+        foreach(TeamID team in CharacterMap.Keys)
+        {
+            foreach(CharacterComponent character in CharacterMap[team])
             {
-                if (character.IsAlive())
+                if(character.IsAlive())
                 {
-                    Timeline.Enqueue(character);
+                    teamQueues[team].Enqueue(character);
+                    Total++;
+                }
+            }
+        }
+
+        //take turns popping into the main queue until we're all done
+        while(Timeline.Count < Total)
+        {
+            foreach(TeamID team in teamQueues.Keys)
+            {
+                if(teamQueues[team].Count > 0)
+                {
+                    Timeline.Enqueue(teamQueues[team].Dequeue());
                 }
             }
         }
 
         Debug.Log(MakeTimelineString());
-    }
-
-    public string MakeTimelineString()
-    {
-        string debugString = "Timeline: ";
-
-        foreach (CharacterComponent character in Timeline.ToArray())
-        {
-            if (character.IsAlive())
-            {
-                debugString += character.GetID().ToString() + " ";
-            }
-        }
-
-        return debugString;
     }
 
     public bool AreAnyTeamsDead()
@@ -218,5 +229,20 @@ public struct EncounterStateData
         CharacterComponent currentCharacter = GetCurrentCharacter();
 
         return currentCharacter.HasActionPoints();
+    }
+
+    public string MakeTimelineString()
+    {
+        string debugString = "Timeline: ";
+
+        foreach (CharacterComponent character in Timeline.ToArray())
+        {
+            if (character.IsAlive())
+            {
+                debugString += character.GetID().ToString() + " ";
+            }
+        }
+
+        return debugString;
     }
 }
