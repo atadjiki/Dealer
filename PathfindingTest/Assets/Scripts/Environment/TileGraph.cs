@@ -171,6 +171,8 @@ public class TileGraph : NavGraph
 
         }
 
+        ColorLibrary colorLib = ColorLibrary.Get();
+
         DrawingData.Hasher hasher = DrawingData.Hasher.Create(this);
 
         using (var builder = gizmos.GetBuilder(hasher))
@@ -184,7 +186,7 @@ public class TileGraph : NavGraph
                 {
                     if (ShowLayers)
                     {
-                        Color color = GetLayerDebugColor(layer, true, false);
+                        Color color = colorLib.GetByID(layer);
                         color.a = LayerOpacity;
 
                         using (builder.WithColor(color))
@@ -207,7 +209,7 @@ public class TileGraph : NavGraph
 
                                 EnvironmentCover cover = GetCoverType(info);
 
-                                Color color = GetCoverDebugColor(cover);
+                                Color color = colorLib.GetByID(cover);
                                 color.a = CoverOpacity;
 
                                 using (builder.WithColor(color))

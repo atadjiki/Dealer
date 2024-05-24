@@ -172,16 +172,10 @@ public struct EncounterStateData
         {
             CurrentState = state;
         }
-        else
-        {
-            Debug.Log("Cannot transition to the same state! " + state);
-        }
     }
 
     public void BroadcastState()
     {
-        Debug.Log("Encounter State: " + CurrentState.ToString());
-
         if (OnStateChanged != null)
         {
             OnStateChanged.Invoke(this);
