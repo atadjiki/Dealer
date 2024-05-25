@@ -157,6 +157,11 @@ public class CharacterComponent : MonoBehaviour
         return _navigator;
     }
 
+    public CharacterModel GetModel()
+    {
+        return _model;
+    }
+
     public void ToggleVisibility(bool flag)
     {
         _model.ToggleVisibility(flag);

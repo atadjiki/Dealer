@@ -16,6 +16,11 @@ public class EncounterCharacterHighlight : EncounterEventHandler
         _quad = EnvironmentUtil.CreateTileQuad(matLib.CharacterSelect, this.transform, Vector3.one);
     }
 
+    private void Update()
+    {
+        _quad.transform.eulerAngles = new Vector3(90, 0, 0);
+    }
+
     protected override void OnStateChangedCallback(EncounterStateData state)
     {
         if (state.GetCurrentState() == EncounterState.DESELECT_CURRENT_CHARACTER)

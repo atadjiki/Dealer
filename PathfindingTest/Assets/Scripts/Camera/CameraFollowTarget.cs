@@ -15,15 +15,18 @@ public class CameraFollowTarget : MonoBehaviour
     {
         Debug.Log("Attaching camera to character " + character.GetID());
 
-        this.transform.parent = character.GetNavigator().transform;
-
-        this.transform.localPosition = Vector3.zero;
-        this.transform.localRotation = Quaternion.identity;
-        this.transform.localScale = Vector3.one;
+        this.transform.parent = character.GetModel().transform;
     }
 
     public void Release()
     {
         this.transform.parent = _defaultParent;
+    }
+
+    private void Update()
+    {
+        this.transform.localPosition = Vector3.zero;
+        this.transform.localRotation = Quaternion.identity;
+        this.transform.localScale = Vector3.one;
     }
 }
