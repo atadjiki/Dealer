@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e9253636bf2648bd813257f451f8486, type: 3}
-  m_Name: MovementRadiusProfile
+  m_Name: EnemyCharacter
   m_EditorClassIdentifier: 
-  effectGroup: 2
+  effectGroup: 0
   effectGroupLayer:
     serializedVersion: 2
     m_Bits: 4294967295
   effectNameFilter: 
   effectNameUseRegEx: 0
-  combineMeshes: 0
+  combineMeshes: 1
   alphaCutOff: 0
-  cullBackFaces: 0
-  normalsOption: 2
-  fadeInDuration: 0
-  fadeOutDuration: 0
+  cullBackFaces: 1
+  normalsOption: 0
+  fadeInDuration: 0.2
+  fadeOutDuration: 0.2
   cameraDistanceFade: 0
   cameraDistanceFadeNear: 0
   cameraDistanceFadeFar: 1000
-  constantWidth: 0
-  overlay: 0
+  constantWidth: 1
+  overlay: 1
   overlayMode: 0
-  overlayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  overlayColor: {r: 1, g: 0.051016994, b: 0, a: 1}
   overlayAnimationSpeed: 1
   overlayMinIntensity: 0.5
   overlayBlending: 1
@@ -40,8 +40,8 @@ MonoBehaviour:
   overlayTextureScrolling: {x: 0, y: 0}
   overlayVisibility: 0
   outline: 1
-  outlineColor: {r: 0.13762355, g: 1, b: 0, a: 1}
-  outlineColorStyle: 1
+  outlineColor: {r: 1, g: 0.051016994, b: 0, a: 1}
+  outlineColorStyle: 0
   outlineGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -73,20 +73,20 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   outlineGradientInLocalSpace: 0
-  outlineBlurPasses: 1
-  outlineWidth: 0.15
-  outlineQuality: 2
+  outlineBlurPasses: 2
+  outlineWidth: 0.3
+  outlineQuality: 1
   outlineEdgeMode: 0
   outlineEdgeThreshold: 0.995
   outlineSharpness: 1
   outlineDownsampling: 1
-  outlineContourStyle: 1
+  outlineContourStyle: 0
   outlineVisibility: 0
   outlineIndependent: 0
-  outlineMaskMode: 2
+  outlineMaskMode: 0
   glow: 0
   glowWidth: 0.4
-  glowQuality: 3
+  glowQuality: 1
   glowBlurMethod: 0
   glowDownsampling: 2
   glowHQColor: {r: 0.64, g: 1, b: 0, a: 1}
@@ -123,9 +123,9 @@ MonoBehaviour:
   targetFXRotationSpeed: 50
   targetFXInitialScale: 4
   targetFXEndScale: 1.5
-  targetFXScaleToRenderBounds: 1
+  targetFXScaleToRenderBounds: 0
   targetFXAlignToGround: 0
-  targetFXGroundMaxDistance: 10
+  targetFXGroundMaxDistance: 15
   targetFXGroundLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -135,20 +135,20 @@ MonoBehaviour:
   targetFXTransitionDuration: 0.5
   targetFXStayDuration: 1.5
   targetFXVisibility: 1
-  seeThrough: 2
+  seeThrough: 1
   seeThroughOccluderMask:
     serializedVersion: 2
     m_Bits: 4294967295
   seeThroughOccluderMaskAccurate: 0
-  seeThroughOccluderThreshold: 0.3
+  seeThroughOccluderThreshold: 0.4
   seeThroughOccluderCheckInterval: 1
   seeThroughOccluderCheckIndividualObjects: 0
   seeThroughDepthOffset: 0
   seeThroughMaxDepth: 0
   seeThroughIntensity: 0.8
   seeThroughTintAlpha: 0.5
-  seeThroughTintColor: {r: 1, g: 0, b: 0, a: 1}
-  seeThroughNoise: 1
+  seeThroughTintColor: {r: 1, g: 0.051016994, b: 0, a: 1}
+  seeThroughNoise: 0.5
   seeThroughBorder: 0
   seeThroughBorderColor: {r: 0, g: 0, b: 0, a: 1}
   seeThroughBorderWidth: 0.45

@@ -72,8 +72,9 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         HighlightProfileLibrary highlightLib = HighlightProfileLibrary.Get();
 
         _outline = this.gameObject.AddComponent<HighlightEffect>();
-        _outline.profile = highlightLib.MovementRadius;
-        _outline.ProfileLoad(highlightLib.MovementRadius);
+        HighlightProfile profile = highlightLib.GetMovementRadiusProfile();
+        _outline.profile = profile;
+        _outline.ProfileLoad(profile);
         _outline.highlighted = true;
 
         transform.gameObject.SetActive(true);
