@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using static Constants;
+
+public CharacterDefinition : ScriptableObject
+{
+    public CharacterID ID;
+
+    public ModelID[] AllowedModels;
+
+    public WeaponID[] AllowedWeapons;
+
+    public int BaseHealth;
+
+    public int BaseActionPoints;
+
+    public int MovementRange;
+
+    public int CritChance;
+
+    public int Aim;
+
+    public int Defence;
+
+    public bool RollCritChance()
+    {
+        float roll = UnityEngine.Random.Range(0, 99);
+
+        if(CritChance > roll)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //yep these are hardcoded :)
+    public static CharacterDefinition Get(CharacterID uniqueID)
+    {
+        switch (uniqueID)
+        {
+            case CharacterID.PLAYER_1:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                            ModelID.MALE_DEA,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                            WeaponID.Pistol,
+                        },
+
+                        BaseHealth = 16,
+                        BaseActionPoints = 2,
+                        MovementRange = 6,
+                        CritChance = 30,
+                        Aim = 95,
+                        Defence = 0,
+                    };
+                }
+            case CharacterID.PLAYER_2:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                        ModelID.MALE_DEA,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                        WeaponID.Revolver,
+                        },
+
+                        BaseHealth = 16,
+                        BaseActionPoints = 2,
+                        MovementRange = 6,
+                        CritChance = 30,
+                        Aim = 65,
+                        Defence = 0,
+                    };
+                }
+            case CharacterID.HENCHMAN:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                            ModelID.MALE_HENCHMAN,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                            WeaponID.Pistol,
+                            WeaponID.Revolver,
+                        },
+
+                        BaseHealth = 4,
+                        BaseActionPoints = 2,
+                        MovementRange = 6,
+                        CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
+                    };
+                }
+
+            case CharacterID.GOON:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                            ModelID.MALE_GOON,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                            WeaponID.SMG,
+                        },
+
+                        BaseHealth = 7,
+                        BaseActionPoints = 2,
+                        MovementRange = 6,
+                        CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
+                    };
+                }
+            default:
+                {
+                    return new CharacterDefinition()
+                    {
+                        ID = uniqueID,
+                        AllowedModels = new ModelID[]
+                        {
+                            ModelID.MALE_GENERIC,
+                        },
+                        AllowedWeapons = new WeaponID[]
+                        {
+                        },
+
+                        BaseHealth = 1,
+                        BaseActionPoints = 1,
+                        MovementRange = 6,
+                        CritChance = 0,
+                        Aim = 65,
+                        Defence = 0,
+                    };
+                }
+        }
+    }
+}
