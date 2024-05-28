@@ -95,7 +95,7 @@ Transform:
   m_GameObject: {fileID: 2177568752954124581}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -8.000001, y: 21.213203, z: -9.000001}
+  m_LocalPosition: {x: -15.500001, y: 31.819805, z: -16.500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -136,9 +136,9 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 15
+  field of view: 14
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -537,7 +537,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5765844898105062933}
   - component: {fileID: 1798226196661566898}
-  - component: {fileID: 4507045630157409157}
+  - component: {fileID: 162252376078792543}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4507045630157409157
+--- !u!114 &162252376078792543
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -594,7 +594,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 30
+  m_CameraDistance: 45
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -609,8 +609,8 @@ MonoBehaviour:
   m_GroupFramingSize: 0.8
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 15
-  m_MaximumDistance: 45
+  m_MinimumDistance: 1
+  m_MaximumDistance: 5000
   m_MinimumFOV: 3
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
@@ -735,7 +735,7 @@ Transform:
   m_GameObject: {fileID: 8916054881249622895}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -8.000001, y: 21.213203, z: -9.000001}
+  m_LocalPosition: {x: -15.500001, y: 31.819805, z: -16.500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -763,8 +763,8 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 323277219517148225}
   m_Lens:
-    FieldOfView: 15
-    OrthographicSize: 5
+    FieldOfView: 14
+    OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
