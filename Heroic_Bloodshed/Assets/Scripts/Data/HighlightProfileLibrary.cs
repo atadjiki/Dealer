@@ -6,6 +6,13 @@ using System;
 using static Constants;
 
 [Serializable]
+public struct MovementRadiusInfo
+{
+    public MovementRangeType ID;
+    public HighlightProfile Profile;
+}
+
+[Serializable]
 public struct TeamHighlightInfo
 {
     public TeamID ID;
@@ -19,7 +26,7 @@ public class HighlightProfileLibrary : ScriptableObject
     [SerializeField] private List<TeamHighlightInfo> TeamProfiles;
 
     [Header("Components")]
-    [SerializeField] private HighlightProfile MovementRadius;
+    [SerializeField] private List<MovementRadiusInfo> MovementRadiusProfiles;
 
     private static HighlightProfileLibrary library;
 
@@ -36,9 +43,17 @@ public class HighlightProfileLibrary : ScriptableObject
         return null;
     }
 
-    public HighlightProfile GetMovementRadiusProfile()
+    public HighlightProfile GetMovementRadiusProfile(MovementRangeType ID)
     {
-        return MovementRadius;
+        foreach (MovementRadiusInfo info in MovementRadiusProfiles)
+        {
+            if (info.ID == ID)
+            {
+                return info.Profile;
+            }
+        }
+
+        return null;
     }
 
     public static HighlightProfileLibrary Get()

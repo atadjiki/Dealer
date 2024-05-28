@@ -73,6 +73,13 @@ public static partial class Constants
         FIRE_WEAPON,
     }
 
+    public enum MovementRangeType
+    {
+        NONE,
+        HALF,
+        FULL
+    }
+
     //Encounter
     public enum EncounterState
     {

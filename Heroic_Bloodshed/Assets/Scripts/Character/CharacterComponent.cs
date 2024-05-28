@@ -30,7 +30,7 @@ public struct CharacterStateData
         return ActionPoints > 0;
     }
 
-    public bool CanPerformAbility(AbilityID ability)
+    public bool CanAffordAbility(AbilityID ability)
     {
         int cost = GetAbilityCost(ability);
 
@@ -179,10 +179,51 @@ public class CharacterComponent : MonoBehaviour
         return _state.IsDead();
     }
 
+    public int GetRange(MovementRangeType rangeType)
+    {
+        CharacterDefinition def = ResourceUtil.GetCharacterData(_ID);
+
+        switch (rangeType)
+        {
+            case MovementRangeType.HALF:
+                return def.MovementRange;
+            case MovementRangeType.FULL:
+                return def.MovementRange * 2;
+            default:
+                return 0;
+        }
+    }
+
+    public int GetMaxRange()
+    {
+        if (CanAffordAbility(AbilityID.MOVE_FULL))
+        {
+            return GetRange(MovementRangeType.FULL);
+        }
+        else if (CanAffordAbility(AbilityID.MOVE_HALF))
+        {
+            return GetRange(MovementRangeType.HALF);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public bool IsWithinRange(int distance)
+    {
+        return (distance >= 0 && distance <= GetMaxRange());
+    }
+
     public bool HasActionPoints()
     {
         return _state.HasActionPoints();
     }
+
+    public bool CanAffordAbility(AbilityID ID)
+    {
+        return _state.CanAffordAbility(ID);
+    }    
 
     public void DecrementActionPoints(AbilityID ID)
     {

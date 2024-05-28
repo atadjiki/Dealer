@@ -231,10 +231,28 @@ public class EnvironmentUtil
         return GetClosest(origin, GetCoverAdjaecentTiles());
     }
 
-    public static List<Vector3> GetCharacterRange(CharacterComponent character)
+    public static List<Vector3> GetCharacterMaxRadius(CharacterComponent character)
     {
-        CharacterDefinition def = ResourceUtil.GetCharacterData(character.GetID());
-        return EnvironmentUtil.GetTilesWithinRange(character.GetWorldLocation(), def.MovementRange);
+        MovementRangeType rangeType;
+        if(character.CanAffordAbility(AbilityID.MOVE_FULL))
+        {
+            rangeType = MovementRangeType.FULL;
+        }
+        else if(character.CanAffordAbility(AbilityID.MOVE_HALF))
+        {
+            rangeType = MovementRangeType.HALF;
+        }
+        else
+        {
+            rangeType = MovementRangeType.NONE;
+        }
+
+        return GetCharacterRadius(rangeType, character);
+    }
+
+    public static List<Vector3> GetCharacterRadius(MovementRangeType rangeType, CharacterComponent character)
+    {
+        return GetTilesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
     }
 
     public static List<Vector3> GetTilesWithinRange(Vector3 origin, int range)
@@ -255,11 +273,11 @@ public class EnvironmentUtil
         return tiles;
     }
 
-    public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location)
+    public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location, MovementRangeType rangeType)
     {
         CharacterDefinition def = ResourceUtil.GetCharacterData(character.GetID());
 
-        List<Vector3> range = GetTilesWithinRange(character.GetWorldLocation(), def.MovementRange);
+        List<Vector3> range = GetTilesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
 
         return range.Contains(location);
     }
@@ -271,6 +289,22 @@ public class EnvironmentUtil
         path.BlockUntilCalculated();
 
         return path.vectorPath;
+    }
+
+    public static Dictionary<MovementRangeType, List<Vector3>> GetCharacterRangeMap(CharacterComponent character)
+    {
+        Dictionary <MovementRangeType, List <Vector3>> map = new Dictionary<MovementRangeType, List<Vector3>>()
+        {
+            { MovementRangeType.HALF, GetCharacterRadius(MovementRangeType.HALF, character) },
+            { MovementRangeType.FULL, GetCharacterRadius(MovementRangeType.FULL, character) },
+        };
+
+        foreach(MovementRangeType rangeType in map.Keys)
+        {
+            Debug.Log(map[rangeType].Count + " tiles in radius for " + rangeType.ToString());
+        }
+
+        return map;
     }
 
     public static bool GetTileBeneathMouse(out EnvironmentTileRaycastInfo info)

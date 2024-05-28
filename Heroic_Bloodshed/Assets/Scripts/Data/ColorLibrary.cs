@@ -12,6 +12,14 @@ public struct TeamColorInfo
 }
 
 [Serializable]
+public struct MovementRangeColorInfo
+{
+    public MovementRangeType ID;
+    public Gradient Gradient;
+    public Color Color;
+}
+
+[Serializable]
 public struct CoverColorInfo
 {
     public EnvironmentCover ID;
@@ -31,6 +39,9 @@ public class ColorLibrary : ScriptableObject
     [Header("Teams")]
     [SerializeField] private List<TeamColorInfo> TeamColors;
 
+    [Header("Movement Range")]
+    [SerializeField] private List<MovementRangeColorInfo> MovementRangeColors;
+
     [Header("Cover")]
     [SerializeField] private List<CoverColorInfo> CoverColors;
 
@@ -48,6 +59,32 @@ public class ColorLibrary : ScriptableObject
         }
 
         return Color.clear;
+    }
+
+    public Color GetColorByID(MovementRangeType ID)
+    {
+        foreach (MovementRangeColorInfo info in MovementRangeColors)
+        {
+            if (info.ID == ID)
+            {
+                return info.Color;
+            }
+        }
+
+        return Color.clear;
+    }
+
+    public Gradient GetGradientyID(MovementRangeType ID)
+    {
+        foreach(MovementRangeColorInfo info in MovementRangeColors)
+        {
+            if(info.ID == ID)
+            {
+                return info.Gradient;
+            }
+        }
+
+        return null;
     }
 
     public Color GetByID(EnvironmentCover ID)

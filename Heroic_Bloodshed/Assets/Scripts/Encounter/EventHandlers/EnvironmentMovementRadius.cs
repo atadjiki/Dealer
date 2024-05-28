@@ -6,21 +6,15 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EncounterEventHandler
 {
-    private List<Vector3> _range;
+    private Dictionary<MovementRangeType, List<Vector3>> _rangeMap;
 
-    private MeshRenderer _renderer;
-    private MeshFilter _filter;
-    private HighlightEffect _outline;
+    private MaterialLibrary matLib;
 
     protected override void OnAwake()
     {
         base.OnAwake();
 
-        MaterialLibrary matLib = MaterialLibrary.Get();
-
-        _renderer = this.gameObject.AddComponent<MeshRenderer>();
-        _renderer.material = matLib.MovementRadius;
-        _filter = this.gameObject.AddComponent<MeshFilter>();
+        matLib = MaterialLibrary.Get();
     }
 
     protected override void OnStateChangedCallback(EncounterStateData stateData)
@@ -33,18 +27,38 @@ public class EnvironmentMovementRadius : EncounterEventHandler
 
     public void Setup(CharacterComponent character)
     {
-        _range = EnvironmentUtil.GetCharacterRange(character);
+        _rangeMap = EnvironmentUtil.GetCharacterRangeMap(character);
 
-        CreateRadiusMesh();
+        //cull any movement half tiles from the movement full list
+
+        foreach(Vector3 point in _rangeMap[MovementRangeType.HALF])
+        {
+            if(_rangeMap[MovementRangeType.FULL].Contains(point))
+            {
+                _rangeMap[MovementRangeType.FULL].Remove(point);
+            }
+        }
+
+        foreach(MovementRangeType ID in _rangeMap.Keys)
+        {
+            CreateRadiusMesh(ID, _rangeMap[ID]);
+        }
     }
 
-    private void CreateRadiusMesh()
+    private void CreateRadiusMesh(MovementRangeType rangeType, List<Vector3> nodes)
     {
+        GameObject container = new GameObject("Container " + rangeType.ToString());
+        container.transform.parent = this.transform;
+        MeshRenderer renderer = container.AddComponent<MeshRenderer>();
+        renderer.material = matLib.MovementRadius;
+
+        MeshFilter filter = container.AddComponent<MeshFilter>();
+
         //create a quad for each tile
-        foreach (Vector3 tile in _range)
+        foreach (Vector3 tile in nodes)
         {
             GameObject quadObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            quadObject.transform.parent = this.transform;
+            quadObject.transform.parent = container.transform;
             quadObject.transform.localPosition = tile + new Vector3(0, 0.1f, 0);
             quadObject.transform.localEulerAngles = new Vector3(90, 0, 0);
             quadObject.transform.localScale = new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE, ENV_TILE_SIZE);
@@ -52,7 +66,7 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         }
 
         //grab all the meshes from the quads
-        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        MeshFilter[] meshFilters = container.GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
         int i = 0;
@@ -64,19 +78,25 @@ public class EnvironmentMovementRadius : EncounterEventHandler
 
             i++;
         }
-
+        
         Mesh mesh = new Mesh();
         mesh.CombineMeshes(combine);
-        _filter.mesh = mesh;
+        filter.mesh = mesh;
 
         HighlightProfileLibrary highlightLib = HighlightProfileLibrary.Get();
 
-        _outline = this.gameObject.AddComponent<HighlightEffect>();
-        HighlightProfile profile = highlightLib.GetMovementRadiusProfile();
-        _outline.profile = profile;
-        _outline.ProfileLoad(profile);
-        _outline.highlighted = true;
+        HighlightEffect effect = container.AddComponent<HighlightEffect>();
+        HighlightProfile profile = highlightLib.GetMovementRadiusProfile(rangeType);
 
-        transform.gameObject.SetActive(true);
+        if(rangeType == MovementRangeType.HALF)
+        {
+            effect.subMeshMask = 1;
+        }
+
+        effect.profile = profile;
+        effect.ProfileLoad(profile);
+        effect.highlighted = true;
+
+        container.SetActive(true);
     }
 }
