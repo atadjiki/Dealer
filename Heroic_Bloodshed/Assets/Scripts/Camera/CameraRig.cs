@@ -68,7 +68,7 @@ public class CameraRig : MonoBehaviour
         _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Update_Zoom();
         Update_Rotation();
@@ -215,7 +215,7 @@ public class CameraRig : MonoBehaviour
     {
         _rotating = true;
 
-        float originAngle = CM_Main.transform.eulerAngles.y;
+        float originAngle = CM_Main.transform.localEulerAngles.y;
         float step = EnvironmentCameraSettings.RotationStep;
 
         if (!clockwise) step *= -1;
@@ -227,14 +227,16 @@ public class CameraRig : MonoBehaviour
         while (currentTime < EnvironmentCameraSettings.RotationDuration)
         {
             float currentAngle = Mathf.LerpAngle(originAngle, targetAngle, currentTime / EnvironmentCameraSettings.RotationDuration);
-            CM_Main.transform.eulerAngles = new Vector3(45, currentAngle, 0);
+            CM_Main.transform.localEulerAngles = new Vector3(45, currentAngle, 0);
 
-            currentTime += Time.smoothDeltaTime;
+            currentTime += Time.fixedDeltaTime;
 
             yield return new WaitForFixedUpdate();
         }
 
-        CM_Main.transform.eulerAngles = new Vector3(45, targetAngle, 0);
+        yield return null;
+
+        CM_Main.transform.localEulerAngles = new Vector3(45, targetAngle, 0);
 
         _rotating = false;
     }
