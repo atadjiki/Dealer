@@ -124,6 +124,7 @@ public class CharacterComponent : MonoBehaviour
 
         GameObject modelObject = Instantiate<GameObject>(modelPrefab, navigatorObject.transform);
         _model = modelObject.GetComponent<CharacterModel>();
+        _model.CreateHighlight(GetTeamByID(_ID));
         yield return new WaitUntil(() => _model != null);
         _animator = modelObject.GetComponent<CharacterAnimator>();
         yield return new WaitUntil(() => _animator != null);
@@ -215,11 +216,13 @@ public class CharacterComponent : MonoBehaviour
 
     public void OnSelected()
     {
+        _model.ToggleHighlighted(true);
         _graphCollider.enabled = false;
     }
 
     public void OnDeselected()
     {
+        _model.ToggleHighlighted(false);
         _graphCollider.enabled = true;
     }
 
