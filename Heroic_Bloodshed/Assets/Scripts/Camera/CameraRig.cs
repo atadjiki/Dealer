@@ -229,9 +229,9 @@ public class CameraRig : MonoBehaviour
             float currentAngle = Mathf.LerpAngle(originAngle, targetAngle, currentTime / EnvironmentCameraSettings.RotationDuration);
             CM_Main.transform.localEulerAngles = new Vector3(45, currentAngle, 0);
 
-            currentTime += Time.fixedDeltaTime;
+            currentTime += Time.smoothDeltaTime;
 
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForSecondsRealtime(Time.smoothDeltaTime);
         }
 
         yield return null;
