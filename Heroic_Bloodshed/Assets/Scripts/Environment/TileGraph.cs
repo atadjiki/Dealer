@@ -7,6 +7,7 @@ using Pathfinding.Serialization;
 using Pathfinding.Util;
 using static Constants;
 using Pathfinding.Drawing;
+using Unity.Jobs;
 
 [JsonOptIn]
 // Make sure the class is not stripped out when using code stripping (see https://docs.unity3d.com/Manual/ManagedCodeStripping.html)
@@ -27,18 +28,6 @@ public class TileGraph : NavGraph
     public TileNode[] nodes;
 
     public override bool isScanned => nodes != null;
-
-    TileNode CreateNode(Vector3 position, EnvironmentLayer layer)
-    {
-        TileNode node = new TileNode(active);
-
-        // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
-        node.position = (Int3)position;
-        node.GraphIndex = graphIndex;
-        node.Walkable = IsLayerTraversible(layer);
-        node.Tag = GetPathfindingTag(layer);
-        return node;
-    }
 
     public List<TileNode> GetWalkableNodes()
     {
@@ -90,7 +79,12 @@ public class TileGraph : NavGraph
             // Destroy previous nodes (if any)
             graph.DestroyAllNodes();
 
-            List<TileNode> nodes = new List<TileNode>();
+            int totalSize = graph.Width * graph.Width;
+
+            //allocate our nodes
+            TileNode[] nodes = new TileNode[totalSize];
+            JobHandle job = AstarPath.active.AllocateNodes(nodes, totalSize, () => new TileNode(), 1);
+            job.Complete();
 
             for (int Row = 0; Row < graph.Width; Row++)
             {
@@ -100,19 +94,9 @@ public class TileGraph : NavGraph
 
                     EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                    TileNode node = graph.CreateNode(origin, layer);
-
-                    nodes.Add(node);
-                }
-            }
-
-            for (int Row = 0; Row < graph.Width; Row++)
-            {
-                for (int Column = 0; Column < graph.Width; Column++)
-                {
-                    Vector3 origin = CalculateTileOrigin(Row, Column);
-
                     TileNode node = nodes[(Row * graph.Width) + Column];
+
+                    node.Setup(origin, layer, graph.graphIndex);
 
                     EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
@@ -145,7 +129,7 @@ public class TileGraph : NavGraph
                 }
             }
 
-            graph.nodes = nodes.ToArray();
+            graph.nodes = nodes;
         
         }
     }

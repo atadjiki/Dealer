@@ -23,11 +23,15 @@ namespace Pathfinding
 	{
 		public TIleInfo Info;
 
-		public TileNode() { }
-		public TileNode(AstarPath astar)
-		{
-			astar.InitializeNode(this);
-		}
-	}
+        public void Setup(Vector3 position, EnvironmentLayer layer, uint graphIndex)
+        {
+            // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
+            this.position = (Int3)position;
+            this.GraphIndex = graphIndex;
+            Walkable = IsLayerTraversible(layer);
+            Tag = GetPathfindingTag(layer);
+            Info.Layer = layer;
+        }
+    }
 }
 

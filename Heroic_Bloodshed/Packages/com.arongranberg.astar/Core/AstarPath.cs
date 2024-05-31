@@ -1445,7 +1445,6 @@ public class AstarPath : VersionedMonoBehaviour {
 		return nodeStorage.AllocateNodesJob(result, count, createNode, variantsPerNode);
 	}
 
-	//TODO ATADJIKI - changed this to public
 	/// <summary>
 	/// Initializes temporary path data for a node.
 	///
@@ -1453,7 +1452,7 @@ public class AstarPath : VersionedMonoBehaviour {
 	///
 	/// See: <see cref="AstarPath.AllocateNodes"/>
 	/// </summary>
-	public void InitializeNode (GraphNode node) {
+	internal void InitializeNode (GraphNode node) {
 		if (!pathProcessor.queue.allReceiversBlocked) {
 			throw new System.Exception("Trying to initialize a node when it is not safe to initialize any nodes. Must be done during a graph update. See http://arongranberg.com/astar/docs/graph-updates.html#direct");
 		}
