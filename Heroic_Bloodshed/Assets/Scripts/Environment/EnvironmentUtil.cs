@@ -4,23 +4,6 @@ using Pathfinding;
 using UnityEngine;
 using static Constants;
 
-
-[Serializable]
-public struct EnvironmentTileRaycastInfo
-{
-    public Vector3 position;
-    public EnvironmentLayer layer;
-
-    public static EnvironmentTileRaycastInfo Build()
-    {
-        return new EnvironmentTileRaycastInfo()
-        {
-            position = Vector3.zero,
-            layer = EnvironmentLayer.NONE
-        };
-    }
-}
-
 [Serializable]
 public struct EnvironmentTileConnectionInfo
 {
@@ -144,17 +127,17 @@ public class EnvironmentUtil
         AstarPath.active.Scan(graph);
     }
 
-    public static bool GetNearestTile(Vector3 origin, out Vector3 nearest)
+    public static bool GetNearestNode(Vector3 origin, out TileNode node)
     {
         NNInfo info = AstarPath.active.GetNearest(origin);
 
         if(info.node != null)
         {
-            nearest = ((Vector3)info.node.position);
+            node = (TileNode)info.node;
             return true;
         }
 
-        nearest = Vector3.zero;
+        node = null;
         return false;
     }
 
@@ -261,7 +244,14 @@ public class EnvironmentUtil
 
         int gScore = CalculateGScore(range);
 
+        NNConstraint constraint = new NNConstraint();
+        constraint.constrainWalkability = true;
+
         ConstantPath cpath = ConstantPath.Construct(origin, gScore);
+        cpath.heuristicScale = 1;
+        cpath.heuristic = Heuristic.DiagonalManhattan;
+        cpath.nnConstraint = constraint;
+
         AstarPath.StartPath(cpath);
         cpath.BlockUntilCalculated();
 
@@ -271,6 +261,13 @@ public class EnvironmentUtil
         }
 
         return tiles;
+    }
+
+    public static bool IsWithinCharacterMaxRange(CharacterComponent character, Vector3 location)
+    {
+        List<Vector3> range = GetCharacterMaxRadius(character);
+
+        return range.Contains(location);
     }
 
     public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location, MovementRangeType rangeType)
@@ -307,10 +304,8 @@ public class EnvironmentUtil
         return map;
     }
 
-    public static bool GetTileBeneathMouse(out EnvironmentTileRaycastInfo info)
+    public static bool GetNodeBeneathMouse(out TileNode node)
     {
-        info = EnvironmentTileRaycastInfo.Build();
-
         TileGraph graph = GetEnvironmentGraph();
 
         if (graph != null && Camera.main != null)
@@ -323,17 +318,16 @@ public class EnvironmentUtil
             {
                 if (hit.collider.gameObject.layer == LAYER_GROUND)
                 {
-                    Vector3 nearest;
-                    if (GetNearestTile(hit.point, out nearest))
+                    if(GetNearestNode(hit.point, out node))
                     {
-                        info.layer = CheckTileLayer(nearest);
-                        info.position = nearest;
                         return true;
                     }
+
                 }
             }
         }
 
+        node = null;
         return false;
     }
 

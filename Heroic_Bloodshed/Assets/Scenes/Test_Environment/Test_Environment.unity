@@ -23580,20 +23580,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAACQn+t5CqaC1AAAAEkBAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFdj0GPgkAMhf/KZM67GyCAslez8bKJm7CJ55EWaTJ2yDBolPDfLWjUeGu/99rXDnpLEBr9rZL0Q+mycaeVY8YqkONOcPA93oVfc0b/xlbuiP6JZsumNRWFs9DoKxY4e15hMjmJ8REt/b4nkHJQ+mhsj1JqyOMsymAXpzki5NlnUkdFsVwscZenFaSFVqNMElMgY/+Qjb0FCHQt8vMsNod54z9ZVGtv2kYLBW9Oa7oc3MtPxLUrK4/Im9uG2thuEjr0EkIXhB+g4HyJIRDvp1E9jHq8AlBLAwQUAAAICAAAkJ/r8UKQP2AAAABrAAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDVM9Qz0lFQSi9KLMgoBgoYgjilmSkgdrRSipmhqYFpSpKhiVlqaoqZqa5RmoGlpYW5RWqSmUlyiomlUixQfUllQapfYm4qRE9IZk6qO8g4pdhaAFBLAQItABQAAAgIAACQn+t5CqaC1AAAAEkBAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+vxQpA/YAAAAGsAAAAJACQAAAAAAAAAAAAAACEBAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAzAEAAAAA
+    dataString: UEsDBBQAAAgIAACQn+vqv6PR1AAAAEsBAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFNj0FvgzAMhf9KlPM2AQJWdq2qXip1EpN2dokpllIHhdCqRfz3Gbq23J4/P/vZg/4lExr9pZL0TemycZe1Y8YqkONOcPA9/jd2cEU/sRpsh0/3Gf2CzaZ9CxWFq+DoIxY4m5YwmZzE+AyX+tiTETkofQbbo0ht8jiLMnOI0xzR5Nl7UkdFsfpc4SFPK5MWWo0ySUyBwH4jg70HCHQt8ut+htO88Ycsqq2HttFCjYfLlm4nt/iUuHZl5RF5f9/w+KxDLyF0Q7MxFJwvMQTi4zSqh1GPf1BLAwQUAAAICAAAkJ/r8UKQP2AAAABrAAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDVM9Qz0lFQSi9KLMgoBgoYgjilmSkgdrRSipmhqYFpSpKhiVlqaoqZqa5RmoGlpYW5RWqSmUlyiomlUixQfUllQapfYm4qRE9IZk6qO8g4pdhaAFBLAQItABQAAAgIAACQn+vqv6PR1AAAAEsBAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+vxQpA/YAAAAGsAAAAJACQAAAAAAAAAAAAAACEBAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAzAEAAAAA
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
   showUnwalkableNodes: 0
-  debugMode: 0
+  debugMode: 7
   debugFloor: 0
   debugRoof: 1
   manualDebugFloorRoof: 0
-  showSearchTree: 0
+  showSearchTree: 1
   unwalkableNodeDebugSize: 0.5
-  logPathResults: 4
+  logPathResults: 3
   maxNearestNodeDistance: 100
-  scanOnStartup: 0
+  scanOnStartup: 1
   fullGetNearestSearch: 0
   prioritizeGraphs: 0
   prioritizeGraphsLimit: 1
@@ -23638,7 +23638,7 @@ MonoBehaviour:
   - 29
   - 30
   - 31
-  heuristic: 3
+  heuristic: 1
   heuristicScale: 1
   threadCount: -1
   maxFrameTime: 10
@@ -30916,6 +30916,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 162252376078792543, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_CameraDistance
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 31.819805
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -16.500002
+      objectReference: {fileID: 0}
     - target: {fileID: 4731440975679905001, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_Name
@@ -30970,6 +30990,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 31.819805
+      objectReference: {fileID: 0}
+    - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -16.500002
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

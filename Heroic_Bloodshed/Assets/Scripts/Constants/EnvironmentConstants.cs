@@ -150,6 +150,18 @@ public static partial class Constants
         return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF || Layer == EnvironmentLayer.WALL);
     }
 
+    public static uint GetDirectionCost(EnvironmentDirection Direction)
+    {
+        if(IsCardinalDirection(Direction))
+        {
+            return 1000;
+        }
+        else
+        {
+            return (uint) (Mathf.Sqrt(2)*1000);
+        }
+    }
+
     public static bool IsCardinalDirection(EnvironmentDirection Direction)
     {
         switch (Direction)

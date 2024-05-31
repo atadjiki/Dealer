@@ -65,10 +65,23 @@ public class EncounterStateMachine: MonoBehaviour
             case AbilityID.MOVE_FULL:
             case AbilityID.MOVE_HALF:
             {
-                Vector3 destination = ((Vector3)data);
-                _data.SetActiveDestination(destination);
-                EncounterUtil.CreateDestinationHighlight(destination);
-                EncounterModel.Transition(_data);
+                CharacterComponent currentCharacter;
+                if(GetCurrentCharacter(out currentCharacter))
+                {
+                    Vector3 destination = ((Vector3)data);
+
+                    if (EnvironmentUtil.IsWithinCharacterMaxRange(currentCharacter , destination))
+                    {
+                            _data.SetActiveDestination(destination);
+                            EncounterUtil.CreateDestinationHighlight(destination);
+                            EncounterModel.Transition(_data);
+                    }
+                    else
+                    {
+                        Debug.Log("Location not in character range!");
+                    }
+                }
+
                 break;
             }
             default:

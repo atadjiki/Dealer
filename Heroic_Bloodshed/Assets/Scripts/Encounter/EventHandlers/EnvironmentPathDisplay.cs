@@ -43,14 +43,14 @@ public class EnvironmentPathDisplay : EncounterEventHandler
 
     private void Update()
     {
-        EnvironmentTileRaycastInfo info;
-        if(EnvironmentUtil.GetTileBeneathMouse(out info))
+        TileNode node;
+        if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {
-            MovementRangeType rangeType = GetRangeTypeFromPoint(info.position);
+            MovementRangeType rangeType = GetRangeTypeFromPoint((Vector3)node.position);
 
-            if (info.layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
+            if (node.Layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
             {
-                List<Vector3> nodes = EnvironmentUtil.CalculatePath(_origin, info.position);
+                List<Vector3> nodes = EnvironmentUtil.CalculatePath(_origin, (Vector3)node.position);
 
                 _lineRenderer.positionCount = nodes.Count;
                 _lineRenderer.SetPositions(nodes.ToArray());

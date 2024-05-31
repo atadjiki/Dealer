@@ -27,15 +27,15 @@ public class EnvironmentMovementRadius : EncounterEventHandler
 
         //cull any movement half tiles from the movement full list
 
-        foreach(Vector3 point in _rangeMap[MovementRangeType.HALF])
+        foreach (Vector3 point in _rangeMap[MovementRangeType.HALF])
         {
-            if(_rangeMap[MovementRangeType.FULL].Contains(point))
+            if (_rangeMap[MovementRangeType.FULL].Contains(point))
             {
                 _rangeMap[MovementRangeType.FULL].Remove(point);
             }
         }
 
-        foreach(MovementRangeType ID in _rangeMap.Keys)
+        foreach (MovementRangeType ID in _rangeMap.Keys)
         {
             CreateRadiusMesh(ID, _rangeMap[ID]);
         }

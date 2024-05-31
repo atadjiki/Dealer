@@ -27,6 +27,13 @@ namespace Pathfinding
             Walkable = IsLayerTraversible(_layer);
             Tag = GetPathfindingTag(_layer);
         }
+
+        public string GetInfo()
+        {
+            return
+                "Node:   " + position.ToString() + ",\n" +
+                "Layer:  " + Layer.ToString() + ",\n";
+        }
     }
 }
 

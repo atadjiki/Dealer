@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,18 +28,17 @@ public class EnvironmentTileSelector : EncounterEventHandler
     {
         if (_quad == null) return;
 
-        EnvironmentTileRaycastInfo info;
-
-        if(EnvironmentUtil.GetTileBeneathMouse(out info))
+        TileNode node;
+        if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {
-            if(info.layer == EnvironmentLayer.CHARACTER || info.layer == EnvironmentLayer.GROUND)
+            if(node.Layer == EnvironmentLayer.CHARACTER || node.Layer == EnvironmentLayer.GROUND)
             {
-                _quad.transform.position = info.position;
+                _quad.transform.position = (Vector3) node.position;
                 _quad.SetActive(true);
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    EncounterStateMachine.OnAbilityChosen.Invoke(AbilityID.MOVE_FULL, info.position);
+                    EncounterStateMachine.OnAbilityChosen.Invoke(AbilityID.MOVE_FULL, (Vector3)node.position);
                 }
 
                 return;
@@ -46,5 +46,12 @@ public class EnvironmentTileSelector : EncounterEventHandler
         }
 
         _quad.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_quad == null) return;
+
+
     }
 }

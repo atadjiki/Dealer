@@ -118,7 +118,7 @@ public class TileGraph : NavGraph
 
                             bool valid = info.IsValid();
 
-                            var cost = (uint)(neighbor.position - node.position).costMagnitude;
+                            var cost = GetDirectionCost(dir);
 
                             connections.Add(new Connection(neighbor, cost, valid, valid));
                         }
@@ -164,13 +164,12 @@ public class TileGraph : NavGraph
                 TileNode node = (TileNode)graphNode;
 
                 Vector3 origin = (Vector3)node.position;
-                EnvironmentLayer layer = node.Layer;
 
-                if(layer != EnvironmentLayer.NONE)
+                if(node.Layer != EnvironmentLayer.NONE)
                 {
                     if (ShowLayers)
                     {
-                        Color color = ColorLibrary.Get(layer);
+                        Color color = ColorLibrary.Get(node.Layer);
                         color.a = LayerOpacity;
 
                         using (builder.WithColor(color))
