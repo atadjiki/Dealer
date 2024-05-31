@@ -229,6 +229,7 @@ namespace Pathfinding {
 					typeof(ResolvedMovement),
 					typeof(DestinationPoint),
 					typeof(AgentMovementPlane),
+					typeof(GravityState),
 					typeof(SimulateMovement),
 					typeof(SimulateMovementRepair),
 					typeof(SimulateMovementControl),
@@ -267,9 +268,7 @@ namespace Pathfinding {
 				lastPosition = pos,
 			});
 			world.EntityManager.SetComponentData(entity, shape);
-			if (managedState.enableGravity) {
-				world.EntityManager.AddComponent<GravityState>(entity);
-			}
+			world.EntityManager.SetComponentEnabled<GravityState>(entity, managedState.enableGravity);
 			if (orientation == OrientationMode.YAxisForward) {
 				world.EntityManager.AddComponent<OrientationYAxisForward>(entity);
 			}
@@ -1060,7 +1059,7 @@ namespace Pathfinding {
 			set {
 				if (managedState.enableGravity != value) {
 					managedState.enableGravity = value;
-					ToggleComponent<GravityState>(entity, value, false);
+					ToggleComponentEnabled<GravityState>(entity, value, false);
 				}
 			}
 		}
@@ -1143,6 +1142,16 @@ namespace Pathfinding {
 			} else {
 				world.EntityManager.RemoveComponent<T>(entity);
 			}
+		}
+
+		/// <summary>Enables or disables a component on an entity</summary>
+		static void ToggleComponentEnabled<T>(Entity entity, bool enabled, bool mustExist) where T : struct, IComponentData, IEnableableComponent {
+			var world = World.DefaultGameObjectInjectionWorld;
+			if (world == null || !world.EntityManager.Exists(entity)) {
+				if (!mustExist) throw new System.InvalidOperationException("Entity does not exist. You can only access this if the component is active and enabled.");
+				return;
+			}
+			world.EntityManager.SetComponentEnabled<T>(entity, enabled);
 		}
 
 		/// <summary>
@@ -1299,7 +1308,7 @@ namespace Pathfinding {
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::FinalizeMovement</summary>
 		void IAstarAI.FinalizeMovement (Vector3 nextPosition, Quaternion nextRotation) {
-			throw new InvalidOperationException("The FollowerEntity component does not support FinalizeMovement. Use an ECS system to override movement instead, or use the movementOverrides property");
+			throw new InvalidOperationException("The FollowerEntity component does not support FinalizeMovement. Use an ECS system to override movement instead, or use the movementOverrides property. If you just want to move the agent to a position, set ai.position or call ai.Teleport.");
 		}
 
 		/// <summary>
@@ -1400,7 +1409,7 @@ namespace Pathfinding {
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::Move</summary>
 		public void Move (Vector3 deltaPosition) {
-			throw new NotImplementedException();
+			position += deltaPosition;
 		}
 
 		void IAstarAI.MovementUpdate (float deltaTime, out Vector3 nextPosition, out Quaternion nextRotation) {
@@ -1661,15 +1670,17 @@ namespace Pathfinding {
 			var color = ShapeGizmoColor;
 			var destination = this.destination;
 			var rotation = this.rotation;
+			var localScale = tr.localScale;
+			var radius = shape.radius * math.abs(localScale.x);
 
 			if (orientation == OrientationMode.YAxisForward) {
-				Draw.Circle(position, rotation * Vector3.forward, shape.radius * tr.localScale.x, color);
+				Draw.Circle(position, rotation * Vector3.forward, radius, color);
 			} else {
-				Draw.WireCylinder(position, rotation * Vector3.up, tr.localScale.y * shape.height, shape.radius * tr.localScale.x, color);
+				Draw.WireCylinder(position, rotation * Vector3.up, localScale.y * shape.height, radius, color);
 			}
 
 			if (!updateRotation) {
-				Draw.ArrowheadArc(position, rotation * Vector3.forward, shape.radius * tr.localScale.x * 1.05f, color);
+				Draw.ArrowheadArc(position, rotation * Vector3.forward, radius * 1.05f, color);
 			}
 
 			if (!float.IsPositiveInfinity(destination.x) && Application.isPlaying) {

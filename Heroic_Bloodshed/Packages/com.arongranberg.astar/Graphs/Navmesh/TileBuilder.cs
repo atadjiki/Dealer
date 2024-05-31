@@ -19,18 +19,11 @@ namespace Pathfinding.Graphs.Navmesh {
 	/// </summary>
 	public struct TileBuilder {
 		public float walkableClimb;
-		public int terrainSampleSize;
-		public LayerMask mask;
-		public List<string> tagMask;
+		public RecastGraph.CollectionSettings collectionSettings;
 		public RecastGraph.RelevantGraphSurfaceMode relevantGraphSurfaceMode;
-		public float colliderRasterizeDetail;
 		public RecastGraph.DimensionMode dimensionMode;
 		public RecastGraph.BackgroundTraversability backgroundTraversability;
 
-		public bool rasterizeTerrain;
-		public bool rasterizeMeshes;
-		public bool rasterizeTrees;
-		public bool rasterizeColliders;
 		// TODO: Don't store in struct
 		public int tileBorderSizeInVoxels;
 		public float walkableHeight;
@@ -43,6 +36,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		public UnityEngine.SceneManagement.Scene scene;
 		public TileLayout tileLayout;
 		public IntRect tileRect;
+		public List<RecastGraph.PerLayerModification> perLayerModifications;
 
 		public class TileBuilderOutput : IProgress, System.IDisposable {
 			public NativeReference<int> currentTileCounter;
@@ -75,14 +69,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			// Both be valid for a character to walk under an obstacle and climb up on top of it (and that cannot be handled with navmesh without links)
 			// The editor scripts also enforce this, but we enforce it here too just to be sure
 			this.walkableClimb = Mathf.Min(graph.walkableClimb, graph.walkableHeight);
-			this.terrainSampleSize = graph.terrainSampleSize;
-			this.mask = graph.mask;
-			this.tagMask = graph.tagMask;
-			this.colliderRasterizeDetail = graph.colliderRasterizeDetail;
-			this.rasterizeTerrain = graph.rasterizeTerrain;
-			this.rasterizeMeshes = graph.rasterizeMeshes;
-			this.rasterizeTrees = graph.rasterizeTrees;
-			this.rasterizeColliders = graph.rasterizeColliders;
+			this.collectionSettings = graph.collectionSettings;
 			this.dimensionMode = graph.dimensionMode;
 			this.backgroundTraversability = graph.backgroundTraversability;
 			this.tileBorderSizeInVoxels = graph.TileBorderSizeInVoxels;
@@ -94,6 +81,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			this.contourMaxError = graph.contourMaxError;
 			this.relevantGraphSurfaceMode = graph.relevantGraphSurfaceMode;
 			this.scene = graph.active.gameObject.scene;
+			this.perLayerModifications = graph.perLayerModifications;
 		}
 
 		/// <summary>
@@ -121,9 +109,16 @@ namespace Pathfinding.Graphs.Navmesh {
 
 		public RecastMeshGatherer.MeshCollection CollectMeshes (Bounds bounds) {
 			Profiler.BeginSample("Find Meshes for rasterization");
-			var meshGatherer = new RecastMeshGatherer(scene, bounds, terrainSampleSize, mask, tagMask, tileLayout.cellSize / colliderRasterizeDetail);
+			var mask = collectionSettings.layerMask;
+			var tagMask = collectionSettings.tagMask;
+			if (collectionSettings.collectionMode == RecastGraph.CollectionSettings.FilterMode.Layers) {
+				tagMask = null;
+			} else {
+				mask = -1;
+			}
+			var meshGatherer = new RecastMeshGatherer(scene, bounds, collectionSettings.terrainHeightmapDownsamplingFactor, collectionSettings.layerMask, collectionSettings.tagMask, perLayerModifications, tileLayout.cellSize / collectionSettings.colliderRasterizeDetail);
 
-			if (rasterizeMeshes && dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
+			if (collectionSettings.rasterizeMeshes && dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
 				Profiler.BeginSample("Find meshes");
 				meshGatherer.CollectSceneMeshes();
 				Profiler.EndSample();
@@ -133,21 +128,27 @@ namespace Pathfinding.Graphs.Navmesh {
 			meshGatherer.CollectRecastMeshObjs();
 			Profiler.EndSample();
 
-			if (rasterizeTerrain && dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
+			if (collectionSettings.rasterizeTerrain && dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
 				Profiler.BeginSample("Find terrains");
 				// Split terrains up into meshes approximately the size of a single chunk
 				var desiredTerrainChunkSize = tileLayout.cellSize*math.max(tileLayout.tileSizeInVoxels.x, tileLayout.tileSizeInVoxels.y);
-				meshGatherer.CollectTerrainMeshes(rasterizeTrees, desiredTerrainChunkSize);
+				meshGatherer.CollectTerrainMeshes(collectionSettings.rasterizeTrees, desiredTerrainChunkSize);
 				Profiler.EndSample();
 			}
 
-			if (rasterizeColliders) {
+			if (collectionSettings.rasterizeColliders || dimensionMode == RecastGraph.DimensionMode.Dimension2D) {
 				Profiler.BeginSample("Find colliders");
 				if (dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
 					meshGatherer.CollectColliderMeshes();
 				} else {
 					meshGatherer.Collect2DColliderMeshes();
 				}
+				Profiler.EndSample();
+			}
+
+			if (collectionSettings.onCollectMeshes != null) {
+				Profiler.BeginSample("Custom mesh collection");
+				collectionSettings.onCollectMeshes(meshGatherer);
 				Profiler.EndSample();
 			}
 
@@ -315,6 +316,9 @@ namespace Pathfinding.Graphs.Navmesh {
 				dimensionMode = dimensionMode,
 				backgroundTraversability = backgroundTraversability,
 				graphToWorldSpace = tileLayout.transform.matrix,
+				// Crop all tiles to ensure they are inside the graph bounds (even if the tiles did not line up perfectly with the bounding box).
+				// Add the character radius, since it will be eroded away anyway, but subtract 1 voxel to ensure the nodes are strictly inside the bounding box
+				graphSpaceLimits = new Vector2(tileLayout.graphSpaceSize.x + (characterRadiusInVoxels-1)*tileLayout.cellSize, tileLayout.graphSpaceSize.z + (characterRadiusInVoxels-1)*tileLayout.cellSize),
 				characterRadiusInVoxels = characterRadiusInVoxels,
 				tileBorderSizeInVoxels = tileBorderSizeInVoxels,
 				minRegionSize = minRegionSize,
@@ -326,7 +330,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			};
 			jobTemplate.SetOutputMeshes(tileMeshes);
 			jobTemplate.SetCounter(currentTileCounter);
-			int maximumVoxelYCoord = (int)(tileLayout.boundsYSize / cellHeight);
+			int maximumVoxelYCoord = (int)(tileLayout.graphSpaceSize.y / cellHeight);
 			for (int i = 0; i < builders.Length; i++) {
 				jobTemplate.tileBuilder = builders[i] = new TileBuilderBurst(width, depth, (int)voxelWalkableHeight, maximumVoxelYCoord);
 				var dep = new JobHandle();

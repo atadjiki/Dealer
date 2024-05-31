@@ -104,7 +104,7 @@ namespace Pathfinding.Graphs.Navmesh.Jobs {
 					};
 
 					Profiler.BeginSample("CreateNodes");
-					NavmeshBase.CreateNodes(tile, tile.tris, graphTileIndex, graphIndex, mesh.tags.AsUnsafeSpan<uint>(), false, null, initialPenalty, recalculateNormals);
+					NavmeshBase.CreateNodes(tile, tile.tris, graphTileIndex, graphIndex, mesh.tags.AsUnsafeSpan<uint>(), false, null, initialPenalty, false);
 					Profiler.EndSample();
 
 					tiles[tileIndex] = tile;

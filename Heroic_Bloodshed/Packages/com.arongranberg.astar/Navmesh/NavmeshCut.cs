@@ -23,8 +23,6 @@ namespace Pathfinding {
 	///
 	/// [Open online documentation to see videos]
 	///
-	/// [Open online documentation to see images]
-	///
 	/// The NavmeshCut component uses a 2D shape to cut the navmesh with. This shape can be produced by either one of the built-in 2D shapes (rectangle/circle) or one of the 3D shapes (cube/sphere/capsule)
 	/// which will be projected down to a 2D shape when cutting happens. You can also specify a custom 2D mesh to use as a cut.
 	///
@@ -95,11 +93,17 @@ namespace Pathfinding {
 	/// [Open online documentation to see images]
 	///
 	/// <b>Navmesh cutting and tags/penalties</b>
-	/// Because navmesh cutting can modify the triangles in the navmesh pretty much abitrarily it is not possible to keep tags and penalties when updating the graph.
-	/// The tags and penalties will be preserved for nodes which stay exactly the same when an update is applied though.
+	/// Navmesh cuts can only preserve tags for updates which happen when the graph is first scanned, or when a recast graph tile is recalculated from scratch.
 	///
-	/// If you need to use tags, the only stable way to keep them is to apply all the graph updates that set them every time a navmesh cut update has been done.
-	/// This is of course relatively slow, but it will at least work.
+	/// This means that any tags that you apply dynamically using e.g. a <see cref="GraphUpdateScene"/> component may be lost when a navmesh cut is applied.
+	/// If you need to combine tags and navmesh cutting, it is therefore strongly recommended to use the <see cref="RecastMeshObj"/> component to apply the tags,
+	/// as that will work smoothly with navmesh cutting.
+	///
+	/// Internally, what happens is that when a graph is scanned, the navmesh cutting subsystem will take a snapshot of all triangles in the graph, including tags. This data will then be referenced
+	/// every time cutting happens and the tags from the snapshot will be copied to the new triangles after cutting has taken place.
+	///
+	/// You can also apply tags and penalties using a graph update after cutting has taken place. For example by subclassing a navmesh cut and overriding the <see cref="UsedForCut"/> method.
+	/// However, it is recommended to use the <see cref="RecastMeshObj"/> as mentioned before, as this is a more robust solution.
 	///
 	/// See: http://www.arongranberg.com/2013/08/navmesh-cutting/
 	/// </summary>

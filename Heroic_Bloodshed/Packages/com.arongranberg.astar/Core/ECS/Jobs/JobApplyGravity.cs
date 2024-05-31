@@ -62,7 +62,7 @@ namespace Pathfinding.ECS {
 			transform.Position = movementPlane.value.ToWorld(localPosition, currentElevation);
 		}
 
-		public void Execute (ref LocalTransform transform, in MovementSettings movementSettings, ref AgentMovementPlane movementPlane, ref GravityState gravityState, AgentMovementPlaneSource movementPlaneSource, [Unity.Entities.EntityIndexInQuery] int entityIndexInQuery) {
+		public void Execute (ref LocalTransform transform, in MovementSettings movementSettings, ref AgentMovementPlane movementPlane, ref GravityState gravityState, in AgentMovementPlaneSource movementPlaneSource, [Unity.Entities.EntityIndexInQuery] int entityIndexInQuery) {
 			var hit = raycastHits[entityIndexInQuery];
 			var hitAnything = math.any((float3)hit.normal != 0f);
 			if (hitAnything && movementPlaneSource.value == MovementPlaneSource.Raycast) {

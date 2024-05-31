@@ -10,6 +10,7 @@ namespace Pathfinding {
 	using Pathfinding.Util;
 	using Pathfinding.Jobs;
 	using Pathfinding.Graphs.Navmesh.Jobs;
+	using Pathfinding.Drawing;
 
 	/// <summary>
 	/// Automatically generates navmesh graphs based on world geometry.
@@ -130,7 +131,7 @@ namespace Pathfinding {
 		/// <summary>
 		/// Minumum region size.
 		/// Small regions will be removed from the navmesh.
-		/// Measured in square world units (square meters in most games).
+		/// Measured in voxels.
 		///
 		/// [Open online documentation to see images]
 		///
@@ -256,6 +257,228 @@ namespace Pathfinding {
 		}
 
 		/// <summary>
+		/// Per layer modification settings.
+		///
+		/// This can be used to make all surfaces with a specific layer get a specific pathfinding tag for example.
+		/// Or make all surfaces with a specific layer unwalkable.
+		///
+		/// See: If you instead want to apply similar settings on an object level, you can use the <see cref="RecastMeshObj"/> component.
+		/// </summary>
+		[System.Serializable]
+		public struct PerLayerModification {
+			/// <summary>Layer that this modification applies to</summary>
+			public int layer;
+			/// <summary>\copydocref{RecastMeshObj.mode}</summary>
+			public RecastMeshObj.Mode mode;
+			/// <summary>\copydocref{RecastMeshObj.surfaceID}</summary>
+			public int surfaceID;
+
+			public static PerLayerModification Default => new PerLayerModification {
+				layer = 0,
+				mode = RecastMeshObj.Mode.WalkableSurface,
+				surfaceID = 1,
+			};
+
+			public static PerLayerModification[] ToLayerLookup (List<PerLayerModification> perLayerModifications, PerLayerModification defaultValue) {
+				var lookup = new PerLayerModification[32];
+				int seen = 0;
+				for (int i = 0; i < lookup.Length; i++) {
+					lookup[i] = defaultValue;
+					lookup[i].layer = i;
+				}
+				for (int i = 0; i < perLayerModifications.Count; i++) {
+					if (perLayerModifications[i].layer < 0 || perLayerModifications[i].layer >= 32) {
+						Debug.LogError("Layer " + perLayerModifications[i].layer + " is out of range. Layers must be in the range [0...31]");
+						continue;
+					}
+					if ((seen & (1 << perLayerModifications[i].layer)) != 0) {
+						Debug.LogError("Several per layer modifications refer to the same layer '" + LayerMask.LayerToName(perLayerModifications[i].layer) + "'");
+						continue;
+					}
+					seen |= 1 << perLayerModifications[i].layer;
+					lookup[perLayerModifications[i].layer] = perLayerModifications[i];
+				}
+				return lookup;
+			}
+		}
+
+		/// <summary>Settings for which meshes/colliders and other objects to include in the graph</summary>
+		[System.Serializable]
+		public class CollectionSettings {
+			/// <summary>Determines how the initial filtering of objects is done</summary>
+			public enum FilterMode {
+				/// <summary>Use a layer mask to filter objects</summary>
+				Layers,
+				/// <summary>Use tags to filter objects</summary>
+				Tags,
+			}
+
+			/// <summary>
+			/// Determines how the initial filtering of objects is done.
+			///
+			/// See: <see cref="layerMask"/>
+			/// See: <see cref="tagMask"/>
+			/// </summary>
+			public FilterMode collectionMode = FilterMode.Layers;
+
+			/// <summary>
+			/// Objects in all of these layers will be rasterized.
+			///
+			/// Will only be used if <see cref="collectionMode"/> is set to Layers.
+			///
+			/// See: <see cref="tagMask"/>
+			/// </summary>
+			public LayerMask layerMask = -1;
+
+			/// <summary>
+			/// Objects tagged with any of these tags will be rasterized.
+			///
+			/// Will only be used if <see cref="collectionMode"/> is set to Tags.
+			///
+			/// See: <see cref="layerMask"/>
+			/// </summary>
+			public List<string> tagMask = new List<string>();
+
+			/// <summary>
+			/// Use colliders to calculate the navmesh.
+			///
+			/// Depending on the <see cref="dimensionMode"/>, either 3D or 2D colliders will be rasterized.
+			///
+			/// Sphere/Capsule/Circle colliders will be approximated using polygons, with the precision specified in <see cref="RecastGraph.colliderRasterizeDetail"/>.
+			///
+			/// Note: In 2D mode, this is always treated as enabled, because no other types of inputs (like meshes or terrains) are supported.
+			/// </summary>
+			public bool rasterizeColliders;
+
+			/// <summary>
+			/// Use scene meshes to calculate the navmesh.
+			///
+			/// This can get you higher precision than colliders, since colliders are typically very simplified versions of the mesh.
+			/// However, it is often slower to scan, and graph updates can be particularly slow.
+			///
+			/// The reason that graph updates are slower is that there's no efficient way to find all meshes that intersect a given tile,
+			/// so the graph has to iterate over all meshes in the scene just to find the ones relevant for the tiles that you want to update.
+			/// Colliders, on the other hand, can be efficiently queried using the physics system.
+			///
+			/// You can disable this and attach a <see cref="RecastMeshObj"/> component (with dynamic=false) to all meshes that you want to be included in the navmesh instead.
+			/// That way they will be able to be efficiently queried for, without having to iterate through all meshes in the scene.
+			///
+			/// In 2D mode, this setting has no effect.
+			/// </summary>
+			public bool rasterizeMeshes = true;
+
+			/// <summary>
+			/// Use terrains to calculate the navmesh.
+			///
+			/// In 2D mode, this setting has no effect.
+			/// </summary>
+			public bool rasterizeTerrain = true;
+
+			/// <summary>
+			/// Rasterize tree colliders on terrains.
+			///
+			/// If the tree prefab has a collider, that collider will be rasterized.
+			/// Otherwise a simple box collider will be used and the script will
+			/// try to adjust it to the tree's scale, it might not do a very good job though so
+			/// an attached collider is preferable.
+			///
+			/// Note: It seems that Unity will only generate tree colliders at runtime when the game is started.
+			/// For this reason, this graph will not pick up tree colliders when scanned outside of play mode
+			/// but it will pick them up if the graph is scanned when the game has started. If it still does not pick them up
+			/// make sure that the trees actually have colliders attached to them and that the tree prefabs are
+			/// in the correct layer (the layer should be included in the layer mask).
+			///
+			/// In 2D mode, this setting has no effect.
+			///
+			/// See: <see cref="rasterizeTerrain"/>
+			/// See: <see cref="RecastGraph.colliderRasterizeDetail"/>
+			/// </summary>
+			public bool rasterizeTrees = true;
+
+			/// <summary>
+			/// Controls how much to downsample the terrain's heightmap before generating the input mesh used for rasterization.
+			/// A higher value is faster to scan but less accurate.
+			/// </summary>
+			public int terrainHeightmapDownsamplingFactor = 3;
+
+			/// <summary>
+			/// Controls detail on rasterization of sphere and capsule colliders.
+			///
+			/// The colliders will be approximated with polygons so that the max distance to the theoretical surface is less than 1/(this number of voxels).
+			///
+			/// A higher value does not necessarily increase quality of the mesh, but a lower
+			/// value will often speed it up.
+			///
+			/// You should try to keep this value as low as possible without affecting the mesh quality since
+			/// that will yield the fastest scan times.
+			///
+			/// The default value is 1, which corresponds to a maximum error of 1 voxel.
+			/// In most cases, increasing this to a value higher than 2 (corresponding to a maximum error of 0.5 voxels) is not useful.
+			///
+			/// See: rasterizeColliders
+			///
+			/// Version: Before 4.3.80 this variable was not scaled by the <see cref="cellSize"/>, and so it would not transfer as easily between scenes of different scales.
+			/// </summary>
+			public float colliderRasterizeDetail = 1;
+
+			/// <summary>
+			/// Callback for collecting custom scene meshes.
+			///
+			/// This callback will be called once when scanning the graph, to allow you to add custom meshes to the graph, and once every time a graph update happens.
+			/// Use the <see cref="RecastMeshGatherer"/> class to add meshes that are to be rasterized.
+			///
+			/// Note: This is a callback, and can therefore not be serialized. You must set this field using code, every time the game starts (and optionally in edit mode as well).
+			///
+			/// <code>
+			/// AstarPath.active.data.recastGraph.collectionSettings.onCollectMeshes += (RecastMeshGatherer gatherer) => {
+			///     // Define a mesh using 4 vertices and 2 triangles
+			///     var vertices = new Vector3[] {
+			///         new Vector3(0, 0, 0),
+			///         new Vector3(100, 0, 0),
+			///         new Vector3(100, 0, 100),
+			///         new Vector3(0, 0, 100)
+			///     };
+			///     var triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+			///     // Register the mesh buffers
+			///     var meshDataIndex = gatherer.AddMeshBuffers(vertices, triangles);
+			///     // Register the mesh for rasterization
+			///     gatherer.AddMesh(new RecastMeshGatherer.GatheredMesh {
+			///         meshDataIndex = meshDataIndex,
+			///         area = 0,
+			///         indexStart = 0,
+			///         indexEnd = -1,
+			///         bounds = default,
+			///         matrix = Matrix4x4.identity,
+			///         solid = false,
+			///         doubleSided = true,
+			///         flatten = false,
+			///         areaIsTag = false
+			///     });
+			/// };
+			/// AstarPath.active.Scan();
+			/// </code>
+			/// </summary>
+			public System.Action<RecastMeshGatherer> onCollectMeshes;
+		}
+
+		/// <summary>
+		/// List of rules that modify the graph based on the layer of the rasterized object.
+		///
+		/// [Open online documentation to see images]
+		///
+		/// By default, all layers are treated as walkable surfaces.
+		/// But by adding rules to this list, one can for example make all surfaces with a specific layer get a specific pathfinding tag.
+		///
+		/// Each layer should be modified at most once in this list.
+		///
+		/// If an object has a <see cref="RecastMeshObj"/> component attached, the settings on that component will override the settings in this list.
+		///
+		/// See: <see cref="PerLayerModification"/>
+		/// </summary>
+		[JsonMember]
+		public List<PerLayerModification> perLayerModifications = new List<PerLayerModification>();
+
+		/// <summary>
 		/// Whether to use 3D or 2D mode.
 		///
 		/// See: <see cref="DimensionMode"/>
@@ -326,15 +549,30 @@ namespace Pathfinding {
 		[JsonMember]
 		public RelevantGraphSurfaceMode relevantGraphSurfaceMode = RelevantGraphSurfaceMode.DoNotRequire;
 
+		/// <summary>
+		/// Determines which objects are used to build the graph, when it is scanned.
+		///
+		/// Also contains some settings for how to convert objects into meshes.
+		/// Spherical colliders, for example, need to be converted into a triangular mesh before they can be used in the graph.
+		///
+		/// See: <see cref="CollectionSettings"/>
+		/// </summary>
 		[JsonMember]
+		public CollectionSettings collectionSettings = new CollectionSettings();
+
 		/// <summary>
 		/// Use colliders to calculate the navmesh.
 		///
 		/// Depending on the <see cref="dimensionMode"/>, either 3D or 2D colliders will be rasterized.
 		///
 		/// Sphere/Capsule/Circle colliders will be approximated using polygons, with the precision specified in <see cref="colliderRasterizeDetail"/>.
+		/// Deprecated: Use <see cref="collectionSettings.rasterizeColliders"/> instead
 		/// </summary>
-		public bool rasterizeColliders;
+		[System.Obsolete("Use collectionSettings.rasterizeColliders instead")]
+		public bool rasterizeColliders {
+			get => collectionSettings.rasterizeColliders;
+			set => collectionSettings.rasterizeColliders = value;
+		}
 
 		/// <summary>
 		/// Use scene meshes to calculate the navmesh.
@@ -350,17 +588,25 @@ namespace Pathfinding {
 		/// That way they will be able to be efficiently queried for, without having to iterate through all meshes in the scene.
 		///
 		/// In 2D mode, this setting has no effect.
+		/// Deprecated: Use <see cref="collectionSettings.rasterizeMeshes"/> instead
 		/// </summary>
-		[JsonMember]
-		public bool rasterizeMeshes = true;
+		[System.Obsolete("Use collectionSettings.rasterizeMeshes instead")]
+		public bool rasterizeMeshes {
+			get => collectionSettings.rasterizeMeshes;
+			set => collectionSettings.rasterizeMeshes = value;
+		}
 
 		/// <summary>
 		/// Use terrains to calculate the navmesh.
 		///
 		/// In 2D mode, this setting has no effect.
+		/// Deprecated: Use <see cref="collectionSettings.rasterizeTerrain"/> instead
 		/// </summary>
-		[JsonMember]
-		public bool rasterizeTerrain = true;
+		[System.Obsolete("Use collectionSettings.rasterizeTerrain instead")]
+		public bool rasterizeTerrain {
+			get => collectionSettings.rasterizeTerrain;
+			set => collectionSettings.rasterizeTerrain = value;
+		}
 
 		/// <summary>
 		/// Rasterize tree colliders on terrains.
@@ -380,9 +626,13 @@ namespace Pathfinding {
 		///
 		/// See: <see cref="rasterizeTerrain"/>
 		/// See: <see cref="colliderRasterizeDetail"/>
+		/// Deprecated: Use <see cref="collectionSettings.rasterizeTrees"/> instead
 		/// </summary>
-		[JsonMember]
-		public bool rasterizeTrees = true;
+		[System.Obsolete("Use collectionSettings.rasterizeTrees instead")]
+		public bool rasterizeTrees {
+			get => collectionSettings.rasterizeTrees;
+			set => collectionSettings.rasterizeTrees = value;
+		}
 
 		/// <summary>
 		/// Controls detail on rasterization of sphere and capsule colliders.
@@ -401,34 +651,52 @@ namespace Pathfinding {
 		/// See: rasterizeColliders
 		///
 		/// Version: Before 4.3.80 this variable was not scaled by the <see cref="cellSize"/>, and so it would not transfer as easily between scenes of different scales.
+		///
+		/// Deprecated: Use <see cref="collectionSettings.colliderRasterizeDetail"/> instead
 		/// </summary>
-		[JsonMember]
-		public float colliderRasterizeDetail = 1;
+		[System.Obsolete("Use collectionSettings.colliderRasterizeDetail instead")]
+		public float colliderRasterizeDetail {
+			get => collectionSettings.colliderRasterizeDetail;
+			set => collectionSettings.colliderRasterizeDetail = value;
+		}
 
 		/// <summary>
 		/// Layer mask which filters which objects to include.
 		/// See: <see cref="tagMask"/>
+		/// Deprecated: Use <see cref="collectionSettings.layerMask"/> instead
 		/// </summary>
-		[JsonMember]
-		public LayerMask mask = -1;
+		[System.Obsolete("Use collectionSettings.layerMask instead")]
+		public LayerMask mask {
+			get => collectionSettings.layerMask;
+			set => collectionSettings.layerMask = value;
+		}
 
 		/// <summary>
 		/// Objects tagged with any of these tags will be rasterized.
 		/// Note that this extends the layer mask, so if you only want to use tags, set <see cref="mask"/> to 'Nothing'.
 		///
 		/// See: <see cref="mask"/>
+		/// Deprecated: Use <see cref="collectionSettings.tagMask"/> instead
 		/// </summary>
-		[JsonMember]
-		public List<string> tagMask = new List<string>();
+		[System.Obsolete("Use collectionSettings.tagMask instead")]
+		public List<string> tagMask {
+			get => collectionSettings.tagMask;
+			set => collectionSettings.tagMask = value;
+		}
 
 		/// <summary>
 		/// Controls how large the sample size for the terrain is.
 		/// A higher value is faster to scan but less accurate.
 		///
 		/// The heightmap resolution is effectively divided by this value, before the terrain is rasterized.
+		///
+		/// Deprecated: Use <see cref="collectionSettings.terrainHeightmapDownsamplingFactor"/> instead
 		/// </summary>
-		[JsonMember]
-		public int terrainSampleSize = 3;
+		[System.Obsolete("Use collectionSettings.terrainHeightmapDownsamplingFactor instead")]
+		public int terrainSampleSize {
+			get => collectionSettings.terrainHeightmapDownsamplingFactor;
+			set => collectionSettings.terrainHeightmapDownsamplingFactor = value;
+		}
 
 		/// <summary>Rotation of the graph in degrees</summary>
 		[JsonMember]
@@ -665,36 +933,9 @@ namespace Pathfinding {
 					// but they will not be connected to any tiles outside the update.
 					// We do this here. It needs to be done as one atomic update on the Unity main thread
 					// because other code may be reading graph data on the main thread.
-					var connectDependency = new JobHandle();
 					var tilesHandle = System.Runtime.InteropServices.GCHandle.Alloc(graph.tiles);
 					var graphTileRect = new IntRect(0, 0, graph.tileXCount - 1, graph.tileZCount - 1);
-					for (int z = tileRect.ymin; z <= tileRect.ymax; z++) {
-						for (int x = tileRect.xmin; x <= tileRect.xmax; x++) {
-							var tileIndex = z*graphTileRect.Width + x;
-							var dep = new JobHandle();
-							for (int direction = 0; direction < 4; direction++) {
-								var nx = x + GridGraph.neighbourXOffsets[direction];
-								var nz = z + GridGraph.neighbourZOffsets[direction];
-								if (graphTileRect.Contains(nx, nz) && !tileRect.Contains(nx, nz)) {
-									// Tile is contained in the graph but not in the graph update.
-									// So we need to connect the tile inside the update to the one outside it.
-
-									var ntileIndex = nz*graphTileRect.Width + nx;
-									var job = new JobConnectTiles {
-										tiles = tilesHandle,
-										tileIndex1 = tileIndex,
-										tileIndex2 = ntileIndex,
-										tileWorldSizeX = graph.TileWorldSizeX,
-										tileWorldSizeZ = graph.TileWorldSizeZ,
-										maxTileConnectionEdgeDistance = graph.MaxTileConnectionEdgeDistance,
-									}.Schedule(dep);
-									dep = JobHandle.CombineDependencies(dep, job);
-								}
-							}
-							connectDependency = JobHandle.CombineDependencies(connectDependency, dep);
-						}
-					}
-					connectDependency.Complete();
+					JobConnectTiles.ScheduleRecalculateBorders(tilesHandle, default, graphTileRect, tileRect, new Vector2(graph.TileWorldSizeX, graph.TileWorldSizeZ), graph.MaxTileConnectionEdgeDistance).Complete();
 					tilesHandle.Free();
 
 					// Signal that tiles have been recalculated to the navmesh cutting system.
@@ -793,31 +1034,28 @@ namespace Pathfinding {
 			public void Apply (IGraphUpdateContext ctx) {
 				// Destroy all previous nodes, if any exist
 				graph.DestroyAllNodes();
+				graph.hasExtendedInZ = false;
+				graph.hasExtendedInX = false;
 
 				if (emptyGraph) {
-					graph.AllocateTilesArray(tileLayout);
+					graph.SetLayout(tileLayout);
 					graph.FillWithEmptyTiles();
-					return;
-				}
-
-				// Initialize all nodes that were created in the jobs
-				for (int j = 0; j < tiles.Length; j++) AstarPath.active.InitializeNodes(tiles[j].nodes);
+				} else {
+					// Initialize all nodes that were created in the jobs
+					for (int j = 0; j < tiles.Length; j++) AstarPath.active.InitializeNodes(tiles[j].nodes);
 
 #if UNITY_EDITOR
-				graph.meshesUnreadableAtRuntime = meshesUnreadableAtRuntime;
+					graph.meshesUnreadableAtRuntime = meshesUnreadableAtRuntime;
 #endif
 
-				// Assign all tiles to the graph
-				// We do this in a single atomic update (from the main thread's perspective) to ensure
-				// that even if one does an async scan, the graph will always be in a valid state.
-				// This guarantees that things like GetNearest will still work during an async scan.
-				graph.transform = tileLayout.transform;
-				graph.tileXCount = tileLayout.tileCount.x;
-				graph.tileZCount = tileLayout.tileCount.y;
-				graph.tileSizeX = tileLayout.tileSizeInVoxels.x;
-				graph.tileSizeZ = tileLayout.tileSizeInVoxels.y;
-				graph.tiles = tiles;
-				for (int i = 0; i < tiles.Length; i++) tiles[i].graph = graph;
+					// Assign all tiles to the graph
+					// We do this in a single atomic update (from the main thread's perspective) to ensure
+					// that even if one does an async scan, the graph will always be in a valid state.
+					// This guarantees that things like GetNearest will still work during an async scan.
+					graph.SetLayout(tileLayout);
+					graph.tiles = tiles;
+					for (int i = 0; i < tiles.Length; i++) tiles[i].graph = graph;
+				}
 
 				// Signal that tiles have been recalculated to the navmesh cutting system.
 				graph.navmeshUpdateData.OnRecalculatedTiles(graph.tiles);
@@ -846,6 +1084,9 @@ namespace Pathfinding {
 			return new RecastMovePromise(this, new Int2(dx, dz));
 		}
 
+		bool hasExtendedInX = false;
+		bool hasExtendedInZ = false;
+
 		class RecastMovePromise : IGraphUpdatePromise {
 			RecastGraph graph;
 			TileMeshes tileMeshes;
@@ -865,9 +1106,34 @@ namespace Pathfinding {
 				newTileRect = originalTileRect.Offset(delta);
 				var createdTiles = IntRect.Exclude(newTileRect, originalTileRect);
 
+				// Initially, the graph bounding box size may not be a multiple of the tile size.
+				// This can result in the tiles at the +x and +z borders of the graph being slightly cropped.
+				// When we move the graph, we will round it up to the nearest multiple of the tile size.
+				// However, this means we also need to recalculate those border tiles that may have been
+				// cropped before. So the first time we move in the +x and +z directions, we recalculate
+				// an extra row/column of tiles.
+				// Ideally we'd update all border tiles the first time we move in a direction, but that
+				// would require much more complex logic.
+				// If we move in the -x or -z directions, we don't need to calculate any extra tiles,
+				// and the tiles that were cropped originally will be discarded after the move.
+				if (!graph.hasExtendedInX && delta.x != 0) {
+					if (delta.x > 0) createdTiles.xmin -= 1;
+					graph.hasExtendedInX = true;
+				}
+
+				if (!graph.hasExtendedInZ && delta.y != 0) {
+					if (delta.y > 0) createdTiles.ymin -= 1;
+					graph.hasExtendedInZ = true;
+				}
+
 				var disposeArena = new DisposeArena();
 
-				var buildSettings = RecastBuilder.BuildTileMeshes(graph, new TileLayout(graph), createdTiles);
+				var tileLayout = new TileLayout(graph);
+				// Disable cropping to the graph's exact bounds, since the new tiles are actually
+				// created outside the current bounds of the graph.
+				tileLayout.graphSpaceSize.x = float.PositiveInfinity;
+				tileLayout.graphSpaceSize.z = float.PositiveInfinity;
+				var buildSettings = RecastBuilder.BuildTileMeshes(graph, tileLayout, createdTiles);
 				buildSettings.scene = graph.active.gameObject.scene;
 
 				// Schedule the jobs asynchronously.
@@ -884,7 +1150,7 @@ namespace Pathfinding {
 				pendingPromise.Dispose();
 				disposeArena.DisposeAll();
 				// Set the tile rect of the newly created tiles relative to the #newTileRect
-				tileMeshes.tileRect = createdTiles.Offset(originalTileRect.Min - newTileRect.Min);
+				tileMeshes.tileRect = createdTiles.Offset(-delta);
 			}
 
 			public void Apply (IGraphUpdateContext ctx) {
@@ -905,13 +1171,12 @@ namespace Pathfinding {
 			return new GraphTransform(Matrix4x4.TRS(bounds.center, rotation, Vector3.one) * Matrix4x4.TRS(-bounds.extents, Quaternion.identity, Vector3.one));
 		}
 
-		void AllocateTilesArray (TileLayout info) {
-			UnityEngine.Assertions.Assert.IsNull(tiles);
+		protected void SetLayout (TileLayout info) {
 			this.tileXCount = info.tileCount.x;
 			this.tileZCount = info.tileCount.y;
 			this.tileSizeX = info.tileSizeInVoxels.x;
 			this.tileSizeZ = info.tileSizeInVoxels.y;
-			tiles = new NavmeshTile[info.tileCount.x*info.tileCount.y];
+			this.transform = info.transform;
 		}
 
 		/// <summary>Convert character radius to a number of voxels</summary>
@@ -1049,8 +1314,7 @@ namespace Pathfinding {
 			AssertSafeToUpdateGraph();
 			if (this.tiles == null) {
 				TriangleMeshNode.SetNavmeshHolder(AstarPath.active.data.GetGraphIndex(this), this);
-				transform = CalculateTransform();
-				AllocateTilesArray(new TileLayout(this));
+				SetLayout(new TileLayout(this));
 				FillWithEmptyTiles();
 			}
 		}
@@ -1145,7 +1409,14 @@ namespace Pathfinding {
 			base.PostDeserialization(ctx);
 			if (ctx.meta.version < AstarSerializer.V4_3_80) {
 				// This field changed behavior in 4.3.80. This is an approximate (but very good) conversion.
-				colliderRasterizeDetail = 2*cellSize*colliderRasterizeDetail*colliderRasterizeDetail/(math.PI*math.PI);
+				collectionSettings.colliderRasterizeDetail = 2*cellSize*collectionSettings.colliderRasterizeDetail*collectionSettings.colliderRasterizeDetail/(math.PI*math.PI);
+			}
+			if (ctx.meta.version < AstarSerializer.V5_1_0) {
+				if (collectionSettings.tagMask.Count > 0 && collectionSettings.layerMask != -1) {
+					Debug.LogError("In version 5.1.0 or higher of the A* Pathfinding Project you can no longer include objects both using a tag mask and a layer mask. Please choose in the recast graph inspector which one you want to use.");
+				} else if (collectionSettings.tagMask.Count > 0) {
+					collectionSettings.collectionMode = CollectionSettings.FilterMode.Tags;
+				}
 			}
 		}
 	}

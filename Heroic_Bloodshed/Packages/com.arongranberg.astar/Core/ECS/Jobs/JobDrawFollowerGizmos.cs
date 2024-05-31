@@ -39,6 +39,8 @@ namespace Pathfinding.ECS {
 		[ReadOnly]
 		public ComponentTypeHandle<AgentMovementPlane> AgentMovementPlaneHandleRO;
 		// This is actually not read only, because the GetNextCorners function can modify internal state
+		// See JobRepairPath.Scheduler.ManagedStateTypeHandleRW for details about why NativeDisableContainerSafetyRestriction is required
+		[NativeDisableContainerSafetyRestriction]
 		public ComponentTypeHandle<ManagedState> ManagedStateHandleRW;
 		[ReadOnly]
 		public ComponentTypeHandle<MovementState> MovementStateHandleRO;

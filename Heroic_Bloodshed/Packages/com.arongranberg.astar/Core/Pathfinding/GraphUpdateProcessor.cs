@@ -206,15 +206,15 @@ namespace Pathfinding {
 				for (int i = 0; i < promises.Count; i++) {
 					var(promise, it) = promises[i];
 					if (it == null) continue;
-					if (!force) {
+					if (force) {
+						it.Current.Complete();
+					} else {
 						if (it.Current.IsCompleted) {
 							it.Current.Complete();
 						} else {
 							if (firstNonFinished == -1) firstNonFinished = i;
 							continue;
 						}
-					} else {
-						it.Current.Complete();
 					}
 
 					anyMainThreadProgress = true;

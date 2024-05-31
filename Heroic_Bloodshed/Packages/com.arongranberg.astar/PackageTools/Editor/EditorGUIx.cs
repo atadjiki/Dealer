@@ -15,6 +15,18 @@ namespace Pathfinding {
 		public static void PopTint () {
 			GUI.color = colors.Pop();
 		}
+
+		public static Rect SliceRow (ref Rect rect, float height) {
+			var r = new Rect(rect.x, rect.y, rect.width, height);
+			rect.yMin += height + EditorGUIUtility.standardVerticalSpacing;
+			return r;
+		}
+
+		public static Rect SliceColumn (ref Rect rect, float width, float spacing = 0) {
+			var r = new Rect(rect.x, rect.y, width, rect.height);
+			rect.xMin += width + spacing;
+			return r;
+		}
 	}
 
 	/// <summary>
@@ -146,29 +158,6 @@ namespace Pathfinding {
 		static Dictionary<int, string[]> layerNames = new Dictionary<int, string[]>();
 		static long lastUpdateTick;
 		static List<string> dummyList = new List<string>();
-
-		public static bool UnityTagMaskList (GUIContent label, bool foldout, List<string> tagMask) {
-			if (tagMask == null) throw new System.ArgumentNullException("tagMask");
-			if (EditorGUILayout.Foldout(foldout, label)) {
-				EditorGUI.indentLevel++;
-				GUILayout.BeginVertical();
-				for (int i = 0; i < tagMask.Count; i++) {
-					tagMask[i] = EditorGUILayout.TagField(tagMask[i]);
-				}
-				GUILayout.BeginHorizontal();
-				if (GUILayout.Button("Add Tag")) tagMask.Add("Untagged");
-
-				EditorGUI.BeginDisabledGroup(tagMask.Count == 0);
-				if (GUILayout.Button("Remove Last")) tagMask.RemoveAt(tagMask.Count-1);
-				EditorGUI.EndDisabledGroup();
-
-				GUILayout.EndHorizontal();
-				GUILayout.EndVertical();
-				EditorGUI.indentLevel--;
-				return true;
-			}
-			return false;
-		}
 
 		/// <summary>Displays a LayerMask field.</summary>
 		/// <param name="label">Label to display</param>

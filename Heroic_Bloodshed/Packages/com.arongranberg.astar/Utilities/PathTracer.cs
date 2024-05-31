@@ -118,7 +118,22 @@ namespace Pathfinding {
 	[BurstCompile]
 	public struct PathTracer {
 		Funnel.PathPart[] parts;
+
+		/// <summary>All nodes in the path</summary>
 		CircularBuffer<GraphNode> nodes;
+
+		/// <summary>
+		/// Hashes of some important data for each node, to determine if the node has been invalidated in some way.
+		///
+		/// For e.g. the grid graph, this is done using the node's index in the grid. This ensures that the node is counted as invalid
+		/// if the node is for example moved to the other side of the graph using the <see cref="ProceduralGraphMover"/>.
+		///
+		/// For all nodes, this includes if info about if the node has been destroyed, and if it is walkable.
+		///
+		/// This will always have the same length as the <see cref="nodes"/> array, and the absolute indices in this array will correspond to the absolute indices in the <see cref="nodes"/> array.
+		/// </summary>
+		CircularBuffer<int> nodeHashes;
+
 		/// <summary>
 		/// Indicates if portals are definitely not inner corners, or if they may be.
 		/// For each portal, if bit 0 is set then the left side of the portal is definitely not an inner corner.
@@ -127,16 +142,18 @@ namespace Pathfinding {
 		/// Should always have the same length as the portals in <see cref="funnelState"/>.
 		/// </summary>
 		CircularBuffer<byte> portalIsNotInnerCorner;
+
 		Funnel.FunnelState funnelState;
 		Vector3 unclampedEndPoint;
 		Vector3 unclampedStartPoint;
 		GraphNode startNodeInternal;
 
-		public NNConstraint nnConstraint;
+		NNConstraint nnConstraint;
 
 		int firstPartIndex;
 		bool startIsUpToDate;
 		bool endIsUpToDate;
+
 		/// <summary>
 		/// If true, the first part contains destroyed nodes.
 		/// This can happen if the graph is updated and some nodes are destroyed.
@@ -189,7 +206,7 @@ namespace Pathfinding {
 		/// </summary>
 		public GraphNode startNode {
 			readonly get => startNodeInternal != null && !startNodeInternal.Destroyed ? startNodeInternal : null;
-			set => startNodeInternal = value;
+			private set => startNodeInternal = value;
 		}
 
 		/// <summary>
@@ -241,7 +258,7 @@ namespace Pathfinding {
 		///
 		/// If any nodes in the second part have been destroyed, this will return false.
 		/// </summary>
-		public bool isNextPartValidLink => partCount > 1 && GetPartType(1) == Funnel.PartType.OffMeshLink && !PartContainsDestroyedNodes(1);
+		public readonly bool isNextPartValidLink => partCount > 1 && GetPartType(1) == Funnel.PartType.OffMeshLink && !PartContainsDestroyedNodes(1);
 
 		/// <summary>Create a new empty path tracer</summary>
 		public PathTracer(Allocator allocator) {
@@ -249,6 +266,7 @@ namespace Pathfinding {
 			parts = null;
 			nodes = new CircularBuffer<GraphNode>(16);
 			portalIsNotInnerCorner = new CircularBuffer<byte>(16);
+			nodeHashes = new CircularBuffer<int>(16);
 			unclampedEndPoint = unclampedStartPoint = Vector3.zero;
 			firstPartIndex = 0;
 			startIsUpToDate = false;
@@ -314,6 +332,7 @@ namespace Pathfinding {
 				if (toStart) part.startIndex++;
 				else part.endIndex--;
 				nodes.Pop(toStart);
+				nodeHashes.Pop(toStart);
 				if (partIndex == this.firstPartIndex && funnelState.leftFunnel.Length > 0) {
 					funnelState.Pop(toStart);
 					portalIsNotInnerCorner.Pop(toStart);
@@ -339,6 +358,7 @@ namespace Pathfinding {
 				}
 			}
 			nodes.Push(toStart, node);
+			nodeHashes.Push(toStart, HashNode(node));
 			if (toStart) {
 				part.startIndex--;
 			} else {
@@ -365,7 +385,7 @@ namespace Pathfinding {
 				var lastDestroyCheckIndex = Mathf.Min(parts[firstPartIndex].startIndex + NODES_TO_CHECK_FOR_DESTRUCTION, parts[firstPartIndex].endIndex);
 				bool foundDestroyedNodes = false;
 				for (int i = parts[firstPartIndex].startIndex; i <= lastDestroyCheckIndex; i++) {
-					foundDestroyedNodes |= !Valid(nodes.GetAbsolute(i));
+					foundDestroyedNodes |= !ValidInPath(i);
 				}
 				firstPartContainsDestroyedNodes = foundDestroyedNodes;
 			}
@@ -441,10 +461,16 @@ namespace Pathfinding {
 #endif
 			var numToInsert = toInsert != null ? toInsert.Count : 0;
 
-			if (startIndex - 1 >= part.startIndex && !Valid(nodes.GetAbsolute(startIndex - 1))) return false;
-			if (startIndex + toRemove <= part.endIndex && !Valid(nodes.GetAbsolute(startIndex + toRemove))) return false;
+			// We need to access the nodes next to the range we are inserting.
+			// If those nodes are not valid, then we cannot continue
+			if (startIndex - 1 >= part.startIndex && !ValidInPath(startIndex - 1)) return false;
+			if (startIndex + toRemove <= part.endIndex && !ValidInPath(startIndex + toRemove)) return false;
 
 			nodes.SpliceAbsolute(startIndex, toRemove, toInsert);
+			nodeHashes.SpliceUninitializedAbsolute(startIndex, toRemove, numToInsert);
+			if (toInsert != null) {
+				for (int i = 0; i < toInsert.Count; i++) nodeHashes.SetAbsolute(startIndex + i, HashNode(toInsert[i]));
+			}
 			var nodesInserted = numToInsert - toRemove;
 
 			var affectedPortalsStart1 = math.max(startIndex - 1, part.startIndex);
@@ -531,13 +557,16 @@ namespace Pathfinding {
 			int partIndex;
 			GraphNode currentNode;
 			bool samePoint;
+			int currentIndexInPath;
 			if (isStart) {
 				partIndex = this.firstPartIndex;
-				currentNode = nodes.GetAbsolute(parts[partIndex].startIndex);
+				currentIndexInPath = parts[partIndex].startIndex;
+				currentNode = nodes.GetAbsolute(currentIndexInPath);
 				samePoint = unclampedStartPoint == point;
 			} else {
 				partIndex = this.parts.Length - 1;
-				currentNode = nodes.GetAbsolute(parts[partIndex].endIndex);
+				currentIndexInPath = parts[partIndex].endIndex;
+				currentNode = nodes.GetAbsolute(currentIndexInPath);
 				samePoint = unclampedEndPoint == point;
 			}
 
@@ -547,7 +576,8 @@ namespace Pathfinding {
 			// If the path is currently stale, it is possible that doing a full repair again
 			// would find a better node (possibly even make it not stale anymore), but it is
 			// common that this would just lead to wasted computations, so we don't.
-			if (allowCache && samePoint && Valid(currentNode)) {
+			bool currentNodeValid = ValidInPath(currentIndexInPath);
+			if (allowCache && samePoint && currentNodeValid) {
 				return;
 			}
 
@@ -573,7 +603,7 @@ namespace Pathfinding {
 			}
 
 			const float height = 1.0f;
-			if (Valid(currentNode)) {
+			if (currentNodeValid) {
 				// Check if we are inside the same node as last frame. This is the common case.
 				// We also ensure that we are not too far above the node as that might indicate
 				// that we have been teleported to a point with the same XZ coordinates,
@@ -639,10 +669,11 @@ namespace Pathfinding {
 				while (funnelState.IsReasonableToPopStart(point, part.endPoint)) {
 					part.startIndex++;
 					nodes.PopStart();
+					nodeHashes.PopStart();
 					funnelState.PopStart();
 					portalIsNotInnerCorner.PopStart();
 				}
-				if (Valid(nodes.First)) startNode = nodes.First;
+				if (ValidInPath(nodes.AbsoluteStartIndex)) startNode = nodes.First;
 			} else {
 				var removed = 0;
 				while (funnelState.IsReasonableToPopEnd(part.startPoint, point)) {
@@ -653,6 +684,7 @@ namespace Pathfinding {
 				}
 				if (removed > 0) {
 					nodes.SpliceAbsolute(part.endIndex + 1, removed, null);
+					nodeHashes.SpliceAbsolute(part.endIndex + 1, removed, null);
 					for (int i = firstPartIndex + 1; i < parts.Length; i++) {
 						parts[i].startIndex -= removed;
 						parts[i].endIndex -= removed;
@@ -664,7 +696,7 @@ namespace Pathfinding {
 			var lastDestroyCheckIndex = Mathf.Min(part.startIndex + NODES_TO_CHECK_FOR_DESTRUCTION, part.endIndex);
 			bool foundDestroyedNodes = false;
 			for (int i = part.startIndex; i <= lastDestroyCheckIndex; i++) {
-				foundDestroyedNodes |= !Valid(nodes.GetAbsolute(i));
+				foundDestroyedNodes |= !ValidInPath(i);
 			}
 
 			// We may end up popping all destroyed nodes from the part.
@@ -674,22 +706,48 @@ namespace Pathfinding {
 			CheckInvariants();
 		}
 
+		[System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
+		void AssertValidInPath (int absoluteNodeIndex) {
+			Assert.IsTrue(ValidInPath(absoluteNodeIndex));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		readonly bool ValidInPath (int absoluteNodeIndex) {
+			return HashNode(nodes.GetAbsolute(absoluteNodeIndex)) == nodeHashes.GetAbsolute(absoluteNodeIndex);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static bool Valid(GraphNode node) => !node.Destroyed && node.Walkable;
+
+		/// <summary>
+		/// Returns a hash with the most relevant information about a node.
+		///
+		/// See: <see cref="nodeHashes"/>
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static int HashNode (GraphNode node) {
+			// Note: The node index will change if the node is destroyed
+			int h = (int)node.NodeIndex;
+			h ^= node.Walkable ? 100663319 : 0;
+			if (node is GridNodeBase gnode) {
+				h ^= gnode.NodeInGridIndex * 25165843;
+			}
+			return h;
+		}
 
 		void RepairFull (Vector3 point, bool isStart, RepairQuality quality, NativeMovementPlane movementPlane, ITraversalProvider traversalProvider, Path path) {
 			// TODO: Rewrite to use Int3 coordinates everywhere
 			var maxNodesToSearch = quality == RepairQuality.High ? 16 : 9;
 			var partIndex = isStart ? this.firstPartIndex : this.parts.Length - 1;
 			ref var part = ref parts[partIndex];
-			var currentNode = nodes.GetAbsolute(isStart ? part.startIndex : part.endIndex);
+			var currentIndexInPath = isStart ? part.startIndex : part.endIndex;
 
 			// TODO
 			// Restructure code so that we do the heuristic passed-portal check if the next portal is destroyed (current or next node is destroyed),
 			// but we allow using the normal repair code if the current node exists, but the next node is destroyed.
 			// We only search for the globally closest node if the current node is destroyed after the heuristic passed-portal check is done.
 			// !!
-			var nextPortalDestroyed = !Valid(currentNode) || (part.endIndex != part.startIndex && !Valid(nodes.GetAbsolute(isStart ? part.startIndex + 1 : part.endIndex - 1)));
+			var nextPortalDestroyed = !ValidInPath(currentIndexInPath) || (part.endIndex != part.startIndex && !ValidInPath(isStart ? part.startIndex + 1 : part.endIndex - 1));
 
 			if (nextPortalDestroyed && partIndex == firstPartIndex) {
 				// If the current node or the next node is destroyed, we still need to keep a funnel that we can use for directions
@@ -706,10 +764,10 @@ namespace Pathfinding {
 				//   Instead, we heuristically pop the portal between A and B, and the path becomes B -> C.
 				// - Now the current node is B which is destroyed, so we enter another IF-statement below.
 				HeuristicallyPopPortals(isStart, point);
-				currentNode = nodes.GetAbsolute(isStart ? part.startIndex : part.endIndex);
+				currentIndexInPath = isStart ? part.startIndex : part.endIndex;
 			}
 
-			if (!Valid(currentNode)) {
+			if (!ValidInPath(currentIndexInPath)) {
 				// If the current node is destroyed, we must use a global GetNearest check to find the closest non-destroyed node.
 				// We do this so that we can still clamp the agent to the navmesh even if the current node is destroyed.
 				// We do not want to replace the path with just a single node, because that may cause odd movement for a few frames
@@ -722,7 +780,6 @@ namespace Pathfinding {
 					startIsUpToDate = false;
 
 					var nn = this.nnConstraint;
-					nn.constrainArea = false;
 					nn.distanceMetric = DistanceMetric.ClosestAsSeenFromAboveSoft(movementPlane.ToWorld(float2.zero, 1));
 					var globallyClosestNode = AstarPath.active != null? AstarPath.active.GetNearest(point, nn).node : null;
 
@@ -754,6 +811,7 @@ namespace Pathfinding {
 							unclampedStartPoint = point;
 							unclampedEndPoint = clampedStartPoint;
 							this.nodes.PushEnd(globallyClosestNode);
+							this.nodeHashes.PushEnd(HashNode(globallyClosestNode));
 							this.parts = new Funnel.PathPart[1];
 							this.parts[0] = new Funnel.PathPart {
 								startIndex = nodes.AbsoluteStartIndex,
@@ -774,7 +832,7 @@ namespace Pathfinding {
 				}
 				CheckInvariants();
 			} else {
-				var repairPath = LocalSearch(currentNode, point, maxNodesToSearch, movementPlane, isStart, traversalProvider, path);
+				var repairPath = LocalSearch(nodes.GetAbsolute(currentIndexInPath), point, maxNodesToSearch, movementPlane, isStart, traversalProvider, path);
 
 				{
 					// When we repair the path we may have multiple different cases:
@@ -806,6 +864,8 @@ namespace Pathfinding {
 
 					MarkerGetNearest.Begin();
 					var globallyClosestNode = AstarPath.active.GetNearest(point, nn);
+					nn.constrainArea = false;
+
 
 					MarkerGetNearest.End();
 					var oldClampedPoint = isStart ? part.startPoint : part.endPoint;
@@ -944,7 +1004,6 @@ namespace Pathfinding {
 		/// </summary>
 		CircularBuffer<GraphNode> LocalSearch (GraphNode currentNode, Vector3 point, int maxNodesToSearch, NativeMovementPlane movementPlane, bool reverse, ITraversalProvider traversalProvider, Path path) {
 			var nn = this.nnConstraint;
-			nn.constrainArea = false;
 			nn.distanceMetric = DistanceMetric.ClosestAsSeenFromAboveSoft(movementPlane.up);
 
 			// Grab a temporary queue and list to use for this thread
@@ -1034,7 +1093,8 @@ namespace Pathfinding {
 
 			if (partGraphType == PartGraphType.Grid) {
 				// To make the path easier to handle, we replace all diagonals by two axis-aligned connections
-				RemoveGridPathDiagonals(null, 0, ref repairPath, nnConstraint, traversalProvider, path);
+				var hashes = new CircularBuffer<int>();
+				RemoveGridPathDiagonals(null, 0, ref repairPath, ref hashes, nnConstraint, traversalProvider, path);
 			}
 			return repairPath;
 		}
@@ -1318,7 +1378,6 @@ namespace Pathfinding {
 		bool FirstInnerVertex (NativeArray<int> indices, int numCorners, List<GraphNode> alternativePath, out int alternativeStartIndex, out int alternativeEndIndex, ITraversalProvider traversalProvider, Path path) {
 			var part = parts[firstPartIndex];
 			Assert.AreEqual(funnelState.leftFunnel.Length, portalIsNotInnerCorner.Length);
-			nnConstraint.constrainArea = false;
 
 			for (int i = 0; i < numCorners; i++) {
 				var idx = indices[i];
@@ -1507,7 +1566,10 @@ namespace Pathfinding {
 			firstPartIndex += count;
 			version++;
 			var part = parts[firstPartIndex];
-			while (nodes.AbsoluteStartIndex < part.startIndex) nodes.PopStart();
+			while (nodes.AbsoluteStartIndex < part.startIndex) {
+				nodes.PopStart();
+				nodeHashes.PopStart();
+			}
 			this.startNode = nodes.Length > 0 ? nodes.First : null;
 			firstPartContainsDestroyedNodes = false;
 			if (GetPartType() == Funnel.PartType.OffMeshLink) {
@@ -1519,7 +1581,7 @@ namespace Pathfinding {
 			this.partGraphType = PartGraphTypeFromNode(startNode);
 
 			for (int i = part.startIndex; i <= part.endIndex; i++) {
-				if (!Valid(nodes.GetAbsolute(i))) {
+				if (!ValidInPath(i)) {
 					// The part contains invalid nodes.
 					// However, we didn't get a chance to calculate funnel portals for this part.
 					// In order to preserve the invariant that we have funnel portals for the first part,
@@ -1527,7 +1589,10 @@ namespace Pathfinding {
 					// We mark the path as stale in order to trigger a path recalculation as soon as possible.
 					// If this is the first node in the part, we leave only this node, to ensure the path is not empty.
 					RemoveAllPartsExceptFirst();
-					while (nodes.AbsoluteEndIndex > i) nodes.PopEnd();
+					while (nodes.AbsoluteEndIndex > i) {
+						nodes.PopEnd();
+						nodeHashes.PopEnd();
+					}
 					part.endIndex = i;
 					parts[firstPartIndex] = part;
 
@@ -1557,6 +1622,7 @@ namespace Pathfinding {
 						endIsUpToDate = false;
 						// It's not the first node, we can remove this node too
 						nodes.PopEnd();
+						nodeHashes.PopEnd();
 						part.endIndex = i - 1;
 						parts[firstPartIndex] = part;
 						break;
@@ -1565,7 +1631,7 @@ namespace Pathfinding {
 			}
 
 			if (partGraphType == PartGraphType.Grid) {
-				RemoveGridPathDiagonals(this.parts, firstPartIndex, ref this.nodes, nnConstraint, traversalProvider, path);
+				RemoveGridPathDiagonals(this.parts, firstPartIndex, ref this.nodes, ref this.nodeHashes, nnConstraint, traversalProvider, path);
 				part = parts[firstPartIndex];
 			}
 
@@ -1580,22 +1646,25 @@ namespace Pathfinding {
 			this.parts = newParts;
 			firstPartIndex = 0;
 			// Remove all nodes in subsequent parts
-			while (nodes.AbsoluteEndIndex > parts[0].endIndex) nodes.PopEnd();
+			while (nodes.AbsoluteEndIndex > parts[0].endIndex) {
+				nodes.PopEnd();
+				nodeHashes.PopEnd();
+			}
 			version++;
 		}
 
 		/// <summary>Indicates if the given path part is a regular path part or an off-mesh link.</summary>
 		/// <param name="partIndex">The index of the path part. Zero is the always the current path part.</param>
-		public Funnel.PartType GetPartType (int partIndex = 0) {
+		public readonly Funnel.PartType GetPartType (int partIndex = 0) {
 			return parts[this.firstPartIndex + partIndex].type;
 		}
 
-		public bool PartContainsDestroyedNodes (int partIndex = 0) {
+		public readonly bool PartContainsDestroyedNodes (int partIndex = 0) {
 			if (partIndex < 0 || partIndex >= partCount) throw new System.ArgumentOutOfRangeException(nameof(partIndex));
 
 			var part = parts[firstPartIndex + partIndex];
 			for (int i = part.startIndex; i <= part.endIndex; i++) {
-				if (!Valid(nodes.GetAbsolute(i))) return true;
+				if (!ValidInPath(i)) return true;
 			}
 			return false;
 		}
@@ -1650,11 +1719,11 @@ namespace Pathfinding {
 		void CalculateFunnelPortals (int startNodeIndex, int endNodeIndex, List<float3> outLeftPortals, List<float3> outRightPortals) {
 			Profiler.BeginSample("CalculatePortals");
 			var prevNode = this.nodes.GetAbsolute(startNodeIndex);
-			Assert.IsTrue(Valid(prevNode));
+			AssertValidInPath(startNodeIndex);
 
 			for (int i = startNodeIndex + 1; i <= endNodeIndex; i++) {
 				var node = this.nodes.GetAbsolute(i);
-				Assert.IsTrue(Valid(node));
+				AssertValidInPath(i);
 				if (prevNode.GetPortal(node, out var left, out var right)) {
 					outLeftPortals.Add(left);
 					outRightPortals.Add(right);
@@ -1686,6 +1755,7 @@ namespace Pathfinding {
 			funnelState.Clear();
 			parts = null;
 			nodes.Clear();
+			nodeHashes.Clear();
 			portalIsNotInnerCorner.Clear();
 			unclampedEndPoint = unclampedStartPoint = Vector3.zero;
 			firstPartIndex = 0;
@@ -1753,7 +1823,6 @@ namespace Pathfinding {
 				return false;
 			}
 
-
 			// Only try to simplify every 2^value frame, unless the path changes
 			const int EveryNthLog2 = 2;
 			int i = 0;
@@ -1770,6 +1839,17 @@ namespace Pathfinding {
 			splitting /= 1 << EveryNthLog2;
 
 			Assert.IsTrue(portalIndex >= 0 && portalIndex < part.endIndex - part.startIndex);
+
+			// The ResolveNormalizedGridPoint method will access up to the cornerIndices[1] node and the one that follows it in the path
+			var lastRelevantNodeIndex = cornerIndices.length < 2 ? part.endIndex : math.min(part.endIndex, part.startIndex + (cornerIndices[1] & Funnel.FunnelPortalIndexMask) + 1);
+			for (int j = part.startIndex; j < lastRelevantNodeIndex; j++) {
+				var a = nodes.GetAbsolute(j);
+				var b = nodes.GetAbsolute(j + 1);
+				if (!Valid(b) || !a.ContainsOutgoingConnection(b)) {
+					// The path is no longer valid
+					return false;
+				}
+			}
 
 			var grid = GridNode.GetGridGraph(nodes.GetAbsolute(part.startIndex).GraphIndex);
 
@@ -1857,7 +1937,7 @@ namespace Pathfinding {
 		///
 		/// This is done to make the funnel algorithm work better on grid graphs.
 		/// </summary>
-		static void RemoveGridPathDiagonals (Funnel.PathPart[] parts, int partIndex, ref CircularBuffer<GraphNode> path, NNConstraint nnConstraint, ITraversalProvider traversalProvider, Path pathObject) {
+		static void RemoveGridPathDiagonals (Funnel.PathPart[] parts, int partIndex, ref CircularBuffer<GraphNode> path, ref CircularBuffer<int> pathNodeHashes, NNConstraint nnConstraint, ITraversalProvider traversalProvider, Path pathObject) {
 			int inserted = 0;
 			var part = parts != null ? parts[partIndex] : new Funnel.PathPart { startIndex = path.AbsoluteStartIndex, endIndex = path.AbsoluteEndIndex };
 			for (int i = part.endIndex - 1; i >= part.startIndex; i--) {
@@ -1874,6 +1954,7 @@ namespace Pathfinding {
 
 					if (n1 != null && n1.GetNeighbourAlongDirection(d2) == node2 && (traversalProvider == null || traversalProvider.CanTraverse(pathObject, n1, node2))) {
 						path.InsertAbsolute(i+1, n1);
+						if (pathNodeHashes.Length > 0) pathNodeHashes.InsertAbsolute(i+1, HashNode(n1));
 						inserted++;
 					} else {
 						var n2 = node.GetNeighbourAlongDirection(d2);
@@ -1881,6 +1962,7 @@ namespace Pathfinding {
 
 						if (n2 != null && n2.GetNeighbourAlongDirection(d1) == node2 && (traversalProvider == null || traversalProvider.CanTraverse(pathObject, n2, node2))) {
 							path.InsertAbsolute(i+1, n2);
+							if (pathNodeHashes.Length > 0) pathNodeHashes.InsertAbsolute(i+1, HashNode(n2));
 							inserted++;
 						} else {
 							throw new System.Exception("Axis-aligned connection not found");
@@ -1945,11 +2027,15 @@ namespace Pathfinding {
 			this.parts = parts.ToArray();
 			this.nodes.Clear();
 			this.nodes.AddRange(nodes);
+			this.nodeHashes.Clear();
+			for (int i = 0; i < nodes.Count; i++) {
+				this.nodeHashes.PushEnd(HashNode(nodes[i]));
+			}
 			this.firstPartIndex = 0;
 
 			if (partGraphType == PartGraphType.Grid) {
 				// SimplifyGridPath(this.parts, 0, ref this.nodes, int.MaxValue);
-				RemoveGridPathDiagonals(this.parts, 0, ref this.nodes, nnConstraint, traversalProvider, path);
+				RemoveGridPathDiagonals(this.parts, 0, ref this.nodes, ref this.nodeHashes, nnConstraint, traversalProvider, path);
 			}
 
 			SetFunnelState(this.parts[firstPartIndex]);

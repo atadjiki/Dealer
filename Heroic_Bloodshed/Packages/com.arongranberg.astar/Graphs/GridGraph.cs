@@ -1837,9 +1837,11 @@ namespace Pathfinding {
 					}
 
 					if (collision.collisionCheck) {
+						context.tracker.timeSlice = TimeSlice.MillisFromNow(1);
 						var wait = context.data.CollisionCheck(collision, fullRecalculationBounds);
 						while (wait != null && wait.MoveNext()) {
 							yield return wait.Current;
+							context.tracker.timeSlice = TimeSlice.MillisFromNow(2);
 						}
 					}
 

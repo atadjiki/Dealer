@@ -28,7 +28,7 @@ namespace Pathfinding {
 	/// For larger graphs, it can take quite some time to scan the graph with the default settings.
 	/// You can enable <see cref="optimizeForSparseGraph"/> which will in most cases reduce the calculation times drastically.
 	///
-	/// Note: Does not support linecast because of obvious reasons.
+	/// Note: Does not support linecast because the nodes do not have a surface.
 	///
 	/// [Open online documentation to see images]
 	/// [Open online documentation to see images]

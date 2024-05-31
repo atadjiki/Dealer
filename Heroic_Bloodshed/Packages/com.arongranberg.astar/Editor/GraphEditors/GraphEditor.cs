@@ -110,6 +110,11 @@ namespace Pathfinding {
 		public virtual void OnSceneGUI (NavGraph target) {
 		}
 
+		public static void Header (string title) {
+			EditorGUILayout.LabelField(new GUIContent(title), EditorStyles.boldLabel);
+			GUILayout.Space(4);
+		}
+
 		/// <summary>Draws a thin separator line</summary>
 		public static void Separator () {
 			GUIStyle separator = AstarPathEditor.astarSkin.FindStyle("PixelBox3Separator") ?? new GUIStyle();

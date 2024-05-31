@@ -335,7 +335,6 @@ namespace Pathfinding {
 					graph.forcedBoundsSize = Vector3.zero;
 					graph.transform = transform;
 					graph.tileZCount = graph.tileXCount = 1;
-					graph.tiles = new NavmeshTile[graph.tileZCount*graph.tileZCount];
 					TriangleMeshNode.SetNavmeshHolder(AstarPath.active.data.GetGraphIndex(graph), graph);
 					graph.FillWithEmptyTiles();
 					return;

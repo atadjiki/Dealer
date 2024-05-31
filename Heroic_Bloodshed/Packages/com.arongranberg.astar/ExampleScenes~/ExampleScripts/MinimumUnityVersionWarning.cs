@@ -32,7 +32,7 @@ namespace Pathfinding.Examples {
 			if (requiresUnity2022_2) {
 				var rect = new Rect(Screen.width/2 - 325, Screen.height/2 - 30, 650, 60);
 				GUILayout.BeginArea(rect, "", "box");
-				GUILayout.Label("<b>Unity version too low</b>\nThis example scene can unfortunately not be played in your version of Unity, due to compatibility issues.\nYou must upgrade to Unity 2022.2 or later");
+				GUILayout.Label("<b>Unity version too low</b>\nThis example scene can unfortunately not be played in your version of Unity, due to compatibility issues.\nYou must upgrade to Unity 2022.2 or later.");
 				GUILayout.EndArea();
 				return;
 			}
@@ -42,11 +42,13 @@ namespace Pathfinding.Examples {
 			if (requiresEntities) {
 				var rect = new Rect(Screen.width/2 - 325, Screen.height/2 - 30, 650, 80);
 				GUILayout.BeginArea(rect, "", "box");
-				GUILayout.Label("<b>Just one more step</b>\nThis example scene requires version 1.0 or higher of the <b>Entities</b> package to be installed\nYou can install it from the Unity Package Manager");
 #if UNITY_EDITOR
+				GUILayout.Label("<b>Just one more step</b>\nThis example scene requires version 1.0 or higher of the <b>Entities</b> package to be installed.");
 				if (GUILayout.Button("Install")) {
 					UnityEditor.PackageManager.Client.Add("com.unity.entities");
 				}
+#else
+				GUILayout.Label("<b>Just one more step</b>\nThis example scene requires version 1.0 or higher of the <b>Entities</b> package to be installed\nYou can install it from the Unity Package Manager");
 #endif
 				GUILayout.EndArea();
 				return;

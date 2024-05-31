@@ -86,6 +86,10 @@ namespace Pathfinding {
 				}
 			}
 
+			if (GUILayout.Button("Edit points")) {
+				Tools.current = Tool.Move;
+			}
+
 			if (GUILayout.Button("Clear all points")) {
 				for (int i = 0; i < scripts.Length; i++) {
 					Undo.RecordObject(scripts[i], "Clear points");
@@ -196,9 +200,10 @@ namespace Pathfinding {
 
 
 			float minScreenDist = float.PositiveInfinity;
-			if (Tools.current != Tool.View && Event.current.type == EventType.Layout) {
+			if (Tools.current != Tool.View && (Event.current.type == EventType.Layout || Event.current.type == EventType.MouseMove)) {
 				for (int i = 0; i < script.points.Length; i++) {
-					float dist = HandleUtility.DistanceToLine(points[i], points[i]);
+					float dist = HandleUtility.DistanceToLine(points[i], (points[i] + points[(i+1) % script.points.Length])*0.5f);
+					dist = Mathf.Min(dist, HandleUtility.DistanceToLine(points[i], (points[i] + points[(i-1 + script.points.Length) % script.points.Length])*0.5f));
 					HandleUtility.AddControl(-i - 1, dist);
 					minScreenDist = Mathf.Min(dist, minScreenDist);
 				}
@@ -207,7 +212,9 @@ namespace Pathfinding {
 			// If there is a point sort of close to the cursor, but not close enough
 			// to receive a click event, then prevent the user from accidentally clicking
 			// which would deselect the current object and be kinda annoying.
-			if (Tools.current != Tool.View && minScreenDist < 50)
+			// Also always add a default control when shift is pressed, to ensure we don't deselect anything.
+			// This is particularly important when the user is holding shift to add the first point.
+			if (Tools.current != Tool.View && (minScreenDist < 50 || Event.current.shift))
 				HandleUtility.AddDefaultControl(0);
 
 			for (int i = 0; i < points.Count; i++) {
@@ -279,6 +286,7 @@ namespace Pathfinding {
 
 				var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 				System.Object hit = HandleUtility.RaySnap(ray);
+
 				Vector3 rayhit = Vector3.zero;
 				bool didHit = false;
 				if (hit != null) {
@@ -294,6 +302,12 @@ namespace Pathfinding {
 					}
 				}
 
+				if (!didHit && SceneView.currentDrawingSceneView.in2DMode) {
+					didHit = true;
+					rayhit = ray.origin;
+					rayhit.z = 0;
+				}
+
 				if (didHit) {
 					if (Event.current.type == EventType.MouseDown) {
 						points.Insert(insertionIndex, rayhit);
@@ -303,10 +317,12 @@ namespace Pathfinding {
 						arr.Insert(insertionIndex, invMatrix.MultiplyPoint3x4(rayhit));
 						script.points = arr.ToArray();
 						GUI.changed = true;
-					} else if (points.Count > 0) {
+					} else {
 						Handles.color = Color.green;
-						Handles.DrawDottedLine(points[(insertionIndex-1 + points.Count) % points.Count], rayhit, 8);
-						Handles.DrawDottedLine(points[insertionIndex % points.Count], rayhit, 8);
+						if (points.Count > 0) {
+							Handles.DrawDottedLine(points[(insertionIndex-1 + points.Count) % points.Count], rayhit, 8);
+							Handles.DrawDottedLine(points[insertionIndex % points.Count], rayhit, 8);
+						}
 						SphereCap(0, rayhit, Quaternion.identity, HandleUtility.GetHandleSize(rayhit)*pointGizmosRadius);
 						// Project point down onto a plane
 						var zeroed = invMatrix.MultiplyPoint3x4(rayhit);

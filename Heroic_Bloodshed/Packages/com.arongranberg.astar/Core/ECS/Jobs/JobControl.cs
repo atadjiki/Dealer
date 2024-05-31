@@ -45,7 +45,7 @@ namespace Pathfinding.ECS {
 			var position = ClampToNavmesh(transform.Position, state.closestOnNavmesh, in shape, in movementPlane);
 
 			edgesScratch.Clear();
-			var scale = transform.Scale;
+			var scale = math.abs(transform.Scale);
 			var settingsTemp = settings.follower;
 			// Scale the settings by the agent's scale
 			settingsTemp.ScaleByAgentScale(scale);

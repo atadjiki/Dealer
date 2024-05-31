@@ -301,7 +301,7 @@ namespace Pathfinding.ECS {
 		/// This is useful if your agent was traversing an off-mesh link, but you have detected that it cannot continue.
 		/// Maybe the ladder it was climbing was destroyed, or the bridge it was walking on collapsed.
 		///
-		/// Note: If you instead want to immediately make the agent move to the end of the link, you can call <see cref="Teleport"/>, and then use <code> yield break;</code> from your coroutine.
+		/// Note: If you instead want to immediately make the agent move to the end of the link, you can call <see cref="Teleport"/>, and then use 'yield break;' from your coroutine.
 		/// </summary>
 		/// <param name="teleportToStart">If true, the agent will be teleported back to the start of the link (from the perspective of the agent). Its rotation will remain unchanged.</param>
 		public virtual void Abort (bool teleportToStart = true) {

@@ -7,6 +7,7 @@ AstarPath.IsAnyGraphUpdateQueued	astarpath.html#IsAnyGraphUpdateQueued	Returns i
 AstarPath.IsAnyWorkItemInProgress	astarpath.html#IsAnyWorkItemInProgress	Returns if any work items are in progress right now. \n\n[more in online documentation]
 AstarPath.IsInsideWorkItem	astarpath.html#IsInsideWorkItem	Returns if this code is currently being exectuted inside a work item. \n\n[more in online documentation]\nIn contrast to IsAnyWorkItemInProgress this is only true when work item code is being executed, it is not true in-between the updates to a work item that takes several frames to complete.
 AstarPath.IsUsingMultithreading	astarpath.html#IsUsingMultithreading	Returns whether or not multithreading is used. \n\n\n[more in online documentation]
+AstarPath.NNConstraintClosestAsSeenFromAbove	astarpath.html#NNConstraintClosestAsSeenFromAbove	Cached NNConstraint to avoid unnecessary allocations. \n\nThis should ideally be fixed by making NNConstraint an immutable class/struct.
 AstarPath.NNConstraintNone	astarpath.html#NNConstraintNone	Cached NNConstraint.None to avoid unnecessary allocations. \n\nThis should ideally be fixed by making NNConstraint an immutable class/struct.
 AstarPath.NumParallelThreads	astarpath.html#NumParallelThreads	Number of parallel pathfinders. \n\nReturns the number of concurrent processes which can calculate paths at once. When using multithreading, this will be the number of threads, if not using multithreading it is always 1 (since only 1 coroutine is used). \n\n[more in online documentation]
 AstarPath.On65KOverflow	astarpath.html#On65KOverflow	Called when <b>pathID</b> overflows 65536 and resets back to zero. \n\n[more in online documentation]
@@ -542,6 +543,30 @@ Pathfinding.ECS.AgentCylinderShape.height	agentcylindershape.html#height	Height 
 Pathfinding.ECS.AgentCylinderShape.radius	agentcylindershape.html#radius	Radius of the agent in world units.
 Pathfinding.ECS.AgentMovementPlane.value	agentmovementplane.html#value	The movement plane for the agent. \n\nThe movement plane determines what the "up" direction of the agent is. For most typical 3D games, this will be aligned with the Y axis, but there are games in which the agent needs to navigate on walls, or on spherical worlds. For those games this movement plane will track the plane in which the agent is currently moving.\n\n[more in online documentation]
 Pathfinding.ECS.AgentMovementPlaneSource.value	agentmovementplanesource.html#value	
+Pathfinding.ECS.AgentOffMeshLinkTraversal.firstPosition	agentoffmeshlinktraversal.html#firstPosition	The start point of the off-mesh link from the agent's perspective. \n\nThis is the point where the agent starts traversing the off-mesh link, regardless of if the link is traversed from the start to end or from end to start. \n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversal.isReverse	agentoffmeshlinktraversal.html#isReverse	True if the agent is traversing the off-mesh link from original link's end to its start point. \n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversal.relativeEnd	agentoffmeshlinktraversal.html#relativeEnd	The end point of the off-mesh link from the agent's perspective. \n\nThis is the point where the agent will finish traversing the off-mesh link, regardless of if the link is traversed from start to end or from end to start.
+Pathfinding.ECS.AgentOffMeshLinkTraversal.relativeStart	agentoffmeshlinktraversal.html#relativeStart	The start point of the off-mesh link from the agent's perspective. \n\nThis is the point where the agent starts traversing the off-mesh link, regardless of if the link is traversed from the start to end or from end to start.
+Pathfinding.ECS.AgentOffMeshLinkTraversal.secondPosition	agentoffmeshlinktraversal.html#secondPosition	The end point of the off-mesh link from the agent's perspective. \n\nThis is the point where the agent will finish traversing the off-mesh link, regardless of if the link is traversed from start to end or from end to start. \n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.backupRotationSmoothing	agentoffmeshlinktraversalcontext.html#backupRotationSmoothing	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.concreteLink	agentoffmeshlinktraversalcontext.html#concreteLink	The off-mesh link that is being traversed. \n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.deltaTime	agentoffmeshlinktraversalcontext.html#deltaTime	Delta time since the last link simulation. \n\nDuring high time scales, the simulation may run multiple substeps per frame.\n\nThis is <b>not</b> the same as Time.deltaTime. Inside the link coroutine, you should always use this field instead of Time.deltaTime.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.disabledRVO	agentoffmeshlinktraversalcontext.html#disabledRVO	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.entity	agentoffmeshlinktraversalcontext.html#entity	The entity that is traversing the off-mesh link.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.gameObject	agentoffmeshlinktraversalcontext.html#gameObject	GameObject associated with the agent. \n\nIn most cases, an agent is associated with an agent, but this is not always the case. For example, if you have created an entity without using the FollowerEntity component, this property may return null.\n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.gameObjectCache	agentoffmeshlinktraversalcontext.html#gameObjectCache	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.link	agentoffmeshlinktraversalcontext.html#link	Information about the off-mesh link that the agent is traversing.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.linkInfo	agentoffmeshlinktraversalcontext.html#linkInfo	Information about the off-mesh link that the agent is traversing. \n\n[more in online documentation]
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.linkInfoPtr	agentoffmeshlinktraversalcontext.html#linkInfoPtr	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.managedState	agentoffmeshlinktraversalcontext.html#managedState	Some internal state of the agent.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementControl	agentoffmeshlinktraversalcontext.html#movementControl	How the agent should move. \n\nThe agent will move according to this data, every frame.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementControlPtr	agentoffmeshlinktraversalcontext.html#movementControlPtr	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementPlane	agentoffmeshlinktraversalcontext.html#movementPlane	The plane in which the agent is moving. \n\nIn a 3D game, this will typically be the XZ plane, but in a 2D game it will typically be the XY plane. Games on spherical planets could have planes that are aligned with the surface of the planet.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementPlanePtr	agentoffmeshlinktraversalcontext.html#movementPlanePtr	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementSettings	agentoffmeshlinktraversalcontext.html#movementSettings	The movement settings for the agent.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.movementSettingsPtr	agentoffmeshlinktraversalcontext.html#movementSettingsPtr	
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.transform	agentoffmeshlinktraversalcontext.html#transform	ECS LocalTransform component attached to the agent.
+Pathfinding.ECS.AgentOffMeshLinkTraversalContext.transformPtr	agentoffmeshlinktraversalcontext.html#transformPtr	
 Pathfinding.ECS.AutoRepathPolicy.Default	autorepathpolicy.html#Default	
 Pathfinding.ECS.AutoRepathPolicy.Sensitivity	autorepathpolicy.html#Sensitivity	How sensitive the agent should be to changes in its destination for Mode.Dynamic. \n\nA higher value means the destination has to move less for the path to be recalculated.\n\n[more in online documentation]
 Pathfinding.ECS.AutoRepathPolicy.lastDestination	autorepathpolicy.html#lastDestination	
@@ -639,6 +664,10 @@ Pathfinding.ECS.JobSyncEntitiesToTransforms.movementState	jobsyncentitiestotrans
 Pathfinding.ECS.JobSyncEntitiesToTransforms.orientationYAxisForward	jobsyncentitiestotransforms.html#orientationYAxisForward	
 Pathfinding.ECS.JobSyncEntitiesToTransforms.syncPositionWithTransform	jobsyncentitiestotransforms.html#syncPositionWithTransform	
 Pathfinding.ECS.JobSyncEntitiesToTransforms.syncRotationWithTransform	jobsyncentitiestotransforms.html#syncRotationWithTransform	
+Pathfinding.ECS.ManagedAgentOffMeshLinkTraversal.context	managedagentoffmeshlinktraversal.html#context	Internal context used to pass component data to the coroutine.
+Pathfinding.ECS.ManagedAgentOffMeshLinkTraversal.coroutine	managedagentoffmeshlinktraversal.html#coroutine	Coroutine which is used to traverse the link.
+Pathfinding.ECS.ManagedAgentOffMeshLinkTraversal.handler	managedagentoffmeshlinktraversal.html#handler	
+Pathfinding.ECS.ManagedAgentOffMeshLinkTraversal.stateMachine	managedagentoffmeshlinktraversal.html#stateMachine	
 Pathfinding.ECS.ManagedEntityAccess.entityManager	managedentityaccess.html#entityManager	
 Pathfinding.ECS.ManagedEntityAccess.handle	managedentityaccess.html#handle	
 Pathfinding.ECS.ManagedEntityAccess.readOnly	managedentityaccess.html#readOnly	
@@ -710,6 +739,8 @@ Pathfinding.ECS.MovementState.rotationOffset2	movementstate.html#rotationOffset2
 Pathfinding.ECS.MovementState.traversingLastPart	movementstate.html#traversingLastPart	True if the agent is traversing the last part of the path. \n\nIf false, the agent will have to traverse at least one off-mesh link before it gets to its destination.
 Pathfinding.ECS.MovementStatistics.estimatedVelocity	movementstatistics.html#estimatedVelocity	The estimated velocity that the agent is moving with. \n\nThis includes all form of movement, including local avoidance and gravity.
 Pathfinding.ECS.MovementStatistics.lastPosition	movementstatistics.html#lastPosition	The position of the agent at the end of the last movement simulation step.
+Pathfinding.ECS.MovementTarget.isReached	movementtarget.html#isReached	
+Pathfinding.ECS.MovementTarget.reached	movementtarget.html#reached	
 Pathfinding.ECS.PollPendingPathsSystem.anyPendingPaths	pollpendingpathssystem.html#anyPendingPaths	
 Pathfinding.ECS.PollPendingPathsSystem.entityQueryPrepare	pollpendingpathssystem.html#entityQueryPrepare	
 Pathfinding.ECS.PollPendingPathsSystem.jobRepairPathScheduler	pollpendingpathssystem.html#jobRepairPathScheduler	
@@ -792,6 +823,8 @@ Pathfinding.Examples.BezierMover.speed	beziermover.html#speed
 Pathfinding.Examples.BezierMover.tiltAmount	beziermover.html#tiltAmount	
 Pathfinding.Examples.BezierMover.tiltSmoothing	beziermover.html#tiltSmoothing	
 Pathfinding.Examples.BezierMover.time	beziermover.html#time	
+Pathfinding.Examples.DocumentationButton.UrlBase	documentationbutton.html#UrlBase	
+Pathfinding.Examples.DocumentationButton.page	documentationbutton.html#page	
 Pathfinding.Examples.DoorController.bounds	doorcontroller.html#bounds	
 Pathfinding.Examples.DoorController.closedtag	doorcontroller.html#closedtag	
 Pathfinding.Examples.DoorController.open	doorcontroller.html#open	
@@ -874,13 +907,24 @@ Pathfinding.Examples.LightweightRVO.type	lightweightrvo.html#type	How the agents
 Pathfinding.Examples.LocalSpaceRichAI.graph	localspacerichai.html#graph	Root of the object we are moving on.
 Pathfinding.Examples.ManualRVOAgent.rvo	manualrvoagent.html#rvo	
 Pathfinding.Examples.ManualRVOAgent.speed	manualrvoagent.html#speed	
+Pathfinding.Examples.MecanimBridge.InputMagnitudeKey	mecanimbridge.html#InputMagnitudeKey	
+Pathfinding.Examples.MecanimBridge.InputMagnitudeKeyHash	mecanimbridge.html#InputMagnitudeKeyHash	
+Pathfinding.Examples.MecanimBridge.NormalizedSpeedKey	mecanimbridge.html#NormalizedSpeedKey	
+Pathfinding.Examples.MecanimBridge.NormalizedSpeedKeyHash	mecanimbridge.html#NormalizedSpeedKeyHash	
+Pathfinding.Examples.MecanimBridge.XAxisKey	mecanimbridge.html#XAxisKey	
+Pathfinding.Examples.MecanimBridge.XAxisKeyHash	mecanimbridge.html#XAxisKeyHash	
+Pathfinding.Examples.MecanimBridge.YAxisKey	mecanimbridge.html#YAxisKey	
+Pathfinding.Examples.MecanimBridge.YAxisKeyHash	mecanimbridge.html#YAxisKeyHash	
 Pathfinding.Examples.MecanimBridge.ai	mecanimbridge.html#ai	Cached reference to the movement script.
+Pathfinding.Examples.MecanimBridge.angularVelocitySmoothing	mecanimbridge.html#angularVelocitySmoothing	Smoothing factor for the angular velocity, in seconds. \n\n[more in online documentation]
 Pathfinding.Examples.MecanimBridge.anim	mecanimbridge.html#anim	Cached Animator component.
 Pathfinding.Examples.MecanimBridge.footTransforms	mecanimbridge.html#footTransforms	Cached reference to the left and right feet.
+Pathfinding.Examples.MecanimBridge.naturalSpeed	mecanimbridge.html#naturalSpeed	
 Pathfinding.Examples.MecanimBridge.prevFootPos	mecanimbridge.html#prevFootPos	Position of the left and right feet during the previous frame.
+Pathfinding.Examples.MecanimBridge.smoothedRotationSpeed	mecanimbridge.html#smoothedRotationSpeed	
 Pathfinding.Examples.MecanimBridge.smoothedVelocity	mecanimbridge.html#smoothedVelocity	
 Pathfinding.Examples.MecanimBridge.tr	mecanimbridge.html#tr	Cached Transform component.
-Pathfinding.Examples.MecanimBridge.velocitySmoothing	mecanimbridge.html#velocitySmoothing	
+Pathfinding.Examples.MecanimBridge.velocitySmoothing	mecanimbridge.html#velocitySmoothing	Smoothing factor for the velocity, in seconds.
 Pathfinding.Examples.MecanimBridge2D.RotationMode	mecanimbridge2d.html#RotationMode	
 Pathfinding.Examples.MecanimBridge2D.ai	mecanimbridge2d.html#ai	Cached reference to the movement script.
 Pathfinding.Examples.MecanimBridge2D.anim	mecanimbridge2d.html#anim	Cached Animator component.
@@ -1435,6 +1479,8 @@ Pathfinding.GraphUpdateProcessor.astar	graphupdateprocessor.html#astar	Holds gra
 Pathfinding.GraphUpdateProcessor.graphUpdateQueue	graphupdateprocessor.html#graphUpdateQueue	Queue containing all waiting graph update queries. \n\nAdd to this queue by using AddToQueue. \n\n[more in online documentation]
 Pathfinding.GraphUpdateProcessor.pendingGraphUpdates	graphupdateprocessor.html#pendingGraphUpdates	
 Pathfinding.GraphUpdateProcessor.pendingPromises	graphupdateprocessor.html#pendingPromises	
+Pathfinding.GraphUpdateScene.GizmoColorSelected	graphupdatescene.html#GizmoColorSelected	
+Pathfinding.GraphUpdateScene.GizmoColorUnselected	graphupdatescene.html#GizmoColorUnselected	
 Pathfinding.GraphUpdateScene.applyOnScan	graphupdatescene.html#applyOnScan	Apply this graph update object whenever a graph is rescanned.
 Pathfinding.GraphUpdateScene.applyOnStart	graphupdatescene.html#applyOnStart	Apply this graph update object on start.
 Pathfinding.GraphUpdateScene.convex	graphupdatescene.html#convex	Use the convex hull of the points instead of the original polygon. \n\n[more in online documentation]
@@ -1518,18 +1564,18 @@ Pathfinding.Graphs.Grid.GridGraphNodeData.walkableWithErosion	gridgraphnodedata.
 Pathfinding.Graphs.Grid.GridGraphScanData.bounds	gridgraphscandata.html#bounds	Bounds of the data arrays. \n\n[more in online documentation]
 Pathfinding.Graphs.Grid.GridGraphScanData.dependencyTracker	gridgraphscandata.html#dependencyTracker	Tracks dependencies between jobs to allow parallelism without tediously specifying dependencies manually. \n\nAlways use when scheduling jobs.
 Pathfinding.Graphs.Grid.GridGraphScanData.heightHits	gridgraphscandata.html#heightHits	Raycasts hits used for height testing. \n\nThis data is only valid if height testing is enabled, otherwise the array is uninitialized (heightHits.IsCreated will be false).\n\nData is valid in these passes:\n- BeforeCollision: Valid (if height testing is enabled)\n\n- BeforeConnections: Valid (if height testing is enabled)\n\n- AfterConnections: Valid (if height testing is enabled)\n\n- AfterErosion: Valid (if height testing is enabled)\n\n- PostProcess: Valid (if height testing is enabled)\n\n\n\n[more in online documentation]
-Pathfinding.Graphs.Grid.GridGraphScanData.heightHitsBounds	gridgraphscandata.html#heightHitsBounds	
+Pathfinding.Graphs.Grid.GridGraphScanData.heightHitsBounds	gridgraphscandata.html#heightHitsBounds	Bounds for the heightHits array. \n\nDuring an update, the scan data may contain more nodes than we are doing height testing for. For a few nodes around the update, the data will be read from the existing graph, instead. This is done for performance. This means that there may not be any height testing information these nodes. However, all nodes that will be written to will always have height testing information.
 Pathfinding.Graphs.Grid.GridGraphScanData.layeredDataLayout	gridgraphscandata.html#layeredDataLayout	True if the data may have multiple layers. \n\nFor layered data the nodes are laid out as `data[y*width*depth + z*width + x]`. For non-layered data the nodes are laid out as `data[z*width + x]` (which is equivalent to the above layout assuming y=0).\n\n[more in online documentation]
-Pathfinding.Graphs.Grid.GridGraphScanData.nodeConnections	gridgraphscandata.html#nodeConnections	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodeNormals	gridgraphscandata.html#nodeNormals	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodePenalties	gridgraphscandata.html#nodePenalties	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodePositions	gridgraphscandata.html#nodePositions	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodeTags	gridgraphscandata.html#nodeTags	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodeWalkable	gridgraphscandata.html#nodeWalkable	
-Pathfinding.Graphs.Grid.GridGraphScanData.nodeWalkableWithErosion	gridgraphscandata.html#nodeWalkableWithErosion	
+Pathfinding.Graphs.Grid.GridGraphScanData.nodeConnections	gridgraphscandata.html#nodeConnections	Node connections. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodeNormals	gridgraphscandata.html#nodeNormals	Node normals. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodePenalties	gridgraphscandata.html#nodePenalties	Node penalties. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodePositions	gridgraphscandata.html#nodePositions	Node positions. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodeTags	gridgraphscandata.html#nodeTags	Node tags. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodeWalkable	gridgraphscandata.html#nodeWalkable	Node walkability. \n\n[more in online documentation]
+Pathfinding.Graphs.Grid.GridGraphScanData.nodeWalkableWithErosion	gridgraphscandata.html#nodeWalkableWithErosion	Node walkability with erosion. \n\n[more in online documentation]
 Pathfinding.Graphs.Grid.GridGraphScanData.nodes	gridgraphscandata.html#nodes	Data for all nodes in the graph update that is being calculated.
 Pathfinding.Graphs.Grid.GridGraphScanData.transform	gridgraphscandata.html#transform	Transforms graph-space to world space.
-Pathfinding.Graphs.Grid.GridGraphScanData.up	gridgraphscandata.html#up	The up direction of the graph.
+Pathfinding.Graphs.Grid.GridGraphScanData.up	gridgraphscandata.html#up	The up direction of the graph, in world space.
 Pathfinding.Graphs.Grid.Jobs.JobAllocateNodes.active	joballocatenodes.html#active	
 Pathfinding.Graphs.Grid.Jobs.JobAllocateNodes.dataBounds	joballocatenodes.html#dataBounds	
 Pathfinding.Graphs.Grid.Jobs.JobAllocateNodes.newGridNodeDelegate	joballocatenodes.html#newGridNodeDelegate	
@@ -1819,6 +1865,7 @@ Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.characterRadiusInVoxe
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.contourMaxError	jobbuildtilemeshfromvoxels.html#contourMaxError	
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.currentTileCounter	jobbuildtilemeshfromvoxels.html#currentTileCounter	
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.dimensionMode	jobbuildtilemeshfromvoxels.html#dimensionMode	
+Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.graphSpaceLimits	jobbuildtilemeshfromvoxels.html#graphSpaceLimits	Limits of the graph space bounds for the whole graph on the XZ plane. \n\nUsed to crop the border tiles to exactly the limits of the graph's bounding box.
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.graphToWorldSpace	jobbuildtilemeshfromvoxels.html#graphToWorldSpace	
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.inputMeshes	jobbuildtilemeshfromvoxels.html#inputMeshes	
 Pathfinding.Graphs.Navmesh.Jobs.JobBuildTileMeshFromVoxels.maxEdgeLength	jobbuildtilemeshfromvoxels.html#maxEdgeLength	
@@ -1838,12 +1885,20 @@ Pathfinding.Graphs.Navmesh.Jobs.JobCalculateTriangleConnections.TileNodeConnecti
 Pathfinding.Graphs.Navmesh.Jobs.JobCalculateTriangleConnections.TileNodeConnectionsUnsafe.neighbours	tilenodeconnectionsunsafe.html#neighbours	Stream of packed connection edge infos (from Connection.PackShapeEdgeInfo)
 Pathfinding.Graphs.Navmesh.Jobs.JobCalculateTriangleConnections.nodeConnections	jobcalculatetriangleconnections.html#nodeConnections	
 Pathfinding.Graphs.Navmesh.Jobs.JobCalculateTriangleConnections.tileMeshes	jobcalculatetriangleconnections.html#tileMeshes	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.ConnectTilesMarker	jobconnecttiles.html#ConnectTilesMarker	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.coordinateSum	jobconnecttiles.html#coordinateSum	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.direction	jobconnecttiles.html#direction	
 Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.maxTileConnectionEdgeDistance	jobconnecttiles.html#maxTileConnectionEdgeDistance	Maximum vertical distance between two tiles to create a connection between them.
-Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileIndex1	jobconnecttiles.html#tileIndex1	Index of the first tile in the tiles array.
-Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileIndex2	jobconnecttiles.html#tileIndex2	Index of the second tile in the tiles array.
-Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileWorldSizeX	jobconnecttiles.html#tileWorldSizeX	Size of a tile in world units along the graph's X axis.
-Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileWorldSizeZ	jobconnecttiles.html#tileWorldSizeZ	Size of a tile in world units along the graph's Z axis.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileRect	jobconnecttiles.html#tileRect	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tileWorldSize	jobconnecttiles.html#tileWorldSize	
 Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.tiles	jobconnecttiles.html#tiles	GCHandle referring to a NavmeshTile[] array of size tileRect.Width*tileRect.Height.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.zOffset	jobconnecttiles.html#zOffset	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTiles.zStride	jobconnecttiles.html#zStride	
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTilesSingle.maxTileConnectionEdgeDistance	jobconnecttilessingle.html#maxTileConnectionEdgeDistance	Maximum vertical distance between two tiles to create a connection between them.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTilesSingle.tileIndex1	jobconnecttilessingle.html#tileIndex1	Index of the first tile in the tiles array.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTilesSingle.tileIndex2	jobconnecttilessingle.html#tileIndex2	Index of the second tile in the tiles array.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTilesSingle.tileWorldSize	jobconnecttilessingle.html#tileWorldSize	Size of a tile in world units.
+Pathfinding.Graphs.Navmesh.Jobs.JobConnectTilesSingle.tiles	jobconnecttilessingle.html#tiles	GCHandle referring to a NavmeshTile[] array of size tileRect.Width*tileRect.Height.
 Pathfinding.Graphs.Navmesh.Jobs.JobConvertAreasToTags.areas	jobconvertareastotags.html#areas	
 Pathfinding.Graphs.Navmesh.Jobs.JobCreateTiles.graphIndex	jobcreatetiles.html#graphIndex	Graph index of the graph that these nodes will be added to.
 Pathfinding.Graphs.Navmesh.Jobs.JobCreateTiles.graphTileCount	jobcreatetiles.html#graphTileCount	Number of tiles in the graph. \n\nThis may be much bigger than the tileRect that we are actually processing. For example if a graph update is performed, the tileRect will just cover the tiles that are recalculated, while graphTileCount will contain all tiles in the graph.
@@ -1886,15 +1941,15 @@ Pathfinding.Graphs.Navmesh.NavmeshUpdates.lastUpdateTime	navmeshupdates.html#las
 Pathfinding.Graphs.Navmesh.NavmeshUpdates.updateInterval	navmeshupdates.html#updateInterval	How often to check if an update needs to be done (real seconds between checks). \n\nFor worlds with a very large number of NavmeshCut objects, it might be bad for performance to do this check every frame. If you think this is a performance penalty, increase this number to check less often.\n\nFor almost all games, this can be kept at 0.\n\nIf negative, no updates will be done. They must be manually triggered using ForceUpdate.\n\n<b>[code in online documentation]</b><b>[image in online documentation]</b>
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.BoxColliderTris	recastmeshgatherer.html#BoxColliderTris	Box Collider triangle indices can be reused for multiple instances. \n\n[more in online documentation]
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.BoxColliderVerts	recastmeshgatherer.html#BoxColliderVerts	Box Collider vertices can be reused for multiple instances. \n\n[more in online documentation]
-Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.area	gatheredmesh.html#area	
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.area	gatheredmesh.html#area	Area ID of the mesh. \n\n0 means walkable, and -1 indicates that the mesh should be treated as unwalkable. Other positive values indicate a custom area ID which will create a seam in the navmesh.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.areaIsTag	gatheredmesh.html#areaIsTag	See RasterizationMesh.areaIsTag.
-Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.bounds	gatheredmesh.html#bounds	World bounds of the mesh. \n\nAssumed to already be multiplied with the matrix
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.bounds	gatheredmesh.html#bounds	World bounds of the mesh. \n\nAssumed to already be multiplied with the matrix.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.doubleSided	gatheredmesh.html#doubleSided	See RasterizationMesh.doubleSided.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.flatten	gatheredmesh.html#flatten	See RasterizationMesh.flatten.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.indexEnd	gatheredmesh.html#indexEnd	End index in the triangle array. \n\n-1 indicates the end of the array.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.indexStart	gatheredmesh.html#indexStart	Start index in the triangle array.
-Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.matrix	gatheredmesh.html#matrix	
-Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.meshDataIndex	gatheredmesh.html#meshDataIndex	
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.matrix	gatheredmesh.html#matrix	Matrix to transform the vertices by.
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.meshDataIndex	gatheredmesh.html#meshDataIndex	Index in the meshData array. \n\nCan be retrieved from the RecastMeshGatherer.AddMeshBuffers method.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.GatheredMesh.solid	gatheredmesh.html#solid	If true then the mesh will be treated as solid and its interior will be unwalkable. \n\nThe unwalkable region will be the minimum to maximum y coordinate in each cell.
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.MeshCacheItem.Box	meshcacheitem.html#Box	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.MeshCacheItem.mesh	meshcacheitem.html#mesh	
@@ -1911,11 +1966,14 @@ Pathfinding.Graphs.Navmesh.RecastMeshGatherer.TreeInfo.supportsRotation	treeinfo
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.bounds	recastmeshgatherer.html#bounds	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.cachedMeshes	recastmeshgatherer.html#cachedMeshes	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.cachedTreePrefabs	recastmeshgatherer.html#cachedTreePrefabs	
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.dummyMaterials	recastmeshgatherer.html#dummyMaterials	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.mask	recastmeshgatherer.html#mask	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.maxColliderApproximationError	recastmeshgatherer.html#maxColliderApproximationError	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.meshData	recastmeshgatherer.html#meshData	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.meshes	recastmeshgatherer.html#meshes	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.meshesUnreadableAtRuntime	recastmeshgatherer.html#meshesUnreadableAtRuntime	
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.modificationsByLayer	recastmeshgatherer.html#modificationsByLayer	
+Pathfinding.Graphs.Navmesh.RecastMeshGatherer.modificationsByLayer2D	recastmeshgatherer.html#modificationsByLayer2D	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.scene	recastmeshgatherer.html#scene	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.tagMask	recastmeshgatherer.html#tagMask	
 Pathfinding.Graphs.Navmesh.RecastMeshGatherer.terrainDownsamplingFactor	recastmeshgatherer.html#terrainDownsamplingFactor	
@@ -1941,21 +1999,15 @@ Pathfinding.Graphs.Navmesh.TileBuilder.TileBuilderOutput.meshesUnreadableAtRunti
 Pathfinding.Graphs.Navmesh.TileBuilder.TileBuilderOutput.tileMeshes	tilebuilderoutput.html#tileMeshes	
 Pathfinding.Graphs.Navmesh.TileBuilder.backgroundTraversability	tilebuilder.html#backgroundTraversability	
 Pathfinding.Graphs.Navmesh.TileBuilder.characterRadiusInVoxels	tilebuilder.html#characterRadiusInVoxels	
-Pathfinding.Graphs.Navmesh.TileBuilder.colliderRasterizeDetail	tilebuilder.html#colliderRasterizeDetail	
+Pathfinding.Graphs.Navmesh.TileBuilder.collectionSettings	tilebuilder.html#collectionSettings	
 Pathfinding.Graphs.Navmesh.TileBuilder.contourMaxError	tilebuilder.html#contourMaxError	
 Pathfinding.Graphs.Navmesh.TileBuilder.dimensionMode	tilebuilder.html#dimensionMode	
-Pathfinding.Graphs.Navmesh.TileBuilder.mask	tilebuilder.html#mask	
 Pathfinding.Graphs.Navmesh.TileBuilder.maxEdgeLength	tilebuilder.html#maxEdgeLength	
 Pathfinding.Graphs.Navmesh.TileBuilder.maxSlope	tilebuilder.html#maxSlope	
 Pathfinding.Graphs.Navmesh.TileBuilder.minRegionSize	tilebuilder.html#minRegionSize	
-Pathfinding.Graphs.Navmesh.TileBuilder.rasterizeColliders	tilebuilder.html#rasterizeColliders	
-Pathfinding.Graphs.Navmesh.TileBuilder.rasterizeMeshes	tilebuilder.html#rasterizeMeshes	
-Pathfinding.Graphs.Navmesh.TileBuilder.rasterizeTerrain	tilebuilder.html#rasterizeTerrain	
-Pathfinding.Graphs.Navmesh.TileBuilder.rasterizeTrees	tilebuilder.html#rasterizeTrees	
+Pathfinding.Graphs.Navmesh.TileBuilder.perLayerModifications	tilebuilder.html#perLayerModifications	
 Pathfinding.Graphs.Navmesh.TileBuilder.relevantGraphSurfaceMode	tilebuilder.html#relevantGraphSurfaceMode	
 Pathfinding.Graphs.Navmesh.TileBuilder.scene	tilebuilder.html#scene	
-Pathfinding.Graphs.Navmesh.TileBuilder.tagMask	tilebuilder.html#tagMask	
-Pathfinding.Graphs.Navmesh.TileBuilder.terrainSampleSize	tilebuilder.html#terrainSampleSize	
 Pathfinding.Graphs.Navmesh.TileBuilder.tileBorderSizeInVoxels	tilebuilder.html#tileBorderSizeInVoxels	
 Pathfinding.Graphs.Navmesh.TileBuilder.tileLayout	tilebuilder.html#tileLayout	
 Pathfinding.Graphs.Navmesh.TileBuilder.tileRect	tilebuilder.html#tileRect	
@@ -1967,6 +2019,7 @@ Pathfinding.Graphs.Navmesh.TileHandler.Cut.contour	cut.html#contour
 Pathfinding.Graphs.Navmesh.TileHandler.Cut.cutsAddedGeom	cut.html#cutsAddedGeom	
 Pathfinding.Graphs.Navmesh.TileHandler.Cut.isDual	cut.html#isDual	
 Pathfinding.Graphs.Navmesh.TileHandler.CutMode	tilehandler.html#CutMode	
+Pathfinding.Graphs.Navmesh.TileHandler.CuttingResult.tags	cuttingresult.html#tags	
 Pathfinding.Graphs.Navmesh.TileHandler.CuttingResult.tris	cuttingresult.html#tris	
 Pathfinding.Graphs.Navmesh.TileHandler.CuttingResult.verts	cuttingresult.html#verts	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.Depth	tiletype.html#Depth	
@@ -1976,6 +2029,7 @@ Pathfinding.Graphs.Navmesh.TileHandler.TileType.depth	tiletype.html#depth
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.lastRotation	tiletype.html#lastRotation	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.lastYOffset	tiletype.html#lastYOffset	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.offset	tiletype.html#offset	
+Pathfinding.Graphs.Navmesh.TileHandler.TileType.tags	tiletype.html#tags	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.tris	tiletype.html#tris	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.verts	tiletype.html#verts	
 Pathfinding.Graphs.Navmesh.TileHandler.TileType.width	tiletype.html#width	
@@ -1996,8 +2050,8 @@ Pathfinding.Graphs.Navmesh.TileHandler.tileZCount	tilehandler.html#tileZCount	Nu
 Pathfinding.Graphs.Navmesh.TileLayout.CellHeight	tilelayout.html#CellHeight	Voxel y coordinates will be stored as ushorts which have 65536 values. \n\nLeave a margin to make sure things do not overflow
 Pathfinding.Graphs.Navmesh.TileLayout.TileWorldSizeX	tilelayout.html#TileWorldSizeX	Size of a tile in world units, along the graph's X axis.
 Pathfinding.Graphs.Navmesh.TileLayout.TileWorldSizeZ	tilelayout.html#TileWorldSizeZ	Size of a tile in world units, along the graph's Z axis.
-Pathfinding.Graphs.Navmesh.TileLayout.boundsYSize	tilelayout.html#boundsYSize	Size of bounds along the y axis in graph space (i.e. \n\n'up' direction)
 Pathfinding.Graphs.Navmesh.TileLayout.cellSize	tilelayout.html#cellSize	Voxel sample size (x,z). \n\nWhen generating a recast graph what happens is that the world is voxelized. You can think of this as constructing an approximation of the world out of lots of boxes. If you have played Minecraft it looks very similar (but with smaller boxes).  <b>[image in online documentation]</b>\n\nLower values will yield higher quality navmeshes, however the graph will be slower to scan.\n\n <b>[image in online documentation]</b>
+Pathfinding.Graphs.Navmesh.TileLayout.graphSpaceSize	tilelayout.html#graphSpaceSize	Size in graph space of the whole grid. \n\nIf the original bounding box was not an exact multiple of the tile size, this will be less than the total width of all tiles.
 Pathfinding.Graphs.Navmesh.TileLayout.tileCount	tilelayout.html#tileCount	How many tiles there are in the grid.
 Pathfinding.Graphs.Navmesh.TileLayout.tileSizeInVoxels	tilelayout.html#tileSizeInVoxels	Size of a tile in voxels along the X and Z axes.
 Pathfinding.Graphs.Navmesh.TileLayout.transform	tilelayout.html#transform	Transforms coordinates from graph space to world space.
@@ -2076,6 +2130,7 @@ Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.bucket	jobvoxelize.htm
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.cellHeight	jobvoxelize.html#cellHeight	The y-axis cell size to use for fields. \n\n[Limit: &gt; 0] [Units: wu]
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.cellSize	jobvoxelize.html#cellSize	The xz-plane cell size to use for fields. \n\n[Limit: &gt; 0] [Units: wu]
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.graphSpaceBounds	jobvoxelize.html#graphSpaceBounds	
+Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.graphSpaceLimits	jobvoxelize.html#graphSpaceLimits	
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.graphTransform	jobvoxelize.html#graphTransform	
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.inputMeshes	jobvoxelize.html#inputMeshes	
 Pathfinding.Graphs.Navmesh.Voxelization.Burst.JobVoxelize.maxSlope	jobvoxelize.html#maxSlope	The maximum slope that is considered walkable. \n\n[Limits: 0 &lt;= value &lt; 90] [Units: Degrees]
@@ -3054,7 +3109,8 @@ Pathfinding.PathTracer.isCreated	pathtracer.html#isCreated	True until Dispose is
 Pathfinding.PathTracer.isNextPartValidLink	pathtracer.html#isNextPartValidLink	True if the next part in the path exists, and is a valid link. \n\nThis is true if the path has at least 2 parts and the second part is an off-mesh link.\n\nIf any nodes in the second part have been destroyed, this will return false.
 Pathfinding.PathTracer.isStale	pathtracer.html#isStale	True if the path is stale and should be recalculated as quickly as possible. \n\nThis is true if the path has become invalid (e.g. due to a graph update), or if the destination has changed so much that we don't have a path to the destination at all.\n\nFor performance reasons, the agent tries to avoid checking if nodes have been destroyed unless it needs to access them to calculate its movement. Therefore, if a path is invalidated further ahead, the agent may not realize this until it has moved close enough.
 Pathfinding.PathTracer.nnConstraint	pathtracer.html#nnConstraint	
-Pathfinding.PathTracer.nodes	pathtracer.html#nodes	
+Pathfinding.PathTracer.nodeHashes	pathtracer.html#nodeHashes	Hashes of some important data for each node, to determine if the node has been invalidated in some way. \n\nFor e.g. the grid graph, this is done using the node's index in the grid. This ensures that the node is counted as invalid if the node is for example moved to the other side of the graph using the ProceduralGraphMover.\n\nFor all nodes, this includes if info about if the node has been destroyed, and if it is walkable.\n\nThis will always have the same length as the nodes array, and the absolute indices in this array will correspond to the absolute indices in the nodes array.
+Pathfinding.PathTracer.nodes	pathtracer.html#nodes	All nodes in the path.
 Pathfinding.PathTracer.partCount	pathtracer.html#partCount	Number of parts in the path. \n\nA part is either a sequence of adjacent nodes, or an off-mesh link.
 Pathfinding.PathTracer.partGraphType	pathtracer.html#partGraphType	The type of graph that the current path part is on. \n\nThis is either a grid-like graph, or a navmesh-like graph.
 Pathfinding.PathTracer.parts	pathtracer.html#parts	
@@ -3076,6 +3132,7 @@ Pathfinding.PathUtilities.JobFormationPacked.agentRadius	jobformationpacked.html
 Pathfinding.PathUtilities.JobFormationPacked.destination	jobformationpacked.html#destination	
 Pathfinding.PathUtilities.JobFormationPacked.movementPlane	jobformationpacked.html#movementPlane	
 Pathfinding.PathUtilities.JobFormationPacked.positions	jobformationpacked.html#positions	
+Pathfinding.PathfindingEditorSettings.hasShownWelcomeScreen	pathfindingeditorsettings.html#hasShownWelcomeScreen	
 Pathfinding.PathfindingTag.value	pathfindingtag.html#value	Underlaying tag value. \n\nShould always be between 0 and GraphNode.MaxTagIndex (inclusive).
 Pathfinding.Patrol.agent	patrol.html#agent	
 Pathfinding.Patrol.delay	patrol.html#delay	Time in seconds to wait at each target.
@@ -3504,9 +3561,24 @@ Pathfinding.RaycastModifier.useGraphRaycasting	raycastmodifier.html#useGraphRayc
 Pathfinding.RaycastModifier.useRaycasting	raycastmodifier.html#useRaycasting	Use Physics.Raycast to simplify the path.
 Pathfinding.RecastGraph.BackgroundTraversability	recastgraph.html#BackgroundTraversability	Whether the base of the graph should default to being walkable or unwalkable. \n\n[more in online documentation]
 Pathfinding.RecastGraph.CharacterRadiusInVoxels	recastgraph.html#CharacterRadiusInVoxels	Convert character radius to a number of voxels.
+Pathfinding.RecastGraph.CollectionSettings.FilterMode	collectionsettings.html#FilterMode	Determines how the initial filtering of objects is done.
+Pathfinding.RecastGraph.CollectionSettings.collectionMode	collectionsettings.html#collectionMode	Determines how the initial filtering of objects is done. \n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.colliderRasterizeDetail	collectionsettings.html#colliderRasterizeDetail	Controls detail on rasterization of sphere and capsule colliders. \n\nThe colliders will be approximated with polygons so that the max distance to the theoretical surface is less than 1/(this number of voxels).\n\nA higher value does not necessarily increase quality of the mesh, but a lower value will often speed it up.\n\nYou should try to keep this value as low as possible without affecting the mesh quality since that will yield the fastest scan times.\n\nThe default value is 1, which corresponds to a maximum error of 1 voxel. In most cases, increasing this to a value higher than 2 (corresponding to a maximum error of 0.5 voxels) is not useful.\n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.layerMask	collectionsettings.html#layerMask	Objects in all of these layers will be rasterized. \n\nWill only be used if collectionMode is set to Layers.\n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.onCollectMeshes	collectionsettings.html#onCollectMeshes	Callback for collecting custom scene meshes. \n\nThis callback will be called once when scanning the graph, to allow you to add custom meshes to the graph, and once every time a graph update happens. Use the RecastMeshGatherer class to add meshes that are to be rasterized.\n\n[more in online documentation]\n<b>[code in online documentation]</b>
+Pathfinding.RecastGraph.CollectionSettings.rasterizeColliders	collectionsettings.html#rasterizeColliders	Use colliders to calculate the navmesh. \n\nDepending on the dimensionMode, either 3D or 2D colliders will be rasterized.\n\nSphere/Capsule/Circle colliders will be approximated using polygons, with the precision specified in RecastGraph.colliderRasterizeDetail.\n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.rasterizeMeshes	collectionsettings.html#rasterizeMeshes	Use scene meshes to calculate the navmesh. \n\nThis can get you higher precision than colliders, since colliders are typically very simplified versions of the mesh. However, it is often slower to scan, and graph updates can be particularly slow.\n\nThe reason that graph updates are slower is that there's no efficient way to find all meshes that intersect a given tile, so the graph has to iterate over all meshes in the scene just to find the ones relevant for the tiles that you want to update. Colliders, on the other hand, can be efficiently queried using the physics system.\n\nYou can disable this and attach a RecastMeshObj component (with dynamic=false) to all meshes that you want to be included in the navmesh instead. That way they will be able to be efficiently queried for, without having to iterate through all meshes in the scene.\n\nIn 2D mode, this setting has no effect.
+Pathfinding.RecastGraph.CollectionSettings.rasterizeTerrain	collectionsettings.html#rasterizeTerrain	Use terrains to calculate the navmesh. \n\nIn 2D mode, this setting has no effect.
+Pathfinding.RecastGraph.CollectionSettings.rasterizeTrees	collectionsettings.html#rasterizeTrees	Rasterize tree colliders on terrains. \n\nIf the tree prefab has a collider, that collider will be rasterized. Otherwise a simple box collider will be used and the script will try to adjust it to the tree's scale, it might not do a very good job though so an attached collider is preferable.\n\n[more in online documentation]\nIn 2D mode, this setting has no effect.\n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.tagMask	collectionsettings.html#tagMask	Objects tagged with any of these tags will be rasterized. \n\nWill only be used if collectionMode is set to Tags.\n\n[more in online documentation]
+Pathfinding.RecastGraph.CollectionSettings.terrainHeightmapDownsamplingFactor	collectionsettings.html#terrainHeightmapDownsamplingFactor	Controls how much to downsample the terrain's heightmap before generating the input mesh used for rasterization. \n\nA higher value is faster to scan but less accurate.
 Pathfinding.RecastGraph.DimensionMode	recastgraph.html#DimensionMode	Whether to use 3D or 2D mode.
 Pathfinding.RecastGraph.MaxTileConnectionEdgeDistance	recastgraph.html#MaxTileConnectionEdgeDistance	
 Pathfinding.RecastGraph.NavmeshCuttingCharacterRadius	recastgraph.html#NavmeshCuttingCharacterRadius	
+Pathfinding.RecastGraph.PerLayerModification.Default	perlayermodification.html#Default	
+Pathfinding.RecastGraph.PerLayerModification.layer	perlayermodification.html#layer	Layer that this modification applies to.
+Pathfinding.RecastGraph.PerLayerModification.mode	perlayermodification.html#mode	Surface rasterization mode. \n\n[more in online documentation]
+Pathfinding.RecastGraph.PerLayerModification.surfaceID	perlayermodification.html#surfaceID	Voxel area for mesh. \n\nThis area (not to be confused with pathfinding areas, this is only used when rasterizing meshes for the recast graph) field can be used to explicitly insert edges in the navmesh geometry or to make some parts of the mesh unwalkable.\n\nWhen rasterizing the world and two objects with different surface id values are adjacent to each other, a split in the navmesh geometry will be added between them, characters will still be able to walk between them, but this can be useful when working with navmesh updates.\n\nNavmesh updates which recalculate a whole tile (updatePhysics=True) are very slow So if there are special places which you know are going to be updated quite often, for example at a door opening (opened/closed door) you can use surface IDs to create splits on the navmesh for easier updating using normal graph updates (updatePhysics=False). See the below video for more information.\n\n  <b>[video in online documentation]</b>\n\nWhen mode is set to Mode.WalkableSurfaceWithTag then this value will be interpreted as a pathfinding tag. See Working with tags.\n\n[more in online documentation]
 Pathfinding.RecastGraph.RecalculateNormals	recastgraph.html#RecalculateNormals	
 Pathfinding.RecastGraph.RecastGraphScanPromise.Progress	recastgraphscanpromise.html#Progress	
 Pathfinding.RecastGraph.RecastGraphScanPromise.emptyGraph	recastgraphscanpromise.html#emptyGraph	
@@ -3532,26 +3604,30 @@ Pathfinding.RecastGraph.backgroundTraversability	recastgraph.html#backgroundTrav
 Pathfinding.RecastGraph.bounds	recastgraph.html#bounds	World bounding box for the graph. \n\nThis always contains the whole graph.\n\n[more in online documentation]\n <b>[image in online documentation]</b>
 Pathfinding.RecastGraph.cellSize	recastgraph.html#cellSize	Voxel sample size (x,z). \n\nWhen generating a recast graph what happens is that the world is voxelized. You can think of this as constructing an approximation of the world out of lots of boxes. If you have played Minecraft it looks very similar (but with smaller boxes).  <b>[image in online documentation]</b>\n\nLower values will yield higher quality navmeshes, however the graph will be slower to scan.\n\n <b>[image in online documentation]</b>
 Pathfinding.RecastGraph.characterRadius	recastgraph.html#characterRadius	Radius of the agent which will traverse the navmesh. \n\nThe navmesh will be eroded with this radius.  <b>[image in online documentation]</b>
-Pathfinding.RecastGraph.colliderRasterizeDetail	recastgraph.html#colliderRasterizeDetail	Controls detail on rasterization of sphere and capsule colliders. \n\nThe colliders will be approximated with polygons so that the max distance to the theoretical surface is less than 1/(this number of voxels).\n\nA higher value does not necessarily increase quality of the mesh, but a lower value will often speed it up.\n\nYou should try to keep this value as low as possible without affecting the mesh quality since that will yield the fastest scan times.\n\nThe default value is 1, which corresponds to a maximum error of 1 voxel. In most cases, increasing this to a value higher than 2 (corresponding to a maximum error of 0.5 voxels) is not useful.\n\n[more in online documentation]
+Pathfinding.RecastGraph.collectionSettings	recastgraph.html#collectionSettings	Determines which objects are used to build the graph, when it is scanned. \n\nAlso contains some settings for how to convert objects into meshes. Spherical colliders, for example, need to be converted into a triangular mesh before they can be used in the graph.\n\n[more in online documentation]
+Pathfinding.RecastGraph.colliderRasterizeDetail	recastgraph.html#colliderRasterizeDetail	Controls detail on rasterization of sphere and capsule colliders. \n\nThe colliders will be approximated with polygons so that the max distance to the theoretical surface is less than 1/(this number of voxels).\n\nA higher value does not necessarily increase quality of the mesh, but a lower value will often speed it up.\n\nYou should try to keep this value as low as possible without affecting the mesh quality since that will yield the fastest scan times.\n\nThe default value is 1, which corresponds to a maximum error of 1 voxel. In most cases, increasing this to a value higher than 2 (corresponding to a maximum error of 0.5 voxels) is not useful.\n\n[more in online documentation]\n\n\n\n[more in online documentation]
 Pathfinding.RecastGraph.contourMaxError	recastgraph.html#contourMaxError	Max distance from simplified edge to real edge. \n\nThis value is measured in voxels. So with the default value of 2 it means that the final navmesh contour may be at most 2 voxels (i.e 2 times cellSize) away from the border that was calculated when voxelizing the world. A higher value will yield a more simplified and cleaner navmesh while a lower value may capture more details. However a too low value will cause the individual voxels to be visible (see image below).\n\n <b>[image in online documentation]</b>\n\n[more in online documentation]
 Pathfinding.RecastGraph.dimensionMode	recastgraph.html#dimensionMode	Whether to use 3D or 2D mode. \n\n[more in online documentation]
 Pathfinding.RecastGraph.editorTileSize	recastgraph.html#editorTileSize	Size in voxels of a single tile. \n\nThis is the width of the tile.\n\n <b>[image in online documentation]</b>\n\nA large tile size can be faster to initially scan (but beware of out of memory issues if you try with a too large tile size in a large world) smaller tile sizes are (much) faster to update.\n\nDifferent tile sizes can affect the quality of paths. It is often good to split up huge open areas into several tiles for better quality paths, but too small tiles can also lead to effects looking like invisible obstacles. For more information about this take a look at Notes about navmesh graphs. Usually it is best to experiment and see what works best for your game.\n\nWhen scanning a recast graphs individual tiles can be calculated in parallel which can make it much faster to scan large worlds. When you want to recalculate a part of a recast graph, this can only be done on a tile-by-tile basis which means that if you often try to update a region of the recast graph much smaller than the tile size, then you will be doing a lot of unnecessary calculations. However if you on the other hand update regions of the recast graph that are much larger than the tile size then it may be slower than necessary as there is some overhead in having lots of tiles instead of a few larger ones (not that much though).\n\nRecommended values are between 64 and 256, but these are very soft limits. It is possible to use both larger and smaller values.
 Pathfinding.RecastGraph.forcedBoundsCenter	recastgraph.html#forcedBoundsCenter	Center of the bounding box. \n\nScanning will only be done inside the bounding box
+Pathfinding.RecastGraph.hasExtendedInX	recastgraph.html#hasExtendedInX	
+Pathfinding.RecastGraph.hasExtendedInZ	recastgraph.html#hasExtendedInZ	
 Pathfinding.RecastGraph.mask	recastgraph.html#mask	Layer mask which filters which objects to include. \n\n[more in online documentation]
 Pathfinding.RecastGraph.maxEdgeLength	recastgraph.html#maxEdgeLength	Longer edges will be subdivided. \n\nReducing this value can sometimes improve path quality since similarly sized triangles yield better paths than really large and really triangles small next to each other. However it will also add a lot more nodes which will make pathfinding slower. For more information about this take a look at Notes about navmesh graphs.\n\n <b>[image in online documentation]</b>
 Pathfinding.RecastGraph.maxSlope	recastgraph.html#maxSlope	Max slope in degrees the character can traverse. \n\n <b>[image in online documentation]</b>
 Pathfinding.RecastGraph.meshesUnreadableAtRuntime	recastgraph.html#meshesUnreadableAtRuntime	Internal field used to warn users when the mesh includes meshes that are not readable at runtime.
-Pathfinding.RecastGraph.minRegionSize	recastgraph.html#minRegionSize	Minumum region size. \n\nSmall regions will be removed from the navmesh. Measured in square world units (square meters in most games).\n\n <b>[image in online documentation]</b>\n\nIf a region is adjacent to a tile border, it will not be removed even though it is small since the adjacent tile might join it to form a larger region.\n\n <b>[image in online documentation]</b><b>[image in online documentation]</b>
+Pathfinding.RecastGraph.minRegionSize	recastgraph.html#minRegionSize	Minumum region size. \n\nSmall regions will be removed from the navmesh. Measured in voxels.\n\n <b>[image in online documentation]</b>\n\nIf a region is adjacent to a tile border, it will not be removed even though it is small since the adjacent tile might join it to form a larger region.\n\n <b>[image in online documentation]</b><b>[image in online documentation]</b>
 Pathfinding.RecastGraph.pendingGraphUpdateArena	recastgraph.html#pendingGraphUpdateArena	
-Pathfinding.RecastGraph.rasterizeColliders	recastgraph.html#rasterizeColliders	Use colliders to calculate the navmesh. \n\nDepending on the dimensionMode, either 3D or 2D colliders will be rasterized.\n\nSphere/Capsule/Circle colliders will be approximated using polygons, with the precision specified in colliderRasterizeDetail.
-Pathfinding.RecastGraph.rasterizeMeshes	recastgraph.html#rasterizeMeshes	Use scene meshes to calculate the navmesh. \n\nThis can get you higher precision than colliders, since colliders are typically very simplified versions of the mesh. However, it is often slower to scan, and graph updates can be particularly slow.\n\nThe reason that graph updates are slower is that there's no efficient way to find all meshes that intersect a given tile, so the graph has to iterate over all meshes in the scene just to find the ones relevant for the tiles that you want to update. Colliders, on the other hand, can be efficiently queried using the physics system.\n\nYou can disable this and attach a RecastMeshObj component (with dynamic=false) to all meshes that you want to be included in the navmesh instead. That way they will be able to be efficiently queried for, without having to iterate through all meshes in the scene.\n\nIn 2D mode, this setting has no effect.
-Pathfinding.RecastGraph.rasterizeTerrain	recastgraph.html#rasterizeTerrain	Use terrains to calculate the navmesh. \n\nIn 2D mode, this setting has no effect.
+Pathfinding.RecastGraph.perLayerModifications	recastgraph.html#perLayerModifications	List of rules that modify the graph based on the layer of the rasterized object. \n\n <b>[image in online documentation]</b>\n\nBy default, all layers are treated as walkable surfaces. But by adding rules to this list, one can for example make all surfaces with a specific layer get a specific pathfinding tag.\n\nEach layer should be modified at most once in this list.\n\nIf an object has a RecastMeshObj component attached, the settings on that component will override the settings in this list.\n\n[more in online documentation]
+Pathfinding.RecastGraph.rasterizeColliders	recastgraph.html#rasterizeColliders	Use colliders to calculate the navmesh. \n\nDepending on the dimensionMode, either 3D or 2D colliders will be rasterized.\n\nSphere/Capsule/Circle colliders will be approximated using polygons, with the precision specified in colliderRasterizeDetail. \n\n[more in online documentation]
+Pathfinding.RecastGraph.rasterizeMeshes	recastgraph.html#rasterizeMeshes	Use scene meshes to calculate the navmesh. \n\nThis can get you higher precision than colliders, since colliders are typically very simplified versions of the mesh. However, it is often slower to scan, and graph updates can be particularly slow.\n\nThe reason that graph updates are slower is that there's no efficient way to find all meshes that intersect a given tile, so the graph has to iterate over all meshes in the scene just to find the ones relevant for the tiles that you want to update. Colliders, on the other hand, can be efficiently queried using the physics system.\n\nYou can disable this and attach a RecastMeshObj component (with dynamic=false) to all meshes that you want to be included in the navmesh instead. That way they will be able to be efficiently queried for, without having to iterate through all meshes in the scene.\n\nIn 2D mode, this setting has no effect. \n\n[more in online documentation]
+Pathfinding.RecastGraph.rasterizeTerrain	recastgraph.html#rasterizeTerrain	Use terrains to calculate the navmesh. \n\nIn 2D mode, this setting has no effect. \n\n[more in online documentation]
 Pathfinding.RecastGraph.rasterizeTrees	recastgraph.html#rasterizeTrees	Rasterize tree colliders on terrains. \n\nIf the tree prefab has a collider, that collider will be rasterized. Otherwise a simple box collider will be used and the script will try to adjust it to the tree's scale, it might not do a very good job though so an attached collider is preferable.\n\n[more in online documentation]\nIn 2D mode, this setting has no effect.\n\n[more in online documentation]
 Pathfinding.RecastGraph.relevantGraphSurfaceMode	recastgraph.html#relevantGraphSurfaceMode	Require every region to have a RelevantGraphSurface component inside it. \n\nA RelevantGraphSurface component placed in the scene specifies that the navmesh region it is inside should be included in the navmesh.\n\nIf this is set to OnlyForCompletelyInsideTile a navmesh region is included in the navmesh if it has a RelevantGraphSurface inside it, or if it is adjacent to a tile border. This can leave some small regions which you didn't want to have included because they are adjacent to tile borders, but it removes the need to place a component in every single tile, which can be tedious (see below).\n\nIf this is set to RequireForAll a navmesh region is included only if it has a RelevantGraphSurface inside it. Note that even though the navmesh looks continous between tiles, the tiles are computed individually and therefore you need a RelevantGraphSurface component for each region and for each tile.\n\n <b>[image in online documentation]</b>\n\n <b>[image in online documentation]</b>\n\n <b>[image in online documentation]</b>\n\n <b>[image in online documentation]</b>\n\n[more in online documentation]
 Pathfinding.RecastGraph.rotation	recastgraph.html#rotation	Rotation of the graph in degrees.
 Pathfinding.RecastGraph.scanEmptyGraph	recastgraph.html#scanEmptyGraph	If true, scanning the graph will yield a completely empty graph. \n\nUseful if you want to replace the graph with a custom navmesh for example\n\n[more in online documentation]
 Pathfinding.RecastGraph.tagMask	recastgraph.html#tagMask	Objects tagged with any of these tags will be rasterized. \n\nNote that this extends the layer mask, so if you only want to use tags, set mask to 'Nothing'.\n\n[more in online documentation]
-Pathfinding.RecastGraph.terrainSampleSize	recastgraph.html#terrainSampleSize	Controls how large the sample size for the terrain is. \n\nA higher value is faster to scan but less accurate.\n\nThe heightmap resolution is effectively divided by this value, before the terrain is rasterized.
+Pathfinding.RecastGraph.terrainSampleSize	recastgraph.html#terrainSampleSize	Controls how large the sample size for the terrain is. \n\nA higher value is faster to scan but less accurate.\n\nThe heightmap resolution is effectively divided by this value, before the terrain is rasterized.\n\n[more in online documentation]
 Pathfinding.RecastGraph.tileSizeX	recastgraph.html#tileSizeX	Size of a tile along the X axis in voxels. \n\nThis is the width of the tile.\n\n <b>[image in online documentation]</b>\n\nA large tile size can be faster to initially scan (but beware of out of memory issues if you try with a too large tile size in a large world) smaller tile sizes are (much) faster to update.\n\nDifferent tile sizes can affect the quality of paths. It is often good to split up huge open areas into several tiles for better quality paths, but too small tiles can also lead to effects looking like invisible obstacles. For more information about this take a look at Notes about navmesh graphs. Usually it is best to experiment and see what works best for your game.\n\nWhen scanning a recast graphs individual tiles can be calculated in parallel which can make it much faster to scan large worlds. When you want to recalculate a part of a recast graph, this can only be done on a tile-by-tile basis which means that if you often try to update a region of the recast graph much smaller than the tile size, then you will be doing a lot of unnecessary calculations. However if you on the other hand update regions of the recast graph that are much larger than the tile size then it may be slower than necessary as there is some overhead in having lots of tiles instead of a few larger ones (not that much though).\n\nRecommended values are between 64 and 256, but these are very soft limits. It is possible to use both larger and smaller values.\n\n[more in online documentation]
 Pathfinding.RecastGraph.tileSizeZ	recastgraph.html#tileSizeZ	Size of a tile along the Z axis in voxels. \n\nThis is the width of the tile.\n\n <b>[image in online documentation]</b>\n\nA large tile size can be faster to initially scan (but beware of out of memory issues if you try with a too large tile size in a large world) smaller tile sizes are (much) faster to update.\n\nDifferent tile sizes can affect the quality of paths. It is often good to split up huge open areas into several tiles for better quality paths, but too small tiles can also lead to effects looking like invisible obstacles. For more information about this take a look at Notes about navmesh graphs. Usually it is best to experiment and see what works best for your game.\n\nWhen scanning a recast graphs individual tiles can be calculated in parallel which can make it much faster to scan large worlds. When you want to recalculate a part of a recast graph, this can only be done on a tile-by-tile basis which means that if you often try to update a region of the recast graph much smaller than the tile size, then you will be doing a lot of unnecessary calculations. However if you on the other hand update regions of the recast graph that are much larger than the tile size then it may be slower than necessary as there is some overhead in having lots of tiles instead of a few larger ones (not that much though).\n\nRecommended values are between 64 and 256, but these are very soft limits. It is possible to use both larger and smaller values.\n\n[more in online documentation]
 Pathfinding.RecastGraph.useTiles	recastgraph.html#useTiles	If true, divide the graph into tiles, otherwise use a single tile covering the whole graph. \n\nUsing tiles is useful for a number of things. But it also has some drawbacks.\n- Using tiles allows you to update only a part of the graph at a time. When doing graph updates on a recast graph, it will always recalculate whole tiles (or the whole graph if there are no tiles).  NavmeshCut components also work on a tile-by-tile basis.\n\n- Using tiles allows you to use NavmeshPrefabs.\n\n- Using tiles can break up very large triangles, which can improve path quality in some cases, and make the navmesh more closely follow the y-coordinates of the ground.\n\n- Using tiles can make it much faster to generate the navmesh, because each tile can be calculated in parallel. But if the tiles are made too small, then the overhead of having many tiles can make it slower than having fewer tiles.\n\n- Using small tiles can make the path quality worse in some cases, but setting the  FunnelModifiers quality setting to high (or using  RichAI.funnelSimplification) will mostly mitigate this.\n\n\n\n[more in online documentation]
@@ -3561,7 +3637,9 @@ Pathfinding.RecastGraphEditor.DimensionModeLabels	recastgrapheditor.html#Dimensi
 Pathfinding.RecastGraphEditor.UseTiles	recastgrapheditor.html#UseTiles	
 Pathfinding.RecastGraphEditor.handlePoints	recastgrapheditor.html#handlePoints	
 Pathfinding.RecastGraphEditor.meshesUnreadableAtRuntimeFoldout	recastgrapheditor.html#meshesUnreadableAtRuntimeFoldout	
+Pathfinding.RecastGraphEditor.perLayerModificationsList	recastgrapheditor.html#perLayerModificationsList	
 Pathfinding.RecastGraphEditor.tagMaskFoldout	recastgrapheditor.html#tagMaskFoldout	
+Pathfinding.RecastGraphEditor.tagMaskList	recastgrapheditor.html#tagMaskList	
 Pathfinding.RecastMeshObj.GeometrySource	recastmeshobj.html#GeometrySource	Source of geometry when voxelizing this object.
 Pathfinding.RecastMeshObj.Mode	recastmeshobj.html#Mode	
 Pathfinding.RecastMeshObj.ScanInclusion	recastmeshobj.html#ScanInclusion	
@@ -3686,6 +3764,7 @@ Pathfinding.Serialization.AstarSerializer.V4_3_80	astarserializer.html#V4_3_80	C
 Pathfinding.Serialization.AstarSerializer.V4_3_83	astarserializer.html#V4_3_83	Cached version object for 4.3.83.
 Pathfinding.Serialization.AstarSerializer.V4_3_85	astarserializer.html#V4_3_85	Cached version object for 4.3.85.
 Pathfinding.Serialization.AstarSerializer.V4_3_87	astarserializer.html#V4_3_87	Cached version object for 4.3.87.
+Pathfinding.Serialization.AstarSerializer.V5_1_0	astarserializer.html#V5_1_0	Cached version object for 5.1.0.
 Pathfinding.Serialization.AstarSerializer._stringBuilder	astarserializer.html#_stringBuilder	Cached StringBuilder to avoid excessive allocations.
 Pathfinding.Serialization.AstarSerializer.binaryExt	astarserializer.html#binaryExt	Extension to use for binary files.
 Pathfinding.Serialization.AstarSerializer.checksum	astarserializer.html#checksum	Checksum for the serialized data. \n\nUsed to provide a quick equality check in editor code
@@ -3975,6 +4054,10 @@ Pathfinding.Util.UnsafeSpan.this[int index]	unsafespan.html#thisintindex
 Pathfinding.Util.UnsafeSpan.this[uint index]	unsafespan.html#thisuintindex	
 Pathfinding.VersionedMonoBehaviour.EntityIndex	versionedmonobehaviour.html#EntityIndex	Internal entity index used by BatchedEvents. \n\nShould never be modified by other scripts.
 Pathfinding.VersionedMonoBehaviour.version	versionedmonobehaviour.html#version	Version of the serialized data. \n\nUsed for script upgrades.
+Pathfinding.WelcomeScreen.FirstSceneToLoad	welcomescreen.html#FirstSceneToLoad	
+Pathfinding.WelcomeScreen.askedAboutQuitting	welcomescreen.html#askedAboutQuitting	
+Pathfinding.WelcomeScreen.isImportingSamples	welcomescreen.html#isImportingSamples	
+Pathfinding.WelcomeScreen.m_VisualTreeAsset	welcomescreen.html#m_VisualTreeAsset	
 Pathfinding.WorkItemProcessor.IndexedQueue.Count	indexedqueue.html#Count	
 Pathfinding.WorkItemProcessor.IndexedQueue.buffer	indexedqueue.html#buffer	
 Pathfinding.WorkItemProcessor.IndexedQueue.start	indexedqueue.html#start	

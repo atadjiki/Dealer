@@ -178,6 +178,33 @@ namespace Pathfinding {
 		public abstract void GetNodes(System.Action<GraphNode> action);
 
 		/// <summary>
+		/// True if the point is on a walkable part of the navmesh, as seen from above.
+		///
+		/// A point is considered on the navmesh if it is above or below a walkable navmesh surface, at any distance,
+		/// and if it is not above/below a closer unwalkable node.
+		///
+		/// This uses the graph's natural up direction to determine which way is up.
+		/// Therefore, it will also work on rotated graphs, as well as graphs in 2D mode.
+		///
+		/// This method works for all graph types.
+		/// However, for <see cref="PointGraph"/>s, this will never return true unless you pass in the exact coordinate of a node, since point nodes do not have a surface.
+		///
+		/// Note: For spherical navmeshes (or other weird shapes), this method will not work as expected, as there's no well defined "up" direction.
+		///
+		/// [Open online documentation to see images]
+		///
+		/// See: <see cref="AstarPath.IsPointOnNavmesh"/> to check all graphs, instead of a single one.
+		/// </summary>
+		/// <param name="position">The point to check</param>
+		public virtual bool IsPointOnNavmesh (Vector3 position) {
+			// We use the None constraint, instead of Walkable, to avoid ignoring unwalkable nodes that are closer to the point.
+			const float MaxHorizontalDistance = 0.01f;
+			const float MaxCostSqr = MaxHorizontalDistance * MaxHorizontalDistance;
+			var nearest = GetNearest(position, AstarPath.NNConstraintClosestAsSeenFromAbove, MaxCostSqr);
+			return nearest.node != null && nearest.node.Walkable && nearest.distanceCostSqr < MaxCostSqr;
+		}
+
+		/// <summary>
 		/// True if the point is inside the bounding box of this graph.
 		///
 		/// This method may be able to use a tighter (non-axis aligned) bounding box than using the one returned by <see cref="bounds"/>.

@@ -173,6 +173,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		public class TileType {
 			Int3[] verts;
 			int[] tris;
+			uint[] tags;
 			Int3 offset;
 			int lastYOffset;
 			int lastRotation;
@@ -215,8 +216,9 @@ namespace Pathfinding.Graphs.Navmesh {
 				1, 0
 			};
 
-			public TileType (UnsafeSpan<Int3> sourceVerts, UnsafeSpan<int> sourceTris, Int3 tileSize, Int3 centerOffset, int width = 1, int depth = 1) {
+			public TileType (UnsafeSpan<Int3> sourceVerts, UnsafeSpan<int> sourceTris, uint[] tags, Int3 tileSize, Int3 centerOffset, int width = 1, int depth = 1) {
 				tris = sourceTris.ToArray();
+				this.tags = tags;
 
 				verts = new Int3[sourceVerts.Length];
 
@@ -254,6 +256,7 @@ namespace Pathfinding.Graphs.Navmesh {
 				Vector3[] vectorVerts = source.vertices;
 				tris = source.triangles;
 				verts = new Int3[vectorVerts.Length];
+				this.tags = null;
 
 				for (int i = 0; i < vectorVerts.Length; i++) {
 					verts[i] = (Int3)vectorVerts[i] + centerOffset;
@@ -282,7 +285,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			/// different rotations and y offsets can be applied.
 			/// If you need persistent arrays, please copy the returned ones.
 			/// </summary>
-			public void Load (out Int3[] verts, out int[] tris, int rotation, int yoffset) {
+			public void Load (out Int3[] verts, out int[] tris, out uint[] tags, int rotation, int yoffset) {
 				//Make sure it is a number 0 <= x < 4
 				rotation = ((rotation % 4) + 4) % 4;
 
@@ -308,6 +311,7 @@ namespace Pathfinding.Graphs.Navmesh {
 				}
 
 				tris = this.tris;
+				tags = this.tags;
 			}
 		}
 
@@ -321,9 +325,9 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// different rotations and y offsets can be applied.
 		/// If you need persistent arrays, please copy the returned ones.
 		/// </summary>
-		public void GetSourceTileData (int x, int z, out Int3[] verts, out int[] tris) {
+		public void GetSourceTileData (int x, int z, out Int3[] verts, out int[] tris, out uint[] tags) {
 			var tileIndex = x + z*tileXCount;
-			this.activeTileTypes[tileIndex].Load(out verts, out tris, activeTileRotations[tileIndex], activeTileOffsets[tileIndex]);
+			this.activeTileTypes[tileIndex].Load(out verts, out tris, out tags, activeTileRotations[tileIndex], activeTileOffsets[tileIndex]);
 		}
 
 		/// <summary>
@@ -365,7 +369,9 @@ namespace Pathfinding.Graphs.Navmesh {
 			Bounds b = graph.GetTileBoundsInGraphSpace(x, z);
 			var centerOffset = -((Int3)b.min + new Int3(size.x*tile.w/2, 0, size.z*tile.d/2));
 
-			var tileType = new TileType(tile.vertsInGraphSpace, tile.tris, size, centerOffset, tile.w, tile.d);
+			var tags = new uint[tile.nodes.Length];
+			for (int i = 0; i < tags.Length; i++) tags[i] = tile.nodes[i].Tag;
+			var tileType = new TileType(tile.vertsInGraphSpace, tile.tris, tags, size, centerOffset, tile.w, tile.d);
 
 			int index = x + z*tileXCount;
 
@@ -428,6 +434,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		struct CuttingResult {
 			public Int3[] verts;
 			public int[] tris;
+			public uint[] tags;
 		}
 
 		/// <summary>
@@ -441,13 +448,14 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// </summary>
 		/// <param name="verts">Vertices that are going to be cut. Should be in graph space.</param>
 		/// <param name="tris">Triangles describing a mesh using the vertices.</param>
+		/// <param name="tags">Tags for each triangle. Will be passed to the resulting mesh.</param>
 		/// <param name="extraShape">If supplied the resulting mesh will be the intersection of the input mesh and this mesh.</param>
 		/// <param name="graphTransform">Transform mapping graph space to world space.</param>
 		/// <param name="tiles">Tiles in the recast graph which the mesh covers.</param>
 		/// <param name="mode"></param>
 		/// <param name="perturbate">Move navmesh cuts around randomly a bit, the larger the value the more they are moved around.
 		///      Used to prevent edge cases that can cause the clipping to fail.</param>
-		CuttingResult CutPoly (Int3[] verts, int[] tris, Int3[] extraShape, GraphTransform graphTransform, IntRect tiles, CutMode mode = CutMode.CutAll | CutMode.CutDual, int perturbate = -1) {
+		CuttingResult CutPoly (Int3[] verts, int[] tris, uint[] tags, Int3[] extraShape, GraphTransform graphTransform, IntRect tiles, CutMode mode = CutMode.CutAll | CutMode.CutDual, int perturbate = -1) {
 			// Find all NavmeshAdd components that could be inside the bounds
 			List<NavmeshAdd> navmeshAdds = cuts.QueryRect<NavmeshAdd>(tiles);
 
@@ -455,7 +463,8 @@ namespace Pathfinding.Graphs.Navmesh {
 			if ((verts.Length == 0 || tris.Length == 0) && navmeshAdds.Count == 0) {
 				return new CuttingResult {
 						   verts = ArrayPool<Int3>.Claim(0),
-						   tris = ArrayPool<int>.Claim(0)
+						   tris = ArrayPool<int>.Claim(0),
+						   tags = ArrayPool<uint>.Claim(0),
 				};
 			}
 
@@ -465,7 +474,8 @@ namespace Pathfinding.Graphs.Navmesh {
 					"Try to see see if any of your NavmeshCut or NavmeshAdd components use invalid custom meshes.");
 				return new CuttingResult {
 						   verts = verts,
-						   tris = tris
+						   tris = tris,
+						   tags = tags,
 				};
 			}
 
@@ -511,10 +521,11 @@ namespace Pathfinding.Graphs.Navmesh {
 
 			var outverts = ListPool<Int3>.Claim(verts.Length*2);
 			var outtris = ListPool<int>.Claim(tris.Length);
+			var outtags = ListPool<uint>.Claim(tags.Length);
 
 			if (navmeshCuts.Count == 0 && navmeshAdds.Count == 0 && (mode & ~(CutMode.CutAll | CutMode.CutDual)) == 0 && (mode & CutMode.CutAll) != 0) {
 				// Fast path for the common case, no cuts or adds to the navmesh, so we just copy the vertices
-				CopyMesh(verts, tris, outverts, outtris);
+				CopyMesh(verts, tris, tags, outverts, outtris, outtags);
 			} else {
 				var poly = ListPool<IntPoint>.Claim();
 				var point2Index = new Dictionary<TriangulationPoint, int>();
@@ -548,18 +559,22 @@ namespace Pathfinding.Graphs.Navmesh {
 					// Current array of vertices and triangles that are being processed
 					Int3[] cverts;
 					int[] ctris;
+					uint[] ctags;
 					if (meshIndex == -1) {
 						cverts = verts;
 						ctris = tris;
+						ctags = tags;
 					} else {
 						navmeshAdds[meshIndex].GetMesh(ref vertexBuffer, out ctris, transform);
 						cverts = vertexBuffer;
+						ctags = null;
 					}
 
 					for (int tri = 0; tri < ctris.Length; tri += 3) {
 						Int3 tp1 = cverts[ctris[tri + 0]];
 						Int3 tp2 = cverts[ctris[tri + 1]];
 						Int3 tp3 = cverts[ctris[tri + 2]];
+						var tag = ctags != null ? ctags[tri/3] : 0;
 
 						if (VectorMath.IsColinearXZ(tp1, tp2, tp3)) {
 							Debug.LogWarning("Skipping degenerate triangle.");
@@ -605,6 +620,8 @@ namespace Pathfinding.Graphs.Navmesh {
 							outverts.Add(tp1);
 							outverts.Add(tp2);
 							outverts.Add(tp3);
+
+							outtags.Add(tag);
 							continue;
 						}
 
@@ -665,6 +682,7 @@ namespace Pathfinding.Graphs.Navmesh {
 										outtris.Add(outverts.Count);
 										outverts.Add(p);
 									}
+									outtags.Add(tag);
 								} else {
 									Poly2Tri.Polygon polygonToTriangulate = null;
 									// Loop over outer and all holes
@@ -714,7 +732,7 @@ namespace Pathfinding.Graphs.Navmesh {
 										P2T.Triangulate(polygonToTriangulate);
 									} catch (Poly2Tri.PointOnEdgeException) {
 										Debug.LogWarning("PointOnEdgeException, perturbating vertices slightly.\nThis is usually fine. It happens sometimes because of rounding errors. Cutting will be retried a few more times.");
-										return CutPoly(verts, tris, extraShape, graphTransform, tiles, mode, perturbate + 1);
+										return CutPoly(verts, tris, tags, extraShape, graphTransform, tiles, mode, perturbate + 1);
 									}
 
 									try {
@@ -725,10 +743,11 @@ namespace Pathfinding.Graphs.Navmesh {
 											outtris.Add(point2Index[t.Points._0]);
 											outtris.Add(point2Index[t.Points._1]);
 											outtris.Add(point2Index[t.Points._2]);
+											outtags.Add(tag);
 										}
 									} catch (System.Collections.Generic.KeyNotFoundException) {
 										Debug.LogWarning("KeyNotFoundException, perturbating vertices slightly.\nThis is usually fine. It happens sometimes because of rounding errors. Cutting will be retried a few more times.");
-										return CutPoly(verts, tris, extraShape, graphTransform, tiles, mode, perturbate + 1);
+										return CutPoly(verts, tris, tags, extraShape, graphTransform, tiles, mode, perturbate + 1);
 									}
 
 									PoolPolygon(polygonToTriangulate, polyCache);
@@ -748,7 +767,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			// This next step will remove all duplicate vertices in the data (of which there are quite a few)
 			// and output the final vertex and triangle arrays to the outVertsArr and outTrisArr variables
 			var result = new CuttingResult();
-			Pathfinding.Polygon.CompressMesh(outverts, outtris, out result.verts, out result.tris);
+			Pathfinding.Polygon.CompressMesh(outverts, outtris, outtags, out result.verts, out result.tris, out result.tags);
 
 			// Notify the navmesh cuts that they were used
 			for (int i = 0; i < navmeshCuts.Count; i++) {
@@ -758,6 +777,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			// Release back to pools
 			ListPool<Int3>.Release(ref outverts);
 			ListPool<int>.Release(ref outtris);
+			ListPool<uint>.Release(ref outtags);
 			ListPool<int>.Release(ref intersectingCuts);
 
 			for (int i = 0; i < cutInfos.Count; i++) {
@@ -954,9 +974,10 @@ namespace Pathfinding.Graphs.Navmesh {
 		}
 
 		/// <summary>Copy mesh from (vertices, triangles) to (outVertices, outTriangles)</summary>
-		static void CopyMesh (Int3[] vertices, int[] triangles, List<Int3> outVertices, List<int> outTriangles) {
+		static void CopyMesh (Int3[] vertices, int[] triangles, uint[] tags, List<Int3> outVertices, List<int> outTriangles, List<uint> outTags) {
 			outTriangles.Capacity = Math.Max(outTriangles.Capacity, triangles.Length);
 			outVertices.Capacity = Math.Max(outVertices.Capacity, vertices.Length);
+			outTags.Capacity = Math.Max(outTags.Capacity, tags.Length);
 
 			for (int i = 0; i < vertices.Length; i++) {
 				outVertices.Add(vertices[i]);
@@ -964,6 +985,10 @@ namespace Pathfinding.Graphs.Navmesh {
 
 			for (int i = 0; i < triangles.Length; i++) {
 				outTriangles.Add(triangles[i]);
+			}
+
+			for (int i = 0; i < tags.Length; i++) {
+				outTags.Add(tags[i]);
 			}
 		}
 
@@ -977,8 +1002,9 @@ namespace Pathfinding.Graphs.Navmesh {
 		///
 		/// See: https://en.wikipedia.org/wiki/Delaunay_triangulation
 		/// </summary>
-		void DelaunayRefinement (Int3[] verts, int[] tris, ref int tCount, bool delaunay, bool colinear) {
+		void DelaunayRefinement (Int3[] verts, int[] tris, uint[] tags, ref int tCount, bool delaunay, bool colinear) {
 			if (tCount % 3 != 0) throw new System.ArgumentException("Triangle array length must be a multiple of 3");
+			if (tags != null && tags.Length != tCount / 3) throw new System.ArgumentException("There must be exactly 1 tag per 3 triangle indices");
 
 			Dictionary<Int2, int> lookup = cached_Int2_int_dict;
 			lookup.Clear();
@@ -996,6 +1022,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			}
 
 			for (int i = 0; i < tCount; i += 3) {
+				var tag = tags != null ? tags[i/3] : 0;
 				for (int j = 0; j < 3; j++) {
 					int opp;
 
@@ -1011,6 +1038,11 @@ namespace Pathfinding.Graphs.Navmesh {
 
 						// Opposite vertex (in the other triangle)
 						Int3 popp = verts[tris[opp]];
+
+						var oppTag = tags != null ? tags[opp/3] : 0;
+
+						// Only allow flipping if the two adjacent triangles share the same tag
+						if (tag != oppTag) continue;
 
 						po.y = 0;
 						pr.y = 0;
@@ -1042,11 +1074,12 @@ namespace Pathfinding.Graphs.Navmesh {
 								// Move right vertex to the other triangle's opposite
 								tris[i+((j+1)%3)] = tris[opp];
 
-								// Move last triangle to delete
+								// Remove the opposite triangle by swapping it with the last triangle
 								if (root != tCount) {
 									tris[root+0] = tris[tCount+0];
 									tris[root+1] = tris[tCount+1];
 									tris[root+2] = tris[tCount+2];
+									tags[root/3] = tags[tCount/3];
 									lookup[new Int2(tris[root+0], tris[root+1])] = root+2;
 									lookup[new Int2(tris[root+1], tris[root+2])] = root+0;
 									lookup[new Int2(tris[root+2], tris[root+0])] = root+1;
@@ -1054,8 +1087,6 @@ namespace Pathfinding.Graphs.Navmesh {
 									tris[tCount+0] = 0;
 									tris[tCount+1] = 0;
 									tris[tCount+2] = 0;
-								} else {
-									tCount += 3;
 								}
 
 								// Since the above mentioned edges are not shared, we don't need to bother updating them
@@ -1188,24 +1219,24 @@ namespace Pathfinding.Graphs.Navmesh {
 
 				context.PreUpdate();
 
-				Int3[] verts;
-				int[] tris;
-
-				tile.Load(out verts, out tris, rotation, yoffset);
+				tile.Load(out var verts, out var tris, out var tags, rotation, yoffset);
 
 				Profiler.BeginSample("Cut Poly");
 				// Cut the polygon
 				var tileBounds = new IntRect(x, z, x + tile.Width - 1, z + tile.Depth - 1);
-				var cuttingResult = CutPoly(verts, tris, null, graph.transform, tileBounds);
+				var cuttingResult = CutPoly(verts, tris, tags, null, graph.transform, tileBounds);
 				Profiler.EndSample();
 
 				Profiler.BeginSample("Delaunay Refinement");
 				// Refine to tweak bad triangles
 				var tCount = cuttingResult.tris.Length;
-				DelaunayRefinement(cuttingResult.verts, cuttingResult.tris, ref tCount, true, false);
+				DelaunayRefinement(cuttingResult.verts, cuttingResult.tris, cuttingResult.tags, ref tCount, true, true);
 				Profiler.EndSample();
 
-				if (tCount != cuttingResult.tris.Length) cuttingResult.tris = Memory.ShrinkArray(cuttingResult.tris, tCount);
+				if (tCount != cuttingResult.tris.Length) {
+					cuttingResult.tris = Memory.ShrinkArray(cuttingResult.tris, tCount);
+					cuttingResult.tags = Memory.ShrinkArray(cuttingResult.tags, tCount/3);
+				}
 
 				// Rotate the mask correctly
 				// and update width and depth to match rotation
@@ -1218,7 +1249,7 @@ namespace Pathfinding.Graphs.Navmesh {
 				Profiler.BeginSample("ReplaceTile");
 				// Replace the tile using the final vertices and triangles
 				// The vertices are still in local space
-				graph.ReplaceTile(x, z, cuttingResult.verts, cuttingResult.tris);
+				graph.ReplaceTile(x, z, cuttingResult.verts, cuttingResult.tris, cuttingResult.tags);
 				Profiler.EndSample();
 				return true;
 			}));

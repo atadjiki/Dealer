@@ -47,6 +47,11 @@ namespace Pathfinding.Graphs.Grid.Rules {
 			}
 
 			rules.AddMainThreadPass(Pass.BeforeConnections, context => {
+				if (!context.data.heightHits.IsCreated) {
+					UnityEngine.Debug.LogError("RulePerLayerModifications requires height testing to be enabled on the grid graph", context.graph.active);
+					return;
+				}
+
 				var raycastHits = context.data.heightHits;
 				var nodeWalkable = context.data.nodes.walkable;
 				var nodeTags = context.data.nodes.tags;

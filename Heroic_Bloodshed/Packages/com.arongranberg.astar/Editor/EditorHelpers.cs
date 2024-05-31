@@ -47,12 +47,12 @@ namespace Pathfinding.Util {
 			}
 		}
 
-		public static int TagField (GUIContent label, int value, System.Action editCallback) {
+		public static int TagField (Rect rect, GUIContent label, int value, System.Action editCallback) {
 			FindTagNames();
 			// Tags are between 0 and GraphNode.MaxTagIndex
 			value = Mathf.Clamp(value, 0, GraphNode.MaxTagIndex);
 
-			var newValue = EditorGUILayout.IntPopup(label, value, tagNamesAndEditTagsButton, tagValues);
+			var newValue = EditorGUI.IntPopup(rect, label, value, tagNamesAndEditTagsButton, tagValues);
 
 			// Last element corresponds to the 'Edit Tags...' entry. Open the tag editor
 			if (newValue == -1) {
@@ -62,6 +62,10 @@ namespace Pathfinding.Util {
 			}
 
 			return value;
+		}
+
+		public static int TagField (GUIContent label, int value, System.Action editCallback) {
+			return TagField(GUILayoutUtility.GetRect(label, EditorStyles.popup), label, value, editCallback);
 		}
 
 		public static void TagField (Rect position, GUIContent label, SerializedProperty property, System.Action editCallback) {

@@ -72,6 +72,9 @@ namespace Pathfinding {
 						"seam will be created between the surfaces on this mesh and the surfaces on other meshes (with a different surface id)", MessageType.None);
 					EditorGUI.indentLevel++;
 					PropertyField(areaProp, "Surface ID");
+					if (!areaProp.hasMultipleDifferentValues && areaProp.intValue < 0) {
+						areaProp.intValue = 0;
+					}
 					EditorGUI.indentLevel--;
 					break;
 				case RecastMeshObj.Mode.WalkableSurfaceWithTag:
@@ -84,7 +87,7 @@ namespace Pathfinding {
 					if (EditorGUI.EndChangeCheck()) {
 						areaProp.intValue = newTag;
 					}
-					if (areaProp.intValue < 0 || areaProp.intValue > GraphNode.MaxTagIndex) {
+					if (!areaProp.hasMultipleDifferentValues && (areaProp.intValue < 0 || areaProp.intValue > GraphNode.MaxTagIndex)) {
 						areaProp.intValue = Mathf.Clamp(areaProp.intValue, 0, GraphNode.MaxTagIndex);
 					}
 

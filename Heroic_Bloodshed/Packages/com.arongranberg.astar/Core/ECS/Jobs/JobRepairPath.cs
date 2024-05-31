@@ -27,6 +27,12 @@ namespace Pathfinding.ECS {
 			public ComponentTypeHandle<MovementState> MovementStateTypeHandleRW;
 			[ReadOnly]
 			public ComponentTypeHandle<AgentCylinderShape> AgentCylinderShapeTypeHandleRO;
+			// NativeDisableContainerSafetyRestriction seems to be necessary because otherwise we will get an error:
+			// "The ComponentTypeHandle<Pathfinding.ECS.ManagedState> ... can not be accessed. Nested native containers are illegal in jobs."
+			// However, Unity doesn't seem to check for this at all times. Currently, I can only replicate the error if DoTween Pro is also installed.
+			// I have no idea how this unrelated package influences unity to actually do the check.
+			// We know it is safe to access the managed state because we make sure to never access an entity from multiple threads at the same time.
+			[NativeDisableContainerSafetyRestriction]
 			public ComponentTypeHandle<ManagedState> ManagedStateTypeHandleRW;
 			[ReadOnly]
 			public ComponentTypeHandle<MovementSettings> MovementSettingsTypeHandleRO;

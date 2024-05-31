@@ -12,10 +12,9 @@ namespace Pathfinding.Examples {
 		ReorderableList actions;
 
 		static Rect SliceRow (ref Rect rect, float height) {
-			var r = new Rect(rect.x, rect.y, rect.width, height);
-			rect.yMin += height + EditorGUIUtility.standardVerticalSpacing;
-			return r;
+			return GUIUtilityx.SliceRow(ref rect, height);
 		}
+
 		protected override void OnEnable () {
 			base.OnEnable();
 			actions = new ReorderableList(serializedObject, serializedObject.FindProperty("actions"), true, true, true, true);

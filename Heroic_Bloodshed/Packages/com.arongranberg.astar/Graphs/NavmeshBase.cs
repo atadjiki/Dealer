@@ -216,8 +216,10 @@ namespace Pathfinding {
 
 		/// <summary>
 		/// Returns a bounds object with the bounding box of a group of tiles.
+		///
 		/// The bounding box is defined in world space.
 		/// </summary>
+		/// <param name="rect">Tiles to get the bounding box of. The rectangle is in tile coordinates where 1 unit = 1 tile.</param>
 		public Bounds GetTileBounds (IntRect rect) {
 			return GetTileBounds(rect.xmin, rect.ymin, rect.Width, rect.Height);
 		}
@@ -230,6 +232,8 @@ namespace Pathfinding {
 			return transform.Transform(GetTileBoundsInGraphSpace(x, z, width, depth));
 		}
 
+		/// <summary>Returns an XZ bounds object with the bounds of a group of tiles in graph space.</summary>
+		/// <param name="rect">Tiles to get the bounding box of. The rectangle is in tile coordinates where 1 unit = 1 tile.</param>
 		public Bounds GetTileBoundsInGraphSpace (IntRect rect) {
 			return GetTileBoundsInGraphSpace(rect.xmin, rect.ymin, rect.Width, rect.Height);
 		}
@@ -524,6 +528,8 @@ namespace Pathfinding {
 		/// The up direction defines what "inside" a node means. A point is inside a node if it is inside the triangle when seen from above.
 		///
 		/// See: <see cref="GetNearest"/>
+		///
+		/// See: <see cref="IsPointOnNavmesh"/>, if you only need to know if the point is on the navmesh or not.
 		/// </summary>
 		public GraphNode PointOnNavmesh (Vector3 position, NNConstraint constraint) {
 			if (tiles == null) return null;
@@ -542,6 +548,9 @@ namespace Pathfinding {
 
 		/// <summary>Fills graph with tiles created by NewEmptyTile</summary>
 		protected void FillWithEmptyTiles () {
+			UnityEngine.Assertions.Assert.IsNull(tiles);
+			tiles = new NavmeshTile[tileXCount*tileZCount];
+
 			for (int z = 0; z < tileZCount; z++) {
 				for (int x = 0; x < tileXCount; x++) {
 					tiles[z*tileXCount + x] = NewEmptyTile(x, z);
@@ -935,7 +944,9 @@ namespace Pathfinding {
 		/// <param name="z">Z coordinate of the tile to replace.</param>
 		/// <param name="verts">Vertices of the new tile. The vertices are assumed to be in 'tile space', that is being in a rectangle with one corner at the origin and one at (#TileWorldSizeX, 0, #TileWorldSizeZ).</param>
 		/// <param name="tris">Triangles of the new tile. If #RecalculateNormals is enabled, the triangles will be converted to clockwise order (when seen from above), if they are not already.</param>
-		public void ReplaceTile (int x, int z, Int3[] verts, int[] tris) {
+		/// <param name="tags">Tags for the nodes. The array must have the same length as the tris array divided by 3. If null, the tag will be set to 0 for all nodes.</param>
+		/// <param name="tryPreserveExistingTagsAndPenalties">If true, existing tags and penalties will be preserved for nodes that stay in exactly the same position after the tile replacement.</param>
+		public void ReplaceTile (int x, int z, Int3[] verts, int[] tris, uint[] tags = null, bool tryPreserveExistingTagsAndPenalties = true) {
 			AssertSafeToUpdateGraph();
 			int w = 1, d = 1;
 
@@ -944,6 +955,7 @@ namespace Pathfinding {
 			}
 
 			if (tris.Length % 3 != 0) throw new System.ArgumentException("Triangle array's length must be a multiple of 3 (tris)");
+			if (tags != null && tags.Length != tris.Length / 3) throw new System.ArgumentException("Triangle array must be 3 times the size of the tags array");
 			if (verts.Length > VertexIndexMask) {
 				Debug.LogError("Too many vertices in the tile (" + verts.Length + " > " + VertexIndexMask +")\nYou can enable ASTAR_RECAST_LARGER_TILES under the 'Optimizations' tab in the A* Inspector to raise this limit. Or you can use a smaller tile size to reduce the likelihood of this happening.");
 				verts = new Int3[0];
@@ -958,7 +970,7 @@ namespace Pathfinding {
 			var vertsInGraphSpace = new UnsafeSpan<Int3>(Allocator.Persistent, verts.Length);
 			vertsInGraphSpace.CopyFrom(verts);
 
-			var offset = (Int3) new Vector3((x * TileWorldSizeX), 0, (z * TileWorldSizeZ));
+			var offset = (Int3) new Vector3(x * TileWorldSizeX, 0, z * TileWorldSizeZ);
 			for (int i = 0; i < verts.Length; i++) {
 				vertsInGraphSpace[i] += offset;
 			}
@@ -1010,7 +1022,10 @@ namespace Pathfinding {
 			if (RecalculateNormals) MeshUtility.MakeTrianglesClockwise(ref tile.vertsInGraphSpace, ref tile.tris);
 
 			// Create nodes and assign triangle indices
-			CreateNodes(tile, tile.tris, x + z*tileXCount, (uint)active.data.GetGraphIndex(this), default, true, active, initialPenalty, RecalculateNormals);
+			ulong gcHandle = 0;
+			var tagsSpan = tags != null ? new UnsafeSpan<uint>(tags, out gcHandle) : default;
+			CreateNodes(tile, tile.tris, x + z*tileXCount, (uint)active.data.GetGraphIndex(this), tagsSpan, true, active, initialPenalty, tryPreserveExistingTagsAndPenalties);
+			if (tags != null) Unity.Collections.LowLevel.Unsafe.UnsafeUtility.ReleaseGCObject(gcHandle);
 
 			Profiler.EndSample();
 
@@ -1024,7 +1039,7 @@ namespace Pathfinding {
 			Profiler.EndSample();
 		}
 
-		internal static void CreateNodes (NavmeshTile tile, UnsafeSpan<int> tris, int tileIndex, uint graphIndex, UnsafeSpan<uint> tags, bool initializeNodes, AstarPath astar, uint initialPenalty, bool recalculateNormals) {
+		internal static void CreateNodes (NavmeshTile tile, UnsafeSpan<int> tris, int tileIndex, uint graphIndex, UnsafeSpan<uint> tags, bool initializeNodes, AstarPath astar, uint initialPenalty, bool tryPreserveExistingTagsAndPenalties) {
 			var nodes = tile.nodes;
 
 			if (nodes == null || nodes.Length < tris.Length/3) throw new System.ArgumentException("nodes must be non null and at least as large as tris.Length/3");
@@ -1034,8 +1049,10 @@ namespace Pathfinding {
 			// Create nodes and assign vertex indices
 			for (int i = 0; i < nodes.Length; i++) {
 				var node = nodes[i];
+				bool newNode = false;
 				// Allow the nodes to be partially filled in already to allow for recycling nodes
 				if (node == null) {
+					newNode = true;
 					if (initializeNodes) {
 						node = nodes[i] = new TriangleMeshNode(astar);
 					} else {
@@ -1045,10 +1062,16 @@ namespace Pathfinding {
 					}
 				}
 
+				// If tryPreserveExistingTagsAndPenalties is true, we fill in the tag and penalty only if the node wasn't recycled
+				if (!tryPreserveExistingTagsAndPenalties || newNode) {
+					if (tags.Length > 0) {
+						node.Tag = tags[i];
+					}
+					node.Penalty = initialPenalty;
+				}
+
 				// Reset all relevant fields on the node (even on recycled nodes to avoid exposing internal implementation details)
 				node.Walkable = true;
-				node.Tag = tags.length > 0 ? tags[i] : 0;
-				node.Penalty = initialPenalty;
 				node.GraphIndex = graphIndex;
 				// The vertices stored on the node are composed
 				// out of the triangle index and the tile index

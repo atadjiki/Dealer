@@ -278,6 +278,9 @@ namespace Pathfinding.Serialization {
 		/// <summary>Cached version object for 4.3.87</summary>
 		public static readonly System.Version V4_3_87 = new System.Version(4, 3, 87);
 
+		/// <summary>Cached version object for 5.1.0</summary>
+		public static readonly System.Version V5_1_0 = new System.Version(5, 1, 0);
+
 		public AstarSerializer (AstarData data, GameObject contextRoot) : this(data, SerializeSettings.Settings, contextRoot) {
 		}
 

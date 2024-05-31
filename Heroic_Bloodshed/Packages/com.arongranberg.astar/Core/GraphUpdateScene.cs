@@ -289,10 +289,13 @@ namespace Pathfinding {
 			if (guo != null) AstarPath.active.UpdateGraphs(guo);
 		}
 
+		static readonly Color GizmoColorSelected = new Color(227/255f, 61/255f, 22/255f, 1.0f);
+		static readonly Color GizmoColorUnselected = new Color(227/255f, 61/255f, 22/255f, 0.9f);
+
 		/// <summary>Draws some gizmos</summary>
 		public override void DrawGizmos () {
 			bool selected = GizmoContext.InActiveSelection(this);
-			Color c = selected ? new Color(227/255f, 61/255f, 22/255f, 1.0f) : new Color(227/255f, 61/255f, 22/255f, 0.9f);
+			Color c = selected ? GizmoColorSelected : GizmoColorUnselected;
 
 			if (selected) {
 				var col = Color.Lerp(c, new Color(1, 1, 1, 0.2f), 0.9f);
@@ -316,12 +319,14 @@ namespace Pathfinding {
 
 			using (Draw.WithMatrix(matrix)) {
 				if (selected || !convex) {
-					Draw.Polyline(points, true, c);
+					var fadedColor = c;
+					fadedColor.a *= 0.7f;
+					Draw.Polyline(points, true, convex ? fadedColor : c);
 				}
 
 				if (convex) {
 					if (convexPoints == null) RecalcConvex();
-					Draw.Polyline(convexPoints, true, selected ? new Color(227/255f, 61/255f, 22/255f, 1.0f) : new Color(227/255f, 61/255f, 22/255f, 0.9f));
+					Draw.Polyline(convexPoints, true, selected ? GizmoColorSelected : GizmoColorUnselected);
 				}
 
 				// Draw the full 3D shape

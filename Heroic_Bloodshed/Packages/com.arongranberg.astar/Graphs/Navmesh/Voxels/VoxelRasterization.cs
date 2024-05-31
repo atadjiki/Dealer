@@ -72,6 +72,7 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 
 		public Matrix4x4 graphTransform;
 		public Bounds graphSpaceBounds;
+		public Vector2 graphSpaceLimits;
 		public LinkedVoxelField voxelArea;
 
 		public void Execute () {
@@ -105,6 +106,10 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 			var verts = new NativeArray<float3>(maxVerts, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
 			int width = voxelArea.width;
 			int depth = voxelArea.depth;
+
+			// These will be width-1 and depth-1 respectively for all but the last tile row and column of the graph
+			var cropX = Mathf.Min(width - 1, float.IsPositiveInfinity(graphSpaceLimits.x) ? int.MaxValue : Mathf.CeilToInt((graphSpaceLimits.x - graphSpaceBounds.min.x) / cellSize));
+			var cropZ = Mathf.Min(depth - 1, float.IsPositiveInfinity(graphSpaceLimits.y) ? int.MaxValue : Mathf.CeilToInt((graphSpaceLimits.y - graphSpaceBounds.min.z) / cellSize));
 
 			// This loop is the hottest place in the whole rasterization process
 			// it usually accounts for around 50% of the time
@@ -149,13 +154,13 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 					int maxX = (int)math.ceil(math.max(math.max(p1.x, p2.x), p3.x));
 					int maxZ = (int)math.ceil(math.max(math.max(p1.z, p2.z), p3.z));
 
-					minX = math.clamp(minX, 0, width-1);
-					maxX = math.clamp(maxX, 0, width-1);
-					minZ = math.clamp(minZ, 0, depth-1);
-					maxZ = math.clamp(maxZ, 0, depth-1);
-
 					// Check if the mesh is completely out of bounds
-					if (minX >= width || minZ >= depth || maxX <= 0 || maxZ <= 0) continue;
+					if (minX > cropX || minZ > cropZ || maxX < 0 || maxZ < 0) continue;
+
+					minX = math.clamp(minX, 0, cropX);
+					maxX = math.clamp(maxX, 0, cropX);
+					minZ = math.clamp(minZ, 0, cropZ);
+					maxZ = math.clamp(maxZ, cropZ, cropZ);
 
 					if (i == 0) meshBounds = new IntRect(minX, minZ, minX, minZ);
 					meshBounds.xmin = math.min(meshBounds.xmin, minX);
@@ -197,8 +202,8 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 							}
 						}
 
-						int clampZ1I = math.clamp((int)math.round(clampZ1), 0, depth-1);
-						int clampZ2I = math.clamp((int)math.round(clampZ2), 0, depth-1);
+						int clampZ1I = math.clamp((int)math.round(clampZ1), 0, cropX);
+						int clampZ2I = math.clamp((int)math.round(clampZ2), 0, cropZ);
 
 						for (int z = clampZ1I; z <= clampZ2I; z++) {
 							clipperX2.ClipPolygonAlongZWithYZ(ref clipperZ1, 1F, -z+0.5F);

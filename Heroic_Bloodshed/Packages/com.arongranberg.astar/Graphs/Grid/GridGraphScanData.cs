@@ -382,7 +382,7 @@ namespace Pathfinding.Graphs.Grid {
 		/// </summary>
 		public JobDependencyTracker dependencyTracker;
 
-		/// <summary>The up direction of the graph</summary>
+		/// <summary>The up direction of the graph, in world space</summary>
 		public Vector3 up;
 
 		/// <summary>Transforms graph-space to world space</summary>
@@ -422,26 +422,63 @@ namespace Pathfinding.Graphs.Grid {
 		/// Warning: This array does not have the same size as the arrays in <see cref="nodes"/>. It will usually be slightly smaller. See <see cref="heightHitsBounds"/>.
 		/// </summary>
 		public NativeArray<RaycastHit> heightHits;
+
+		/// <summary>
+		/// Bounds for the <see cref="heightHits"/> array.
+		///
+		/// During an update, the scan data may contain more nodes than we are doing height testing for.
+		/// For a few nodes around the update, the data will be read from the existing graph, instead. This is done for performance.
+		/// This means that there may not be any height testing information these nodes.
+		/// However, all nodes that will be written to will always have height testing information.
+		/// </summary>
 		public IntBounds heightHitsBounds;
 
+		/// <summary>
+		/// Node positions.
+		/// Deprecated: Use <see cref="nodes.positions"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.positions instead")]
 		public NativeArray<Vector3> nodePositions => nodes.positions;
 
+		/// <summary>
+		/// Node connections.
+		/// Deprecated: Use <see cref="nodes.connections"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.connections instead")]
 		public NativeArray<ulong> nodeConnections => nodes.connections;
 
+		/// <summary>
+		/// Node penalties.
+		/// Deprecated: Use <see cref="nodes.penalties"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.penalties instead")]
 		public NativeArray<uint> nodePenalties => nodes.penalties;
 
+		/// <summary>
+		/// Node tags.
+		/// Deprecated: Use <see cref="nodes.tags"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.tags instead")]
 		public NativeArray<int> nodeTags => nodes.tags;
 
+		/// <summary>
+		/// Node normals.
+		/// Deprecated: Use <see cref="nodes.normals"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.normals instead")]
 		public NativeArray<float4> nodeNormals => nodes.normals;
 
+		/// <summary>
+		/// Node walkability.
+		/// Deprecated: Use <see cref="nodes.walkable"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.walkable instead")]
 		public NativeArray<bool> nodeWalkable => nodes.walkable;
 
+		/// <summary>
+		/// Node walkability with erosion.
+		/// Deprecated: Use <see cref="nodes.walkableWithErosion"/> instead
+		/// </summary>
 		[System.Obsolete("Use nodes.walkableWithErosion instead")]
 		public NativeArray<bool> nodeWalkableWithErosion => nodes.walkableWithErosion;
 

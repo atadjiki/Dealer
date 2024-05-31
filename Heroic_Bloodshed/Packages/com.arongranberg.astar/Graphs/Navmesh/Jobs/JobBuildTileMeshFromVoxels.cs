@@ -72,6 +72,13 @@ namespace Pathfinding.Graphs.Navmesh.Jobs {
 		public NativeArray<Bounds> tileGraphSpaceBounds;
 		public Matrix4x4 voxelToTileSpace;
 
+		/// <summary>
+		/// Limits of the graph space bounds for the whole graph on the XZ plane.
+		///
+		/// Used to crop the border tiles to exactly the limits of the graph's bounding box.
+		/// </summary>
+		public Vector2 graphSpaceLimits;
+
 		[NativeDisableUnsafePtrRestriction]
 		public unsafe TileMesh.TileMeshUnsafe* outputMeshes;
 
@@ -152,6 +159,7 @@ namespace Pathfinding.Graphs.Navmesh.Jobs {
 					maxSlope = maxSlope,
 					graphTransform = graphToWorldSpace,
 					graphSpaceBounds = tileGraphSpaceBounds[i],
+					graphSpaceLimits = graphSpaceLimits,
 					voxelArea = tileBuilder.linkedVoxelField,
 				}.Execute();
 				MarkerVoxelize.End();

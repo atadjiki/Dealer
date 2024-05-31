@@ -1,3 +1,60 @@
+## 5.1.2 (2024-05-29)
+- Added \reflink{AstarPath.IsPointOnNavmesh} to more easily check if a point is on the navmesh surface of any graph.
+- Added \reflink{NavGraph.IsPointOnNavmesh}, which works the same, but only checks a single graph.
+- Fixed \reflink{ProceduralGraphMover} would not scan new tiles correctly when moving in the +x or +z directions (recent regression).
+- Fixed the recast graph inspector would not show the Character Radius field in 2D mode (regression in 5.1.0).
+
+## 5.1.1 (2024-05-08)
+- Added a welcome screen when importing the package into a new project.
+		It makes it easy to import the example scenes into the project, something new users are often confused about how to do.
+		It also has convenient links to the documentation and changelog.
+		\shadowimage{changelog/welcome_screen.png}
+- Added \reflink{RecastGraph.collectionSettings.onCollectMeshes} to allow adding custom meshes to be rasterized by the recast graph.
+- Fixed \reflink{FollowerEntity} could throw an exception when it was scaled by a negative value.
+- Improved compatibility with other packages. Previously, \reflink{FollowerEntity} could throw an exception in some projects if, for example, DoTween Pro was installed.
+- Improved styling of the documentation.
+
+## 5.1.0 (2024-05-02)
+- Breaking changes
+		- It is no longer possible to use both the layer mask and tag mask at the same time when scanning recast graphs.
+			The tag mask was very seldom used and it was a bit confusing to have both options available at the same time in the inspector.
+- New Features and improvements
+		- Tags applied when recast graphs are scanned will now be preserved even when using navmesh cutting.
+			Previously, navmesh cutting would not be able to preserve these tags.
+			Note that this only applies to tags that are set either on a \reflink{RecastMeshObj} component, or using a graph update that happens during the initial scan.
+		- Navmesh cutting is now better at collapsing adjacent triangles into fewer triangles, if possible.
+			This can improve pathfinding quality, and improve performance ever so slightly.
+		- Restructured the recast graph inspector, with clearer headings and a more consistent layout.
+			\shadowimage{changelog/recastgraph_inspector.png}
+		- Recast graphs now have a new option for per layer modifications.
+			This means you can now set tags or make nodes unwalkable based on the layer of the surface under the node, without having to attach a \reflink{RecastMeshObj} component to every object.
+			\shadowimage{recast/per_layer_modifications.png}
+		- \reflink{MecanimBridge} now supports the \reflink{FollowerEntity} movement script.
+		- There's now a button in all relevant example scenes that link them to the corresponding page in the documentation.
+		- When the scene view camera is in 2D mode, one can now add points to the \reflink{GraphUpdateScene} by shift-clicking even in empty areas of the screen. Previously, one had to click on a GameObject.
+			This should improve the workflow when working on 2D games.
+		- Implemented \reflink{FollowerEntity.Move}.
+		- Changing \reflink{FollowerEntity.enableGravity} doesn't cause a structural entity change anymore, which means it can be used from an off-mesh link handler.
+- Fixes and changes
+		- Fixed scanning recast graphs asynchronously could block due to it creating too many jobs, so that Unity forced some to execute on the main thread.
+		- Fixed a few edge cases when scanning recast graphs.
+		- Fixed asynchronously scanning grid graphs would not split up some main thread work into smaller chunks, which could cause frame drops.
+		- Fixed \reflink{FollowerEntity} could throw exceptions when traversing a grid graph that was being updated at the same time.
+		- Fixed when adding the first point to a \reflink{GraphUpdateScene} component by shift-clicking in the scene view, the GameObject could end up being deselected.
+		- Recast graphs now handle degenerate triangles a bit better.
+		- Fixed tiled recast graphs could generate a navmesh outside the bounding box of the graph, if the tile size didn't divide the graph size evenly.
+		- Fixed \reflink{FollowerEntity} could get stuck when one of its world coordinates were around 2100, due to coordinate overflows in some calculations.
+		- Added a warning in the grid graph inspector when trying to use the \reflink{RulePerLayerModifications;per layer modifications rule} without height testing enabled.
+		- Minor other improvements to editing points for the \reflink{GraphUpdateScene} component.
+		- Renamed RecastGraph.rasterizeColliders to \reflink{RecastGraph.collectionSettings.rasterizeColliders}.
+		- Renamed RecastGraph.rasterizeMeshes to \reflink{RecastGraph.collectionSettings.rasterizeMeshes}.
+		- Renamed RecastGraph.rasterizeTerrain to \reflink{RecastGraph.collectionSettings.rasterizeTerrain}.
+		- Renamed RecastGraph.rasterizeTrees to \reflink{RecastGraph.collectionSettings.rasterizeTrees}.
+		- Renamed RecastGraph.colliderRasterizeDetail to \reflink{RecastGraph.collectionSettings.colliderRasterizeDetail}.
+		- Renamed RecastGraph.mask to \reflink{RecastGraph.collectionSettings.layerMask}.
+		- Renamed RecastGraph.tagMask to \reflink{RecastGraph.collectionSettings.tagMask}.
+		- Renamed RecastGraph.terrainSampleSize to \reflink{RecastGraph.collectionSettings.terrainHeightmapDownsamplingFactor}.
+
 ## 5.0.9 (2024-04-15)
 - Minor internal changes.
 - Various minor documentation improvements.

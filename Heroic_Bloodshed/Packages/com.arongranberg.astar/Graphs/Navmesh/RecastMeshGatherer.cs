@@ -16,16 +16,18 @@ namespace Pathfinding.Graphs.Navmesh {
 	[BurstCompile]
 	public class RecastMeshGatherer {
 		readonly int terrainDownsamplingFactor;
-		readonly LayerMask mask;
-		readonly List<string> tagMask;
+		public readonly LayerMask mask;
+		public readonly List<string> tagMask;
 		readonly float maxColliderApproximationError;
-		readonly Bounds bounds;
-		readonly UnityEngine.SceneManagement.Scene scene;
+		public readonly Bounds bounds;
+		public readonly UnityEngine.SceneManagement.Scene scene;
 		Dictionary<MeshCacheItem, int> cachedMeshes = new Dictionary<MeshCacheItem, int>();
 		readonly Dictionary<GameObject, TreeInfo> cachedTreePrefabs = new Dictionary<GameObject, TreeInfo>();
 		readonly List<NativeArray<Vector3> > vertexBuffers;
 		readonly List<NativeArray<int> > triangleBuffers;
 		readonly List<Mesh> meshData;
+		readonly RecastGraph.PerLayerModification[] modificationsByLayer;
+		readonly RecastGraph.PerLayerModification[] modificationsByLayer2D;
 #if UNITY_EDITOR
 		readonly List<(UnityEngine.Object, Mesh)> meshesUnreadableAtRuntime = new List<(UnityEngine.Object, Mesh)>();
 #else
@@ -33,8 +35,9 @@ namespace Pathfinding.Graphs.Navmesh {
 #endif
 
 		List<GatheredMesh> meshes;
+		List<Material> dummyMaterials = new List<Material>();
 
-		public RecastMeshGatherer (UnityEngine.SceneManagement.Scene scene, Bounds bounds, int terrainDownsamplingFactor, LayerMask mask, List<string> tagMask, float maxColliderApproximationError) {
+		public RecastMeshGatherer (UnityEngine.SceneManagement.Scene scene, Bounds bounds, int terrainDownsamplingFactor, LayerMask mask, List<string> tagMask, List<RecastGraph.PerLayerModification> perLayerModifications, float maxColliderApproximationError) {
 			// Clamp to at least 1 since that's the resolution of the heightmap
 			terrainDownsamplingFactor = Math.Max(terrainDownsamplingFactor, 1);
 
@@ -49,6 +52,11 @@ namespace Pathfinding.Graphs.Navmesh {
 			triangleBuffers = ListPool<NativeArray<int> >.Claim();
 			cachedMeshes = ObjectPoolSimple<Dictionary<MeshCacheItem, int> >.Claim();
 			meshData = ListPool<Mesh>.Claim();
+			modificationsByLayer = RecastGraph.PerLayerModification.ToLayerLookup(perLayerModifications, RecastGraph.PerLayerModification.Default);
+			// 2D colliders default to being unwalkable
+			var default2D = RecastGraph.PerLayerModification.Default;
+			default2D.mode = RecastMeshObj.Mode.UnwalkableSurface;
+			modificationsByLayer2D = RecastGraph.PerLayerModification.ToLayerLookup(perLayerModifications, default2D);
 		}
 
 		struct TreeInfo {
@@ -170,11 +178,21 @@ namespace Pathfinding.Graphs.Navmesh {
 				);
 		}
 
-		int AddMeshBuffers (Vector3[] vertices, int[] triangles) {
+		/// <summary>
+		/// Add vertex and triangle buffers that can later be used to create a <see cref="GatheredMesh"/>.
+		///
+		/// The returned index can be used in the <see cref="GatheredMesh.meshDataIndex"/> field of the <see cref="GatheredMesh"/> struct.
+		/// </summary>
+		public int AddMeshBuffers (Vector3[] vertices, int[] triangles) {
 			return AddMeshBuffers(new NativeArray<Vector3>(vertices, Allocator.Persistent), new NativeArray<int>(triangles, Allocator.Persistent));
 		}
 
-		int AddMeshBuffers (NativeArray<Vector3> vertices, NativeArray<int> triangles) {
+		/// <summary>
+		/// Add vertex and triangle buffers that can later be used to create a <see cref="GatheredMesh"/>.
+		///
+		/// The returned index can be used in the <see cref="GatheredMesh.meshDataIndex"/> field of the <see cref="GatheredMesh"/> struct.
+		/// </summary>
+		public int AddMeshBuffers (NativeArray<Vector3> vertices, NativeArray<int> triangles) {
 			var meshDataIndex = -vertexBuffers.Count-1;
 
 			vertexBuffers.Add(vertices);
@@ -182,10 +200,29 @@ namespace Pathfinding.Graphs.Navmesh {
 			return meshDataIndex;
 		}
 
+		/// <summary>Add a mesh to the list of meshes to rasterize</summary>
+		public void AddMesh (Renderer renderer, Mesh gatheredMesh) {
+			if (ConvertMeshToGatheredMesh(renderer, gatheredMesh, out var gm)) {
+				meshes.Add(gm);
+			}
+		}
+
+		/// <summary>Add a mesh to the list of meshes to rasterize</summary>
+		public void AddMesh (GatheredMesh gatheredMesh) {
+			meshes.Add(gatheredMesh);
+		}
+
+		/// <summary>Holds info about a mesh to be rasterized</summary>
 		public struct GatheredMesh {
+			/// <summary>
+			/// Index in the meshData array.
+			/// Can be retrieved from the <see cref="RecastMeshGatherer.AddMeshBuffers"/> method.
+			/// </summary>
 			public int meshDataIndex;
-			/// <summary>See <see cref="RasterizationMesh.areaIsTag"/></summary>
-			public bool areaIsTag;
+			/// <summary>
+			/// Area ID of the mesh. 0 means walkable, and -1 indicates that the mesh should be treated as unwalkable.
+			/// Other positive values indicate a custom area ID which will create a seam in the navmesh.
+			/// </summary>
 			public int area;
 			/// <summary>Start index in the triangle array</summary>
 			public int indexStart;
@@ -193,10 +230,12 @@ namespace Pathfinding.Graphs.Navmesh {
 			public int indexEnd;
 
 
-			/// <summary>World bounds of the mesh. Assumed to already be multiplied with the matrix</summary>
+			/// <summary>World bounds of the mesh. Assumed to already be multiplied with the <see cref="matrix"/>.</summary>
 			public Bounds bounds;
 
+			/// <summary>Matrix to transform the vertices by</summary>
 			public Matrix4x4 matrix;
+
 			/// <summary>
 			/// If true then the mesh will be treated as solid and its interior will be unwalkable.
 			/// The unwalkable region will be the minimum to maximum y coordinate in each cell.
@@ -206,10 +245,28 @@ namespace Pathfinding.Graphs.Navmesh {
 			public bool doubleSided;
 			/// <summary>See <see cref="RasterizationMesh.flatten"/></summary>
 			public bool flatten;
+			/// <summary>See <see cref="RasterizationMesh.areaIsTag"/></summary>
+			public bool areaIsTag;
 
+			/// <summary>
+			/// Recalculate the <see cref="bounds"/> from the vertices.
+			///
+			/// The bounds will not be recalculated immediately.
+			/// </summary>
 			public void RecalculateBounds () {
 				// This will cause the bounds to be recalculated later
 				bounds = new Bounds();
+			}
+
+			public void ApplyRecastMeshObj (RecastMeshObj recastMeshObj) {
+				area = AreaFromSurfaceMode(recastMeshObj.mode, recastMeshObj.surfaceID);
+				areaIsTag = recastMeshObj.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag;
+				solid |= recastMeshObj.solid;
+			}
+
+			public void ApplyLayerModification (RecastGraph.PerLayerModification modification) {
+				area = AreaFromSurfaceMode(modification.mode, modification.surfaceID);
+				areaIsTag = modification.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag;
 			}
 		}
 
@@ -250,7 +307,7 @@ namespace Pathfinding.Graphs.Navmesh {
 
 		bool MeshFilterShouldBeIncluded (MeshFilter filter) {
 			if (filter.TryGetComponent<Renderer>(out var rend)) {
-				if (filter.sharedMesh != null && rend.enabled && (((1 << filter.gameObject.layer) & mask) != 0 || tagMask.Contains(filter.tag))) {
+				if (filter.sharedMesh != null && rend.enabled && (((1 << filter.gameObject.layer) & mask) != 0 || (tagMask.Count > 0 && tagMask.Contains(filter.tag)))) {
 					if (!(filter.TryGetComponent<RecastMeshObj>(out var rmo) && rmo.enabled)) {
 						return true;
 					}
@@ -259,11 +316,12 @@ namespace Pathfinding.Graphs.Navmesh {
 			return false;
 		}
 
-		void AddNewMesh (Renderer renderer, Mesh mesh, int area, int submeshStart, int submeshCount,  bool solid = false, bool areaIsTag = false) {
+		bool ConvertMeshToGatheredMesh (Renderer renderer, Mesh mesh, out GatheredMesh gatheredMesh) {
 			// Ignore meshes that do not have a Position vertex attribute.
 			// This can happen for meshes that are empty, i.e. have no vertices at all.
 			if (!mesh.HasVertexAttribute(UnityEngine.Rendering.VertexAttribute.Position)) {
-				return;
+				gatheredMesh = default;
+				return false;
 			}
 
 #if !UNITY_EDITOR
@@ -273,9 +331,14 @@ namespace Pathfinding.Graphs.Navmesh {
 					Debug.LogError("Some meshes could not be included when scanning the graph because they are marked as not readable. This includes the mesh '" + mesh.name + "'. You need to mark the mesh with read/write enabled in the mesh importer. Alternatively you can only rasterize colliders and not meshes. Mesh Collider meshes still need to be readable.", mesh);
 				}
 				anyNonReadableMesh = true;
-				return;
+				gatheredMesh = default;
+				return false;
 			}
 #endif
+
+			renderer.GetSharedMaterials(dummyMaterials);
+			var submeshStart = renderer is MeshRenderer mrend ? mrend.subMeshStartIndex : 0;
+			var submeshCount = dummyMaterials.Count;
 
 			int indexStart = 0;
 			int indexEnd = -1;
@@ -297,18 +360,16 @@ namespace Pathfinding.Graphs.Navmesh {
 				cachedMeshes[new MeshCacheItem(mesh)] = meshBufferIndex;
 			}
 
-			meshes.Add(new GatheredMesh {
+			gatheredMesh = new GatheredMesh {
 				meshDataIndex = meshBufferIndex,
 				bounds = renderer.bounds,
 				indexStart = indexStart,
 				indexEnd = indexEnd,
-				areaIsTag = areaIsTag,
-				area = area,
-				solid = solid,
 				matrix = renderer.localToWorldMatrix,
 				doubleSided = false,
 				flatten = false,
-			});
+			};
+			return true;
 		}
 
 		GatheredMesh? GetColliderMesh (MeshCollider collider, Matrix4x4 localToWorldMatrix) {
@@ -368,7 +429,6 @@ namespace Pathfinding.Graphs.Navmesh {
 				// Different ordering can in rare cases lead to different spans being merged which can lead to different navmeshes.
 				var meshFilters = UnityCompatibility.FindObjectsByTypeSorted<MeshFilter>();
 				bool containedStatic = false;
-				List<Material> dummyMaterials = ListPool<Material>.Claim();
 
 				for (int i = 0; i < meshFilters.Length; i++) {
 					MeshFilter filter = meshFilters[i];
@@ -386,8 +446,10 @@ namespace Pathfinding.Graphs.Navmesh {
 					} else {
 						// Only include it if it intersects with the graph
 						if (rend.bounds.Intersects(bounds)) {
-							rend.GetSharedMaterials(dummyMaterials);
-							AddNewMesh(rend, filter.sharedMesh, 0, rend is MeshRenderer mrend ? mrend.subMeshStartIndex : 0, dummyMaterials.Count);
+							if (ConvertMeshToGatheredMesh(rend, filter.sharedMesh, out var gatheredMesh)) {
+								gatheredMesh.ApplyLayerModification(modificationsByLayer[filter.gameObject.layer]);
+								meshes.Add(gatheredMesh);
+							}
 						}
 					}
 				}
@@ -400,8 +462,8 @@ namespace Pathfinding.Graphs.Navmesh {
 			}
 		}
 
-		static int RecastAreaFromRecastMeshObj (RecastMeshObj obj) {
-			switch (obj.mode) {
+		static int AreaFromSurfaceMode (RecastMeshObj.Mode mode, int surfaceID) {
+			switch (mode) {
 			default:
 			case RecastMeshObj.Mode.UnwalkableSurface:
 				return -1;
@@ -409,7 +471,7 @@ namespace Pathfinding.Graphs.Navmesh {
 				return 0;
 			case RecastMeshObj.Mode.WalkableSurfaceWithSeam:
 			case RecastMeshObj.Mode.WalkableSurfaceWithTag:
-				return obj.surfaceID;
+				return surfaceID;
 			}
 		}
 
@@ -439,15 +501,16 @@ namespace Pathfinding.Graphs.Navmesh {
 				// Add based on mesh filter
 				Mesh mesh = filter.sharedMesh;
 				if (filter.TryGetComponent<MeshRenderer>(out var rend) && mesh != null) {
-					AddNewMesh(rend, filter.sharedMesh, RecastAreaFromRecastMeshObj(recastMeshObj), rend.subMeshStartIndex, rend.sharedMaterials.Length, recastMeshObj.solid, recastMeshObj.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag);
+					if (ConvertMeshToGatheredMesh(rend, filter.sharedMesh, out var gatheredMesh)) {
+						gatheredMesh.ApplyRecastMeshObj(recastMeshObj);
+						meshes.Add(gatheredMesh);
+					}
 				}
 			} else if (collider != null) {
 				// Add based on collider
 
-				if (GetColliderMesh(collider) is GatheredMesh rmesh) {
-					rmesh.area = RecastAreaFromRecastMeshObj(recastMeshObj);
-					rmesh.areaIsTag = recastMeshObj.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag;
-					rmesh.solid |= recastMeshObj.solid;
+				if (ConvertColliderToGatheredMesh(collider) is GatheredMesh rmesh) {
+					rmesh.ApplyRecastMeshObj(recastMeshObj);
 					meshes.Add(rmesh);
 				}
 			} else if (collider2D != null) {
@@ -556,7 +619,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			var chunksOffset = offset + new Vector3(chunks.xmin * chunkSizeAlongX * sampleSize.x, 0, chunks.ymin * chunkSizeAlongZ * sampleSize.z);
 			for (int z = chunks.ymin; z <= chunks.ymax; z++) {
 				for (int x = chunks.xmin; x <= chunks.xmax; x++) {
-					var chunk = GenerateHeightmapChunk(
+					var chunk = ConvertHeightmapChunkToGatheredMesh(
 						heights,
 						holes,
 						sampleSize,
@@ -567,6 +630,7 @@ namespace Pathfinding.Graphs.Navmesh {
 						chunkSizeAlongZ,
 						terrainDownsamplingFactor
 						);
+					chunk.ApplyLayerModification(modificationsByLayer[terrain.gameObject.layer]);
 					meshes.Add(chunk);
 				}
 			}
@@ -578,7 +642,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		}
 
 		/// <summary>Generates a terrain chunk mesh</summary>
-		GatheredMesh GenerateHeightmapChunk (float[, ] heights, bool[,] holes, Vector3 sampleSize, Vector3 offset, int x0, int z0, int width, int depth, int stride) {
+		public GatheredMesh ConvertHeightmapChunkToGatheredMesh (float[, ] heights, bool[,] holes, Vector3 sampleSize, Vector3 offset, int x0, int z0, int width, int depth, int stride) {
 			// Downsample to a smaller mesh (full resolution will take a long time to rasterize)
 			// Round up the width to the nearest multiple of terrainSampleSize and then add 1
 			// (off by one because there are vertices at the edge of the mesh)
@@ -674,16 +738,17 @@ namespace Pathfinding.Graphs.Navmesh {
 					prot.prefab.GetComponentsInChildren(false, colliders);
 					for (int j = 0; j < colliders.Count; j++) {
 						// The prefab has a collider, use that instead
+						var collider = colliders[j];
 
 						// Generate a mesh from the collider
-						if (GetColliderMesh(colliders[j], rootMatrixInv * colliders[j].transform.localToWorldMatrix) is GatheredMesh mesh) {
+						if (ConvertColliderToGatheredMesh(collider, rootMatrixInv * collider.transform.localToWorldMatrix) is GatheredMesh mesh) {
 							// For trees, we only suppport generating a mesh from a collider. So we ignore the recastMeshObj.geometrySource field.
-							if (colliders[j].gameObject.TryGetComponent<RecastMeshObj>(out var recastMeshObj) && recastMeshObj.enabled) {
+							if (collider.gameObject.TryGetComponent<RecastMeshObj>(out var recastMeshObj) && recastMeshObj.enabled) {
 								if (recastMeshObj.includeInScan == RecastMeshObj.ScanInclusion.AlwaysExclude) continue;
 
-								mesh.area = RecastAreaFromRecastMeshObj(recastMeshObj);
-								mesh.solid |= recastMeshObj.solid;
-								mesh.areaIsTag = recastMeshObj.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag;
+								mesh.ApplyRecastMeshObj(recastMeshObj);
+							} else {
+								mesh.ApplyLayerModification(modificationsByLayer[collider.gameObject.layer]);
 							}
 
 							// The bounds are incorrectly based on collider.bounds.
@@ -752,7 +817,8 @@ namespace Pathfinding.Graphs.Navmesh {
 				Collider collider = colliderBuffer[i];
 
 				if (ShouldIncludeCollider(collider)) {
-					if (GetColliderMesh(collider) is GatheredMesh mesh) {
+					if (ConvertColliderToGatheredMesh(collider) is GatheredMesh mesh) {
+						mesh.ApplyLayerModification(modificationsByLayer[collider.gameObject.layer]);
 						meshes.Add(mesh);
 					}
 				}
@@ -805,8 +871,8 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// Rasterizes a collider to a mesh.
 		/// This will pass the col.transform.localToWorldMatrix to the other overload of this function.
 		/// </summary>
-		GatheredMesh? GetColliderMesh (Collider col) {
-			return GetColliderMesh(col, col.transform.localToWorldMatrix);
+		GatheredMesh? ConvertColliderToGatheredMesh (Collider col) {
+			return ConvertColliderToGatheredMesh(col, col.transform.localToWorldMatrix);
 		}
 
 		/// <summary>
@@ -815,7 +881,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// call myExtraMesh.RecalculateBounds on the returned mesh to recalculate it if the collider.bounds would
 		/// not give the correct value.
 		/// </summary>
-		GatheredMesh? GetColliderMesh (Collider col, Matrix4x4 localToWorldMatrix) {
+		public GatheredMesh? ConvertColliderToGatheredMesh (Collider col, Matrix4x4 localToWorldMatrix) {
 			if (col is BoxCollider box) {
 				return RasterizeBoxCollider(box, localToWorldMatrix);
 			} else if (col is SphereCollider || col is CapsuleCollider) {
@@ -1034,27 +1100,31 @@ namespace Pathfinding.Graphs.Navmesh {
 				var coll = colliderBuffer[shape.tag];
 				(coll.attachedRigidbody as Component ?? coll).TryGetComponent<RecastMeshObj>(out var recastMeshObj);
 
-				// Colliders default to being unwalkable
-				int area = -1;
-				bool areaIsTag = false;
-				if (recastMeshObj != null) {
-					if (recastMeshObj.includeInScan == RecastMeshObj.ScanInclusion.AlwaysExclude) continue;
-					area = RecastAreaFromRecastMeshObj(recastMeshObj);
-					areaIsTag = recastMeshObj.mode == RecastMeshObj.Mode.WalkableSurfaceWithTag;
-				}
-
-				meshes.Add(new GatheredMesh {
+				var rmesh = new GatheredMesh {
 					meshDataIndex = bufferIndex,
 					bounds = shape.bounds,
 					indexStart = shape.startIndex,
 					indexEnd = shape.endIndex,
-					areaIsTag = areaIsTag,
-					area = area,
+					areaIsTag = false,
+					// Colliders default to being unwalkable
+					area = -1,
 					solid = false,
 					matrix = shape.matrix,
 					doubleSided = true,
 					flatten = true,
-				});
+				};
+
+				if (recastMeshObj != null) {
+					if (recastMeshObj.includeInScan == RecastMeshObj.ScanInclusion.AlwaysExclude) continue;
+					rmesh.ApplyRecastMeshObj(recastMeshObj);
+				} else {
+					rmesh.ApplyLayerModification(modificationsByLayer2D[coll.gameObject.layer]);
+				}
+
+				// 2D colliders are never solid
+				rmesh.solid = false;
+
+				meshes.Add(rmesh);
 			}
 
 			if (finiteBounds) ArrayPool<Collider2D>.Release(ref colliderBuffer);

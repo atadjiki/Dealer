@@ -1372,6 +1372,14 @@ namespace Pathfinding {
 			var xs = new int4(aWorld.x, bWorld.x, cWorld.x, pWorld.x);
 			var ys = new int4(aWorld.y, bWorld.y, cWorld.y, pWorld.y);
 			var zs = new int4(aWorld.z, bWorld.z, cWorld.z, pWorld.z);
+			// Subtract the first point from all the other points
+			// This ensures that large coordinates will not overflow due to using 32 bits here.
+			// Since we multiply all coordinates by QUANTIZATION, and Int3 coordinates are already multiplied by 1000,
+			// coordinates would otherwise be liable to start overflowing at unity world coordinates above around 2000.
+			// TODO: We could still get bad results if pWorld is very far away from the triangle (about 4000 units).
+			xs -= xs.x;
+			ys -= ys.x;
+			zs -= zs.x;
 			// Projected X and Y coordinates
 			var px = (xs * m.c0.x + ys * m.c1.x + zs * m.c2.x) / QUANTIZATION;
 			var py = (xs * m.c0.y + ys * m.c1.y + zs * m.c2.y) / QUANTIZATION;
@@ -1830,9 +1838,11 @@ namespace Pathfinding {
 		/// </summary>
 		/// <param name="vertices">Vertices of the input mesh</param>
 		/// <param name="triangles">Triangles of the input mesh</param>
+		/// <param name="tags">Tags of the input mesh. One for each triangle.</param>
 		/// <param name="outVertices">Vertices of the output mesh.</param>
 		/// <param name="outTriangles">Triangles of the output mesh.</param>
-		public static void CompressMesh (List<Int3> vertices, List<int> triangles, out Int3[] outVertices, out int[] outTriangles) {
+		/// <param name="outTags">Tags of the output mesh. One for each triangle.</param>
+		public static void CompressMesh (List<Int3> vertices, List<int> triangles, List<uint> tags, out Int3[] outVertices, out int[] outTriangles, out uint[] outTags) {
 			Dictionary<Int3, int> firstVerts = cached_Int3_int_dict;
 
 			firstVerts.Clear();
@@ -1873,6 +1883,8 @@ namespace Pathfinding {
 				outVertices[i] = vertices[i];
 
 			ArrayPool<int>.Release(ref compressedPointers);
+
+			outTags = tags.ToArray();
 		}
 
 		/// <summary>

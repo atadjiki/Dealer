@@ -248,6 +248,12 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 				// Triangulate the contour
 				int ntris = Triangulate(cont.nverts, verts.AsArray().Reinterpret<int>(12), indices, tris);
 
+				if (ntris < 0) {
+					// Degenerate triangles. This may lead to a hole in the navmesh.
+					// We add the triangles that the triangulation generated before it failed.
+					ntris = -ntris;
+				}
+
 				// Copy the resulting triangles to the mesh
 				for (int j = 0; j < ntris*3; polyIndex++, j++) {
 					polys[polyIndex] = tris[j];
@@ -366,6 +372,7 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 					mesh.tris[i+0] = mesh.tris[mesh.tris.Length-3+0];
 					mesh.tris[i+1] = mesh.tris[mesh.tris.Length-3+1];
 					mesh.tris[i+2] = mesh.tris[mesh.tris.Length-3+2];
+
 					mesh.tris.Length -= 3;
 					mesh.areas.RemoveAtSwapBack(i/3);
 					i -= 3;
@@ -415,18 +422,24 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 			}
 
 			var maxIndices = (sortedVertices.Length - 2) * 3;
-			var origTris = mesh.tris.Length;
+			var trisBeforeResize = mesh.tris.Length;
 			mesh.tris.Length += maxIndices;
 			int newTriCount = Triangulate(
 				sortedVertices.Length,
 				mesh.verts.AsArray().Reinterpret<int>(12),
 				sortedVertices.AsArray(),
 				// Insert the new triangles at the end of the array
-				mesh.tris.AsArray().GetSubArray(origTris, maxIndices)
+				mesh.tris.AsArray().GetSubArray(trisBeforeResize, maxIndices)
 				);
-			// Resize the triangle array to the correct size
-			mesh.tris.ResizeUninitialized(origTris + newTriCount*3);
 
+			if (newTriCount < 0) {
+				// Degenerate triangles. This may lead to a hole in the navmesh.
+				// We add the triangles that the triangulation generated before it failed.
+				newTriCount = -newTriCount;
+			}
+
+			// Resize the triangle array to the correct size
+			mesh.tris.ResizeUninitialized(trisBeforeResize + newTriCount*3);
 			mesh.areas.AddReplicate(area, newTriCount);
 
 			UnityEngine.Assertions.Assert.AreEqual(mesh.areas.Length, mesh.tris.Length/3);
@@ -452,7 +465,7 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 			}
 
 			while (n > 3) {
-				int minLen = -1;
+				int minLen = int.MaxValue;
 				int mini = -1;
 
 				for (int q = 0; q < n; q++) {
@@ -468,7 +481,7 @@ namespace Pathfinding.Graphs.Navmesh.Voxelization.Burst {
 						//Squared distance
 						int len = dx*dx + dz*dz;
 
-						if (minLen < 0 || len < minLen) {
+						if (len < minLen) {
 							minLen = len;
 							mini = q;
 						}

@@ -32,7 +32,7 @@ using Thread = System.Threading.Thread;
 [HelpURL("https://arongranberg.com/astar/documentation/stable/astarpath.html")]
 public class AstarPath : VersionedMonoBehaviour {
 	/// <summary>The version number for the A* Pathfinding Project</summary>
-	public static readonly System.Version Version = new System.Version(5, 0, 9);
+	public static readonly System.Version Version = new System.Version(5, 1, 2);
 
 	/// <summary>Information about where the package was downloaded</summary>
 	public enum AstarDistribution { WebsiteDownload, AssetStore, PackageManager };
@@ -1445,6 +1445,7 @@ public class AstarPath : VersionedMonoBehaviour {
 		return nodeStorage.AllocateNodesJob(result, count, createNode, variantsPerNode);
 	}
 
+	//TODO ATADJIKI - changed this to public
 	/// <summary>
 	/// Initializes temporary path data for a node.
 	///
@@ -1452,7 +1453,7 @@ public class AstarPath : VersionedMonoBehaviour {
 	///
 	/// See: <see cref="AstarPath.AllocateNodes"/>
 	/// </summary>
-	internal void InitializeNode (GraphNode node) {
+	public void InitializeNode (GraphNode node) {
 		if (!pathProcessor.queue.allReceiversBlocked) {
 			throw new System.Exception("Trying to initialize a node when it is not safe to initialize any nodes. Must be done during a graph update. See http://arongranberg.com/astar/docs/graph-updates.html#direct");
 		}
@@ -1843,11 +1844,15 @@ public class AstarPath : VersionedMonoBehaviour {
 	internal static IEnumerator<Progress> ProgressScanningIteratorsConcurrently (IEnumerator<JobHandle>[] iterators, IGraphUpdatePromise[] promises, bool async) {
 		while (true) {
 			int firstNonFinished = -1;
+			bool mainThreadWork = false;
 			for (int i = 0; i < iterators.Length; i++) {
 				var it = iterators[i];
 				if (it == null) continue;
 				if (async) {
 					if (it.Current.IsCompleted) {
+						// If the job completed (maybe because a real job completed, or because the iterator returned a dummy JobHandle), then it must be doing some work on the main thread.
+						// In that case, we shouldn't sleep or yield while waiting.
+						mainThreadWork = true;
 						it.Current.Complete();
 					} else {
 						if (firstNonFinished == -1) firstNonFinished = i;
@@ -1857,20 +1862,25 @@ public class AstarPath : VersionedMonoBehaviour {
 					it.Current.Complete();
 				}
 
+				Profiler.BeginSample("Preparing");
 				if (it.MoveNext()) {
 					if (firstNonFinished == -1) firstNonFinished = i;
 				} else iterators[i] = null;
+				Profiler.EndSample();
 			}
 
 			if (firstNonFinished != -1) {
 				if (async) {
+					// If main thread work is happening, then we are ok with progressing the iterators as often as possible
+					if (!mainThreadWork) {
+						// Ensure that we won't be completely busy spinning if the user waits on an async scan in a tight loop
+						System.Threading.Thread.Yield();
+					}
+
 					// Just used for progress information
 					// This graph will advance the progress bar from minp to maxp
 					float minp = (float)firstNonFinished/iterators.Length;
 					float maxp = (float)(firstNonFinished+0.95F)/iterators.Length;
-
-					// Ensure that we won't be completely busy spinning if the user waits on an async scan in a tight loop
-					System.Threading.Thread.Yield();
 					yield return new Progress(Mathf.Lerp(minp, maxp, promises[firstNonFinished].Progress), ScanningStage.ScanningGraph, firstNonFinished, iterators.Length);
 				}
 			} else {
@@ -2038,6 +2048,45 @@ public class AstarPath : VersionedMonoBehaviour {
 	/// This should ideally be fixed by making NNConstraint an immutable class/struct.
 	/// </summary>
 	static readonly NNConstraint NNConstraintNone = NNConstraint.None;
+
+	/// <summary>
+	/// Cached NNConstraint to avoid unnecessary allocations.
+	/// This should ideally be fixed by making NNConstraint an immutable class/struct.
+	/// </summary>
+	internal static readonly NNConstraint NNConstraintClosestAsSeenFromAbove = new NNConstraint() {
+		constrainWalkability = false,
+		constrainTags = false,
+		constrainDistance = true,
+		distanceMetric = DistanceMetric.ClosestAsSeenFromAbove(),
+	};
+
+	/// <summary>
+	/// True if the point is on a walkable part of the navmesh, as seen from above.
+	///
+	/// A point is considered on the navmesh if it is above or below a walkable navmesh surface, at any distance,
+	/// and if it is not above/below a closer unwalkable node.
+	///
+	/// This uses the graph's natural up direction to determine which way is up.
+	/// Therefore, it will also work on rotated graphs, as well as graphs in 2D mode.
+	///
+	/// This method works for all graph types.
+	/// However, for <see cref="PointGraph"/>s, this will never return true unless you pass in the exact coordinate of a node, since point nodes do not have a surface.
+	///
+	/// Note: For spherical navmeshes (or other weird shapes), this method will not work as expected, as there's no well defined "up" direction.
+	///
+	/// [Open online documentation to see images]
+	///
+	/// See: <see cref="NavGraph.IsPointOnNavmesh"/> to check if a point is on the navmesh of a specific graph.
+	/// </summary>
+	/// <param name="position">The point to check</param>
+	public bool IsPointOnNavmesh (Vector3 position) {
+		// We use the None constraint, instead of Walkable, to avoid ignoring unwalkable nodes that are closer to the point.
+		var nearest = GetNearest(position, NNConstraintClosestAsSeenFromAbove);
+		const float MaxHorizontalDistance = 0.01f;
+		const float MaxCostSqr = MaxHorizontalDistance * MaxHorizontalDistance;
+		// TODO: Set a distance threshold in the NNConstraint, to optimize it
+		return nearest.node != null && nearest.node.Walkable && nearest.distanceCostSqr < MaxCostSqr;
+	}
 
 	/// <summary>
 	/// Returns the nearest node to a position.

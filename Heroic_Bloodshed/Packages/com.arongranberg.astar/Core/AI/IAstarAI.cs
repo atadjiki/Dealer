@@ -419,16 +419,18 @@ namespace Pathfinding {
 		///
 		/// This is intended for external movement forces such as those applied by wind, conveyor belts, knockbacks etc.
 		///
-		/// Some movement scripts may ignore this completely (notably the AILerp script) if it does not have
+		/// Some movement scripts may ignore this completely (notably the <see cref="AILerp"/> script) if it does not have
 		/// any concept of being moved externally.
 		///
-		/// The agent will not be moved immediately when calling this method. Instead this offset will be stored and then
+		/// For the <see cref="AIPath"/> and <see cref="RichAI"/> movement scripts, the agent will not be moved immediately when calling this method. Instead this offset will be stored and then
 		/// applied the next time the agent runs its movement calculations (which is usually later this frame or the next frame).
 		/// If you want to move the agent immediately then call:
 		/// <code>
 		/// ai.Move(someVector);
 		/// ai.FinalizeMovement(ai.position, ai.rotation);
 		/// </code>
+		///
+		/// The <see cref="FollowerEntity"/> movement script will, on the other hand, move the agent immediately.
 		/// </summary>
 		/// <param name="deltaPosition">Direction and distance to move the agent in world space.</param>
 		void Move(Vector3 deltaPosition);

@@ -171,7 +171,8 @@ namespace Pathfinding.ECS {
 
 		void ScheduleApplyGravity (ref SystemState systemState, CommandBuilder draw, float dt) {
 			Profiler.BeginSample("Gravity");
-			var count = entityQueryWithGravity.CalculateEntityCountWithoutFiltering();
+			// Note: We cannot use CalculateEntityCountWithoutFiltering here, because the GravityState component can be disabled
+			var count = entityQueryWithGravity.CalculateEntityCount();
 			var raycastCommands = CollectionHelper.CreateNativeArray<RaycastCommand>(count, systemState.WorldUpdateAllocator, NativeArrayOptions.UninitializedMemory);
 			var raycastHits = CollectionHelper.CreateNativeArray<RaycastHit>(count, systemState.WorldUpdateAllocator, NativeArrayOptions.UninitializedMemory);
 

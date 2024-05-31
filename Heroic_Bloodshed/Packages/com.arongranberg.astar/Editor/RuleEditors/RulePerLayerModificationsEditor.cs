@@ -36,6 +36,12 @@ namespace Pathfinding {
 				target.layerRules = ls.ToArray();
 			}
 			GUILayout.EndHorizontal();
+
+			if (graph.collision.use2D) {
+				EditorGUILayout.HelpBox("This rule does not work with 2D physics, since it requires height testing information", MessageType.Error);
+			} else if (!graph.collision.heightCheck) {
+				EditorGUILayout.HelpBox("This rule requires height testing to be enabled on the grid graph", MessageType.Error);
+			}
 		}
 
 		public void OnSceneGUI (GridGraph graph, GridGraphRule rule) { }

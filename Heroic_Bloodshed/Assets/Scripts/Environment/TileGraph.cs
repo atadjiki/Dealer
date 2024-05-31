@@ -24,13 +24,13 @@ public class TileGraph : NavGraph
     [JsonMember] public float LineWidth = 2;
 
     // Here we will store all nodes in the graph
-    public PointNode[] nodes;
+    public TileNode[] nodes;
 
     public override bool isScanned => nodes != null;
 
-    PointNode CreateNode(Vector3 position, EnvironmentLayer layer)
+    TileNode CreateNode(Vector3 position, EnvironmentLayer layer)
     {
-        var node = new PointNode(active);
+        TileNode node = new TileNode(active);
 
         // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
         node.position = (Int3)position;
@@ -40,11 +40,11 @@ public class TileGraph : NavGraph
         return node;
     }
 
-    public List<PointNode> GetWalkableNodes()
+    public List<TileNode> GetWalkableNodes()
     {
-        List<PointNode> walkables = new List<PointNode>();
+        List<TileNode> walkables = new List<TileNode>();
 
-        foreach(PointNode node in nodes)
+        foreach(TileNode node in nodes)
         {
             if(node.Walkable)
             {
@@ -55,11 +55,11 @@ public class TileGraph : NavGraph
         return walkables;
     }
 
-    public PointNode GetRandomNode()
+    public TileNode GetRandomNode()
     {
         if(nodes != null)
         {
-            List<PointNode> walkables = GetWalkableNodes();
+            List<TileNode> walkables = GetWalkableNodes();
 
             int random = Random.Range(0, walkables.Count);
 
@@ -69,7 +69,7 @@ public class TileGraph : NavGraph
         return null;
     }
 
-    PointNode GetNode(int Row, int Column)
+    TileNode GetNode(int Row, int Column)
     {
         if(nodes != null)
         {
@@ -90,7 +90,7 @@ public class TileGraph : NavGraph
             // Destroy previous nodes (if any)
             graph.DestroyAllNodes();
 
-            List<PointNode> nodes = new List<PointNode>();
+            List<TileNode> nodes = new List<TileNode>();
 
             for (int Row = 0; Row < graph.Width; Row++)
             {
@@ -100,7 +100,7 @@ public class TileGraph : NavGraph
 
                     EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                    PointNode node = graph.CreateNode(origin, layer);
+                    TileNode node = graph.CreateNode(origin, layer);
 
                     nodes.Add(node);
                 }
@@ -112,7 +112,7 @@ public class TileGraph : NavGraph
                 {
                     Vector3 origin = CalculateTileOrigin(Row, Column);
 
-                    PointNode node = nodes[(Row * graph.Width) + Column];
+                    TileNode node = nodes[(Row * graph.Width) + Column];
 
                     EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
@@ -130,7 +130,7 @@ public class TileGraph : NavGraph
 
                         if (AreValidCoordinates(coords, graph.Width))
                         {
-                            PointNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
+                            TileNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
 
                             bool valid = info.IsValid();
 

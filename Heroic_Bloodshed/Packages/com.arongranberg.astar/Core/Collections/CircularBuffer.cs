@@ -194,6 +194,14 @@ namespace Pathfinding.Util {
 			return data[index & (data.Length-1)];
 		}
 
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public readonly void SetAbsolute (int index, T value) {
+#if UNITY_EDITOR
+			if ((uint)(index - head) >= length) throw new System.ArgumentOutOfRangeException();
+#endif
+			data[index & (data.Length-1)] = value;
+		}
+
 		void Grow () {
 			var newData = ArrayPool<T>.Claim(System.Math.Max(4, data != null ? data.Length*2 : 0));
 			if (data != null) {

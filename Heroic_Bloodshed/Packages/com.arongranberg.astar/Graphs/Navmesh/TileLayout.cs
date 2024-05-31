@@ -18,8 +18,12 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// <summary>Size of a tile in voxels along the X and Z axes</summary>
 		public Int2 tileSizeInVoxels;
 
-		/// <summary>Size of bounds along the y axis in graph space (i.e. 'up' direction)</summary>
-		public float boundsYSize;
+		/// <summary>
+		/// Size in graph space of the whole grid.
+		///
+		/// If the original bounding box was not an exact multiple of the tile size, this will be less than the total width of all tiles.
+		/// </summary>
+		public Vector3 graphSpaceSize;
 
 		/// <summary>\copydocref{RecastGraph.cellSize}</summary>
 		public float cellSize;
@@ -28,7 +32,7 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// Voxel y coordinates will be stored as ushorts which have 65536 values.
 		/// Leave a margin to make sure things do not overflow
 		/// </summary>
-		public float CellHeight => Mathf.Max(boundsYSize / 64000, 0.001f);
+		public float CellHeight => Mathf.Max(graphSpaceSize.y / 64000, 0.001f);
 
 		/// <summary>Size of a tile in world units, along the graph's X axis</summary>
 		public float TileWorldSizeX => tileSizeInVoxels.x * cellSize;
@@ -41,7 +45,7 @@ namespace Pathfinding.Graphs.Navmesh {
 			var bounds = new Bounds();
 
 			bounds.SetMinMax(new Vector3(x*TileWorldSizeX, 0, z*TileWorldSizeZ),
-				new Vector3((x+width)*TileWorldSizeX, boundsYSize, (z+depth)*TileWorldSizeZ)
+				new Vector3((x+width)*TileWorldSizeX, graphSpaceSize.y, (z+depth)*TileWorldSizeZ)
 				);
 
 			return bounds;
@@ -67,7 +71,7 @@ namespace Pathfinding.Graphs.Navmesh {
 
 			// Voxel grid size
 			var size = bounds.size;
-			boundsYSize = size.y;
+			graphSpaceSize = size;
 			int totalVoxelWidth = (int)(size.x/cellSize + 0.5f);
 			int totalVoxelDepth = (int)(size.z/cellSize + 0.5f);
 
