@@ -12,16 +12,18 @@ public class PrefabLibrary : ScriptableObject
 
     private static PrefabLibrary library;
 
-    public static PrefabLibrary Get()
+    public static GameObject GetCameraRig()
     {
-        if (library != null)
-        {
-            return library;
-        }
-        else
+        Refresh();
+
+        return library.CameraRig;
+    }
+
+    private static void Refresh()
+    {
+        if (library == null)
         {
             library = Load();
-            return library;
         }
     }
 

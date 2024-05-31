@@ -14,9 +14,7 @@ public class CharacterModel : MonoBehaviour
     {
         RemoveHighlight();
 
-        HighlightProfileLibrary lib = HighlightProfileLibrary.Get();
-
-        HighlightProfile profile = lib.GetTeamProfile(teamID);
+        HighlightProfile profile = HighlightProfileLibrary.Get(teamID);
 
         _highlight = this.gameObject.AddComponent<HighlightEffect>();
 

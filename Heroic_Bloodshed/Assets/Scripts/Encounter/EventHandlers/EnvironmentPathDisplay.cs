@@ -55,7 +55,7 @@ public class EnvironmentPathDisplay : EncounterEventHandler
                 _lineRenderer.positionCount = nodes.Count;
                 _lineRenderer.SetPositions(nodes.ToArray());
 
-                _lineRenderer.material.color = ColorLibrary.GetColorByID(rangeType);
+                _lineRenderer.material.color = ColorLibrary.Get(rangeType);
 
                 return;
             }

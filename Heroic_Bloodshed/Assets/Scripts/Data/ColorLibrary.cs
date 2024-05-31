@@ -48,7 +48,7 @@ public class ColorLibrary : ScriptableObject
     [Header("Layers")]
     [SerializeField] private List<EnvironmentLayerColorInfo> LayerColors;
 
-    public static Color GetByID(TeamID ID)
+    public static Color Get(TeamID ID)
     {
         Refresh();
 
@@ -63,7 +63,7 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Color GetColorByID(MovementRangeType ID)
+    public static Color Get(MovementRangeType ID)
     {
         Refresh();
 
@@ -78,22 +78,7 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Gradient GetGradientyID(MovementRangeType ID)
-    {
-        Refresh();
-
-        foreach (MovementRangeColorInfo info in library.MovementRangeColors)
-        {
-            if(info.ID == ID)
-            {
-                return info.Gradient;
-            }
-        }
-
-        return null;
-    }
-
-    public static Color GetByID(EnvironmentCover ID)
+    public static Color Get(EnvironmentCover ID)
     {
         Refresh();
 
@@ -108,7 +93,7 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Color GetByState(bool flag)
+    public static Color Get(bool flag)
     {
         Refresh();
 
@@ -122,7 +107,7 @@ public class ColorLibrary : ScriptableObject
         }
     }
 
-    public static Color GetByID(EnvironmentLayer ID)
+    public static Color Get(EnvironmentLayer ID)
     {
         Refresh();
 

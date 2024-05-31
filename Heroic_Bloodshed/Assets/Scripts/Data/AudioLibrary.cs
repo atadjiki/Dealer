@@ -7,16 +7,11 @@ public class AudioLibrary : ScriptableObject
 {
     private static AudioLibrary library;
 
-    public static AudioLibrary Get()
+    private static void Refresh()
     {
-        if (library != null)
-        {
-            return library;
-        }
-        else
+        if (library == null)
         {
             library = Load();
-            return library;
         }
     }
 

@@ -28,11 +28,11 @@ public class HighlightProfileLibrary : ScriptableObject
     [Header("Components")]
     [SerializeField] private List<MovementRadiusInfo> MovementRadiusProfiles;
 
-    private static HighlightProfileLibrary library;
-
-    public HighlightProfile GetTeamProfile(TeamID ID)
+    public static HighlightProfile Get(TeamID ID)
     {
-        foreach(TeamHighlightInfo info in TeamProfiles)
+        Refresh();
+
+        foreach(TeamHighlightInfo info in library.TeamProfiles)
         {
             if(info.ID == ID)
             {
@@ -43,9 +43,11 @@ public class HighlightProfileLibrary : ScriptableObject
         return null;
     }
 
-    public HighlightProfile GetMovementRadiusProfile(MovementRangeType ID)
+    public static HighlightProfile Get(MovementRangeType ID)
     {
-        foreach (MovementRadiusInfo info in MovementRadiusProfiles)
+        Refresh();
+
+        foreach (MovementRadiusInfo info in library.MovementRadiusProfiles)
         {
             if (info.ID == ID)
             {
@@ -56,16 +58,14 @@ public class HighlightProfileLibrary : ScriptableObject
         return null;
     }
 
-    public static HighlightProfileLibrary Get()
+
+    private static HighlightProfileLibrary library;
+
+    private static void Refresh()
     {
-        if (library != null)
-        {
-            return library;
-        }
-        else
+        if (library == null)
         {
             library = Load();
-            return library;
         }
     }
 

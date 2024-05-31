@@ -7,11 +7,11 @@ public class ResourceUtil : MonoBehaviour
 {
     public static void LoadLibraries()
     {
-        AudioLibrary.Get();
+        AudioLibrary.Load();
         ColorLibrary.Load();
-        HighlightProfileLibrary.Get();
+        HighlightProfileLibrary.Load();
         MaterialLibrary.Load();
-        PrefabLibrary.Get();
+        PrefabLibrary.Load();
         SpriteLibrary.Get();
     }
 

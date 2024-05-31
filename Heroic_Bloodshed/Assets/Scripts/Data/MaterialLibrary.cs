@@ -6,8 +6,6 @@ using static Constants;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Library/MaterialLibrary", order = 1)]
 public class MaterialLibrary : ScriptableObject
 {
-    
-
     [Header("Decals")]
     [SerializeField] private Material TileSelector;
     [SerializeField] private Material DestinationHighlight;

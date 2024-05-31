@@ -79,10 +79,8 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         mesh.CombineMeshes(combine);
         filter.mesh = mesh;
 
-        HighlightProfileLibrary highlightLib = HighlightProfileLibrary.Get();
-
         HighlightEffect effect = container.AddComponent<HighlightEffect>();
-        HighlightProfile profile = highlightLib.GetMovementRadiusProfile(rangeType);
+        HighlightProfile profile = HighlightProfileLibrary.Get(rangeType);
 
         if(rangeType == MovementRangeType.HALF)
         {
