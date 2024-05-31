@@ -98,13 +98,13 @@ public class TileGraph : NavGraph
 
                     node.Setup(origin, layer, graph.graphIndex);
 
-                    EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
+                    node.ConnectionMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
                     List<Connection> connections = new List<Connection>();
 
                     foreach (EnvironmentDirection dir in GetAllDirections())
                     {
-                        EnvironmentTileConnectionInfo info = neighborMap[dir];
+                        EnvironmentTileConnectionInfo info = node.ConnectionMap[dir];
 
                         Vector3 direction = GetDirectionVector(dir) / 2;
 
@@ -161,10 +161,12 @@ public class TileGraph : NavGraph
 
         using (var builder = gizmos.GetBuilder(hasher))
         {
-            GetNodes(node =>
+            GetNodes(graphNode =>
             {
+                TileNode node = (TileNode)graphNode;
+
                 Vector3 origin = (Vector3)node.position;
-                EnvironmentLayer layer = GetLayerByTag(node.Tag);
+                EnvironmentLayer layer = node.Layer;
 
                 if(layer != EnvironmentLayer.NONE)
                 {
@@ -181,11 +183,9 @@ public class TileGraph : NavGraph
 
                     if (ShowCover)
                     {
-                        EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
-
                         foreach (EnvironmentDirection dir in GetCardinalDirections())
                         {
-                            EnvironmentTileConnectionInfo info = neighborMap[dir];
+                            EnvironmentTileConnectionInfo info = node.ConnectionMap[dir];
 
                             if (IsLayerCover(info.Obstruction))
                             {

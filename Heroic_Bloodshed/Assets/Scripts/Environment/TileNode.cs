@@ -8,12 +8,6 @@ using static Constants;
 using Pathfinding.Drawing;
 using System;
 
-[Serializable]
-public struct TIleInfo
-{
-	public EnvironmentLayer Layer;
-}
-
 namespace Pathfinding
 {
 	[JsonOptIn]
@@ -21,16 +15,17 @@ namespace Pathfinding
 	[Pathfinding.Util.Preserve]
 	public class TileNode : PointNode
 	{
-		public TIleInfo Info;
+        public EnvironmentLayer Layer;
+        public EnvironmentTileConnectionMap ConnectionMap;
 
-        public void Setup(Vector3 position, EnvironmentLayer layer, uint graphIndex)
+        public void Setup(Vector3 _position, EnvironmentLayer _layer, uint graphIndex)
         {
             // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
-            this.position = (Int3)position;
+            this.position = (Int3)_position;
             this.GraphIndex = graphIndex;
-            Walkable = IsLayerTraversible(layer);
-            Tag = GetPathfindingTag(layer);
-            Info.Layer = layer;
+            Layer = _layer;
+            Walkable = IsLayerTraversible(_layer);
+            Tag = GetPathfindingTag(_layer);
         }
     }
 }
