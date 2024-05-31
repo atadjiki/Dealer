@@ -48,9 +48,11 @@ public class ColorLibrary : ScriptableObject
     [Header("Layers")]
     [SerializeField] private List<EnvironmentLayerColorInfo> LayerColors;
 
-    public Color GetByID(TeamID ID)
+    public static Color GetByID(TeamID ID)
     {
-        foreach (TeamColorInfo info in TeamColors)
+        Refresh();
+
+        foreach (TeamColorInfo info in library.TeamColors)
         {
             if (info.ID == ID)
             {
@@ -61,9 +63,11 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public Color GetColorByID(MovementRangeType ID)
+    public static Color GetColorByID(MovementRangeType ID)
     {
-        foreach (MovementRangeColorInfo info in MovementRangeColors)
+        Refresh();
+
+        foreach (MovementRangeColorInfo info in library.MovementRangeColors)
         {
             if (info.ID == ID)
             {
@@ -74,9 +78,11 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public Gradient GetGradientyID(MovementRangeType ID)
+    public static Gradient GetGradientyID(MovementRangeType ID)
     {
-        foreach(MovementRangeColorInfo info in MovementRangeColors)
+        Refresh();
+
+        foreach (MovementRangeColorInfo info in library.MovementRangeColors)
         {
             if(info.ID == ID)
             {
@@ -87,9 +93,11 @@ public class ColorLibrary : ScriptableObject
         return null;
     }
 
-    public Color GetByID(EnvironmentCover ID)
+    public static Color GetByID(EnvironmentCover ID)
     {
-        foreach (CoverColorInfo info in CoverColors)
+        Refresh();
+
+        foreach (CoverColorInfo info in library.CoverColors)
         {
             if (info.ID == ID)
             {
@@ -100,9 +108,11 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public Color GetByState(bool flag)
+    public static Color GetByState(bool flag)
     {
-        if(flag)
+        Refresh();
+
+        if (flag)
         {
             return Color.green;
         }
@@ -112,9 +122,11 @@ public class ColorLibrary : ScriptableObject
         }
     }
 
-    public Color GetByID(EnvironmentLayer ID)
+    public static Color GetByID(EnvironmentLayer ID)
     {
-        foreach (EnvironmentLayerColorInfo info in LayerColors)
+        Refresh();
+
+        foreach (EnvironmentLayerColorInfo info in library.LayerColors)
         {
             if (info.ID == ID)
             {
@@ -127,16 +139,11 @@ public class ColorLibrary : ScriptableObject
 
     private static ColorLibrary library;
 
-    public static ColorLibrary Get()
+    private static void Refresh()
     {
-        if(library != null)
-        {
-            return library;
-        }
-        else
+        if(library == null)
         {
             library = Load();
-            return library;
         }
     }
 

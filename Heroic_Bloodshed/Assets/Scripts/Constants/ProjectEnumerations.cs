@@ -120,4 +120,14 @@ public static partial class Constants
         Ally,
         None,
     }
+
+    public enum MaterialID 
+    { 
+        NONE, 
+        TILE_SELECTOR, 
+        DEST_HIGHLIGHT, 
+        PATH_DISPLAY, 
+        CHAR_SELECT, 
+        MOVE_RADIUS 
+    };
 }

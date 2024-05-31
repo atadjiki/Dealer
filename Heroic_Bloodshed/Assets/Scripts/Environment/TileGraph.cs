@@ -170,7 +170,7 @@ public class TileGraph : NavGraph
                 {
                     if (ShowLayers)
                     {
-                        Color color = ColorLibrary.Get
+                        Color color = ColorLibrary.GetByID(layer);
                         color.a = LayerOpacity;
 
                         using (builder.WithColor(color))
@@ -191,7 +191,7 @@ public class TileGraph : NavGraph
 
                                 EnvironmentCover cover = GetCoverType(info);
 
-                                Color color = colorLib.GetByID(cover);
+                                Color color = ColorLibrary.GetByID(cover);
                                 color.a = CoverOpacity;
 
                                 using (builder.WithColor(color))

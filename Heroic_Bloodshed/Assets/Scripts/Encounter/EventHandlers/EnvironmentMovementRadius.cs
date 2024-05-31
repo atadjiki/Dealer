@@ -8,13 +8,9 @@ public class EnvironmentMovementRadius : EncounterEventHandler
 {
     private Dictionary<MovementRangeType, List<Vector3>> _rangeMap;
 
-    private MaterialLibrary matLib;
-
     protected override void OnAwake()
     {
         base.OnAwake();
-
-        matLib = MaterialLibrary.Get();
     }
 
     protected override void OnStateChangedCallback(EncounterStateData stateData)
@@ -50,7 +46,7 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         GameObject container = new GameObject("Container " + rangeType.ToString());
         container.transform.parent = this.transform;
         MeshRenderer renderer = container.AddComponent<MeshRenderer>();
-        renderer.material = matLib.MovementRadius;
+        renderer.material = MaterialLibrary.Get(MaterialID.MOVE_RADIUS);
 
         MeshFilter filter = container.AddComponent<MeshFilter>();
 

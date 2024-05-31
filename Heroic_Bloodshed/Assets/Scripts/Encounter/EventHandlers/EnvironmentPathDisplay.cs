@@ -11,8 +11,6 @@ public class EnvironmentPathDisplay : EncounterEventHandler
     private Vector3 _origin;
     private Dictionary<MovementRangeType, List<Vector3>> _rangeMap;
 
-    private ColorLibrary _colorLib;
-
     protected override void OnAwake()
     {
         base.OnAwake();
@@ -28,13 +26,9 @@ public class EnvironmentPathDisplay : EncounterEventHandler
         //figure out what the range is for this character
         _rangeMap = EnvironmentUtil.GetCharacterRangeMap(character);
 
-        _colorLib = ColorLibrary.Get();
-
-        MaterialLibrary matLib = MaterialLibrary.Get();
-
         //setup the line renderer
         _lineRenderer = this.gameObject.AddComponent<LineRenderer>();
-        _lineRenderer.material = matLib.PathDisplay;
+        _lineRenderer.material = MaterialLibrary.Get(MaterialID.PATH_DISPLAY);
         _lineRenderer.startWidth = 0.1f;
         _lineRenderer.endWidth = 0.1f;
     }
@@ -61,7 +55,7 @@ public class EnvironmentPathDisplay : EncounterEventHandler
                 _lineRenderer.positionCount = nodes.Count;
                 _lineRenderer.SetPositions(nodes.ToArray());
 
-                _lineRenderer.material.color = _colorLib.GetColorByID(rangeType);
+                _lineRenderer.material.color = ColorLibrary.GetColorByID(rangeType);
 
                 return;
             }

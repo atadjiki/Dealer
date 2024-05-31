@@ -11,9 +11,7 @@ public class EnvironmentDestinationHighlight : EncounterEventHandler
     {
         base.OnAwake();
 
-        MaterialLibrary matLib = MaterialLibrary.Get();
-
-        _quad = EnvironmentUtil.CreateTileQuad(matLib.DestinationHighlight, this.transform, Vector3.one);
+        _quad = EnvironmentUtil.CreateTileQuad(MaterialLibrary.Get(MaterialID.DEST_HIGHLIGHT), this.transform, Vector3.one);
     }
 
     protected override void OnStateChangedCallback(EncounterStateData state)

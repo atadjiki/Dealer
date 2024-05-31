@@ -11,9 +11,7 @@ public class EnvironmentTileSelector : EncounterEventHandler
     {
         base.OnAwake();
 
-        MaterialLibrary matLib = MaterialLibrary.Get();
-
-        _quad = EnvironmentUtil.CreateTileQuad(matLib.TileSelector, this.transform);
+        _quad = EnvironmentUtil.CreateTileQuad(MaterialLibrary.Get(MaterialID.TILE_SELECTOR), this.transform);
         _quad.SetActive(false);
     }
 

@@ -8,9 +8,9 @@ public class ResourceUtil : MonoBehaviour
     public static void LoadLibraries()
     {
         AudioLibrary.Get();
-        ColorLibrary.Get();
+        ColorLibrary.Load();
         HighlightProfileLibrary.Get();
-        MaterialLibrary.Get();
+        MaterialLibrary.Load();
         PrefabLibrary.Get();
         SpriteLibrary.Get();
     }

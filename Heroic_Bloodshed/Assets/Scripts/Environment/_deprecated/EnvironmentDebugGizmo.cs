@@ -32,14 +32,12 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                 EnvironmentTile tile = new EnvironmentTile(Row, Column, layer);
 
-                ColorLibrary colorLib = ColorLibrary.Get();
-
                 if (tile != null)
                 {
                     //draw a square for each tile 
                     if (ShowTraversibles || ShowNonTraversibles)
                     {
-                        Color color = colorLib.GetByID(layer);
+                        Color color = ColorLibrary.GetByID(layer);
                         Gizmos.color = color;
 
                         Gizmos.DrawSphere(origin, 0.15f);
@@ -63,7 +61,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                                 Vector3 direction = GetDirectionVector(dir) / 2;
 
-                                Gizmos.color = colorLib.GetByState(info.IsValid());
+                                Gizmos.color = ColorLibrary.GetByState(info.IsValid());
 
                                 Gizmos.DrawLine(origin + new Vector3(0, 0.1f, 0), origin + new Vector3(0, 0.1f, 0) + direction);
                             }
@@ -84,7 +82,7 @@ public class EnvironmentDebugGizmo : MonoBehaviour
 
                                     EnvironmentCover cover = GetCoverType(info);
 
-                                    Gizmos.color = colorLib.GetByID(cover);
+                                    Gizmos.color = ColorLibrary.GetByID(cover);
 
                                     Gizmos.DrawLineList(edge);
                                 }
