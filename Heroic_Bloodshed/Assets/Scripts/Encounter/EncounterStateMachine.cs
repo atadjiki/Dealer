@@ -110,7 +110,7 @@ public class EncounterStateMachine: MonoBehaviour
                 {
                     foreach (CharacterID ID in teamData.Characters)
                     {
-                        CharacterDefinition characterData = ResourceUtil.GetCharacterData(ID);
+                        CharacterDefinition characterData = ResourceUtil.GetCharacterDefinition(ID);
 
                         if (characterData != null)
                         {

@@ -16,7 +16,6 @@ public class TileGraphEditor : GraphEditor
 
         graph.Width = EditorGUILayout.IntField("Width", graph.Width);
 
-        graph.ColorLib = EditorGUILayout.ObjectField("Color Library", graph.ColorLib, typeof(ColorLibrary), false) as ColorLibrary;
         EditorGUILayout.PrefixLabel("Gizmo Settings:");
         EditorGUILayout.Space();
         graph.ShowConnections = EditorGUILayout.Toggle("Show Connections", graph.ShowConnections);

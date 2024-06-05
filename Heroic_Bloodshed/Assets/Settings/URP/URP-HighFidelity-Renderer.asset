@@ -17,6 +17,23 @@ MonoBehaviour:
   clearStencil: 0
   previewInEditMode: 1
   showInPreviewCamera: 1
+--- !u!114 &-4615571795703350416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: Cavity
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  passMaterial: {fileID: 2100000, guid: aaecfe0f8bd88404f8a41ab31adfb391, type: 2}
+  injectionPoint: 600
+  requirements: 4
+  passIndex: 0
 --- !u!114 &-4246629338928412214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +103,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -4246629338928412214}
   - {fileID: -5476184157665015936}
-  m_RendererFeatureMap: ca896ba81df110c58047c1cd85af00b4
+  - {fileID: -4615571795703350416}
+  m_RendererFeatureMap: ca896ba81df110c58047c1cd85af00b4703bcaf9e731f2bf
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}

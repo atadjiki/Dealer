@@ -8,7 +8,7 @@ public class CharacterDefinition : ScriptableObject
 {
     public CharacterID ID;
 
-    public List<ModelID> AllowedModels;
+    public List<GameObject> AllowedModels;
 
   //  public WeaponID[] AllowedWeapons;
 
@@ -26,7 +26,7 @@ public class CharacterDefinition : ScriptableObject
 
     public int Defence;
 
-    public ModelID GetRandomModel()
+    public GameObject GetRandomModelPrefab()
     {
         return AllowedModels[Random.Range(0, AllowedModels.Count)];
     }

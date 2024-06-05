@@ -51,7 +51,7 @@ public struct CharacterStateData
 
     public void ResetForTurn(CharacterID ID)
     {
-        CharacterDefinition def = ResourceUtil.GetCharacterData(ID);
+        CharacterDefinition def = ResourceUtil.GetCharacterDefinition(ID);
 
         ActiveAbility = AbilityID.NONE;
         ActiveTarget = null;
@@ -70,7 +70,7 @@ public struct CharacterStateData
 
     public static CharacterStateData Build(CharacterID ID)
     {
-        CharacterDefinition def = ResourceUtil.GetCharacterData(ID);
+        CharacterDefinition def = ResourceUtil.GetCharacterDefinition(ID);
 
         return new CharacterStateData()
         {
@@ -120,9 +120,7 @@ public class CharacterComponent : MonoBehaviour
         _graphCollider.height = ENV_TILE_SIZE;
 
         //load the model and animator for this character
-        GameObject modelPrefab = ResourceUtil.GetModelPrefab(def.GetRandomModel());
-
-        GameObject modelObject = Instantiate<GameObject>(modelPrefab, navigatorObject.transform);
+        GameObject modelObject = Instantiate<GameObject>(def.GetRandomModelPrefab(), navigatorObject.transform);
         _model = modelObject.GetComponent<CharacterModel>();
         _model.CreateHighlight(GetTeamByID(_ID));
         yield return new WaitUntil(() => _model != null);
@@ -181,7 +179,7 @@ public class CharacterComponent : MonoBehaviour
 
     public int GetRange(MovementRangeType rangeType)
     {
-        CharacterDefinition def = ResourceUtil.GetCharacterData(_ID);
+        CharacterDefinition def = ResourceUtil.GetCharacterDefinition(_ID);
 
         switch (rangeType)
         {

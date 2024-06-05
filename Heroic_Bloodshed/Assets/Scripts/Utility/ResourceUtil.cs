@@ -37,9 +37,9 @@ public class ResourceUtil : MonoBehaviour
     }
 
     //Character Data
-    public static CharacterDefinition GetCharacterData(CharacterID ID)
+    public static CharacterDefinition GetCharacterDefinition(CharacterID ID)
     {
-        foreach (CharacterDefinition data in GetAllCharacterData())
+        foreach (CharacterDefinition data in GetAllCharacterDefinition())
         {
             if (data.ID == ID)
             {
@@ -50,17 +50,7 @@ public class ResourceUtil : MonoBehaviour
         return null;
     }
 
-    //Character Models
-    public static GameObject GetModelPrefab(ModelID ID)
-    {
-        Debug.Log("Loading Character Model " + ID.ToString());
-
-        CharacterModelData data = Resources.Load<CharacterModelData>("Data/CharacterModelData");
-
-        return data.GetModel(ID);
-    }
-
-    public static List<CharacterDefinition> GetAllCharacterData()
+    public static List<CharacterDefinition> GetAllCharacterDefinition()
     {
         Debug.Log("Loading All Character Data ");
 

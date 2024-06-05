@@ -272,7 +272,7 @@ public class EnvironmentUtil
 
     public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location, MovementRangeType rangeType)
     {
-        CharacterDefinition def = ResourceUtil.GetCharacterData(character.GetID());
+        CharacterDefinition def = ResourceUtil.GetCharacterDefinition(character.GetID());
 
         List<Vector3> range = GetTilesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
 

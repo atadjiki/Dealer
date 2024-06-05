@@ -15,8 +15,6 @@ using Unity.Jobs;
 // Inherit our new graph from a base graph type
 public class TileGraph : NavGraph
 {
-    [JsonMember] public ColorLibrary ColorLib;
-
     [JsonMember] public int Width = 12;
 
     [JsonMember] public bool ShowConnections = true;
@@ -151,8 +149,6 @@ public class TileGraph : NavGraph
 
     public override void OnDrawGizmos(DrawingData gizmos, bool drawNodes, RedrawScope redrawScope)
     {
-        if(ColorLib == null) { return; }
-
         if(ShowConnections)
         {
             base.OnDrawGizmos(gizmos, drawNodes, redrawScope);
@@ -173,7 +169,17 @@ public class TileGraph : NavGraph
                 {
                     if (ShowLayers)
                     {
-                        Color color = ColorLib.Get(node.Layer);
+                        Color color;
+
+                        if(node.Walkable)
+                        {
+                            color = Color.green;
+                        }
+                        else
+                        {
+                            color = Color.red;
+                        }
+
                         color.a = LayerOpacity;
 
                         using (builder.WithColor(color))
@@ -194,7 +200,7 @@ public class TileGraph : NavGraph
 
                                 EnvironmentCover cover = GetCoverType(info);
 
-                                Color color = ColorLib.Get(cover);
+                                Color color = Color.yellow;
                                 color.a = CoverOpacity;
 
                                 using (builder.WithColor(color))
