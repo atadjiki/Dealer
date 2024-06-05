@@ -14,6 +14,13 @@ public static partial class Constants
     public static int LAYER_WALL = LayerMask.NameToLayer("WALL");
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
 
+    public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir, int step)
+    {
+        Vector3 direction = GetDirectionVector(dir);
+
+        return origin + direction * (step * ENV_TILE_SIZE);
+    }
+
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
@@ -230,7 +237,7 @@ public static partial class Constants
         }
     }
 
-    public static EnvironmentCover GetCoverType(EnvironmentTileConnectionInfo info)
+    public static EnvironmentCover GetCoverType(TileConnectionInfo info)
     {
         if (info.Layer == EnvironmentLayer.OBSTACLE_HALF)
         {
@@ -294,62 +301,6 @@ public static partial class Constants
         {
             return EnvironmentLayer.NONE;
         }
-    }
-
-    public static EnvironmentLayer GetLayerByTag(uint Tag)
-    {
-
-        if (Tag == 0)
-        {
-            return EnvironmentLayer.GROUND;
-        }
-        else if (Tag == 1)
-        {
-            return EnvironmentLayer.OBSTACLE_HALF;
-        }
-        else if (Tag == 2)
-        {
-            return EnvironmentLayer.OBSTACLE_FULL;
-        }
-        else if (Tag == 3)
-        {
-            return EnvironmentLayer.WALL;
-        }
-        else if(Tag == 4)
-        {
-            return EnvironmentLayer.CHARACTER;
-        }
-        else
-        {
-            return EnvironmentLayer.NONE;
-        }
-    }
-
-    public static int GetTraversibleTagMask()
-    {
-        return 1 << 0;
-    }
-
-
-    public static uint GetPathfindingTag(EnvironmentLayer layer)
-    {
-        switch (layer)
-        {
-            case EnvironmentLayer.GROUND:
-                return 0;
-            case EnvironmentLayer.OBSTACLE_HALF:
-                return 1;
-            case EnvironmentLayer.OBSTACLE_FULL:
-                return 2;
-            case EnvironmentLayer.WALL:
-                return 3;
-            case EnvironmentLayer.CHARACTER:
-                return 4;
-            case EnvironmentLayer.NONE:
-                return 5;
-        }
-
-        return 0;
     }
 
     public static Vector3 GetTileSize()

@@ -43,7 +43,7 @@ public class CharacterPathRenderer : EncounterEventHandler
         {
             MovementRangeType rangeType = GetRangeTypeFromPoint((Vector3)node.position);
 
-            if (node.Layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
+            if (node.layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
             {
                 List<Vector3> nodes = EnvironmentUtil.CalculatePath(_origin, (Vector3)node.position);
 

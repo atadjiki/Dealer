@@ -15,24 +15,24 @@ namespace Pathfinding
 	[Pathfinding.Util.Preserve]
 	public class TileNode : PointNode
 	{
-        public EnvironmentLayer Layer;
-        public EnvironmentTileConnectionMap ConnectionMap;
+        public EnvironmentLayer layer;
+        public TileNeighborMap neighborMap;
 
         public void Setup(Vector3 _position, EnvironmentLayer _layer, uint graphIndex)
         {
             // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
             this.position = (Int3)_position;
             this.GraphIndex = graphIndex;
-            Layer = _layer;
+            layer = _layer;
+            Tag = (uint)layer;
             Walkable = IsLayerTraversible(_layer);
-            Tag = GetPathfindingTag(_layer);
         }
 
         public string GetInfo()
         {
             return
-                "Node:   " + position.ToString() + ",\n" +
-                "Layer:  " + Layer.ToString() + ",\n";
+                position.ToString() + ",\n" +
+                layer.ToString() + ",\n";
         }
     }
 }

@@ -5,23 +5,38 @@ using UnityEngine;
 using static Constants;
 
 [Serializable]
-public struct EnvironmentTileConnectionInfo
+public struct TileConnectionInfo
 {
     public EnvironmentLayer Layer;
     public EnvironmentLayer Obstruction;
 
-    public static EnvironmentTileConnectionInfo Build()
+    public static TileConnectionInfo Build()
     {
-        return new EnvironmentTileConnectionInfo()
+        return new TileConnectionInfo()
         {
             Layer = EnvironmentLayer.NONE,
             Obstruction = EnvironmentLayer.NONE,
         };
     }
 
+    public bool IsObstructed()
+    {
+        return Obstruction == EnvironmentLayer.NONE;
+    }
+
+    public bool IsUnobstructed()
+    {
+        return (IsObstructed() == false);
+    }
+
     public bool IsValid()
     {
         return IsLayerTraversible(Layer) && Obstruction == EnvironmentLayer.NONE;
+    }
+
+    public bool IsInvalid()
+    {
+        return (IsValid() == false);
     }
 
     public bool ProvidesCover()
@@ -30,13 +45,13 @@ public struct EnvironmentTileConnectionInfo
     }
 }
 
-public class EnvironmentTileConnectionMap : Dictionary<EnvironmentDirection, EnvironmentTileConnectionInfo>
+public class TileNeighborMap : Dictionary<EnvironmentDirection, TileConnectionInfo>
 {
-    public EnvironmentTileConnectionMap()
+    public TileNeighborMap()
     {
         foreach (EnvironmentDirection dir in GetAllDirections())
         {
-            Add(dir, EnvironmentTileConnectionInfo.Build());
+            Add(dir, TileConnectionInfo.Build());
         }
     }
 }
@@ -87,9 +102,9 @@ public class EnvironmentUtil
         return Neighbors;
     }
 
-    public static EnvironmentTileConnectionMap GenerateNeighborMap(Vector3 origin)
+    public static TileNeighborMap GenerateNeighborMap(Vector3 origin)
     {
-        EnvironmentTileConnectionMap neighborMap = new EnvironmentTileConnectionMap();
+        TileNeighborMap neighborMap = new TileNeighborMap();
 
         foreach (EnvironmentDirection dir in GetAllDirections())
         {
@@ -160,11 +175,11 @@ public class EnvironmentUtil
 
     public static bool IsTileCoverAdjaecent(Vector3 origin)
     {
-        EnvironmentTileConnectionMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
+        TileNeighborMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
         foreach (EnvironmentDirection dir in GetCardinalDirections())
         {
-            EnvironmentTileConnectionInfo info = neighborMap[dir];
+            TileConnectionInfo info = neighborMap[dir];
 
             if (IsLayerCover(info.Obstruction))
             {
@@ -331,12 +346,12 @@ public class EnvironmentUtil
         return false;
     }
 
-    private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
+    public static TileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
         Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-        EnvironmentTileConnectionInfo info = EnvironmentTileConnectionInfo.Build();
+        TileConnectionInfo info = TileConnectionInfo.Build();
         info.Layer = CheckTileLayer(neighborOrigin);
 
         Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);

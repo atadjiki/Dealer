@@ -30,7 +30,7 @@ public class EnvironmentTileSelector : EncounterEventHandler
         TileNode node;
         if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {
-            if(node.Layer == EnvironmentLayer.CHARACTER || node.Layer == EnvironmentLayer.GROUND)
+            if(node.layer == EnvironmentLayer.CHARACTER || node.layer == EnvironmentLayer.GROUND)
             {
                 Quad.transform.position = (Vector3) node.position;
                 Quad.SetActive(true);

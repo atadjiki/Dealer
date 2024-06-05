@@ -86,6 +86,7 @@ public class TileGraph : NavGraph
             JobHandle job = AstarPath.active.AllocateNodes(nodes, totalSize, () => new TileNode(), 1);
             job.Complete();
 
+            //iterate through each tile and connect them
             for (int Row = 0; Row < graph.Width; Row++)
             {
                 for (int Column = 0; Column < graph.Width; Column++)
@@ -95,16 +96,14 @@ public class TileGraph : NavGraph
                     EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
                     TileNode node = nodes[(Row * graph.Width) + Column];
-
                     node.Setup(origin, layer, graph.graphIndex);
-
-                    node.ConnectionMap = EnvironmentUtil.GenerateNeighborMap(origin);
+                    node.neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
                     List<Connection> connections = new List<Connection>();
 
                     foreach (EnvironmentDirection dir in GetAllDirections())
                     {
-                        EnvironmentTileConnectionInfo info = node.ConnectionMap[dir];
+                        TileConnectionInfo info = node.neighborMap[dir];
 
                         Vector3 direction = GetDirectionVector(dir) / 2;
 
@@ -165,7 +164,7 @@ public class TileGraph : NavGraph
 
                 Vector3 origin = (Vector3)node.position;
 
-                if(node.Layer != EnvironmentLayer.NONE)
+                if(node.layer != EnvironmentLayer.NONE)
                 {
                     if (ShowLayers)
                     {
@@ -192,7 +191,7 @@ public class TileGraph : NavGraph
                     {
                         foreach (EnvironmentDirection dir in GetCardinalDirections())
                         {
-                            EnvironmentTileConnectionInfo info = node.ConnectionMap[dir];
+                            TileConnectionInfo info = node.neighborMap[dir];
 
                             if (IsLayerCover(info.Obstruction))
                             {

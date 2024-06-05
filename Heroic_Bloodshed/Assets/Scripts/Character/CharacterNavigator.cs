@@ -18,7 +18,7 @@ public class CharacterNavigator : MonoBehaviour
     {
         _seeker = GetComponentInChildren<Seeker>();
 
-        _seeker.traversableTags = GetTraversibleTagMask();
+        //_seeker.traversableTags = GetTraversibleTagMask();
 
         _AI = GetComponentInChildren<AILerp>();
         _AI.canSearch = false;
