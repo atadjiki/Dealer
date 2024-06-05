@@ -10,21 +10,19 @@ public class EncounterUtil : MonoBehaviour
     {
         Debug.Log("Creating character highlight");
 
-        GameObject gameObject = new GameObject("EncounterCharacterHighlight");
-        EncounterCharacterHighlight characterHighlight = gameObject.AddComponent<EncounterCharacterHighlight>();
+        GameObject gameObject = Instantiate<GameObject>(ResourceUtil.GetCharacterHighlight());
 
         gameObject.transform.parent = character.GetModel().transform;
         gameObject.transform.localPosition = Vector3.zero;
 
         return gameObject;
+
     }
     public static GameObject CreateDestinationHighlight(Vector3 destination)
     {
         Debug.Log("Creating destination highlight");
 
-        GameObject gameObject = new GameObject("EnvironmentDestinationHighlight");
-        EnvironmentDestinationHighlight destinationHighlight = gameObject.AddComponent<EnvironmentDestinationHighlight>();
-
+        GameObject gameObject = Instantiate<GameObject>(ResourceUtil.GetDestinationHighlight());
         gameObject.transform.position = destination;
 
         return gameObject;
@@ -34,20 +32,17 @@ public class EncounterUtil : MonoBehaviour
     {
         Debug.Log("Creating tile selector");
 
-        GameObject gameObject = new GameObject("EnvironmentTileSelector");
-        EnvironmentTileSelector tileSelector = gameObject.AddComponent<EnvironmentTileSelector>();
-
-        return gameObject;
+        return Instantiate<GameObject>(ResourceUtil.GetTileSelector());
     }
 
     public static GameObject CreatePathDisplay(CharacterComponent character)
     {
-        Debug.Log("Creating path display");
+        Debug.Log("Creating character path renderer");
 
-        GameObject gameObject = new GameObject("EnvironmentPathDisplay");
+        GameObject gameObject = Instantiate<GameObject>(ResourceUtil.GetCharacterPathRenderer());
 
-        EnvironmentPathDisplay pathDisplay = gameObject.AddComponent<EnvironmentPathDisplay>();
-        pathDisplay.Setup(character);
+        CharacterPathRenderer pathRenderer = gameObject.GetComponent<CharacterPathRenderer>();
+        pathRenderer.Setup(character);
 
         return gameObject;
     }
@@ -56,9 +51,9 @@ public class EncounterUtil : MonoBehaviour
     {
         Debug.Log("Creating movement radius");
 
-        GameObject gameObject = new GameObject("EnvironmentMovementRadius");
+        GameObject gameObject = Instantiate<GameObject>(ResourceUtil.GetMovementRadius());
 
-        EnvironmentMovementRadius movementRadius = gameObject.AddComponent<EnvironmentMovementRadius>();
+        EnvironmentMovementRadius movementRadius = gameObject.GetComponent<EnvironmentMovementRadius>();
         movementRadius.Setup(character);
 
         return gameObject;

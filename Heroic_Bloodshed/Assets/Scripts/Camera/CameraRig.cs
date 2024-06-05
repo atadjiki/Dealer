@@ -272,7 +272,7 @@ public class CameraRig : MonoBehaviour
     {
         if(!IsActive())
         {
-            Instantiate<GameObject>(PrefabLibrary.GetCameraRig());
+            Instantiate<GameObject>(ResourceUtil.GetEncounterCameraRig());
         }
     }
 

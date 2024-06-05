@@ -6,14 +6,13 @@ using static Constants;
 
 public class EnvironmentTileSelector : EncounterEventHandler
 {
-    private GameObject _quad;
+    [SerializeField] private GameObject Quad;
 
     protected override void OnAwake()
     {
         base.OnAwake();
 
-        _quad = EnvironmentUtil.CreateTileQuad(MaterialLibrary.Get(MaterialID.TILE_SELECTOR), this.transform);
-        _quad.SetActive(false);
+        Quad.SetActive(false);
     }
 
     protected override void OnStateChangedCallback(EncounterStateData stateData)
@@ -26,15 +25,15 @@ public class EnvironmentTileSelector : EncounterEventHandler
 
     private void Update()
     {
-        if (_quad == null) return;
+        if (Quad == null) return;
 
         TileNode node;
         if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {
             if(node.Layer == EnvironmentLayer.CHARACTER || node.Layer == EnvironmentLayer.GROUND)
             {
-                _quad.transform.position = (Vector3) node.position;
-                _quad.SetActive(true);
+                Quad.transform.position = (Vector3) node.position;
+                Quad.SetActive(true);
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -45,12 +44,12 @@ public class EnvironmentTileSelector : EncounterEventHandler
             }    
         }
 
-        _quad.SetActive(false);
+        Quad.SetActive(false);
     }
 
     private void OnDrawGizmos()
     {
-        if (_quad == null) return;
+        if (Quad == null) return;
 
 
     }

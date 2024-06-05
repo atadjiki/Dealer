@@ -6,6 +6,13 @@ using static Constants;
 
 public class EnvironmentMovementRadius : EncounterEventHandler
 {
+    [Header("Material")]
+    [SerializeField] private Material Material;
+
+    [Header("Highlight Profiles")]
+    [SerializeField] private HighlightProfile HalfProfile;
+    [SerializeField] private HighlightProfile FullProfile;
+
     private Dictionary<MovementRangeType, List<Vector3>> _rangeMap;
 
     protected override void OnAwake()
@@ -46,7 +53,7 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         GameObject container = new GameObject("Container " + rangeType.ToString());
         container.transform.parent = this.transform;
         MeshRenderer renderer = container.AddComponent<MeshRenderer>();
-        renderer.material = MaterialLibrary.Get(MaterialID.MOVE_RADIUS);
+        renderer.material = Material;
 
         MeshFilter filter = container.AddComponent<MeshFilter>();
 
@@ -80,10 +87,15 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         filter.mesh = mesh;
 
         HighlightEffect effect = container.AddComponent<HighlightEffect>();
-        HighlightProfile profile = HighlightProfileLibrary.Get(rangeType);
+        HighlightProfile profile = null;
 
-        if(rangeType == MovementRangeType.HALF)
+        if(rangeType == MovementRangeType.FULL)
         {
+            profile = FullProfile;
+        }
+        else if(rangeType == MovementRangeType.HALF)
+        {
+            profile = HalfProfile;
             effect.subMeshMask = 1;
         }
 

@@ -35,9 +35,6 @@ public class EncounterStateMachine: MonoBehaviour
 
     private void Build()
     {
-        //cache our libraries
-        ResourceUtil.LoadLibraries();
-
         //scan the environment
         EnvironmentUtil.Scan();
 

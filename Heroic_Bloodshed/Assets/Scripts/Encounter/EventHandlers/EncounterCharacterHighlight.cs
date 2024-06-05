@@ -5,18 +5,11 @@ using static Constants;
 
 public class EncounterCharacterHighlight : EncounterEventHandler
 {
-    private GameObject _quad;
-
-    protected override void OnAwake()
-    {
-        base.OnAwake();
-
-        _quad = EnvironmentUtil.CreateTileQuad(MaterialLibrary.Get(MaterialID.CHAR_SELECT), this.transform, Vector3.one);
-    }
+    [SerializeField] private GameObject Quad;
 
     private void Update()
     {
-        _quad.transform.eulerAngles = new Vector3(90, 0, 0);
+        Quad.transform.eulerAngles = new Vector3(90, 0, 0);
     }
 
     protected override void OnStateChangedCallback(EncounterStateData state)

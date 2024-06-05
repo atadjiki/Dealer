@@ -4,6 +4,7 @@ using UnityEngine;
 using HighlightPlus;
 using static Constants;
 
+[RequireComponent(typeof(HighlightEffect))]
 public class CharacterModel : MonoBehaviour
 {
     [SerializeField] private List<GameObject> Meshes;
@@ -12,26 +13,11 @@ public class CharacterModel : MonoBehaviour
 
     public void CreateHighlight(TeamID teamID)
     {
-        RemoveHighlight();
-
-        HighlightProfile profile = HighlightProfileLibrary.Get(teamID);
-
-        _highlight = this.gameObject.AddComponent<HighlightEffect>();
-
-        _highlight.profile = profile;
-        _highlight.ProfileLoad(profile);
+        _highlight = GetComponent<HighlightEffect>();
 
         ToggleHighlighted(false);
         ToggleOverlay(false);
         ToggleTargetUI(false);
-    }
-
-    public void RemoveHighlight()
-    {
-        if (_highlight != null)
-        {
-            Destroy(_highlight);
-        }
     }
 
     public void ToggleTargetUI(bool flag)

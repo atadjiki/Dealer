@@ -48,11 +48,9 @@ public class ColorLibrary : ScriptableObject
     [Header("Layers")]
     [SerializeField] private List<EnvironmentLayerColorInfo> LayerColors;
 
-    public static Color Get(TeamID ID)
+    public Color Get(TeamID ID)
     {
-        Refresh();
-
-        foreach (TeamColorInfo info in library.TeamColors)
+        foreach (TeamColorInfo info in TeamColors)
         {
             if (info.ID == ID)
             {
@@ -63,11 +61,9 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Color Get(MovementRangeType ID)
+    public Color Get(MovementRangeType ID)
     {
-        Refresh();
-
-        foreach (MovementRangeColorInfo info in library.MovementRangeColors)
+        foreach (MovementRangeColorInfo info in MovementRangeColors)
         {
             if (info.ID == ID)
             {
@@ -78,11 +74,9 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Color Get(EnvironmentCover ID)
+    public Color Get(EnvironmentCover ID)
     {
-        Refresh();
-
-        foreach (CoverColorInfo info in library.CoverColors)
+        foreach (CoverColorInfo info in CoverColors)
         {
             if (info.ID == ID)
             {
@@ -93,10 +87,8 @@ public class ColorLibrary : ScriptableObject
         return Color.clear;
     }
 
-    public static Color Get(bool flag)
+    public Color Get(bool flag)
     {
-        Refresh();
-
         if (flag)
         {
             return Color.green;
@@ -107,11 +99,9 @@ public class ColorLibrary : ScriptableObject
         }
     }
 
-    public static Color Get(EnvironmentLayer ID)
+    public Color Get(EnvironmentLayer ID)
     {
-        Refresh();
-
-        foreach (EnvironmentLayerColorInfo info in library.LayerColors)
+        foreach (EnvironmentLayerColorInfo info in LayerColors)
         {
             if (info.ID == ID)
             {
@@ -120,21 +110,5 @@ public class ColorLibrary : ScriptableObject
         }
 
         return Color.clear;
-    }
-
-    private static ColorLibrary library;
-
-    private static void Refresh()
-    {
-        if(library == null)
-        {
-            library = Load();
-        }
-    }
-
-    public static ColorLibrary Load()
-    {
-        Debug.Log("Loading ColorLibrary");
-        return Resources.Load<ColorLibrary>("Data/Libraries/ColorLibrary");
     }
 }

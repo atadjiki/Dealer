@@ -331,30 +331,6 @@ public class EnvironmentUtil
         return false;
     }
 
-    public static GameObject CreateTileQuad(Material material, Transform parent)
-    {
-        return CreateTileQuad(material, parent, GetTileScale());
-    }
-
-    public static GameObject CreateTileQuad(Material material, Transform parent, Vector3 scale)
-    {
-        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        quad.transform.parent = parent;
-
-        quad.transform.localEulerAngles = new Vector3(90, 0, 0);
-        quad.transform.localScale = scale;
-
-        GameObject.Destroy(quad.GetComponent<MeshCollider>());
-
-        quad.layer = LAYER_DECAL;
-
-        MeshRenderer renderer = quad.GetComponent<MeshRenderer>();
-
-        renderer.material = material;
-
-        return quad;
-    }
-
     private static EnvironmentTileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);

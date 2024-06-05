@@ -120,7 +120,7 @@ public class CharacterComponent : MonoBehaviour
         _graphCollider.height = ENV_TILE_SIZE;
 
         //load the model and animator for this character
-        GameObject modelPrefab = ResourceUtil.GetModel(def.GetRandomModel());
+        GameObject modelPrefab = ResourceUtil.GetModelPrefab(def.GetRandomModel());
 
         GameObject modelObject = Instantiate<GameObject>(modelPrefab, navigatorObject.transform);
         _model = modelObject.GetComponent<CharacterModel>();
