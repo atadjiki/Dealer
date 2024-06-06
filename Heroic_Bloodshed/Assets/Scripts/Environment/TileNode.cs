@@ -16,7 +16,6 @@ namespace Pathfinding
 	public class TileNode : PointNode
 	{
         public EnvironmentLayer layer;
-        public TileNeighborMap neighborMap;
 
         public void Setup(Vector3 _position, EnvironmentLayer _layer, uint graphIndex)
         {

@@ -97,13 +97,12 @@ public class TileGraph : NavGraph
 
                     TileNode node = nodes[(Row * graph.Width) + Column];
                     node.Setup(origin, layer, graph.graphIndex);
-                    node.neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
 
                     List<Connection> connections = new List<Connection>();
 
                     foreach (EnvironmentDirection dir in GetAllDirections())
                     {
-                        TileConnectionInfo info = node.neighborMap[dir];
+                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
                         Vector3 direction = GetDirectionVector(dir) / 2;
 
@@ -146,82 +145,82 @@ public class TileGraph : NavGraph
         }
     }
 
-    public override void OnDrawGizmos(DrawingData gizmos, bool drawNodes, RedrawScope redrawScope)
-    {
-        if(ShowConnections)
-        {
-            base.OnDrawGizmos(gizmos, drawNodes, redrawScope);
+    //public override void OnDrawGizmos(DrawingData gizmos, bool drawNodes, RedrawScope redrawScope)
+    //{
+    //    if(ShowConnections)
+    //    {
+    //        base.OnDrawGizmos(gizmos, drawNodes, redrawScope);
 
-        }
+    //    }
 
-        DrawingData.Hasher hasher = DrawingData.Hasher.Create(this);
+    //    DrawingData.Hasher hasher = DrawingData.Hasher.Create(this);
 
-        using (var builder = gizmos.GetBuilder(hasher))
-        {
-            GetNodes(graphNode =>
-            {
-                TileNode node = (TileNode)graphNode;
+    //    using (var builder = gizmos.GetBuilder(hasher))
+    //    {
+    //        GetNodes(graphNode =>
+    //        {
+    //            TileNode node = (TileNode)graphNode;
 
-                Vector3 origin = (Vector3)node.position;
+    //            Vector3 origin = (Vector3)node.position;
 
-                if(node.layer != EnvironmentLayer.NONE)
-                {
-                    if (ShowLayers)
-                    {
-                        Color color;
+    //            if(node.layer != EnvironmentLayer.NONE)
+    //            {
+    //                if (ShowLayers)
+    //                {
+    //                    Color color;
 
-                        if(node.Walkable)
-                        {
-                            color = Color.green;
-                        }
-                        else
-                        {
-                            color = Color.red;
-                        }
+    //                    if(node.Walkable)
+    //                    {
+    //                        color = Color.green;
+    //                    }
+    //                    else
+    //                    {
+    //                        color = Color.red;
+    //                    }
 
-                        color.a = LayerOpacity;
+    //                    color.a = LayerOpacity;
 
-                        using (builder.WithColor(color))
-                        {
-                            builder.SolidBox(origin, new Unity.Mathematics.float3(ENV_TILE_SIZE, 0.01f, ENV_TILE_SIZE));
-                        }
-                    }
+    //                    using (builder.WithColor(color))
+    //                    {
+    //                        builder.SolidBox(origin, new Unity.Mathematics.float3(ENV_TILE_SIZE, 0.01f, ENV_TILE_SIZE));
+    //                    }
+    //                }
 
-                    if (ShowCover)
-                    {
-                        foreach (EnvironmentDirection dir in GetCardinalDirections())
-                        {
-                            TileConnectionInfo info = node.neighborMap[dir];
+    //                if (ShowCover)
+    //                {
+    //                    foreach (EnvironmentDirection dir in GetCardinalDirections())
+    //                    {
+    //                        TileConnectionInfo info = node.neighborMap[dir];
 
-                            if (IsLayerCover(info.Obstruction))
-                            {
-                                Vector3[] edge = CalculateTileEdge(origin, dir);
+    //                        if (IsLayerCover(info.Obstruction))
+    //                        {
+    //                            Vector3[] edge = CalculateTileEdge(origin, dir);
 
-                                EnvironmentCover cover = GetCoverType(info);
+    //                            EnvironmentCover cover = GetCoverType(info);
 
-                                Color color = Color.yellow;
-                                color.a = CoverOpacity;
+    //                            Color color = Color.yellow;
+    //                            color.a = CoverOpacity;
 
-                                using (builder.WithColor(color))
-                                {
-                                    using (builder.WithLineWidth(LineWidth))
-                                    {
-                                        float height = GetCoverHeight(cover);
+    //                            using (builder.WithColor(color))
+    //                            {
+    //                                using (builder.WithLineWidth(LineWidth))
+    //                                {
+    //                                    float height = GetCoverHeight(cover);
 
-                                        Vector3 center = (edge[0] + edge[1]) / 2; ;
+    //                                    Vector3 center = (edge[0] + edge[1]) / 2; ;
 
-                                        center += new Vector3(0, 3*height/4, 0);
+    //                                    center += new Vector3(0, 3*height/4, 0);
 
-                                        Vector3 normal = GetCoverNormal(dir);
+    //                                    Vector3 normal = GetCoverNormal(dir);
 
-                                        builder.PlaneWithNormal(center, normal, height);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+    //                                    builder.PlaneWithNormal(center, normal, height);
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        });
+    //    }
+    //}
 }

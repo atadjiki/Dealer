@@ -45,17 +45,6 @@ public struct TileConnectionInfo
     }
 }
 
-public class TileNeighborMap : Dictionary<EnvironmentDirection, TileConnectionInfo>
-{
-    public TileNeighborMap()
-    {
-        foreach (EnvironmentDirection dir in GetAllDirections())
-        {
-            Add(dir, TileConnectionInfo.Build());
-        }
-    }
-}
-
 public class EnvironmentUtil
 {
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
@@ -100,18 +89,6 @@ public class EnvironmentUtil
         }
 
         return Neighbors;
-    }
-
-    public static TileNeighborMap GenerateNeighborMap(Vector3 origin)
-    {
-        TileNeighborMap neighborMap = new TileNeighborMap();
-
-        foreach (EnvironmentDirection dir in GetAllDirections())
-        {
-            neighborMap[dir] = CheckNeighborConnection(origin, dir);
-        }
-
-        return neighborMap;
     }
 
     public static Bounds GetEnvironmentBounds()
@@ -173,42 +150,6 @@ public class EnvironmentUtil
         }
     }
 
-    public static bool IsTileCoverAdjaecent(Vector3 origin)
-    {
-        TileNeighborMap neighborMap = EnvironmentUtil.GenerateNeighborMap(origin);
-
-        foreach (EnvironmentDirection dir in GetCardinalDirections())
-        {
-            TileConnectionInfo info = neighborMap[dir];
-
-            if (IsLayerCover(info.Obstruction))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static List<Vector3> GetCoverAdjaecentTiles()
-    {
-        TileGraph graph = GetEnvironmentGraph();
-
-        List<Vector3> tiles = new List<Vector3>();
-
-        foreach(PointNode node in graph.GetWalkableNodes())
-        {
-            Vector3 nodePos = ((Vector3)node.position);
-
-            if(IsTileCoverAdjaecent(nodePos))
-            {
-                tiles.Add(nodePos);
-            }
-        }
-
-        return tiles;
-    }
-
     public static Vector3 GetClosest(Vector3 origin, List<Vector3> points)
     {
         Vector3 closest = Vector3.positiveInfinity;
@@ -222,11 +163,6 @@ public class EnvironmentUtil
         }
 
         return closest;
-    }
-
-    public static Vector3 GetClosestTileWithCover(Vector3 origin)
-    {
-        return GetClosest(origin, GetCoverAdjaecentTiles());
     }
 
     public static List<Vector3> GetCharacterMaxRadius(CharacterComponent character)
