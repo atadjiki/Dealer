@@ -19,9 +19,14 @@ public struct TileConnectionInfo
         };
     }
 
+    public bool IsWallBetween()
+    {
+        return Obstruction == EnvironmentLayer.WALL;
+    }
+
     public bool IsObstructed()
     {
-        return Obstruction == EnvironmentLayer.NONE;
+        return Obstruction != EnvironmentLayer.NONE;
     }
 
     public bool IsUnobstructed()
@@ -296,5 +301,19 @@ public class EnvironmentUtil
         info.Obstruction = PerformRaycast(origin + offset, direction, direction.magnitude);
 
         return info;
+    }
+
+    public static bool IsAdjaecentToCover(Vector3 origin, EnvironmentDirection dir, out EnvironmentCover cover)
+    {
+        TileConnectionInfo info = CheckNeighborConnection(origin, dir);
+
+        if (info.IsInvalid())
+        {
+            cover = GetCoverType(info);
+            return true;
+        }
+
+        cover = EnvironmentCover.NONE;
+        return false;
     }
 }

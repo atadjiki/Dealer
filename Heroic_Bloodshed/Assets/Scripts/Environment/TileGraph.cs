@@ -127,6 +127,60 @@ public class TileGraph : NavGraph
                 }
             }
 
+            //now iterate again so we can find jumps over obstacles
+            foreach(TileNode node in nodes)
+            {
+                if(node.Walkable)
+                {
+                    Vector3 origin = (Vector3)node.position;
+                    foreach (EnvironmentDirection dir in GetCardinalDirections())
+                    {
+                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+
+                        if(!info.IsWallBetween())
+                        {
+                            if(GetCoverType(info) == EnvironmentCover.HALF)
+                            {
+                                Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+
+                                Int2 neighborCoords = CalculateTileCoordinates(neighborOrigin);
+
+                                if(AreValidCoordinates(neighborCoords, graph.Width))
+                                {
+                                    //if we're next to cover, check if we can jump this tile
+                                    TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
+
+                                    TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
+
+                                    if(neighborInfo.IsValid())
+                                    {
+                                        //get the node after this node
+                                        Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
+
+                                        Int2 nextCoords = CalculateTileCoordinates(nextOrigin);
+
+                                        if (AreValidCoordinates(nextCoords, graph.Width))
+                                        {
+                                            TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
+
+                                            if (next.Walkable)
+                                            {
+                                                var cost = GetDirectionCost(dir);
+
+                                                node.AddPartialConnection(next, cost, true, true);
+                                            }
+                                        }
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
             graph.nodes = nodes;
         
         }
