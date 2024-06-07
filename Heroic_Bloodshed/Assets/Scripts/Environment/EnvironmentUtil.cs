@@ -6,6 +6,24 @@ using static Constants;
 
 public class EnvironmentUtil
 {
+    //Global function to access the active tile graph
+    public static TileGraph GetEnvironmentGraph()
+    {
+        TileGraph graph = (TileGraph)AstarPath.active.data.FindGraphOfType(typeof(TileGraph));
+
+        return graph;
+    }
+
+    public static void Scan()
+    {
+        Debug.Log("Environment Scan");
+
+        TileGraph graph = GetEnvironmentGraph();
+
+        AstarPath.active.Scan(graph);
+    }
+
+    //Raycasting
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
     {
         Vector3 offset = new Vector3(0, ENV_TILE_SIZE*2, 0);
@@ -33,49 +51,31 @@ public class EnvironmentUtil
         return EnvironmentLayer.NONE;
     }
 
-    public static List<Vector3> GetTileNeighbors(Vector3 origin)
+    public static bool GetNodeBeneathMouse(out TileNode node)
     {
-        List<Vector3> Neighbors = new List<Vector3>();
+        TileGraph graph = GetEnvironmentGraph();
 
-        EnvironmentLayer tileLayer = CheckTileLayer(origin);
-
-        if(IsLayerTraversible(tileLayer))
+        if (graph != null && Camera.main != null)
         {
-            foreach (EnvironmentDirection dir in GetAllDirections())
+            Vector3 mousePosition = Input.mousePosition;
+
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+            foreach (RaycastHit hit in Physics.RaycastAll(ray, 100))
             {
-                Neighbors.Add(GetNeighboringTileLocation(origin, dir));
+                if (hit.collider.gameObject.layer == LAYER_GROUND)
+                {
+                    if (GetNearestNode(hit.point, out node))
+                    {
+                        return true;
+                    }
+
+                }
             }
         }
 
-        return Neighbors;
-    }
-
-    public static Bounds GetEnvironmentBounds()
-    {
-
-        TileGraph graph = GetEnvironmentGraph();
-
-        Vector3 center = Vector3.zero;
-
-        Vector3 size = new Vector3(ENV_TILE_SIZE * graph.Width, 0, ENV_TILE_SIZE * graph.Width);
-
-        return new Bounds(center, size);
-    }
-
-    public static TileGraph GetEnvironmentGraph()
-    {
-        TileGraph graph = (TileGraph)AstarPath.active.data.FindGraphOfType(typeof(TileGraph));
-
-        return graph;
-    }
-
-    public static void Scan()
-    {
-        Debug.Log("Environment Scan");
-
-        TileGraph graph = GetEnvironmentGraph();
-
-        AstarPath.active.Scan(graph);
+        node = null;
+        return false;
     }
 
     public static bool GetNearestNode(Vector3 origin, out TileNode node)
@@ -92,36 +92,54 @@ public class EnvironmentUtil
         return false;
     }
 
-    public static Vector3 GetRandomTile()
+    public static TileNode GetRandomNode()
     {
         TileGraph graph = GetEnvironmentGraph();
 
-        PointNode node = graph.GetRandomNode();
+        TileNode node = graph.GetRandomNode();
 
-        if (node != null)
-        {
-            return (Vector3)node.position;
-        }
-        else
-        {
-            Debug.LogError("Random node was null!");
-            return Vector3.zero;
-        }
+        return node;
     }
 
-    public static Vector3 GetClosest(Vector3 origin, List<Vector3> points)
+    public static Vector3 GetRandomLocation()
     {
-        Vector3 closest = Vector3.positiveInfinity;
+        return (Vector3) GetRandomNode().position;
+    }
 
-        foreach(Vector3 point in points)
-        {
-            if(Vector3.Distance(origin, point) <= Vector3.Distance(origin, closest))
-            {
-                closest = point;
-            }
-        }
+    public static List<Vector3> CalculateVectorPath(Vector3 origin, Vector3 destination)
+    {
+        ABPath path = CalculatePath(origin, destination);
 
-        return closest;
+        return path.vectorPath;
+    }
+
+    public static ABPath CalculatePath(Vector3 origin, Vector3 destination)
+    {
+        ABPath path = ABPath.Construct(origin, destination);
+        AstarPath.StartPath(path);
+        path.BlockUntilCalculated();
+
+        return path;
+    }
+
+    public static ConstantPath GetNodesWithinRange(Vector3 origin, int range)
+    {
+        List<Vector3> tiles = new List<Vector3>();
+
+        int gScore = CalculateGScore(range);
+
+        NNConstraint constraint = new NNConstraint();
+        constraint.constrainWalkability = true;
+
+        ConstantPath cpath = ConstantPath.Construct(origin, gScore);
+        cpath.heuristicScale = 1;
+        cpath.heuristic = Heuristic.DiagonalManhattan;
+        cpath.nnConstraint = constraint;
+
+        AstarPath.StartPath(cpath);
+        cpath.BlockUntilCalculated();
+
+        return cpath;
     }
 
     public static List<Vector3> GetCharacterMaxRadius(CharacterComponent character)
@@ -140,37 +158,13 @@ public class EnvironmentUtil
             rangeType = MovementRangeType.NONE;
         }
 
-        return GetCharacterRadius(rangeType, character);
+        return GetCharacterVectorRadius(rangeType, character);
     }
 
-    public static List<Vector3> GetCharacterRadius(MovementRangeType rangeType, CharacterComponent character)
+    public static List<Vector3> GetCharacterVectorRadius(MovementRangeType rangeType, CharacterComponent character)
     {
-        return GetTilesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
-    }
-
-    public static List<Vector3> GetTilesWithinRange(Vector3 origin, int range)
-    {
-        List<Vector3> tiles = new List<Vector3>();
-
-        int gScore = CalculateGScore(range);
-
-        NNConstraint constraint = new NNConstraint();
-        constraint.constrainWalkability = true;
-
-        ConstantPath cpath = ConstantPath.Construct(origin, gScore);
-        cpath.heuristicScale = 1;
-        cpath.heuristic = Heuristic.DiagonalManhattan;
-        cpath.nnConstraint = constraint;
-
-        AstarPath.StartPath(cpath);
-        cpath.BlockUntilCalculated();
-
-        foreach(GraphNode node in cpath.allNodes)
-        {
-            tiles.Add(((Vector3)node.position));
-        }
-
-        return tiles;
+        ConstantPath path = GetNodesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
+        return path.vectorPath;
     }
 
     public static bool IsWithinCharacterMaxRange(CharacterComponent character, Vector3 location)
@@ -180,30 +174,12 @@ public class EnvironmentUtil
         return range.Contains(location);
     }
 
-    public static bool IsWithinCharacterRange(CharacterComponent character, Vector3 location, MovementRangeType rangeType)
-    {
-        CharacterDefinition def = ResourceUtil.GetCharacterDefinition(character.GetID());
-
-        List<Vector3> range = GetTilesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
-
-        return range.Contains(location);
-    }
-
-    public static List<Vector3> CalculatePath(Vector3 origin, Vector3 destination)
-    {
-        ABPath path = ABPath.Construct(origin, destination);
-        AstarPath.StartPath(path);
-        path.BlockUntilCalculated();
-
-        return path.vectorPath;
-    }
-
     public static Dictionary<MovementRangeType, List<Vector3>> GetCharacterRangeMap(CharacterComponent character)
     {
         Dictionary <MovementRangeType, List <Vector3>> map = new Dictionary<MovementRangeType, List<Vector3>>()
         {
-            { MovementRangeType.HALF, GetCharacterRadius(MovementRangeType.HALF, character) },
-            { MovementRangeType.FULL, GetCharacterRadius(MovementRangeType.FULL, character) },
+            { MovementRangeType.HALF, GetCharacterVectorRadius(MovementRangeType.HALF, character) },
+            { MovementRangeType.FULL, GetCharacterVectorRadius(MovementRangeType.FULL, character) },
         };
 
         foreach(MovementRangeType rangeType in map.Keys)
@@ -212,33 +188,6 @@ public class EnvironmentUtil
         }
 
         return map;
-    }
-
-    public static bool GetNodeBeneathMouse(out TileNode node)
-    {
-        TileGraph graph = GetEnvironmentGraph();
-
-        if (graph != null && Camera.main != null)
-        {
-            Vector3 mousePosition = Input.mousePosition;
-
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-
-            foreach (RaycastHit hit in Physics.RaycastAll(ray, 100))
-            {
-                if (hit.collider.gameObject.layer == LAYER_GROUND)
-                {
-                    if(GetNearestNode(hit.point, out node))
-                    {
-                        return true;
-                    }
-
-                }
-            }
-        }
-
-        node = null;
-        return false;
     }
 
     public static TileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
@@ -255,19 +204,5 @@ public class EnvironmentUtil
         info.Obstruction = PerformRaycast(origin + offset, direction, direction.magnitude);
 
         return info;
-    }
-
-    public static bool IsAdjaecentToCover(Vector3 origin, EnvironmentDirection dir, out EnvironmentCover cover)
-    {
-        TileConnectionInfo info = CheckNeighborConnection(origin, dir);
-
-        if (info.IsInvalid())
-        {
-            cover = GetCoverType(info);
-            return true;
-        }
-
-        cover = EnvironmentCover.NONE;
-        return false;
     }
 }

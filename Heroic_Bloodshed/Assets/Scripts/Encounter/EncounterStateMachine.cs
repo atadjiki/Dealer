@@ -118,7 +118,7 @@ public class EncounterStateMachine: MonoBehaviour
 
                             yield return character.Coroutine_Setup(characterData);
 
-                            Vector3 randomLocation = EnvironmentUtil.GetRandomTile();
+                            Vector3 randomLocation = EnvironmentUtil.GetRandomLocation();
                             character.Teleport(randomLocation);
 
                             //Vector3 destination = EnvironmentUtil.GetClosestTileWithCover(character.GetWorldLocation());

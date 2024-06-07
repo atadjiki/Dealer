@@ -45,7 +45,7 @@ public class CharacterPathRenderer : EncounterEventHandler
 
             if (node.layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
             {
-                List<Vector3> nodes = EnvironmentUtil.CalculatePath(_origin, (Vector3)node.position);
+                List<Vector3> nodes = EnvironmentUtil.CalculateVectorPath(_origin, (Vector3)node.position);
 
                 _lineRenderer.positionCount = nodes.Count;
                 _lineRenderer.SetPositions(nodes.ToArray());
