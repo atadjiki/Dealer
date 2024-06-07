@@ -27,6 +27,35 @@ namespace Pathfinding
             Walkable = IsLayerTraversible(_layer);
         }
 
+        public bool HasCoverInDirection(EnvironmentDirection dir)
+        {
+            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection((Vector3)position, dir);
+
+            return (IsLayerCover(info.Obstruction));
+        }
+
+        public EnvironmentCover GetCoverInDirection(EnvironmentDirection dir)
+        {
+            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection((Vector3)position, dir);
+
+            return GetCoverType(info);
+        }
+
+        public Dictionary<EnvironmentDirection, EnvironmentCover> GetCoverMap()
+        {
+            Dictionary<EnvironmentDirection, EnvironmentCover> map = new Dictionary<EnvironmentDirection, EnvironmentCover>();
+
+            foreach (EnvironmentDirection dir in GetCardinalDirections())
+            {
+                if(HasCoverInDirection(dir))
+                {
+                    map.Add(dir, GetCoverInDirection(dir));
+                }
+            }
+
+            return map;
+        }
+
         public string GetInfo()
         {
             return

@@ -247,39 +247,35 @@ public class TileGraph : NavGraph
 
                     if (ShowCover)
                     {
-                        foreach (EnvironmentDirection dir in GetCardinalDirections())
+                        foreach (KeyValuePair<EnvironmentDirection, EnvironmentCover> pair in node.GetCoverMap())
                         {
-                            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+                            EnvironmentDirection dir = pair.Key;
+                            EnvironmentCover cover = pair.Value;
 
-                            if (IsLayerCover(info.Obstruction))
+                            Vector3[] edge = CalculateTileEdge(origin, dir);
+
+                            Color color = Color.yellow;
+
+                            if (cover == EnvironmentCover.FULL)
                             {
-                                Vector3[] edge = CalculateTileEdge(origin, dir);
+                                color = Color.magenta;
+                            }
 
-                                EnvironmentCover cover = GetCoverType(info);
+                            color.a = CoverOpacity;
 
-                                Color color = Color.yellow;
-
-                                if (cover == EnvironmentCover.FULL)
+                            using (builder.WithColor(color))
+                            {
+                                using (builder.WithLineWidth(LineWidth))
                                 {
-                                    color = Color.magenta;
-                                }
-        
-                                color.a = CoverOpacity;
+                                    float height = GetCoverHeight(cover);
 
-                                using (builder.WithColor(color))
-                                {
-                                    using (builder.WithLineWidth(LineWidth))
-                                    {
-                                        float height = GetCoverHeight(cover);
+                                    Vector3 center = (edge[0] + edge[1]) / 2; ;
 
-                                        Vector3 center = (edge[0] + edge[1]) / 2; ;
+                                    center += new Vector3(0, 3 * height / 4, 0);
 
-                                        center += new Vector3(0, 3 * height / 4, 0);
+                                    Vector3 normal = GetCoverNormal(dir);
 
-                                        Vector3 normal = GetCoverNormal(dir);
-
-                                        builder.PlaneWithNormal(center, normal, height);
-                                    }
+                                    builder.PlaneWithNormal(center, normal, height);
                                 }
                             }
                         }

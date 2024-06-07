@@ -116,7 +116,7 @@ public class EnvironmentUtil
     public static ABPath CalculatePath(Vector3 origin, Vector3 destination)
     {
         ABPath path = ABPath.Construct(origin, destination);
-        AstarPath.StartPath(path);
+        AstarPath.StartPath(path,true, true);
         path.BlockUntilCalculated();
 
         return path;
@@ -124,8 +124,6 @@ public class EnvironmentUtil
 
     public static ConstantPath GetNodesWithinRange(Vector3 origin, int range)
     {
-        List<Vector3> tiles = new List<Vector3>();
-
         int gScore = CalculateGScore(range);
 
         NNConstraint constraint = new NNConstraint();
@@ -136,7 +134,7 @@ public class EnvironmentUtil
         cpath.heuristic = Heuristic.DiagonalManhattan;
         cpath.nnConstraint = constraint;
 
-        AstarPath.StartPath(cpath);
+        AstarPath.StartPath(cpath,true, true);
         cpath.BlockUntilCalculated();
 
         return cpath;
