@@ -14,13 +14,6 @@ public static partial class Constants
     public static int LAYER_WALL = LayerMask.NameToLayer("WALL");
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
 
-    public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir, int step)
-    {
-        Vector3 direction = GetDirectionVector(dir);
-
-        return origin + direction * (step * ENV_TILE_SIZE);
-    }
-
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 direction = GetDirectionVector(dir);
@@ -40,18 +33,6 @@ public static partial class Constants
         Vector3 tilePivot = new Vector3(Row * ENV_TILE_SIZE, 0, Column * ENV_TILE_SIZE);
 
         return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
-    }
-
-    public static List<Vector3[]> GetTileEdges(Vector3 origin)
-    {
-        List<Vector3[]> edges = new List<Vector3[]>();
-
-        foreach(EnvironmentDirection dir in GetCardinalDirections())
-        {
-            edges.Add(CalculateTileEdge(origin, dir));
-        }
-
-        return edges;
     }
 
     public static Vector3[] CalculateTileEdge(Vector3 origin, EnvironmentDirection dir)
@@ -197,21 +178,6 @@ public static partial class Constants
         }
     }
 
-    public static bool AreValidCoordinates(Int2 coords, int width)
-    {
-        if (coords.x < 0 || coords.y < 0)
-        {
-            return false;
-        }
-
-        if (coords.x >= width || coords.y >= width)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public static float GetDirectionMagnitude(EnvironmentDirection Direction)
     {
         if (IsCardinalDirection(Direction))
@@ -258,11 +224,6 @@ public static partial class Constants
         return Enum.GetValues(typeof(EnvironmentDirection));
     }
 
-    public static int GetDirectionCount()
-    {
-        return GetAllDirections().Length;
-    }
-
     public static List<EnvironmentDirection> GetCardinalDirections()
     {
         return new List<EnvironmentDirection>()
@@ -301,16 +262,6 @@ public static partial class Constants
         {
             return EnvironmentLayer.NONE;
         }
-    }
-
-    public static Vector3 GetTileSize()
-    {
-        return new Vector3(ENV_TILE_SIZE, 0, ENV_TILE_SIZE);
-    }
-
-    public static Vector3 GetTileScale()
-    {
-        return new Vector3(ENV_TILE_SIZE, ENV_TILE_SIZE, ENV_TILE_SIZE);
     }
 
     public static int CalculateGScore(int range)

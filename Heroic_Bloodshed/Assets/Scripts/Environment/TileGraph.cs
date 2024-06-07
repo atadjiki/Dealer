@@ -58,14 +58,19 @@ public class TileGraph : NavGraph
         return null;
     }
 
-    TileNode GetNode(int Row, int Column)
+    public bool AreValidCoordinates(Int2 coords)
     {
-        if(nodes != null)
+        if (coords.x < 0 || coords.y < 0)
         {
-            return nodes[Row * Width + Column];
+            return false;
         }
 
-        return null;
+        if (coords.x >= Width || coords.y >= Width)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     class TileGraphScanPromise : IGraphUpdatePromise
@@ -110,7 +115,7 @@ public class TileGraph : NavGraph
 
                         Int2 coords = GetNeighboringTileCoordinates(origin, dir);
 
-                        if (AreValidCoordinates(coords, graph.Width))
+                        if (graph.AreValidCoordinates(coords))
                         {
                             TileNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
 
@@ -145,7 +150,7 @@ public class TileGraph : NavGraph
 
                                 Int2 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
-                                if(AreValidCoordinates(neighborCoords, graph.Width))
+                                if(graph.AreValidCoordinates(neighborCoords))
                                 {
                                     //if we're next to cover, check if we can jump this tile
                                     TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
@@ -159,7 +164,7 @@ public class TileGraph : NavGraph
 
                                         Int2 nextCoords = CalculateTileCoordinates(nextOrigin);
 
-                                        if (AreValidCoordinates(nextCoords, graph.Width))
+                                        if (graph.AreValidCoordinates(nextCoords))
                                         {
                                             TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
 
