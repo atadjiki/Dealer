@@ -21,8 +21,8 @@ public class CharacterPathRenderer : EncounterEventHandler
         _origin = character.GetWorldLocation();
 
         _lineRenderer = GetComponent<LineRenderer>();
-        _lineRenderer.startWidth = 0.05f;
-        _lineRenderer.endWidth = 0.05f;
+        _lineRenderer.startWidth = 0.1f;
+        _lineRenderer.endWidth = 0.1f;
 
         //figure out what the range is for this character
         _rangeMap = EnvironmentUtil.GetCharacterRangeMap(character);
@@ -38,6 +38,8 @@ public class CharacterPathRenderer : EncounterEventHandler
 
     private void Update()
     {
+        if (_rangeMap == null) return;
+
         TileNode node;
         if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {

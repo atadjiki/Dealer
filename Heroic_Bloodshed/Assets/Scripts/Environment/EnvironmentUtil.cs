@@ -122,7 +122,35 @@ public class EnvironmentUtil
         return path;
     }
 
-    public static ConstantPath GetNodesWithinRange(Vector3 origin, int range)
+    public static List<Vector3> GetVectorsWithinRange(Vector3 origin, int range)
+    {
+        ConstantPath cpath = CreateConstantPath(origin, range);
+
+        List<Vector3> nodes = new List<Vector3>();
+
+        foreach (GraphNode node in cpath.allNodes)
+        {
+            nodes.Add((Vector3)node.position);
+        }
+
+        return nodes;
+    }
+
+    public static List<TileNode> GetNodesWithinRange(Vector3 origin, int range)
+    {
+        ConstantPath cpath = CreateConstantPath(origin, range);
+
+        List<TileNode> nodes = new List<TileNode>();
+
+        foreach(GraphNode node in cpath.allNodes)
+        {
+            nodes.Add((TileNode)node);
+        }
+
+        return nodes;
+    }
+
+    private static ConstantPath CreateConstantPath(Vector3 origin, int range)
     {
         int gScore = CalculateGScore(range);
 
@@ -134,7 +162,7 @@ public class EnvironmentUtil
         cpath.heuristic = Heuristic.DiagonalManhattan;
         cpath.nnConstraint = constraint;
 
-        AstarPath.StartPath(cpath,true, true);
+        AstarPath.StartPath(cpath);
         cpath.BlockUntilCalculated();
 
         return cpath;
@@ -161,8 +189,7 @@ public class EnvironmentUtil
 
     public static List<Vector3> GetCharacterVectorRadius(MovementRangeType rangeType, CharacterComponent character)
     {
-        ConstantPath path = GetNodesWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
-        return path.vectorPath;
+        return GetVectorsWithinRange(character.GetWorldLocation(), character.GetRange(rangeType));
     }
 
     public static bool IsWithinCharacterMaxRange(CharacterComponent character, Vector3 location)
