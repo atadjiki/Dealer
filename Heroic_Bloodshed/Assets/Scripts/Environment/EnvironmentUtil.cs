@@ -205,6 +205,7 @@ public class EnvironmentUtil
         {
             { MovementRangeType.HALF, GetCharacterVectorRadius(MovementRangeType.HALF, character) },
             { MovementRangeType.FULL, GetCharacterVectorRadius(MovementRangeType.FULL, character) },
+
         };
 
         foreach(MovementRangeType rangeType in map.Keys)

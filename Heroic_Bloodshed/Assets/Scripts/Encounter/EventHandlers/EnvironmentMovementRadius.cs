@@ -42,10 +42,8 @@ public class EnvironmentMovementRadius : EncounterEventHandler
             }
         }
 
-        foreach (MovementRangeType ID in _rangeMap.Keys)
-        {
-            CreateRadiusMesh(ID, _rangeMap[ID]);
-        }
+        CreateRadiusMesh(MovementRangeType.FULL, _rangeMap[MovementRangeType.FULL]);
+        CreateRadiusMesh(MovementRangeType.HALF, _rangeMap[MovementRangeType.HALF]);
     }
 
     private void CreateRadiusMesh(MovementRangeType rangeType, List<Vector3> nodes)
@@ -72,7 +70,7 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         MeshFilter[] meshFilters = container.GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
-        int i = 0;
+        int i = 1;
         while (i < meshFilters.Length)
         {
             combine[i].mesh = meshFilters[i].mesh;
@@ -89,20 +87,17 @@ public class EnvironmentMovementRadius : EncounterEventHandler
         HighlightEffect effect = container.AddComponent<HighlightEffect>();
         HighlightProfile profile = null;
 
-        if(rangeType == MovementRangeType.FULL)
+        if (rangeType == MovementRangeType.FULL)
         {
             profile = FullProfile;
         }
-        else if(rangeType == MovementRangeType.HALF)
-        {
+        else if (rangeType == MovementRangeType.HALF)
+        { 
             profile = HalfProfile;
-            effect.subMeshMask = 1;
         }
 
         effect.profile = profile;
         effect.ProfileLoad(profile);
         effect.highlighted = true;
-
-        container.SetActive(true);
     }
 }
