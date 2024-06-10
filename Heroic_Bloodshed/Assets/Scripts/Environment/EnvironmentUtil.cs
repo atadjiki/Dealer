@@ -113,11 +113,50 @@ public class EnvironmentUtil
         return path.vectorPath;
     }
 
+    //divide a path into sub-paths, occuring when a character must perform actions
+    //such as jumping over an obstacle or climbing a ladder
+    public static Queue<List<TileNode>> SubdividePath(ABPath path)
+    {
+        Queue<List<TileNode>> queue = new Queue<List<TileNode>>();
+
+        List<TileNode> nodes = ConvertGraphToTileNodes(path.path);
+
+        int processed = 0;
+
+        while(processed < nodes.Count)
+        {
+            List<TileNode> subPath = new List<TileNode>();
+
+            //march down the list and add nodes to our path unless we hit a path interrupt flag
+            for(int i = processed; i < nodes.Count; i++)
+            {
+                TileNode node = nodes[processed];
+
+                subPath.Add(node);
+                processed++;
+
+                if (node.pathInterrupt)
+                {
+                    break;
+                }
+            }
+
+           queue.Enqueue(subPath);
+            
+        }
+
+        Debug.Log("Subdivided path into " + queue.Count + " sections");
+
+        return queue;
+    }
+
     public static ABPath CalculatePath(Vector3 origin, Vector3 destination)
     {
         ABPath path = ABPath.Construct(origin, destination);
         AstarPath.StartPath(path,true, true);
         path.BlockUntilCalculated();
+
+        SubdividePath(path);
 
         return path;
     }
@@ -230,5 +269,19 @@ public class EnvironmentUtil
         info.Obstruction = PerformRaycast(origin + offset, direction, direction.magnitude);
 
         return info;
+    }
+
+    public static List<TileNode> ConvertGraphToTileNodes(List<GraphNode> graphNodes)
+    {
+        List<TileNode> tileNodes = new List<TileNode>();
+
+        foreach(GraphNode graphNode in graphNodes)
+        {
+            TileNode tileNode = (TileNode)graphNode;
+
+            tileNodes.Add(tileNode);
+        }
+
+        return tileNodes;
     }
 }

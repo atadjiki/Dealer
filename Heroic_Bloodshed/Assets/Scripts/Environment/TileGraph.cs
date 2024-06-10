@@ -170,14 +170,14 @@ public class TileGraph : NavGraph
 
                                             if (next.Walkable)
                                             {
-                                                var cost = GetDirectionCost(dir);
+                                                var cost = GetDirectionCost(dir) * 2;
 
                                                 node.AddPartialConnection(next, cost, true, true);
+                                                node.pathInterrupt = true;
+                                                next.pathInterrupt = true;
                                             }
                                         }
                                     }
-
-
                                 }
                             }
                         }
@@ -187,7 +187,6 @@ public class TileGraph : NavGraph
             }
 
             graph.nodes = nodes;
-        
         }
     }
 
