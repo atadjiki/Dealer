@@ -123,7 +123,9 @@ public class TileGraph : NavGraph
 
                             var cost = GetDirectionCost(dir);
 
-                            connections.Add(new Connection(neighbor, cost, valid, valid));
+                            Connection connection = new Connection(neighbor, cost, valid, valid);
+
+                            connections.Add(connection);
                         }
                     }
 
@@ -173,8 +175,6 @@ public class TileGraph : NavGraph
                                                 var cost = GetDirectionCost(dir) * 2;
 
                                                 node.AddPartialConnection(next, cost, true, true);
-                                                node.pathInterrupt = true;
-                                                next.pathInterrupt = true;
                                             }
                                         }
                                     }

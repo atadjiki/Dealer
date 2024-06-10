@@ -138,6 +138,11 @@ public static partial class Constants
         return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF || Layer == EnvironmentLayer.WALL);
     }
 
+    public static uint GetMaxDirectionCost()
+    {
+        return (uint)(Mathf.Sqrt(2) * 1000);
+    }
+
     public static uint GetDirectionCost(EnvironmentDirection Direction)
     {
         if(IsCardinalDirection(Direction))

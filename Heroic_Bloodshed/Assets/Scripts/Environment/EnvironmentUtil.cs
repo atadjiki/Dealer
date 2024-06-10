@@ -113,39 +113,104 @@ public class EnvironmentUtil
         return path.vectorPath;
     }
 
+    public class MovementPathInfo
+    {
+        public MovementPathType PathType;
+        public List<TileNode> Nodes;
+
+        public MovementPathInfo(List<TileNode> _nodes)
+        {
+            PathType = MovementPathType.MOVE;
+            Nodes = _nodes;
+        }
+
+        public MovementPathInfo()
+        {
+            PathType = MovementPathType.MOVE;
+            Nodes = new List<TileNode>();
+        }
+
+        public MovementPathInfo(TileNode jumpStart, TileNode jumpEnd)
+        {
+            PathType = MovementPathType.JUMP;
+            Nodes = new List<TileNode>() { jumpStart, jumpEnd };
+        }
+    }
+
+    public static MovementPathInfo FindNextSubPath(ref List<TileNode> nodes)
+    {
+        MovementPathInfo info = new MovementPathInfo();
+
+        for(int i = 0; i < nodes.Count; i++)
+        {
+            TileNode current = nodes[i];
+
+            if((i + 1) < nodes.Count)
+            {
+                TileNode next = nodes[i + 1];
+
+                uint cost;
+                if (GetCostBetweenNodes(current, next, out cost))
+                {
+                    info.Nodes.Add(current);
+
+                    if (cost > GetMaxDirectionCost())
+                    {
+                        if(i == 0)
+                        {
+                            MovementPathInfo jumpInfo = new MovementPathInfo(current, next);
+
+                            nodes.Remove(current);
+
+                            return jumpInfo;
+                        }
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                info.Nodes.Add(current);
+            }
+        }
+
+        for(int i = 0; i < info.Nodes.Count -1; i++)
+        {
+            nodes.Remove(info.Nodes[i]);
+        }
+
+        if(nodes.Count == 1)
+        {
+            nodes.Clear();
+        }
+
+        return info;
+    }
+
     //divide a path into sub-paths, occuring when a character must perform actions
     //such as jumping over an obstacle or climbing a ladder
-    public static Queue<List<TileNode>> SubdividePath(ABPath path)
+    public static Queue<MovementPathInfo> SubdividePath(ABPath path)
     {
-        Queue<List<TileNode>> queue = new Queue<List<TileNode>>();
+        Queue<MovementPathInfo> queue = new Queue<MovementPathInfo>();
 
         List<TileNode> nodes = ConvertGraphToTileNodes(path.path);
 
-        int processed = 0;
-
-        while(processed < nodes.Count)
+        while(nodes.Count > 0)
         {
-            List<TileNode> subPath = new List<TileNode>();
+            MovementPathInfo subPath = FindNextSubPath(ref nodes);
 
-            //march down the list and add nodes to our path unless we hit a path interrupt flag
-            for(int i = processed; i < nodes.Count; i++)
+            if(subPath.Nodes.Count > 1)
             {
-                TileNode node = nodes[processed];
-
-                subPath.Add(node);
-                processed++;
-
-                if (node.pathInterrupt)
-                {
-                    break;
-                }
+                queue.Enqueue(subPath);
             }
-
-           queue.Enqueue(subPath);
-            
         }
 
         Debug.Log("Subdivided path into " + queue.Count + " sections");
+
+        foreach (MovementPathInfo info in queue)
+        {
+            Debug.Log(info.PathType.ToString() + " , " + info.Nodes.Count);
+        }
 
         return queue;
     }
@@ -283,5 +348,20 @@ public class EnvironmentUtil
         }
 
         return tileNodes;
+    }
+
+    public static bool GetCostBetweenNodes(TileNode start, TileNode end, out uint cost)
+    {
+        foreach(Connection connection in start.connections)
+        {
+            if(connection.node == end)
+            {
+                cost = connection.cost;
+                return true;
+            }
+        }
+
+        cost = 0;
+        return false;
     }
 }

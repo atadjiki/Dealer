@@ -80,6 +80,13 @@ public static partial class Constants
         FULL
     }
 
+    public enum MovementPathType
+    {
+        MOVE,
+        JUMP,
+        //CLIMB
+    }
+
     //Encounter
     public enum EncounterState
     {
