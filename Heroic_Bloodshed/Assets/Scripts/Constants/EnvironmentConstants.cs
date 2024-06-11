@@ -11,7 +11,8 @@ public static partial class Constants
     public static int LAYER_GROUND = LayerMask.NameToLayer("GROUND");
     public static int LAYER_OBSTACLE_HALF = LayerMask.NameToLayer("OBSTACLE_HALF");
     public static int LAYER_OBSTACLE_FULL = LayerMask.NameToLayer("OBSTACLE_FULL");
-    public static int LAYER_WALL = LayerMask.NameToLayer("WALL");
+    public static int LAYER_WALL_HALF = LayerMask.NameToLayer("WALL_HALF");
+    public static int LAYER_WALL_FULL = LayerMask.NameToLayer("WALL_FULL");
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
 
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
@@ -130,12 +131,27 @@ public static partial class Constants
 
     public static bool IsLayerObstacle(EnvironmentLayer Layer)
     {
-        return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF);
+        switch(Layer)
+        {
+            case EnvironmentLayer.OBSTACLE_FULL:
+            case EnvironmentLayer.OBSTACLE_HALF:
+            default:
+                return false;
+        }
     }
 
     public static bool IsLayerCover(EnvironmentLayer Layer)
     {
-        return (Layer == EnvironmentLayer.OBSTACLE_FULL || Layer == EnvironmentLayer.OBSTACLE_HALF || Layer == EnvironmentLayer.WALL);
+        switch(Layer)
+        {
+            case EnvironmentLayer.OBSTACLE_FULL:
+            case EnvironmentLayer.OBSTACLE_HALF:
+            case EnvironmentLayer.WALL_FULL:
+            case EnvironmentLayer.WALL_HALF:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public static uint GetMaxDirectionCost()
@@ -210,11 +226,11 @@ public static partial class Constants
 
     public static EnvironmentCover GetCoverType(TileConnectionInfo info)
     {
-        if (info.Layer == EnvironmentLayer.OBSTACLE_HALF)
+        if (info.Layer == EnvironmentLayer.OBSTACLE_HALF || info.Layer == EnvironmentLayer.WALL_HALF)
         {
             return EnvironmentCover.HALF;
         }
-        else if (info.Layer == EnvironmentLayer.OBSTACLE_FULL || IsLayerCover(info.Obstruction))
+        else if (info.Layer == EnvironmentLayer.OBSTACLE_FULL || info.Layer == EnvironmentLayer.WALL_FULL || IsLayerCover(info.Obstruction))
         {
             return EnvironmentCover.FULL;
         }
@@ -255,9 +271,13 @@ public static partial class Constants
         {
             return EnvironmentLayer.OBSTACLE_FULL;
         }
-        else if (Layer == LAYER_WALL)
+        else if (Layer == LAYER_WALL_HALF)
         {
-            return EnvironmentLayer.WALL;
+            return EnvironmentLayer.WALL_HALF;
+        }
+        else if (Layer == LAYER_WALL_FULL)
+        {
+            return EnvironmentLayer.WALL_FULL;
         }
         else if (Layer == LAYER_CHARACTER)
         {

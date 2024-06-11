@@ -11,7 +11,8 @@ public static partial class Constants
         GROUND,
         OBSTACLE_HALF,
         OBSTACLE_FULL,
-        WALL,
+        WALL_HALF,
+        WALL_FULL,
         CHARACTER
     };
 

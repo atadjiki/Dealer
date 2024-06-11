@@ -18,7 +18,7 @@ public struct TileConnectionInfo
 
     public bool IsWallBetween()
     {
-        return Obstruction == EnvironmentLayer.WALL;
+        return (Obstruction == EnvironmentLayer.WALL_HALF || Obstruction == EnvironmentLayer.WALL_FULL);
     }
 
     public bool IsObstructed()
