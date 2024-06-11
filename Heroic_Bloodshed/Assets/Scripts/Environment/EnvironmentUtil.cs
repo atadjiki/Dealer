@@ -108,36 +108,35 @@ public class EnvironmentUtil
 
     public static List<Vector3> CalculateVectorPath(Vector3 origin, Vector3 destination)
     {
-        ABPath path = CalculatePath(origin, destination);
+        ABPath abPath = CalculatePath(origin, destination);
 
-        return path.vectorPath;
+        Queue<MovementPathInfo> pathQueue = CreatePathQueue(abPath);
+
+        List<Vector3> vectors = new List<Vector3>();
+
+        foreach (MovementPathInfo info in pathQueue)
+        {
+            if (info.PathType == MovementPathType.MOVE)
+            {
+                vectors.AddRange(info.GetVectors());
+            }
+            else if (info.PathType == MovementPathType.JUMP)
+            {
+                Vector3 start = (Vector3)info.Nodes[0].position;
+                Vector3 end = (Vector3)info.Nodes[1].position;
+                Vector3 midPoint = ((start + end) / 2) + new Vector3(0, ENV_TILE_SIZE / 2, 0);
+
+                vectors.Add(start);
+                vectors.Add(midPoint);
+                vectors.Add(end);
+
+            }
+        }
+
+        return vectors;
     }
 
-    public class MovementPathInfo
-    {
-        public MovementPathType PathType;
-        public List<TileNode> Nodes;
-
-        public MovementPathInfo(List<TileNode> _nodes)
-        {
-            PathType = MovementPathType.MOVE;
-            Nodes = _nodes;
-        }
-
-        public MovementPathInfo()
-        {
-            PathType = MovementPathType.MOVE;
-            Nodes = new List<TileNode>();
-        }
-
-        public MovementPathInfo(TileNode jumpStart, TileNode jumpEnd)
-        {
-            PathType = MovementPathType.JUMP;
-            Nodes = new List<TileNode>() { jumpStart, jumpEnd };
-        }
-    }
-
-    public static MovementPathInfo FindNextSubPath(ref List<TileNode> nodes)
+    private static MovementPathInfo FindNextSubPath(ref List<TileNode> nodes)
     {
         MovementPathInfo info = new MovementPathInfo();
 
@@ -189,7 +188,7 @@ public class EnvironmentUtil
 
     //divide a path into sub-paths, occuring when a character must perform actions
     //such as jumping over an obstacle or climbing a ladder
-    public static Queue<MovementPathInfo> SubdividePath(ABPath path)
+    public static Queue<MovementPathInfo> CreatePathQueue(ABPath path)
     {
         Queue<MovementPathInfo> queue = new Queue<MovementPathInfo>();
 
@@ -207,21 +206,21 @@ public class EnvironmentUtil
 
         Debug.Log("Subdivided path into " + queue.Count + " sections");
 
-        foreach (MovementPathInfo info in queue)
-        {
-            Debug.Log(info.PathType.ToString() + " , " + info.Nodes.Count);
-        }
+        //foreach (MovementPathInfo info in queue)
+        //{
+        //    Debug.Log(info.PathType.ToString() + " , " + info.Nodes.Count);
+        //}
 
         return queue;
     }
 
-    public static ABPath CalculatePath(Vector3 origin, Vector3 destination)
+    private static ABPath CalculatePath(Vector3 origin, Vector3 destination)
     {
         ABPath path = ABPath.Construct(origin, destination);
         AstarPath.StartPath(path,true, true);
         path.BlockUntilCalculated();
 
-        SubdividePath(path);
+        CreatePathQueue(path);
 
         return path;
     }
