@@ -173,9 +173,11 @@ public class TileGraph : NavGraph
 
                                             if (next.Walkable)
                                             {
-                                                var cost = GetDirectionCost(dir) * 2;
+                                                var cost = GetDirectionCost(dir);
 
                                                 node.AddPartialConnection(next, cost, true, true);
+
+                                                node.AddTransition(next, MovementPathType.VAULT_OBSTACLE);
                                             }
                                         }
                                     }
@@ -197,9 +199,11 @@ public class TileGraph : NavGraph
 
                                 if (neighborInfo.IsValid())
                                 {
-                                    var cost = GetDirectionCost(dir) * 2;
+                                    var cost = GetDirectionCost(dir);
 
                                     node.AddPartialConnection(neighbor, cost, true, true);
+
+                                    node.AddTransition(neighbor, MovementPathType.VAULT_WALL);
                                 }
                             }
                         }

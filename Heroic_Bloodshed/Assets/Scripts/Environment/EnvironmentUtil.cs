@@ -148,23 +148,20 @@ public class EnvironmentUtil
             {
                 TileNode next = nodes[i + 1];
 
-                uint cost;
-                if (GetCostBetweenNodes(current, next, out cost))
+                info.Nodes.Add(current);
+
+                if (current.HasTransitionTo(next))
                 {
-                    info.Nodes.Add(current);
-
-                    if (cost > GetMaxDirectionCost())
+                    if (i == 0)
                     {
-                        if(i == 0)
-                        {
-                            MovementPathInfo jumpInfo = new MovementPathInfo(current, next, MovementPathType.VAULT_WALL);
+                        MovementPathType pathType = current.GetTransiton(next);
+                        MovementPathInfo jumpInfo = new MovementPathInfo(current, next, pathType);
 
-                            nodes.Remove(current);
+                        nodes.Remove(current);
 
-                            return jumpInfo;
-                        }
-                        break;
+                        return jumpInfo;
                     }
+                    break;
                 }
             }
             else

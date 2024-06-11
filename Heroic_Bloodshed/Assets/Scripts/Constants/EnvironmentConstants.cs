@@ -154,11 +154,6 @@ public static partial class Constants
         }
     }
 
-    public static uint GetMaxDirectionCost()
-    {
-        return (uint)(Mathf.Sqrt(2) * 1000);
-    }
-
     public static uint GetDirectionCost(EnvironmentDirection Direction)
     {
         if(IsCardinalDirection(Direction))
