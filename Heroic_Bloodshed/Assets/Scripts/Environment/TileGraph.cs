@@ -144,6 +144,7 @@ public class TileGraph : NavGraph
                     {
                         TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
+                        //check for jumps over half obstacles
                         if(!info.IsWallBetween())
                         {
                             if(GetCoverType(info) == EnvironmentCover.HALF)
@@ -176,6 +177,40 @@ public class TileGraph : NavGraph
 
                                                 node.AddPartialConnection(next, cost, true, true);
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if(info.IsLayerBetween(EnvironmentLayer.WALL_HALF))
+                        {
+                            Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+
+                            Int2 neighborCoords = CalculateTileCoordinates(neighborOrigin);
+
+                            if (graph.AreValidCoordinates(neighborCoords))
+                            {
+                                //if we're next to cover, check if we can jump this tile
+                                TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
+
+                                TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
+
+                                if (neighborInfo.IsValid())
+                                {
+                                    //get the node after this node
+                                    Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
+
+                                    Int2 nextCoords = CalculateTileCoordinates(nextOrigin);
+
+                                    if (graph.AreValidCoordinates(nextCoords))
+                                    {
+                                        TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
+
+                                        if (next.Walkable)
+                                        {
+                                            var cost = GetDirectionCost(dir) * 2;
+
+                                            node.AddPartialConnection(next, cost, true, true);
                                         }
                                     }
                                 }
