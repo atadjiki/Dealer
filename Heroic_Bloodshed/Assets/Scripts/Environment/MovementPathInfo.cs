@@ -39,4 +39,14 @@ public class MovementPathInfo
 
         return vectors;
     }
+
+    public Vector3 GetStart()
+    {
+        return (Vector3)Nodes[0].position;
+    }
+
+    public Vector3 GetEnd()
+    {
+        return (Vector3)Nodes[Nodes.Count-1].position;
+    }
 }

@@ -62,7 +62,8 @@ public static partial class Constants
     public enum CharacterAnim
     {
         IDLE,
-        MOVING
+        MOVING,
+        JUMP,
     }
 
     public enum AbilityID

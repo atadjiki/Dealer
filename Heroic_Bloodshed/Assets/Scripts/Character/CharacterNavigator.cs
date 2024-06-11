@@ -10,6 +10,9 @@ public class CharacterNavigator : MonoBehaviour
     public delegate void OnDestinationReached(CharacterNavigator navigator);
     public OnDestinationReached DestinationReachedCallback;
 
+    public delegate void OnBeginMovementPath(MovementPathInfo info);
+    public OnBeginMovementPath OnBeginMovementPathCallback;
+
     private Seeker _seeker;
     private AILerp _AI;
     private bool _pathCalculated;
@@ -45,22 +48,39 @@ public class CharacterNavigator : MonoBehaviour
         _pathCalculated = false;
 
         Vector3 origin = _AI.position;
+        ABPath totalPath = ABPath.Construct(origin, destination, OnPathComplete);
+        _AI.SetPath(totalPath);
 
-        ABPath path = ABPath.Construct(origin, destination, OnPathComplete);
-        _AI.SetPath(path);
-
+        Debug.Log("Calculated total path");
         yield return new WaitUntil(() => _pathCalculated);
+        _pathCalculated = false;
 
-        Debug.Log("Starting path from   " + _AI.position + " to " + destination);
-        yield return new WaitForFixedUpdate();
 
-        _AI.canMove = true;
-        yield return new WaitUntil(() => _AI.reachedEndOfPath);
-        _AI.canMove = false;
+        foreach (MovementPathInfo info in EnvironmentUtil.CreatePathQueue(totalPath))
+        {
+            if(OnBeginMovementPathCallback != null)
+            {
+                OnBeginMovementPathCallback.Invoke(info);
+            }
 
-        Debug.Log("Reached destination");
+            ABPath subPath = ABPath.Construct(info.GetStart(), info.GetEnd(), OnPathComplete);
+            _AI.SetPath(subPath);
 
-        Teleport(destination);
+            yield return new WaitUntil(() => _pathCalculated);
+
+            Debug.Log("Starting " + info.PathType.ToString()  + " path from  " + _AI.position + " to " + destination);
+            yield return new WaitForFixedUpdate();
+
+            _AI.canMove = true;
+            yield return new WaitUntil(() => _AI.reachedEndOfPath);
+            _AI.canMove = false;
+
+            Debug.Log("completed subpath " + info.PathType.ToString());
+
+          //  Teleport(destination);
+
+            _pathCalculated = false;
+        }
 
         if (DestinationReachedCallback != null)
         {

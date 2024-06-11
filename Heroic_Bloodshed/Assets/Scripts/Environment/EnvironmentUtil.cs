@@ -204,13 +204,6 @@ public class EnvironmentUtil
             }
         }
 
-        Debug.Log("Subdivided path into " + queue.Count + " sections");
-
-        //foreach (MovementPathInfo info in queue)
-        //{
-        //    Debug.Log(info.PathType.ToString() + " , " + info.Nodes.Count);
-        //}
-
         return queue;
     }
 

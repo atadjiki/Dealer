@@ -111,6 +111,7 @@ public class CharacterComponent : MonoBehaviour
         _navigator = navigatorObject.AddComponent<CharacterNavigator>();
         yield return new WaitUntil( () => _navigator != null );
         _navigator.DestinationReachedCallback += OnDestinationReached;
+        _navigator.OnBeginMovementPathCallback += OnBeginMovementPath;
         _navigator.SetSpeed(def.MovementSpeed);
 
         //place a capsule on the character for pathfinding purposes
@@ -139,6 +140,18 @@ public class CharacterComponent : MonoBehaviour
     {
         _animator.SetAnim(CharacterAnim.IDLE);
         EnvironmentUtil.Scan();
+    }
+
+    public void OnBeginMovementPath(MovementPathInfo info)
+    {
+        if(info.PathType == MovementPathType.MOVE)
+        {
+            _animator.SetAnim(CharacterAnim.MOVING);
+        }
+        else if(info.PathType == MovementPathType.JUMP)
+        {
+            _animator.SetAnim(CharacterAnim.JUMP);
+        }
     }
 
     public void Teleport(Vector3 destination)
