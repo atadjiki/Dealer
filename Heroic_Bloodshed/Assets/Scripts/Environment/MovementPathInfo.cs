@@ -20,9 +20,9 @@ public class MovementPathInfo
         Nodes = new List<TileNode>();
     }
 
-    public MovementPathInfo(TileNode jumpStart, TileNode jumpEnd)
+    public MovementPathInfo(TileNode jumpStart, TileNode jumpEnd, MovementPathType _type)
     {
-        PathType = MovementPathType.JUMP;
+        PathType = _type;
         Nodes = new List<TileNode>() { jumpStart, jumpEnd };
     }
 

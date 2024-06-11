@@ -120,7 +120,7 @@ public class EnvironmentUtil
             {
                 vectors.AddRange(info.GetVectors());
             }
-            else if (info.PathType == MovementPathType.JUMP)
+            else if (info.PathType == MovementPathType.VAULT_OBSTACLE || info.PathType == MovementPathType.VAULT_WALL)
             {
                 Vector3 start = (Vector3)info.Nodes[0].position;
                 Vector3 end = (Vector3)info.Nodes[1].position;
@@ -157,7 +157,7 @@ public class EnvironmentUtil
                     {
                         if(i == 0)
                         {
-                            MovementPathInfo jumpInfo = new MovementPathInfo(current, next);
+                            MovementPathInfo jumpInfo = new MovementPathInfo(current, next, MovementPathType.VAULT_WALL);
 
                             nodes.Remove(current);
 

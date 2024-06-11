@@ -17,6 +17,8 @@ namespace Pathfinding
 	{
         public EnvironmentLayer layer;
 
+        private Dictionary<TileNode, MovementPathType> _transitions;
+
         public void Setup(Vector3 _position, EnvironmentLayer _layer, uint graphIndex)
         {
             // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
@@ -25,6 +27,8 @@ namespace Pathfinding
             layer = _layer;
             Tag = (uint)layer;
             Walkable = IsLayerTraversible(_layer);
+
+            _transitions = new Dictionary<TileNode, MovementPathType>();
         }
 
         public bool HasCoverInDirection(EnvironmentDirection dir)
@@ -54,6 +58,26 @@ namespace Pathfinding
             }
 
             return map;
+        }
+
+        public void AddTransition(TileNode node, MovementPathType type)
+        {
+            _transitions.Add(node, type);
+        }
+
+        public void RemoveTransition(TileNode node)
+        {
+            _transitions.Remove(node);
+        }
+
+        public bool HasTransitionTo(TileNode node)
+        {
+            return _transitions.ContainsKey(node);
+        }
+
+        public MovementPathType GetTransiton(TileNode node)
+        {
+            return _transitions[node];
         }
 
         public string GetInfo()

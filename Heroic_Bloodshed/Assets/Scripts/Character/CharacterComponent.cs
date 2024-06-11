@@ -148,9 +148,13 @@ public class CharacterComponent : MonoBehaviour
         {
             _animator.SetAnim(CharacterAnim.MOVING);
         }
-        else if(info.PathType == MovementPathType.JUMP)
+        else if(info.PathType == MovementPathType.VAULT_OBSTACLE)
         {
-            _animator.SetAnim(CharacterAnim.JUMP);
+            _animator.SetAnim(CharacterAnim.VAULT_OBSTACLE);
+        }
+        else if(info.PathType == MovementPathType.VAULT_WALL)
+        {
+            _animator.SetAnim(CharacterAnim.VAULT_WALL);
         }
     }
 

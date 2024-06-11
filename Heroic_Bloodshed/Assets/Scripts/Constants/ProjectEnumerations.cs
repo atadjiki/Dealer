@@ -64,7 +64,8 @@ public static partial class Constants
     {
         IDLE,
         MOVING,
-        JUMP,
+        VAULT_OBSTACLE,
+        VAULT_WALL,
     }
 
     public enum AbilityID
@@ -85,8 +86,8 @@ public static partial class Constants
     public enum MovementPathType
     {
         MOVE,
-        JUMP,
-        //CLIMB
+        VAULT_OBSTACLE,
+        VAULT_WALL,
     }
 
     //Encounter
@@ -129,14 +130,4 @@ public static partial class Constants
         Ally,
         None,
     }
-
-    public enum MaterialID 
-    { 
-        NONE, 
-        TILE_SELECTOR, 
-        DEST_HIGHLIGHT, 
-        PATH_DISPLAY, 
-        CHAR_SELECT, 
-        MOVE_RADIUS 
-    };
 }
