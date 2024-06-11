@@ -190,29 +190,16 @@ public class TileGraph : NavGraph
 
                             if (graph.AreValidCoordinates(neighborCoords))
                             {
-                                //if we're next to cover, check if we can jump this tile
+                                //if the tile over this wall is walkable, we can jump it
                                 TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
 
                                 TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
 
                                 if (neighborInfo.IsValid())
                                 {
-                                    //get the node after this node
-                                    Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
+                                    var cost = GetDirectionCost(dir) * 2;
 
-                                    Int2 nextCoords = CalculateTileCoordinates(nextOrigin);
-
-                                    if (graph.AreValidCoordinates(nextCoords))
-                                    {
-                                        TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
-
-                                        if (next.Walkable)
-                                        {
-                                            var cost = GetDirectionCost(dir) * 2;
-
-                                            node.AddPartialConnection(next, cost, true, true);
-                                        }
-                                    }
+                                    node.AddPartialConnection(neighbor, cost, true, true);
                                 }
                             }
                         }
