@@ -26,7 +26,7 @@ public class EnvironmentUtil
     //Raycasting
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
     {
-        Vector3 offset = new Vector3(0, ENV_TILE_SIZE*2, 0);
+        Vector3 offset = new Vector3(0, ENV_TILE_SIZE*3, 0);
 
         return PerformRaycast(origin + offset, Vector3.down, offset.magnitude);
     }

@@ -187,6 +187,8 @@ public static partial class Constants
             case EnvironmentLayer.CHARACTER:
             case EnvironmentLayer.OBSTACLE_HALF:
             case EnvironmentLayer.OBSTACLE_FULL:
+            case EnvironmentLayer.WALL_FULL:
+            case EnvironmentLayer.WALL_HALF:
             case EnvironmentLayer.NONE:
                 return false;
             default:
