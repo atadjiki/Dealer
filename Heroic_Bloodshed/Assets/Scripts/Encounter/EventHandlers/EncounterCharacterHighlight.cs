@@ -14,7 +14,7 @@ public class EncounterCharacterHighlight : EncounterEventHandler
 
     protected override void OnStateChangedCallback(EncounterStateData state)
     {
-        if (state.GetCurrentState() == EncounterState.DESELECT_CURRENT_CHARACTER)
+        if (state.GetCurrentState() == EncounterState.PERFORM_ACTION)
         {
             Destroy(this.gameObject);
         }

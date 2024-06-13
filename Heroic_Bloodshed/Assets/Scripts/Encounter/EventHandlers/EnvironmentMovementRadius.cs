@@ -15,9 +15,9 @@ public class EnvironmentMovementRadius : EncounterEventHandler
 
     private Dictionary<MovementRangeType, List<Vector3>> _rangeMap;
 
-    protected override void OnAwake()
+    protected override void OnStart()
     {
-        base.OnAwake();
+        base.OnStart();
     }
 
     protected override void OnStateChangedCallback(EncounterStateData stateData)

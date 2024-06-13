@@ -8,9 +8,9 @@ public class EnvironmentTileSelector : EncounterEventHandler
 {
     [SerializeField] private GameObject Quad;
 
-    protected override void OnAwake()
+    protected override void OnStart()
     {
-        base.OnAwake();
+        base.OnStart();
 
         Quad.SetActive(false);
     }

@@ -5,9 +5,9 @@ using static Constants;
 
 public class EncounterEventHandler : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
-        OnAwake();
+        OnStart();
     }
 
     private void OnDestroy()
@@ -15,7 +15,7 @@ public class EncounterEventHandler : MonoBehaviour
         Dispose();
     }
 
-    protected virtual void OnAwake()
+    protected virtual void OnStart()
     {
         EncounterStateData.OnStateChanged += OnStateChangedCallback;
     }
