@@ -34,7 +34,7 @@ MonoBehaviour:
   injectionPoint: 600
   requirements: 4
   passIndex: 0
---- !u!114 &-4246629338928412214
+--- !u!114 &-811534112661976818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,9 +53,9 @@ MonoBehaviour:
     AfterOpaque: 0
     Source: 1
     NormalSamples: 1
-    Intensity: 3
+    Intensity: 0.5
     DirectLightingStrength: 0.25
-    Radius: 0.035
+    Radius: 1
     Samples: 1
     BlurQuality: 0
     Falloff: 100
@@ -101,10 +101,10 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 2800000, guid: 24ec0e140fb444a44ab96ee80844e18e,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -4246629338928412214}
   - {fileID: -5476184157665015936}
   - {fileID: -4615571795703350416}
-  m_RendererFeatureMap: ca896ba81df110c58047c1cd85af00b4703bcaf9e731f2bf
+  - {fileID: -811534112661976818}
+  m_RendererFeatureMap: 8047c1cd85af00b4703bcaf9e731f2bf0ec9ab3306dabcf4
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -143,7 +143,7 @@ MonoBehaviour:
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
-  m_DepthPrimingMode: 0
+  m_DepthPrimingMode: 1
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0

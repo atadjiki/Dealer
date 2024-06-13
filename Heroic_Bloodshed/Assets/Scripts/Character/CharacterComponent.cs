@@ -83,7 +83,7 @@ public struct CharacterStateData
     }
 }
 
-public class CharacterComponent : MonoBehaviour
+public class CharacterComponent : MonoBehaviour, ICharacterEventHandler
 {
     private CharacterID _ID;
 
@@ -94,6 +94,8 @@ public class CharacterComponent : MonoBehaviour
     private CharacterModel _model;
 
     private CharacterStateData _state;
+
+    private List<ICharacterEventHandler> _eventHandlers;
 
     //construct the character using their defined data
     public IEnumerator Coroutine_Setup(CharacterDefinition def)
@@ -128,34 +130,56 @@ public class CharacterComponent : MonoBehaviour
         _animator = modelObject.GetComponent<CharacterAnimator>();
         yield return new WaitUntil(() => _animator != null);
 
+        _eventHandlers = new List<ICharacterEventHandler>();
+
+        foreach(ICharacterEventHandler eventHandler in GetComponentsInChildren<ICharacterEventHandler>())
+        {
+            _eventHandlers.Add(eventHandler);
+        }
+
+        _eventHandlers.Remove(this);
+
         yield return null;
     }
 
     private void OnDestroy()
     {
         _navigator.DestinationReachedCallback -= OnDestinationReached;
+        _navigator.OnBeginMovementPathCallback -= OnBeginMovementPath;
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent, object eventData = null)
+    {
+        switch(characterEvent)
+        {
+            case CharacterEvent.SELECTED:
+                _graphCollider.enabled = false;
+                break;
+            case CharacterEvent.DESELECTED:
+                _graphCollider.enabled = true;
+                break;
+            case CharacterEvent.DESTINATION_REACHED:
+                EnvironmentUtil.Scan();
+                break;
+            default:
+                break;
+        }
+
+        //broadcast the event to children
+        foreach(ICharacterEventHandler eventHandler in _eventHandlers)
+        {
+            eventHandler.HandleEvent(characterEvent, eventData);
+        }
     }
 
     public void OnDestinationReached(CharacterNavigator navigator)
     {
-        _animator.SetAnim(CharacterAnim.IDLE);
-        EnvironmentUtil.Scan();
+        HandleEvent(CharacterEvent.DESTINATION_REACHED, navigator);
     }
 
     public void OnBeginMovementPath(MovementPathInfo info)
     {
-        if(info.PathType == MovementPathType.MOVE)
-        {
-            _animator.SetAnim(CharacterAnim.MOVING);
-        }
-        else if(info.PathType == MovementPathType.VAULT_OBSTACLE)
-        {
-            _animator.SetAnim(CharacterAnim.VAULT_OBSTACLE);
-        }
-        else if(info.PathType == MovementPathType.VAULT_WALL)
-        {
-            _animator.SetAnim(CharacterAnim.VAULT_WALL);
-        }
+        HandleEvent(CharacterEvent.MOVEMENT_BEGIN, info);
     }
 
     public void Teleport(Vector3 destination)
@@ -270,18 +294,6 @@ public class CharacterComponent : MonoBehaviour
         return _ID;
     }
 
-    public void OnSelected()
-    {
-        _model.ToggleHighlighted(true);
-        _graphCollider.enabled = false;
-    }
-
-    public void OnDeselected()
-    {
-        _model.ToggleHighlighted(false);
-        _graphCollider.enabled = true;
-    }
-
     public IEnumerator Coroutine_PerformAbility()
     {
         yield return Coroutine_PerformAbility(GetActiveAbility());
@@ -312,8 +324,8 @@ public class CharacterComponent : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
 
-        //TODO HandleEvent(CharacterEvent.MOVING);
-        _animator.SetAnim(CharacterAnim.MOVING);
+        ////TODO HandleEvent(CharacterEvent.MOVING);
+        //_animator.SetAnim(CharacterAnim.MOVING);
 
         yield return _navigator.Coroutine_MoveTo(_state.ActiveDestination);
 

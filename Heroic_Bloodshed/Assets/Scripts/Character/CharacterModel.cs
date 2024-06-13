@@ -5,7 +5,7 @@ using HighlightPlus;
 using static Constants;
 
 [RequireComponent(typeof(HighlightEffect))]
-public class CharacterModel : MonoBehaviour
+public class CharacterModel : MonoBehaviour, ICharacterEventHandler
 {
     [SerializeField] private List<GameObject> Meshes;
 
@@ -53,6 +53,19 @@ public class CharacterModel : MonoBehaviour
         foreach(GameObject mesh in Meshes)
         {
             mesh.SetActive(flag);
+        }
+    }
+
+    public void HandleEvent(CharacterEvent characterEvent, object eventData)
+    {
+        switch(characterEvent)
+        {
+            case CharacterEvent.SELECTED:
+                ToggleHighlighted(true);
+                break;
+            case CharacterEvent.DESELECTED:
+                ToggleHighlighted(true);
+                break;
         }
     }
 }

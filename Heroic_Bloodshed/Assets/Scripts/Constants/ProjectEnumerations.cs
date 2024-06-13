@@ -35,6 +35,20 @@ public static partial class Constants
         FULL
     };
 
+    public enum MovementRangeType
+    {
+        NONE,
+        HALF,
+        FULL
+    }
+
+    public enum MovementPathType
+    {
+        MOVE,
+        VAULT_OBSTACLE,
+        VAULT_WALL,
+    }
+
     //Character
 
     public enum TeamID
@@ -49,6 +63,16 @@ public static partial class Constants
         DEBUGBERT, //the default blue skeleton from Mixamo!
 
         ENEMYBERT,
+    }
+
+    public enum CharacterEvent
+    {
+        SELECTED,
+        DESELECTED,
+
+        DESTINATION_REACHED,
+
+        MOVEMENT_BEGIN,
     }
 
     public enum ModelID
@@ -74,20 +98,6 @@ public static partial class Constants
         MOVE_HALF,
         MOVE_FULL,
         FIRE_WEAPON,
-    }
-
-    public enum MovementRangeType
-    {
-        NONE,
-        HALF,
-        FULL
-    }
-
-    public enum MovementPathType
-    {
-        MOVE,
-        VAULT_OBSTACLE,
-        VAULT_WALL,
     }
 
     //Encounter

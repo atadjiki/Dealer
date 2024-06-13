@@ -145,7 +145,8 @@ public class EncounterStateMachine: MonoBehaviour
 
                 if (currentCharacter.IsAlive())
                 {
-                    currentCharacter.OnSelected();
+                    currentCharacter.HandleEvent(CharacterEvent.SELECTED);
+
                     EnvironmentUtil.Scan();
 
                     CameraRig.Instance.Follow(currentCharacter);
@@ -167,7 +168,7 @@ public class EncounterStateMachine: MonoBehaviour
 
                 CharacterComponent currentCharacter = _data.GetCurrentCharacter();
 
-                currentCharacter.OnDeselected();
+                currentCharacter.HandleEvent(CharacterEvent.DESELECTED);
 
                 break;
             }
