@@ -17,6 +17,8 @@ public class TileGraph : NavGraph
 {
     [JsonMember] public int Width = 12;
 
+    [JsonMember] public MovementPathType AllowedMovementTypes = MovementPathType.MOVE | MovementPathType.VAULT_OBSTACLE | MovementPathType.VAULT_WALL;
+
     [JsonMember] public bool ShowConnections = true;
     [JsonMember] public bool ShowLayers = true;
     [JsonMember] public bool ShowCover = true;
@@ -119,7 +121,7 @@ public class TileGraph : NavGraph
                         {
                             TileNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
 
-                            bool valid = info.IsValid();
+                            bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
 
                             var cost = GetDirectionCost(dir);
 
@@ -145,7 +147,7 @@ public class TileGraph : NavGraph
                         TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
                         //check for jumps over half obstacles
-                        if(!info.IsWallBetween())
+                        if(!info.IsWallBetween() && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_OBSTACLE))
                         {
                             if(GetCoverType(info) == EnvironmentCover.HALF)
                             {
@@ -184,7 +186,7 @@ public class TileGraph : NavGraph
                                 }
                             }
                         }
-                        else if(info.IsLayerBetween(EnvironmentLayer.WALL_HALF))
+                        else if(info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_WALL))
                         {
                             Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 

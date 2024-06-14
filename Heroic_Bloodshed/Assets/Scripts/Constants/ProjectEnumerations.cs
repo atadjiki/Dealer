@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,11 +43,12 @@ public static partial class Constants
         FULL
     }
 
-    public enum MovementPathType
+    [Flags] public enum MovementPathType
     {
-        MOVE,
-        VAULT_OBSTACLE,
-        VAULT_WALL,
+        NONE = 0,
+        MOVE = 1 << 0,
+        VAULT_OBSTACLE = 1 << 1,
+        VAULT_WALL = 1 << 2,
     }
 
     //Character
