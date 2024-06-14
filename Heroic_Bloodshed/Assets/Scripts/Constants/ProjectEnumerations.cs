@@ -65,6 +65,10 @@ public static partial class Constants
         DEBUGBERT, //the default blue skeleton from Mixamo!
 
         ENEMYBERT,
+
+        AGENT,
+
+        HENCHMAN,
     }
 
     public enum CharacterEvent

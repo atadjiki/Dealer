@@ -120,6 +120,11 @@ public struct EncounterStateData
 
     public bool IsTeamDead(TeamID team)
     {
+        if(CharacterMap.ContainsKey(team) == false)
+        {
+            return false;
+        }
+
         if(CharacterMap[team].Count == 0)
         {
             return false;
