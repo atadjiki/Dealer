@@ -290,4 +290,9 @@ public static partial class Constants
     {
         return range * 1000;
     }
+
+    public static int Flatten(int x, int y, int z, int width, int depth)
+    {
+        return x + width * (y + depth * z);
+    }
 }
