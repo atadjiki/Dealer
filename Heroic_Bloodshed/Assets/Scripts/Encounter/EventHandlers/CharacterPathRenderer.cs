@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using CurveLib.Curves;
 using static Constants;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -9,6 +10,10 @@ public class CharacterPathRenderer : EncounterEventHandler
 {
     [Header("Color Library")]
     [SerializeField] private ColorLibrary ColorLib;
+
+    [Header("Curve Params")]
+    [SerializeField] private float Tension = 0.5f;
+    [SerializeField] private SplineType Type;
 
     private LineRenderer _lineRenderer;
 
@@ -21,8 +26,8 @@ public class CharacterPathRenderer : EncounterEventHandler
         _origin = character.GetWorldLocation();
 
         _lineRenderer = GetComponent<LineRenderer>();
-        _lineRenderer.startWidth = 0.1f;
-        _lineRenderer.endWidth = 0.1f;
+        _lineRenderer.startWidth = 0.05f;
+        _lineRenderer.endWidth = 0.05f;
 
         //figure out what the range is for this character
         _rangeMap = EnvironmentUtil.GetCharacterRangeMap(character);
@@ -49,10 +54,14 @@ public class CharacterPathRenderer : EncounterEventHandler
             {
                 Vector3 destination = (Vector3)node.position;
 
-                List<Vector3> vectors = EnvironmentUtil.CalculateVectorPath(_origin, destination);
+                HashSet<Vector3> vectorSet = new HashSet<Vector3>(EnvironmentUtil.CalculateVectorPath(_origin, destination));
 
-                _lineRenderer.positionCount = vectors.Count;
-                _lineRenderer.SetPositions(vectors.ToArray());
+                var curve = new SplineCurve(new List<Vector3>(vectorSet).ToArray(), false, SplineType.Centripetal, Tension);
+
+                var len = curve.GetLength();
+                var ps = curve.GetPoints((int)(len * 4));
+                _lineRenderer.positionCount = ps.Length;
+                _lineRenderer.SetPositions(ps);
 
                 _lineRenderer.material.color = ColorLib.Get(rangeType);
 
