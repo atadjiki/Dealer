@@ -22,7 +22,7 @@ public static partial class Constants
         return origin + direction;
     }
 
-    public static Int2 GetNeighboringTileCoordinates(Vector3 origin, EnvironmentDirection dir)
+    public static Int3 GetNeighboringTileCoordinates(Vector3 origin, EnvironmentDirection dir)
     {
         Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
@@ -120,13 +120,14 @@ public static partial class Constants
         return vector *= GetDirectionMagnitude(Direction);
     }
 
-    public static Int2 CalculateTileCoordinates(Vector3 origin)
+    //ROW, COL, LEVEL
+    public static Int3 CalculateTileCoordinates(Vector3 origin)
     {
         origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
 
         origin /= ENV_TILE_SIZE;
 
-        return new Int2((int)origin.x, (int)origin.z);
+        return new Int3((int)origin.x, (int)origin.z, (int)origin.y);
     }
 
     public static bool IsLayerObstacle(EnvironmentLayer Layer)

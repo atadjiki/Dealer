@@ -16,6 +16,7 @@ using Unity.Jobs;
 public class TileGraph : NavGraph
 {
     [JsonMember] public int Width = 12;
+    [JsonMember] public int Levels = 1;
 
     [JsonMember] public MovementPathType AllowedMovementTypes = MovementPathType.MOVE | MovementPathType.VAULT_OBSTACLE | MovementPathType.VAULT_WALL;
 
@@ -60,7 +61,7 @@ public class TileGraph : NavGraph
         return null;
     }
 
-    public bool AreValidCoordinates(Int2 coords)
+    public bool AreValidCoordinates(Int3 coords)
     {
         if (coords.x < 0 || coords.y < 0)
         {
@@ -86,7 +87,7 @@ public class TileGraph : NavGraph
             // Destroy previous nodes (if any)
             graph.DestroyAllNodes();
 
-            int totalSize = graph.Width * graph.Width;
+            int totalSize = graph.Width * graph.Width * graph.Levels;
 
             //allocate our nodes
             TileNode[] nodes = new TileNode[totalSize];
@@ -94,45 +95,48 @@ public class TileGraph : NavGraph
             job.Complete();
 
             //iterate through each tile and connect them
-            for (int Row = 0; Row < graph.Width; Row++)
+            for(int Level = 0; Level < graph.Levels; Level++)
             {
-                for (int Column = 0; Column < graph.Width; Column++)
+                for (int Row = 0; Row < graph.Width; Row++)
                 {
-                    Vector3 origin = CalculateTileOrigin(Row, Column);
-
-                    EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
-
-                    TileNode node = nodes[(Row * graph.Width) + Column];
-                    node.Setup(origin, layer, graph.graphIndex);
-
-                    List<Connection> connections = new List<Connection>();
-
-                    foreach (EnvironmentDirection dir in GetAllDirections())
+                    for (int Column = 0; Column < graph.Width; Column++)
                     {
-                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+                        Vector3 origin = CalculateTileOrigin(Row, Column);
 
-                        Vector3 direction = GetDirectionVector(dir) / 2;
+                        EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+                        TileNode node = nodes[Flatten(Row, Level, Column, graph.Width, graph.Levels)];
+                        node.Setup(origin, layer, graph.graphIndex);
 
-                        Int2 coords = GetNeighboringTileCoordinates(origin, dir);
+                        List<Connection> connections = new List<Connection>();
 
-                        if (graph.AreValidCoordinates(coords))
+                        foreach (EnvironmentDirection dir in GetAllDirections())
                         {
-                            TileNode neighbor = nodes[(coords.x * graph.Width) + coords.y];
+                            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
-                            bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
+                            Vector3 direction = GetDirectionVector(dir) / 2;
 
-                            var cost = GetDirectionCost(dir);
+                            Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-                            Connection connection = new Connection(neighbor, cost, valid, valid);
+                            Int3 coords = GetNeighboringTileCoordinates(origin, dir);
 
-                            connections.Add(connection);
+                            if (graph.AreValidCoordinates(coords))
+                            {
+                                TileNode neighbor = nodes[Flatten(coords.x, Level, coords.y, graph.Width, graph.Levels)];
+
+                                bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
+
+                                uint cost = GetDirectionCost(dir);
+
+                                Connection connection = new Connection(neighbor, cost, valid, valid);
+
+                                connections.Add(connection);
+                            }
                         }
-                    }
 
-                    //Debug.Log("Node[" + Row + "][" + Column + "]    " + connections.Count + " connections");
-                    node.connections = connections.ToArray();
+                        //Debug.Log("Node[" + Row + "][" + Column + "]    " + connections.Count + " connections");
+                        node.connections = connections.ToArray();
+                    }
                 }
             }
 
@@ -153,12 +157,13 @@ public class TileGraph : NavGraph
                             {
                                 Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-                                Int2 neighborCoords = CalculateTileCoordinates(neighborOrigin);
+                                Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
                                 if(graph.AreValidCoordinates(neighborCoords))
                                 {
                                     //if we're next to cover, check if we can jump this tile
-                                    TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
+                                    TileNode neighbor = nodes[Flatten(neighborCoords.x, 0, neighborCoords.y, graph.Width, graph.Levels)];
+                                    //TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
 
                                     TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
 
@@ -167,11 +172,12 @@ public class TileGraph : NavGraph
                                         //get the node after this node
                                         Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
 
-                                        Int2 nextCoords = CalculateTileCoordinates(nextOrigin);
+                                        Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
 
                                         if (graph.AreValidCoordinates(nextCoords))
                                         {
-                                            TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
+                                            TileNode next = nodes[Flatten(nextCoords.x, 0, nextCoords.y, graph.Width, graph.Levels)];
+                                           // TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
 
                                             if (next.Walkable)
                                             {
@@ -190,12 +196,13 @@ public class TileGraph : NavGraph
                         {
                             Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-                            Int2 neighborCoords = CalculateTileCoordinates(neighborOrigin);
+                            Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
                             if (graph.AreValidCoordinates(neighborCoords))
                             {
                                 //if the tile over this wall is walkable, we can jump it
-                                TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
+                                TileNode neighbor = nodes[Flatten(neighborCoords.x, 0, neighborCoords.y, graph.Width, graph.Levels)];
+                                //TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
 
                                 TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
 
