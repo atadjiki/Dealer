@@ -26,8 +26,6 @@ public class CharacterPathRenderer : EncounterEventHandler
         _origin = character.GetWorldLocation();
 
         _lineRenderer = GetComponent<LineRenderer>();
-        _lineRenderer.startWidth = 0.05f;
-        _lineRenderer.endWidth = 0.05f;
 
         //figure out what the range is for this character
         _rangeMap = EnvironmentUtil.GetCharacterRangeMap(character);
@@ -56,16 +54,19 @@ public class CharacterPathRenderer : EncounterEventHandler
 
                 HashSet<Vector3> vectorSet = new HashSet<Vector3>(EnvironmentUtil.CalculateVectorPath(_origin, destination));
 
-                var curve = new SplineCurve(new List<Vector3>(vectorSet).ToArray(), false, SplineType.Centripetal, Tension);
+                if(vectorSet.Count > 0)
+                {
+                    SplineCurve curve = new SplineCurve(new List<Vector3>(vectorSet).ToArray(), false, SplineType.Centripetal, Tension);
 
-                var len = curve.GetLength();
-                var ps = curve.GetPoints((int)(len * 4));
-                _lineRenderer.positionCount = ps.Length;
-                _lineRenderer.SetPositions(ps);
+                    float length = curve.GetLength();
+                    Vector3[] points = curve.GetPoints((int)(length * 4));
 
-                _lineRenderer.material.color = ColorLib.Get(rangeType);
+                    _lineRenderer.positionCount = points.Length;
+                    _lineRenderer.SetPositions(points);
+                    _lineRenderer.material.color = ColorLib.Get(rangeType);
 
-                return;
+                    return;
+                }
             }
         }
 

@@ -12,8 +12,12 @@ public class EncounterUtil : MonoBehaviour
 
         GameObject gameObject = Instantiate<GameObject>(ResourceUtil.GetCharacterHighlight());
 
-        gameObject.transform.parent = character.GetModel().transform;
+        gameObject.transform.parent = character.GetNavigator().transform;
         gameObject.transform.localPosition = Vector3.zero;
+
+        EncounterCharacterHighlight characterHighlight = gameObject.GetComponent<EncounterCharacterHighlight>();
+
+        characterHighlight.Setup(character);
 
         return gameObject;
 

@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7719420250377463028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052a0051f28380a49905d797cf6fd45d, type: 3}
+  m_Name: MKToonPerObjectOutlines
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &-5476184157665015936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +101,8 @@ MonoBehaviour:
   - {fileID: 1499032578694506656}
   - {fileID: -4960200931257798133}
   - {fileID: 2311319842285613198}
-  m_RendererFeatureMap: 8047c1cd85af00b4703bcaf9e731f2bfa0e8d22730a2cd140b32d18588d329bb8ef0be9126751320
+  - {fileID: -7719420250377463028}
+  m_RendererFeatureMap: 8047c1cd85af00b4703bcaf9e731f2bfa0e8d22730a2cd140b32d18588d329bb8ef0be91267513200c5b4b782e1cdf94
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}

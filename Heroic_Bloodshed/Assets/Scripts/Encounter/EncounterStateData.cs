@@ -156,7 +156,7 @@ public struct EncounterStateData
     {
         CharacterComponent currentCharacter = GetCurrentCharacter();
 
-        return GetTeam(currentCharacter);
+        return currentCharacter.GetTeam();
     }
 
     public static EncounterStateData Build()
