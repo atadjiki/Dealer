@@ -52,15 +52,12 @@ public class ResourceUtil : MonoBehaviour
 
     public static List<CharacterDefinition> GetAllCharacterDefinition()
     {
-        Debug.Log("Loading All Character Data ");
-
         return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/Character"));
     }
 
     //Encounter Setup Data
     public static List<CharacterDefinition> GetAllEncounterSetupData()
     {
-        Debug.Log("Loading All Encounter Setup Data");
         return new List<CharacterDefinition>(Resources.LoadAll<CharacterDefinition>("Data/EncounterSetup"));
     }
 }

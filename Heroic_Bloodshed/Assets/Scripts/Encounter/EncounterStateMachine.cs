@@ -99,8 +99,6 @@ public class EncounterStateMachine: MonoBehaviour
 
         EncounterState state = _data.GetCurrentState();
 
-        Debug.Log("StateMachineCallback " + state);
-
         switch (state)
         {
             case EncounterState.SETUP_START:

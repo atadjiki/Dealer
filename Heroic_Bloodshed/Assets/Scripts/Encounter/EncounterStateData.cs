@@ -64,38 +64,56 @@ public struct EncounterStateData
     {
         Timeline.Clear();
 
-        Dictionary<TeamID, Queue<CharacterComponent>> teamQueues = new Dictionary<TeamID, Queue<CharacterComponent>>();
+        //make a queue for each character on the player team
+        List<Queue<CharacterComponent>> subQueues = new List<Queue<CharacterComponent>>();
 
-        int Total = 0;
-
-        //make a temporary queue for each team
-        foreach (TeamID team in CharacterMap.Keys)
+        foreach(CharacterComponent character in GetCharactersInTeam(TeamID.PLAYER))
         {
-            teamQueues.Add(team, new Queue<CharacterComponent>());
-        }
-
-        //add eligible characters
-        foreach(TeamID team in CharacterMap.Keys)
-        {
-            foreach(CharacterComponent character in CharacterMap[team])
+            if(character.IsAlive())
             {
-                if(character.IsAlive())
-                {
-                    teamQueues[team].Enqueue(character);
-                    Total++;
-                }
+                Queue<CharacterComponent> subQueue = new Queue<CharacterComponent>();
+                subQueue.Enqueue(character);
+                subQueues.Add(subQueue);
             }
         }
 
-        //take turns popping into the main queue until we're all done
-        while(Timeline.Count < Total)
+        Debug.Log("Gathered " + subQueues.Count + " players");
+
+        List<CharacterComponent> enemies = new List<CharacterComponent>();
+        foreach(CharacterComponent enemy in GetCharactersInTeam(TeamID.ENEMY))
         {
-            foreach(TeamID team in teamQueues.Keys)
+            if(enemy.IsAlive())
             {
-                if(teamQueues[team].Count > 0)
+                enemies.Add(enemy);
+            }
+        }
+
+        Debug.Log("Gathered " + enemies.Count + " enemies");
+
+        int placed = 0;
+        //iterate through the player subqueus and add enemies to them until we run out
+        while (placed < enemies.Count)
+        {
+            for(int i = 0; i < subQueues.Count; i++)
+            {
+                if(placed == enemies.Count)
                 {
-                    Timeline.Enqueue(teamQueues[team].Dequeue());
+                    break;
                 }
+
+                CharacterComponent enemy = enemies[placed];
+
+                subQueues[i].Enqueue(enemy);
+                placed++;
+            }
+        }
+
+        //join the subqueues to create the timelines
+        foreach(Queue<CharacterComponent> subQueue in subQueues)
+        {
+            foreach(CharacterComponent character in subQueue)
+            {
+                Timeline.Enqueue(character);
             }
         }
 
