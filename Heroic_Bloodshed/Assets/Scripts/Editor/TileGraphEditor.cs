@@ -15,6 +15,7 @@ public class TileGraphEditor : GraphEditor
         EditorGUILayout.Space();
 
         graph.Width = EditorGUILayout.IntField("Width", graph.Width);
+        graph.Levels = EditorGUILayout.IntField("Levels", graph.Levels);
 
         EditorGUILayout.PrefixLabel("Gizmo Settings:");
         EditorGUILayout.Space();
