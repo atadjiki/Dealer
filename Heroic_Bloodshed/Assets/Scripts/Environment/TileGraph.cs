@@ -81,7 +81,7 @@ public class TileGraph : NavGraph
         public TileGraph graph;
 
         // In this method you may run async calculations required for updating the graph.
-        public IEnumerator<Unity.Jobs.JobHandle> Prepare() => null;
+        public IEnumerator<JobHandle> Prepare() => null;
         public void Apply(IGraphUpdateContext ctx)
         {
             // Destroy previous nodes (if any)
@@ -95,7 +95,7 @@ public class TileGraph : NavGraph
             job.Complete();
 
             //iterate through each tile and connect them
-            for(int Level = 0; Level < graph.Levels; Level++)
+            for (int Level = 0; Level < graph.Levels; Level++)
             {
                 for (int Row = 0; Row < graph.Width; Row++)
                 {
@@ -134,90 +134,94 @@ public class TileGraph : NavGraph
                             }
                         }
 
-                        //Debug.Log("Node[" + Row + "][" + Column + "]    " + connections.Count + " connections");
                         node.connections = connections.ToArray();
                     }
                 }
             }
 
             //now iterate again so we can find jumps over obstacles
-            foreach(TileNode node in nodes)
+            for (int Level = 0; Level < graph.Levels; Level++)
             {
-                if(node.Walkable)
+                for (int Row = 0; Row < graph.Width; Row++)
                 {
-                    Vector3 origin = (Vector3)node.position;
-                    foreach (EnvironmentDirection dir in GetCardinalDirections())
+                    for (int Column = 0; Column < graph.Width; Column++)
                     {
-                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+                        TileNode node = nodes[Flatten(Row, Level, Column, graph.Width, graph.Levels)];
 
-                        //check for jumps over half obstacles
-                        if(!info.IsWallBetween() && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_OBSTACLE))
+                        if (node.Walkable)
                         {
-                            if(GetCoverType(info) == EnvironmentCover.HALF)
+                            Vector3 origin = (Vector3)node.position;
+                            foreach (EnvironmentDirection dir in GetCardinalDirections())
                             {
-                                Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+                                TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
-                                Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
-
-                                if(graph.AreValidCoordinates(neighborCoords))
+                                //check for jumps over half obstacles
+                                if (!info.IsWallBetween() && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_OBSTACLE))
                                 {
-                                    //if we're next to cover, check if we can jump this tile
-                                    TileNode neighbor = nodes[Flatten(neighborCoords.x, 0, neighborCoords.y, graph.Width, graph.Levels)];
-                                    //TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
-
-                                    TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
-
-                                    if(neighborInfo.IsValid())
+                                    if (GetCoverType(info) == EnvironmentCover.HALF)
                                     {
-                                        //get the node after this node
-                                        Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
+                                        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-                                        Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
+                                        Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
-                                        if (graph.AreValidCoordinates(nextCoords))
+                                        if (graph.AreValidCoordinates(neighborCoords))
                                         {
-                                            TileNode next = nodes[Flatten(nextCoords.x, 0, nextCoords.y, graph.Width, graph.Levels)];
-                                           // TileNode next = nodes[(nextCoords.x * graph.Width) + nextCoords.y];
+                                            //if we're next to cover, check if we can jump this tile
+                                            TileNode neighbor = nodes[Flatten(neighborCoords.x, Level, neighborCoords.y, graph.Width, graph.Levels)];
 
-                                            if (next.Walkable)
+                                            TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
+
+                                            if (neighborInfo.IsValid())
                                             {
-                                                var cost = GetDirectionCost(dir);
+                                                //get the node after this node
+                                                Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
 
-                                                node.AddPartialConnection(next, cost, true, true);
+                                                Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
 
-                                                node.AddTransition(next, MovementPathType.VAULT_OBSTACLE);
+                                                if (graph.AreValidCoordinates(nextCoords))
+                                                {
+                                                    TileNode next = nodes[Flatten(nextCoords.x, Level, nextCoords.y, graph.Width, graph.Levels)];
+
+                                                    if (next.Walkable)
+                                                    {
+                                                        var cost = GetDirectionCost(dir);
+
+                                                        node.AddPartialConnection(next, cost, true, true);
+
+                                                        node.AddTransition(next, MovementPathType.VAULT_OBSTACLE);
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }
-                        else if(info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_WALL))
-                        {
-                            Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
-
-                            Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
-
-                            if (graph.AreValidCoordinates(neighborCoords))
-                            {
-                                //if the tile over this wall is walkable, we can jump it
-                                TileNode neighbor = nodes[Flatten(neighborCoords.x, 0, neighborCoords.y, graph.Width, graph.Levels)];
-                                //TileNode neighbor = nodes[(neighborCoords.x * graph.Width) + neighborCoords.y];
-
-                                TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
-
-                                if (neighborInfo.IsValid())
+                                else if (info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_WALL))
                                 {
-                                    var cost = GetDirectionCost(dir);
+                                    Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
-                                    node.AddPartialConnection(neighbor, cost, true, true);
+                                    Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
-                                    node.AddTransition(neighbor, MovementPathType.VAULT_WALL);
+                                    if (graph.AreValidCoordinates(neighborCoords))
+                                    {
+                                        //if the tile over this wall is walkable, we can jump it
+                                        TileNode neighbor = nodes[Flatten(neighborCoords.x, Level, neighborCoords.y, graph.Width, graph.Levels)];
+
+                                        TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
+
+                                        if (neighborInfo.IsValid())
+                                        {
+                                            var cost = GetDirectionCost(dir);
+
+                                            node.AddPartialConnection(neighbor, cost, true, true);
+
+                                            node.AddTransition(neighbor, MovementPathType.VAULT_WALL);
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     }
-
                 }
             }
 

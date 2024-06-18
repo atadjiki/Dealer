@@ -6,6 +6,7 @@ using UnityEngine;
 public static partial class Constants
 {
     public static float ENV_TILE_SIZE = 1.5f;
+    public static int ENV_LVL_STEP = 3;
 
     public static int LAYER_DECAL = LayerMask.NameToLayer("Decal");
     public static int LAYER_GROUND = LayerMask.NameToLayer("GROUND");
@@ -31,7 +32,7 @@ public static partial class Constants
 
     public static Vector3 CalculateTileOrigin(int Row, int Level, int Column)
     {
-        Vector3 origin = new Vector3(Row, Level, Column);
+        Vector3 origin = new Vector3(Row, Level * ENV_LVL_STEP, Column);
 
         origin *= ENV_TILE_SIZE;
 
@@ -127,7 +128,9 @@ public static partial class Constants
     {
         origin -= new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
 
-        origin /= ENV_TILE_SIZE;
+        origin.x /= ENV_TILE_SIZE;
+        origin.y /= ENV_TILE_SIZE * ENV_LVL_STEP;
+        origin.z /= ENV_TILE_SIZE;
 
         return new Int3((int)origin.x, (int)origin.z, (int)origin.y);
     }
@@ -297,5 +300,23 @@ public static partial class Constants
     public static int Flatten(int x, int y, int z, int width, int depth)
     {
         return x + width * (y + depth * z);
+    }
+
+    public static int GetElevation(float height, int max)
+    {
+        float step = ENV_TILE_SIZE * ENV_LVL_STEP;
+
+        for (int i = 0; i < max; i++)
+        {
+            float floor = i * step;
+            float ceiling = (i + 1) * step;
+
+            if(height >= floor && height < ceiling)
+            {
+                return i;
+            }
+        }
+
+        return - 1;
     }
 }
