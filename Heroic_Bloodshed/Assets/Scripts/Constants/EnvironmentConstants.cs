@@ -6,7 +6,7 @@ using UnityEngine;
 public static partial class Constants
 {
     public static float ENV_TILE_SIZE = 1.5f;
-    public static int ENV_LVL_STEP = 3;
+    public static int ENV_LVL_STEP = 2;
 
     public static int LAYER_DECAL = LayerMask.NameToLayer("Decal");
     public static int LAYER_GROUND = LayerMask.NameToLayer("GROUND");
@@ -302,11 +302,11 @@ public static partial class Constants
         return x + width * (y + depth * z);
     }
 
-    public static int GetElevation(float height, int max)
+    public static int GetElevation(float height)
     {
         float step = ENV_TILE_SIZE * ENV_LVL_STEP;
 
-        for (int i = 0; i < max; i++)
+        for (int i = 0; i < 10; i++)
         {
             float floor = i * step;
             float ceiling = (i + 1) * step;
