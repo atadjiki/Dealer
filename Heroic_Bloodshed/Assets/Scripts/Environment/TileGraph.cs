@@ -16,7 +16,7 @@ using Unity.Jobs;
 public class TileGraph : NavGraph
 {
     [JsonMember] public int Width = 12;
-    [JsonMember] public int Levels = 1;
+    [JsonMember] public int Levels = 3;
 
     [JsonMember] public MovementPathType AllowedMovementTypes = MovementPathType.MOVE | MovementPathType.VAULT_OBSTACLE | MovementPathType.VAULT_WALL;
 
@@ -101,7 +101,7 @@ public class TileGraph : NavGraph
                 {
                     for (int Column = 0; Column < graph.Width; Column++)
                     {
-                        Vector3 origin = CalculateTileOrigin(Row, Column);
+                        Vector3 origin = CalculateTileOrigin(Row, Level, Column);
 
                         EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 

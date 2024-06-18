@@ -29,11 +29,13 @@ public static partial class Constants
         return CalculateTileCoordinates(neighborOrigin);
     }
 
-    public static Vector3 CalculateTileOrigin(int Row, int Column)
+    public static Vector3 CalculateTileOrigin(int Row, int Level, int Column)
     {
-        Vector3 tilePivot = new Vector3(Row * ENV_TILE_SIZE, 0, Column * ENV_TILE_SIZE);
+        Vector3 origin = new Vector3(Row, Level, Column);
 
-        return tilePivot + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
+        origin *= ENV_TILE_SIZE;
+
+        return origin + new Vector3(ENV_TILE_SIZE / 2, 0, ENV_TILE_SIZE / 2);
     }
 
     public static Vector3[] CalculateTileEdge(Vector3 origin, EnvironmentDirection dir)
