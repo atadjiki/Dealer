@@ -26,9 +26,31 @@ public class EnvironmentUtil
     //Raycasting
     public static EnvironmentLayer CheckTileLayer(Vector3 origin)
     {
-        Vector3 offset = new Vector3(0, ENV_TILE_SIZE*3, 0);
+        Vector3 offset = new Vector3(0, (ENV_MAX_LVL * ENV_TILE_SIZE * ENV_LVL_STEP) + 1, 0);
 
-        return PerformRaycast(origin + offset, Vector3.down, offset.magnitude);
+        Ray ray = new Ray(origin + offset, Vector3.down);
+
+        EnvironmentLayer layer = EnvironmentLayer.NONE;
+
+        foreach (RaycastHit hitInfo in Physics.RaycastAll(ray, offset.magnitude))
+        {
+            float height = hitInfo.collider.transform.position.y;
+
+            if(GetElevation(height) == GetElevation(origin.y))
+            {
+                if (hitInfo.collider != null)
+                {
+                    int layerMask = hitInfo.collider.gameObject.layer;
+
+                    if(layer == EnvironmentLayer.NONE || layer == EnvironmentLayer.GROUND)
+                    {
+                        layer = GetLayer(layerMask);
+                    }
+                }
+            }
+        }
+
+        return layer;
     }
 
     public static EnvironmentLayer PerformRaycast(Vector3 origin, Vector3 direction, float range)
