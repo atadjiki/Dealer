@@ -143,6 +143,7 @@ public static partial class Constants
         {
             case EnvironmentLayer.OBSTACLE_FULL:
             case EnvironmentLayer.OBSTACLE_HALF:
+            case EnvironmentLayer.STAIRS:
             default:
                 return false;
         }
@@ -197,7 +198,6 @@ public static partial class Constants
             case EnvironmentLayer.OBSTACLE_FULL:
             case EnvironmentLayer.WALL_FULL:
             case EnvironmentLayer.WALL_HALF:
-            case EnvironmentLayer.STAIRS:
             case EnvironmentLayer.NONE:
                 return false;
             default:

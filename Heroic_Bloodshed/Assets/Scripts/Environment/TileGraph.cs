@@ -268,7 +268,14 @@ public class TileGraph : NavGraph
 
                         if (node.Walkable)
                         {
-                            color = Color.green;
+                            if(node.layer == EnvironmentLayer.STAIRS)
+                            {
+                                color = Color.blue;
+                            }
+                            else
+                            {
+                                color = Color.green;
+                            }
                         }
                         else
                         {
