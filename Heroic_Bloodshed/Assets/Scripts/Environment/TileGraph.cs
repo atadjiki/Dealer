@@ -76,6 +76,11 @@ public class TileGraph : NavGraph
         return true;
     }
 
+    public int GetIndex(int x, int y, int z)
+    {
+        return x + Width * (y + Levels * z);
+    }
+
     class TileGraphScanPromise : IGraphUpdatePromise
     {
         public TileGraph graph;
@@ -105,7 +110,7 @@ public class TileGraph : NavGraph
 
                         EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
 
-                        TileNode node = nodes[Flatten(Row, Level, Column, graph.Width, graph.Levels)];
+                        TileNode node = nodes[graph.GetIndex(Row, Level, Column)];
                         node.Setup(origin, layer, graph.graphIndex);
 
                         List<Connection> connections = new List<Connection>();
@@ -122,7 +127,7 @@ public class TileGraph : NavGraph
 
                             if (graph.AreValidCoordinates(coords))
                             {
-                                TileNode neighbor = nodes[Flatten(coords.x, Level, coords.y, graph.Width, graph.Levels)];
+                                TileNode neighbor = nodes[graph.GetIndex(coords.x, Level, coords.y)];
 
                                 bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
 
@@ -139,16 +144,16 @@ public class TileGraph : NavGraph
                 }
             }
 
-            //now iterate again so we can find jumps over obstacles
+            //now iterate again so we can find special connections (obstacles, wall vaults, stairs, ladders)
             for (int Level = 0; Level < graph.Levels; Level++)
             {
                 for (int Row = 0; Row < graph.Width; Row++)
                 {
                     for (int Column = 0; Column < graph.Width; Column++)
                     {
-                        TileNode node = nodes[Flatten(Row, Level, Column, graph.Width, graph.Levels)];
+                        TileNode node = nodes[graph.GetIndex(Row, Level, Column)];
 
-                        if (node.Walkable)
+                        if (node.Walkable && node.layer != EnvironmentLayer.STAIRS)
                         {
                             Vector3 origin = (Vector3)node.position;
                             foreach (EnvironmentDirection dir in GetCardinalDirections())
@@ -167,7 +172,7 @@ public class TileGraph : NavGraph
                                         if (graph.AreValidCoordinates(neighborCoords))
                                         {
                                             //if we're next to cover, check if we can jump this tile
-                                            TileNode neighbor = nodes[Flatten(neighborCoords.x, Level, neighborCoords.y, graph.Width, graph.Levels)];
+                                            TileNode neighbor = nodes[graph.GetIndex(neighborCoords.x, Level, neighborCoords.y)];
 
                                             TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
 
@@ -180,7 +185,7 @@ public class TileGraph : NavGraph
 
                                                 if (graph.AreValidCoordinates(nextCoords))
                                                 {
-                                                    TileNode next = nodes[Flatten(nextCoords.x, Level, nextCoords.y, graph.Width, graph.Levels)];
+                                                    TileNode next = nodes[graph.GetIndex(nextCoords.x, Level, nextCoords.y)];
 
                                                     if (next.Walkable)
                                                     {
@@ -195,6 +200,7 @@ public class TileGraph : NavGraph
                                         }
                                     }
                                 }
+                                //check for wall vaults
                                 else if (info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && graph.AllowedMovementTypes.HasFlag(MovementPathType.VAULT_WALL))
                                 {
                                     Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
@@ -204,13 +210,13 @@ public class TileGraph : NavGraph
                                     if (graph.AreValidCoordinates(neighborCoords))
                                     {
                                         //if the tile over this wall is walkable, we can jump it
-                                        TileNode neighbor = nodes[Flatten(neighborCoords.x, Level, neighborCoords.y, graph.Width, graph.Levels)];
+                                        TileNode neighbor = nodes[graph.GetIndex(neighborCoords.x, Level, neighborCoords.y)];
 
                                         TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighborOrigin, dir);
 
                                         if (neighborInfo.IsValid())
                                         {
-                                            var cost = GetDirectionCost(dir);
+                                            uint cost = GetDirectionCost(dir);
 
                                             node.AddPartialConnection(neighbor, cost, true, true);
 
@@ -220,6 +226,35 @@ public class TileGraph : NavGraph
                                 }
                             }
 
+                        }
+                        else if (node.layer == EnvironmentLayer.STAIRS)
+                        {
+                            Vector3 origin = (Vector3)node.position;
+
+                            //strip any existing connections since stairs have special movement
+                            node.ClearConnections(true);
+
+                            //do two checks 
+                            foreach (EnvironmentDirection dir in GetForwardBackwards())
+                            {
+                                TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+
+                                Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
+
+                                Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
+
+                                if (graph.AreValidCoordinates(neighborCoords))
+                                {
+                                    TileNode neighbor = nodes[graph.GetIndex(neighborCoords.x, Level, neighborCoords.y)];
+
+                                    uint cost = GetDirectionCost(dir);
+
+                                    node.AddPartialConnection(neighbor, cost, true, true);
+                                    neighbor.AddPartialConnection(node, cost, true, true);
+
+                                    node.Walkable = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -268,14 +303,11 @@ public class TileGraph : NavGraph
 
                         if (node.Walkable)
                         {
-                            if(node.layer == EnvironmentLayer.STAIRS)
-                            {
-                                color = Color.blue;
-                            }
-                            else
-                            {
-                                color = Color.green;
-                            }
+                            color = Color.green;
+                        }
+                        else if(node.layer == EnvironmentLayer.STAIRS)
+                        {
+                            color = Color.blue;
                         }
                         else
                         {

@@ -50,6 +50,8 @@ public static partial class Constants
         MOVE = 1 << 0,
         VAULT_OBSTACLE = 1 << 1,
         VAULT_WALL = 1 << 2,
+        STAIRS = 1 << 3,
+        LADDERS = 1 << 4,
     }
 
     //Character

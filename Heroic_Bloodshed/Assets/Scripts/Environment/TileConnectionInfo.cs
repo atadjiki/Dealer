@@ -38,7 +38,7 @@ public struct TileConnectionInfo
 
     public bool IsValid()
     {
-        return IsLayerTraversible(Layer) && Obstruction == EnvironmentLayer.NONE;
+        return IsLayerWalkable(Layer) && Obstruction == EnvironmentLayer.NONE;
     }
 
     public bool IsInvalid()

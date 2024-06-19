@@ -26,7 +26,7 @@ namespace Pathfinding
             this.GraphIndex = graphIndex;
             layer = _layer;
             Tag = (uint)layer;
-            Walkable = IsLayerTraversible(_layer);
+            Walkable = IsLayerWalkable(_layer);
 
             _transitions = new Dictionary<TileNode, MovementPathType>();
         }

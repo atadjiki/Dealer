@@ -189,7 +189,7 @@ public static partial class Constants
         }
     }
 
-    public static bool IsLayerTraversible(EnvironmentLayer Layer)
+    public static bool IsLayerWalkable(EnvironmentLayer Layer)
     {
         switch (Layer)
         {
@@ -198,6 +198,7 @@ public static partial class Constants
             case EnvironmentLayer.OBSTACLE_FULL:
             case EnvironmentLayer.WALL_FULL:
             case EnvironmentLayer.WALL_HALF:
+            case EnvironmentLayer.STAIRS:
             case EnvironmentLayer.NONE:
                 return false;
             default:
@@ -251,6 +252,24 @@ public static partial class Constants
         return Enum.GetValues(typeof(EnvironmentDirection));
     }
 
+    public static List<EnvironmentDirection> GetForwardBackwards()
+    {
+        return new List<EnvironmentDirection>()
+        {
+            EnvironmentDirection.NORTH,
+            EnvironmentDirection.SOUTH,
+        };
+    }
+
+    public static List<EnvironmentDirection> GetRightLeft()
+    {
+        return new List<EnvironmentDirection>()
+        {
+            EnvironmentDirection.EAST,
+            EnvironmentDirection.WEST,
+        };
+    }
+
     public static List<EnvironmentDirection> GetCardinalDirections()
     {
         return new List<EnvironmentDirection>()
@@ -302,11 +321,6 @@ public static partial class Constants
     public static int CalculateGScore(int range)
     {
         return range * 1000;
-    }
-
-    public static int Flatten(int x, int y, int z, int width, int depth)
-    {
-        return x + width * (y + depth * z);
     }
 
     public static int GetElevation(float height)
