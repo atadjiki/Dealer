@@ -16,6 +16,7 @@ public static partial class Constants
     public static int LAYER_WALL_HALF = LayerMask.NameToLayer("WALL_HALF");
     public static int LAYER_WALL_FULL = LayerMask.NameToLayer("WALL_FULL");
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
+    public static int LAYER_STAIRS = LayerMask.NameToLayer("STAIRS");
 
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
     {
@@ -196,6 +197,7 @@ public static partial class Constants
             case EnvironmentLayer.OBSTACLE_FULL:
             case EnvironmentLayer.WALL_FULL:
             case EnvironmentLayer.WALL_HALF:
+            case EnvironmentLayer.STAIRS:
             case EnvironmentLayer.NONE:
                 return false;
             default:
@@ -286,6 +288,10 @@ public static partial class Constants
         else if (Layer == LAYER_CHARACTER)
         {
             return EnvironmentLayer.CHARACTER;
+        }
+        else if (Layer == LAYER_STAIRS)
+        {
+            return EnvironmentLayer.STAIRS;
         }
         else
         {

@@ -14,7 +14,8 @@ public static partial class Constants
         OBSTACLE_FULL,
         WALL_HALF,
         WALL_FULL,
-        CHARACTER
+        CHARACTER,
+        STAIRS,
     };
 
     public enum EnvironmentDirection
