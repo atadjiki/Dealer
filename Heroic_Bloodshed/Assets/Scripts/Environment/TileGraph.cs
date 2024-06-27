@@ -73,6 +73,11 @@ public class TileGraph : NavGraph
             return false;
         }
 
+        if(coords.z < 0 || coords.z >= Levels)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -153,7 +158,7 @@ public class TileGraph : NavGraph
                     {
                         TileNode node = nodes[graph.GetIndex(Row, Level, Column)];
 
-                        if (node.Walkable && node.layer != EnvironmentLayer.STAIRS)
+                        if (node.Walkable)
                         {
                             Vector3 origin = (Vector3)node.position;
                             foreach (EnvironmentDirection dir in GetCardinalDirections())
@@ -227,32 +232,76 @@ public class TileGraph : NavGraph
                             }
 
                         }
-                        else if (node.layer == EnvironmentLayer.STAIRS)
+
+
+                        //if the current node is a stair, and it's neighbor is a stair, and the neighbor's neighbor is a floor,
+                        //string them all together
+                        //keep in mind one floor tile is at the current level, and the other is at level ++
+                        //this case only applies to one node in the staircase, so we can do all the operations at once
+
+                        else if (node.layer == EnvironmentLayer.STAIRS && graph.AllowedMovementTypes.HasFlag(MovementPathType.STAIRS))
                         {
                             Vector3 origin = (Vector3)node.position;
 
                             //strip any existing connections since stairs have special movement
                             node.ClearConnections(true);
 
-                            //do two checks 
-                            foreach (EnvironmentDirection dir in GetForwardBackwards())
+                            foreach (EnvironmentDirection dir in GetCardinalDirections())
                             {
-                                TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
-
                                 Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
                                 Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
                                 if (graph.AreValidCoordinates(neighborCoords))
                                 {
+                                    //if we're next to cover, check if we can jump this tile
                                     TileNode neighbor = nodes[graph.GetIndex(neighborCoords.x, Level, neighborCoords.y)];
 
-                                    uint cost = GetDirectionCost(dir);
+                                    if(neighbor.layer == EnvironmentLayer.STAIRS)
+                                    {
+                                        //get the node after this node
+                                        Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
 
-                                    node.AddPartialConnection(neighbor, cost, true, true);
-                                    neighbor.AddPartialConnection(node, cost, true, true);
+                                        Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
 
-                                    node.Walkable = true;
+                                        if (graph.AreValidCoordinates(nextCoords))
+                                        {
+                                            TileNode next = nodes[graph.GetIndex(nextCoords.x, Level, nextCoords.y)];
+
+                                            if (next.Walkable)
+                                            {
+                                                //one last check - check behind the origin node to make sure it's on the next floor
+                                                EnvironmentDirection opposite = GetOpposingDirection(dir);
+
+                                                Vector3 previousOrigin = GetNeighboringTileLocation(origin, opposite, Level+1);
+
+                                                Int3 previousCoords = CalculateTileCoordinates(previousOrigin);
+
+                                                if (graph.AreValidCoordinates(previousCoords))
+                                                {
+                                                    TileNode previous = nodes[graph.GetIndex(previousCoords.x, previousCoords.z, previousCoords.y)];
+
+                                                    if(previous.Walkable)
+                                                    {
+                                                        Debug.Log("Found staircase!");
+                                                        var cost = GetDirectionCost(dir);
+
+                                                        previous.AddPartialConnection(node, cost, true, true);
+                                                        node.AddPartialConnection(previous, cost, true, true);
+
+                                                        node.AddPartialConnection(neighbor, cost, true, true);
+                                                        neighbor.AddPartialConnection(node, cost, true, true);
+
+                                                        neighbor.AddPartialConnection(next, cost, true, true);
+                                                        next.AddPartialConnection(neighbor, cost, true, true);
+
+                                                        node.Walkable = true;
+                                                        neighbor.Walkable = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -350,7 +399,7 @@ public class TileGraph : NavGraph
 
                                     center += new Vector3(0, 3 * height / 4, 0);
 
-                                    Vector3 normal = GetCoverNormal(dir);
+                                    Vector3 normal = GetDirectionNormal(dir);
 
                                     builder.PlaneWithNormal(center, normal, height);
                                 }

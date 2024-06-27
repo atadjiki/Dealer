@@ -18,11 +18,13 @@ public static partial class Constants
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
     public static int LAYER_STAIRS = LayerMask.NameToLayer("STAIRS");
 
-    public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir)
+    public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir, int LevelOffset = 0)
     {
         Vector3 direction = GetDirectionVector(dir);
 
-        return origin + direction;
+        Vector3 offset = new Vector3(0, (LevelOffset * ENV_LVL_STEP * ENV_TILE_SIZE), 0);
+
+        return origin + direction + offset;
     }
 
     public static Int3 GetNeighboringTileCoordinates(Vector3 origin, EnvironmentDirection dir)
@@ -81,9 +83,35 @@ public static partial class Constants
         return null;
     }
 
-    public static Vector3 GetCoverNormal(EnvironmentDirection Direction)
+    public static Vector3 GetDirectionNormal(EnvironmentDirection Direction)
     {
         return -1 * GetDirectionVector(Direction);
+    }
+
+    public static EnvironmentDirection GetOpposingDirection(EnvironmentDirection Direction)
+    {
+        switch(Direction)
+        {
+            case EnvironmentDirection.NORTH:
+                return EnvironmentDirection.SOUTH;
+            case EnvironmentDirection.SOUTH:
+                return EnvironmentDirection.NORTH;
+            case EnvironmentDirection.EAST:
+                return EnvironmentDirection.WEST;
+            case EnvironmentDirection.WEST:
+                return EnvironmentDirection.EAST;
+
+            case EnvironmentDirection.NORTH_EAST:
+                return EnvironmentDirection.SOUTH_WEST;
+            case EnvironmentDirection.NORTH_WEST:
+                return EnvironmentDirection.SOUTH_EAST;
+            case EnvironmentDirection.SOUTH_EAST:
+                return EnvironmentDirection.NORTH_WEST;
+            case EnvironmentDirection.SOUTH_WEST:
+                return EnvironmentDirection.NORTH_EAST;
+        }
+
+        return 0;
     }
 
     public static Vector3 GetDirectionVector(EnvironmentDirection Direction)
