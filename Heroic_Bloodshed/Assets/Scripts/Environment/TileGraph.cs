@@ -68,7 +68,7 @@ public class TileGraph : NavGraph
         return nodes[index];
     }
 
-    private bool AreValidCoordinates(Int3 coords)
+    public bool AreValidCoordinates(Int3 coords)
     {
         if (coords.x < 0 || coords.y < 0)
         {
@@ -88,6 +88,28 @@ public class TileGraph : NavGraph
         return true;
     }
 
+    private void SetupNodes()
+    {
+        //iterate through each tile and connect them
+        for (int Level = 0; Level < Levels; Level++)
+        {
+            for (int Row = 0; Row < Width; Row++)
+            {
+                for (int Column = 0; Column < Width; Column++)
+                {
+                    //where are we placing this node?
+                    Vector3 origin = CalculateTileOrigin(Row, Level, Column);
+
+                    //what layer is this node?
+                    EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
+
+                    //let the node do the rest of the setup
+                    TileNode node = GetNode(Row, Column, Level);
+                    node.Setup(origin, layer, graphIndex);
+                }
+            }
+        }
+    }
 
     private void PerformScan()
     {
@@ -101,50 +123,7 @@ public class TileGraph : NavGraph
         JobHandle job = AstarPath.active.AllocateNodes(nodes, totalSize, () => new TileNode(), 1);
         job.Complete();
 
-        //iterate through each tile and connect them
-        for (int Level = 0; Level < Levels; Level++)
-        {
-            for (int Row = 0; Row < Width; Row++)
-            {
-                for (int Column = 0; Column < Width; Column++)
-                {
-                    Vector3 origin = CalculateTileOrigin(Row, Level, Column);
-
-                    EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
-
-                    TileNode node = GetNode(Row, Column, Level); 
-                    node.Setup(origin, layer, graphIndex);
-
-                    List<Connection> connections = new List<Connection>();
-
-                    foreach (EnvironmentDirection dir in GetAllDirections())
-                    {
-                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
-
-                        Vector3 direction = GetDirectionVector(dir) / 2;
-
-                        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
-
-                        Int3 coords = GetNeighboringTileCoordinates(origin, dir);
-
-                        if (AreValidCoordinates(coords))
-                        {
-                            TileNode neighbor = GetNode(coords.x, coords.y, Level);
-
-                            bool valid = info.IsValid() && AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
-
-                            uint cost = GetDirectionCost(dir);
-
-                            Connection connection = new Connection(neighbor, cost, valid, valid);
-
-                            connections.Add(connection);
-                        }
-                    }
-
-                    node.connections = connections.ToArray();
-                }
-            }
-        }
+        SetupNodes();
 
         //now iterate again so we can find special connections (obstacles, wall vaults, stairs, ladders)
         for (int Level = 0; Level < Levels; Level++)

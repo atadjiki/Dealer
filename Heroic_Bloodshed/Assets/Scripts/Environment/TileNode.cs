@@ -29,6 +29,41 @@ namespace Pathfinding
             Walkable = IsLayerWalkable(_layer);
 
             _transitions = new Dictionary<TileNode, MovementPathType>();
+
+            connections = FindConnections();
+        }
+
+        private Connection[] FindConnections()
+        {
+            TileGraph graph = EnvironmentUtil.GetEnvironmentGraph();
+
+            Vector3 origin = (Vector3)position;
+
+            int Level = CalculateTileCoordinates(origin).z;
+
+            List<Connection> connections = new List<Connection>();
+
+            foreach (EnvironmentDirection dir in GetAllDirections())
+            {
+                TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+
+                Int3 coords = GetNeighboringTileCoordinates(origin, dir);
+
+                if (graph.AreValidCoordinates(coords))
+                {
+                    TileNode neighbor = graph.GetNode(coords.x, coords.y, Level);
+
+                    bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
+
+                    uint cost = GetDirectionCost(dir);
+
+                    Connection connection = new Connection(neighbor, cost, valid, valid);
+
+                    connections.Add(connection);
+                }
+            }
+
+            return connections.ToArray();
         }
 
         public bool HasCoverInDirection(EnvironmentDirection dir)
