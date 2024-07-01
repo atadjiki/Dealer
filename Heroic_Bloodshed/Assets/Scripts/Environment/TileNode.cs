@@ -19,27 +19,29 @@ namespace Pathfinding
 
         private Dictionary<TileNode, MovementPathType> _transitions;
 
-        public void Setup(Vector3 _position, EnvironmentLayer _layer, uint graphIndex)
+        private TileCoordinates _coords;
+
+        public void Setup(TileCoordinates coordinates, uint graphIndex)
         {
+            _coords = coordinates;
+
+            Vector3 origin = _coords.GetOrigin();
+
             // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
-            this.position = (Int3)_position;
+            this.position = (Int3) origin;
             this.GraphIndex = graphIndex;
-            layer = _layer;
+            layer = EnvironmentUtil.CheckTileLayer(origin);
             Tag = (uint)layer;
-            Walkable = IsLayerWalkable(_layer);
+            Walkable = IsLayerWalkable(layer);
 
             _transitions = new Dictionary<TileNode, MovementPathType>();
-
-            connections = FindConnections();
         }
 
-        private Connection[] FindConnections()
+        public  Connection[] FindNodeConnections(TileGraph graph)
         {
-            TileGraph graph = EnvironmentUtil.GetEnvironmentGraph();
+            Vector3 origin = _coords.GetOrigin();
 
-            Vector3 origin = (Vector3)position;
-
-            int Level = CalculateTileCoordinates(origin).z;
+            int Level = _coords.Level;
 
             List<Connection> connections = new List<Connection>();
 

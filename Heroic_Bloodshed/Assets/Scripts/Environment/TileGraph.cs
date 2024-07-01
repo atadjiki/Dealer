@@ -61,6 +61,11 @@ public class TileGraph : NavGraph
         return null;
     }
 
+    public TileNode GetNode(TileCoordinates coords)
+    {
+        return GetNode(coords.Row, coords.Column, coords.Level);
+    }
+
     public TileNode GetNode(int row, int column, int level)
     {
         int index = row + Width * (level + Levels * column);
@@ -90,24 +95,25 @@ public class TileGraph : NavGraph
 
     private void SetupNodes()
     {
-        //iterate through each tile and connect them
+        //first create a node for each square in the 3D grid
         for (int Level = 0; Level < Levels; Level++)
         {
             for (int Row = 0; Row < Width; Row++)
             {
                 for (int Column = 0; Column < Width; Column++)
                 {
-                    //where are we placing this node?
-                    Vector3 origin = CalculateTileOrigin(Row, Level, Column);
-
-                    //what layer is this node?
-                    EnvironmentLayer layer = EnvironmentUtil.CheckTileLayer(origin);
+                    TileCoordinates coords = TileCoordinates.Build(Row, Column, Level);
 
                     //let the node do the rest of the setup
-                    TileNode node = GetNode(Row, Column, Level);
-                    node.Setup(origin, layer, graphIndex);
+                    TileNode node = GetNode(coords);
+                    node.Setup(coords, graphIndex);  
                 }
             }
+        }
+
+        foreach(TileNode node in nodes)
+        {
+            node.FindNodeConnections(this);
         }
     }
 

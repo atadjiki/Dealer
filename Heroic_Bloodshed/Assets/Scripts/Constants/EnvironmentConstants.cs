@@ -18,6 +18,29 @@ public static partial class Constants
     public static int LAYER_CHARACTER = LayerMask.NameToLayer("CHARACTER");
     public static int LAYER_STAIRS = LayerMask.NameToLayer("STAIRS");
 
+    [Serializable]
+    public struct TileCoordinates
+    {
+        public int Row;
+        public int Column;
+        public int Level;
+
+        public Vector3 GetOrigin()
+        {
+            return CalculateTileOrigin(Row, Level, Column);
+        }
+
+        public static TileCoordinates Build(int _Row, int _Column, int _Level)
+        {
+            return new TileCoordinates()
+            {
+                Row = _Row,
+                Column = _Column,
+                Level = _Level
+            };
+        }
+    }
+
     public static Vector3 GetNeighboringTileLocation(Vector3 origin, EnvironmentDirection dir, int LevelOffset = 0)
     {
         Vector3 direction = GetDirectionVector(dir);
