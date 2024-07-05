@@ -19,6 +19,8 @@ namespace Pathfinding
 
         private Dictionary<TileNode, MovementType> _transitions;
 
+        private Dictionary<EnvironmentDirection, TileNode> _neighborMap;
+
         private TileCoordinates _coords;
 
         public void Setup(TileCoordinates coordinates, uint graphIndex)
@@ -35,6 +37,7 @@ namespace Pathfinding
             Walkable = IsLayerWalkable(layer);
 
             _transitions = new Dictionary<TileNode, MovementType>();
+            _neighborMap = new Dictionary<EnvironmentDirection, TileNode>();
         }
 
         public void FindNodeConnections(TileGraph graph)
@@ -61,6 +64,7 @@ namespace Pathfinding
 
                     Connection connection = new Connection(neighbor, cost, valid, valid);
 
+                    _neighborMap.Add(dir, neighbor);
                     found.Add(connection);
                 }
             }
@@ -115,6 +119,38 @@ namespace Pathfinding
         public MovementType GetTransiton(TileNode node)
         {
             return _transitions[node];
+        }
+
+        public TileCoordinates GetCoordinates()
+        {
+            return _coords;
+        }
+
+        public Vector3 GetOrigin()
+        {
+            return _coords.GetOrigin();
+        }
+
+        public int GetLevel()
+        {
+            return _coords.Level;
+        }
+
+        public bool GetNeighborInDirection(EnvironmentDirection dir, out TileNode neighbor)
+        {
+            if(_neighborMap.ContainsKey(dir))
+            {
+                neighbor = _neighborMap[dir];
+                return true;
+            }
+
+            neighbor = null;
+            return false;
+        }
+
+        public bool HasNeighborInDirection(EnvironmentDirection dir)
+        {
+            return _neighborMap.ContainsKey(dir);
         }
 
         public string GetInfo()
