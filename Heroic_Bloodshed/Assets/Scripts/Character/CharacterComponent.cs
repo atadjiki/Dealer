@@ -99,7 +99,7 @@ public class CharacterComponent : MonoBehaviour, ICharacterEventHandler
         HandleEvent(CharacterEvent.DESTINATION_REACHED, navigator);
     }
 
-    public void OnBeginMovementPath(MovementPathInfo info)
+    public void OnBeginMovementPath(MovementInfo info)
     {
         HandleEvent(CharacterEvent.MOVEMENT_BEGIN, info);
     }

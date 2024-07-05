@@ -44,7 +44,7 @@ public static partial class Constants
         FULL
     }
 
-    [Flags] public enum MovementPathType
+    [Flags] public enum MovementType
     {
         NONE = 0,
         MOVE = 1 << 0,

@@ -18,7 +18,7 @@ public class TileGraph : NavGraph
     [JsonMember] public int Width = 12;
     [JsonMember] public int Levels = 3;
 
-    [JsonMember] public MovementPathType AllowedMovementTypes = MovementPathType.MOVE | MovementPathType.VAULT_OBSTACLE | MovementPathType.VAULT_WALL;
+    [JsonMember] public MovementType AllowedMovementTypes = MovementType.MOVE | MovementType.VAULT_OBSTACLE | MovementType.VAULT_WALL;
 
     [JsonMember] public bool ShowConnections = true;
     [JsonMember] public bool ShowLayers = true;
@@ -148,7 +148,7 @@ public class TileGraph : NavGraph
                             TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
 
                             //check for jumps over half obstacles
-                            if (!info.IsWallBetween() && AllowedMovementTypes.HasFlag(MovementPathType.VAULT_OBSTACLE))
+                            if (!info.IsWallBetween() && AllowedMovementTypes.HasFlag(MovementType.VAULT_OBSTACLE))
                             {
                                 if (GetCoverType(info) == EnvironmentCover.HALF)
                                 {
@@ -180,7 +180,7 @@ public class TileGraph : NavGraph
 
                                                     node.AddPartialConnection(next, cost, true, true);
 
-                                                    node.AddTransition(next, MovementPathType.VAULT_OBSTACLE);
+                                                    node.AddTransition(next, MovementType.VAULT_OBSTACLE);
                                                 }
                                             }
                                         }
@@ -188,7 +188,7 @@ public class TileGraph : NavGraph
                                 }
                             }
                             //check for wall vaults
-                            else if (info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && AllowedMovementTypes.HasFlag(MovementPathType.VAULT_WALL))
+                            else if (info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && AllowedMovementTypes.HasFlag(MovementType.VAULT_WALL))
                             {
                                 Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
 
@@ -207,7 +207,7 @@ public class TileGraph : NavGraph
 
                                         node.AddPartialConnection(neighbor, cost, true, true);
 
-                                        node.AddTransition(neighbor, MovementPathType.VAULT_WALL);
+                                        node.AddTransition(neighbor, MovementType.VAULT_WALL);
                                     }
                                 }
                             }
@@ -221,7 +221,7 @@ public class TileGraph : NavGraph
                     //keep in mind one floor tile is at the current level, and the other is at level ++
                     //this case only applies to one node in the staircase, so we can do all the operations at once
 
-                    else if (node.layer == EnvironmentLayer.STAIRS && AllowedMovementTypes.HasFlag(MovementPathType.STAIRS))
+                    else if (node.layer == EnvironmentLayer.STAIRS && AllowedMovementTypes.HasFlag(MovementType.STAIRS))
                     {
                         Vector3 origin = (Vector3)node.position;
 

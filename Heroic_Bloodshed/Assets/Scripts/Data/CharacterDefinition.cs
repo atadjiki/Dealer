@@ -20,7 +20,7 @@ public class CharacterDefinition : ScriptableObject
 
     public float MovementSpeed;
 
-    public MovementPathType AllowedMovements;
+    public MovementType AllowedMovements;
 
     public int CritChance;
 

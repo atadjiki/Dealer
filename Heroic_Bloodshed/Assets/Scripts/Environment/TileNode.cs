@@ -17,7 +17,7 @@ namespace Pathfinding
 	{
         public EnvironmentLayer layer;
 
-        private Dictionary<TileNode, MovementPathType> _transitions;
+        private Dictionary<TileNode, MovementType> _transitions;
 
         private TileCoordinates _coords;
 
@@ -34,7 +34,7 @@ namespace Pathfinding
             Tag = (uint)layer;
             Walkable = IsLayerWalkable(layer);
 
-            _transitions = new Dictionary<TileNode, MovementPathType>();
+            _transitions = new Dictionary<TileNode, MovementType>();
         }
 
         public void FindNodeConnections(TileGraph graph)
@@ -43,7 +43,7 @@ namespace Pathfinding
 
             int Level = _coords.Level;
 
-            List<Connection> _connections = new List<Connection>();
+            List<Connection> found = new List<Connection>();
 
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
@@ -55,17 +55,17 @@ namespace Pathfinding
                 {
                     TileNode neighbor = graph.GetNode(coords.x, coords.y, Level);
 
-                    bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementPathType.MOVE);
+                    bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementType.MOVE);
 
                     uint cost = GetDirectionCost(dir);
 
                     Connection connection = new Connection(neighbor, cost, valid, valid);
 
-                    _connections.Add(connection);
+                    found.Add(connection);
                 }
             }
 
-            this.connections = _connections.ToArray();
+            this.connections = found.ToArray();
         }
 
         public bool HasCoverInDirection(EnvironmentDirection dir)
@@ -97,7 +97,7 @@ namespace Pathfinding
             return map;
         }
 
-        public void AddTransition(TileNode node, MovementPathType type)
+        public void AddTransition(TileNode node, MovementType type)
         {
             _transitions.Add(node, type);
         }
@@ -112,7 +112,7 @@ namespace Pathfinding
             return _transitions.ContainsKey(node);
         }
 
-        public MovementPathType GetTransiton(TileNode node)
+        public MovementType GetTransiton(TileNode node)
         {
             return _transitions[node];
         }

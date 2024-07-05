@@ -3,26 +3,26 @@ using Pathfinding;
 using UnityEngine;
 using static Constants;
 
-public class MovementPathInfo
+public class MovementInfo
 {
-    public MovementPathType PathType;
+    public MovementType Type;
     public List<TileNode> Nodes;
 
-    public MovementPathInfo(List<TileNode> _nodes)
+    public MovementInfo(List<TileNode> _nodes)
     {
-        PathType = MovementPathType.MOVE;
+        Type = MovementType.MOVE;
         Nodes = _nodes;
     }
 
-    public MovementPathInfo()
+    public MovementInfo()
     {
-        PathType = MovementPathType.MOVE;
+        Type = MovementType.MOVE;
         Nodes = new List<TileNode>();
     }
 
-    public MovementPathInfo(TileNode jumpStart, TileNode jumpEnd, MovementPathType _type)
+    public MovementInfo(TileNode jumpStart, TileNode jumpEnd, MovementType _type)
     {
-        PathType = _type;
+        Type = _type;
         Nodes = new List<TileNode>() { jumpStart, jumpEnd };
     }
 

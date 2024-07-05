@@ -10,7 +10,7 @@ public class CharacterNavigator : MonoBehaviour
     public delegate void OnDestinationReached(CharacterNavigator navigator);
     public OnDestinationReached DestinationReachedCallback;
 
-    public delegate void OnBeginMovementPath(MovementPathInfo info);
+    public delegate void OnBeginMovementPath(MovementInfo info);
     public OnBeginMovementPath OnBeginMovementPathCallback;
 
     private Seeker _seeker;
@@ -56,7 +56,7 @@ public class CharacterNavigator : MonoBehaviour
         _pathCalculated = false;
 
 
-        foreach (MovementPathInfo info in EnvironmentUtil.CreatePathQueue(totalPath))
+        foreach (MovementInfo info in EnvironmentUtil.CreatePathQueue(totalPath))
         {
             if(OnBeginMovementPathCallback != null)
             {
@@ -68,14 +68,14 @@ public class CharacterNavigator : MonoBehaviour
 
             yield return new WaitUntil(() => _pathCalculated);
 
-            Debug.Log("Starting " + info.PathType.ToString()  + " path from  " + _AI.position + " to " + destination);
+            Debug.Log("Starting " + info.Type.ToString()  + " path from  " + _AI.position + " to " + destination);
             yield return new WaitForFixedUpdate();
 
             _AI.canMove = true;
             yield return new WaitUntil(() => _AI.reachedEndOfPath);
             _AI.canMove = false;
 
-            Debug.Log("completed subpath " + info.PathType.ToString());
+            Debug.Log("completed subpath " + info.Type.ToString());
 
           //  Teleport(destination);
 

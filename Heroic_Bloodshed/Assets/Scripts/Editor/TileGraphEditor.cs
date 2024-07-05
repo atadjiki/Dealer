@@ -28,6 +28,6 @@ public class TileGraphEditor : GraphEditor
         graph.CoverOpacity = EditorGUILayout.FloatField("Cover Opacity", graph.CoverOpacity);
         graph.LineWidth = EditorGUILayout.FloatField("Line Width", graph.LineWidth);
         EditorGUILayout.Space();
-        graph.AllowedMovementTypes = (MovementPathType)EditorGUILayout.EnumFlagsField("Allowed Movement Types", graph.AllowedMovementTypes);
+        graph.AllowedMovementTypes = (MovementType)EditorGUILayout.EnumFlagsField("Allowed Movement Types", graph.AllowedMovementTypes);
     }
 }

@@ -29,24 +29,24 @@ public class CharacterAnimator : MonoBehaviour, ICharacterEventHandler
                 break;
             case CharacterEvent.MOVEMENT_BEGIN:
             {
-                MovementPathInfo info = (MovementPathInfo)eventData;
+                MovementInfo info = (MovementInfo)eventData;
                 HandleEvent_MovementBegin(info);
             }
             break;
         }
     }
 
-    private void HandleEvent_MovementBegin(MovementPathInfo info)
+    private void HandleEvent_MovementBegin(MovementInfo info)
     {
-        if (info.PathType == MovementPathType.MOVE)
+        if (info.Type == MovementType.MOVE)
         {
             SetAnim(CharacterAnim.MOVING);
         }
-        else if (info.PathType == MovementPathType.VAULT_OBSTACLE)
+        else if (info.Type == MovementType.VAULT_OBSTACLE)
         {
             SetAnim(CharacterAnim.VAULT_OBSTACLE);
         }
-        else if (info.PathType == MovementPathType.VAULT_WALL)
+        else if (info.Type == MovementType.VAULT_WALL)
         {
             SetAnim(CharacterAnim.VAULT_WALL);
         }

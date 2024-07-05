@@ -132,17 +132,17 @@ public class EnvironmentUtil
     {
         ABPath abPath = CalculatePath(origin, destination);
 
-        Queue<MovementPathInfo> pathQueue = CreatePathQueue(abPath);
+        Queue<MovementInfo> pathQueue = CreatePathQueue(abPath);
 
         List<Vector3> vectors = new List<Vector3>();
 
-        foreach (MovementPathInfo info in pathQueue)
+        foreach (MovementInfo info in pathQueue)
         {
-            if (info.PathType == MovementPathType.MOVE)
+            if (info.Type == MovementType.MOVE)
             {
                 vectors.AddRange(info.GetVectors());
             }
-            else if (info.PathType == MovementPathType.VAULT_OBSTACLE || info.PathType == MovementPathType.VAULT_WALL)
+            else if (info.Type == MovementType.VAULT_OBSTACLE || info.Type == MovementType.VAULT_WALL)
             {
                 Vector3 start = (Vector3)info.Nodes[0].position;
                 Vector3 end = (Vector3)info.Nodes[1].position;
@@ -158,9 +158,9 @@ public class EnvironmentUtil
         return vectors;
     }
 
-    private static MovementPathInfo FindNextSubPath(ref List<TileNode> nodes)
+    private static MovementInfo FindNextSubPath(ref List<TileNode> nodes)
     {
-        MovementPathInfo info = new MovementPathInfo();
+        MovementInfo info = new MovementInfo();
 
         for(int i = 0; i < nodes.Count; i++)
         {
@@ -176,8 +176,8 @@ public class EnvironmentUtil
                 {
                     if (i == 0)
                     {
-                        MovementPathType pathType = current.GetTransiton(next);
-                        MovementPathInfo jumpInfo = new MovementPathInfo(current, next, pathType);
+                        MovementType pathType = current.GetTransiton(next);
+                        MovementInfo jumpInfo = new MovementInfo(current, next, pathType);
 
                         nodes.Remove(current);
 
@@ -207,15 +207,15 @@ public class EnvironmentUtil
 
     //divide a path into sub-paths, occuring when a character must perform actions
     //such as jumping over an obstacle or climbing a ladder
-    public static Queue<MovementPathInfo> CreatePathQueue(ABPath path)
+    public static Queue<MovementInfo> CreatePathQueue(ABPath path)
     {
-        Queue<MovementPathInfo> queue = new Queue<MovementPathInfo>();
+        Queue<MovementInfo> queue = new Queue<MovementInfo>();
 
         List<TileNode> nodes = ConvertGraphToTileNodes(path.path);
 
         while(nodes.Count > 0)
         {
-            MovementPathInfo subPath = FindNextSubPath(ref nodes);
+            MovementInfo subPath = FindNextSubPath(ref nodes);
 
             if(subPath.Nodes.Count > 1)
             {
