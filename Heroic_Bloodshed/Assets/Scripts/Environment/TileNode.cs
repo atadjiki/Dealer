@@ -37,13 +37,13 @@ namespace Pathfinding
             _transitions = new Dictionary<TileNode, MovementPathType>();
         }
 
-        public  Connection[] FindNodeConnections(TileGraph graph)
+        public void FindNodeConnections(TileGraph graph)
         {
             Vector3 origin = _coords.GetOrigin();
 
             int Level = _coords.Level;
 
-            List<Connection> connections = new List<Connection>();
+            List<Connection> _connections = new List<Connection>();
 
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
@@ -61,11 +61,11 @@ namespace Pathfinding
 
                     Connection connection = new Connection(neighbor, cost, valid, valid);
 
-                    connections.Add(connection);
+                    _connections.Add(connection);
                 }
             }
 
-            return connections.ToArray();
+            this.connections = _connections.ToArray();
         }
 
         public bool HasCoverInDirection(EnvironmentDirection dir)
