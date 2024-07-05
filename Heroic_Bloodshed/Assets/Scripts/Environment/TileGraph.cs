@@ -127,61 +127,69 @@ public class TileGraph : NavGraph
 
     private void ProcessNodes()
     {
-        foreach(TileNode node in nodes)
+        foreach(TileNode node in GetWalkableNodes())
         {
-            if (node.Walkable)
+            node.FindNodeTransitions(this);
+
+            //if the current node is a stair, and it's neighbor is a stair, and the neighbor's neighbor is a floor,
+            //string them all together
+            //keep in mind one floor tile is at the current level, and the other is at level ++
+            //this case only applies to one node in the staircase, so we can do all the operations at once
+
+            if (node.layer == EnvironmentLayer.STAIRS && AllowedMovementTypes.HasFlag(MovementType.STAIRS))
             {
                 Vector3 origin = (Vector3)node.position;
+
+                //strip any existing connections since stairs have special movement
+                node.ClearConnections(true);
+
                 foreach (EnvironmentDirection dir in GetCardinalDirections())
                 {
-                    TileNode neighbor;
-                    if (node.GetNeighborInDirection(dir, out neighbor))
+                    TileConnectionInfo neighborInfo;
+                    if (node.GetNeighborInfo(dir, out neighborInfo))
                     {
-                        TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
-                        
-                        //check for jumps over half obstacles
-                        if (!info.IsWallBetween() && AllowedMovementTypes.HasFlag(MovementType.VAULT_OBSTACLE))
+                        TileNode neighbor = neighborInfo.Node;
+
+                        if (neighbor.layer == EnvironmentLayer.STAIRS)
                         {
-                            if (GetCoverType(info) == EnvironmentCover.HALF)
+                            //get the node after this node
+                            TileConnectionInfo nextInfo;
+                            if (neighbor.GetNeighborInfo(dir, out nextInfo))
                             {
-                                //if we're next to cover, check if we can jump this tile
-                                TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighbor.GetOrigin(), dir);
-          
-                                if (neighborInfo.IsValid())
+                                TileNode next = nextInfo.Node;
+
+                                if (next.Walkable)
                                 {
-                                    //get the node after this node
-                                    Vector3 nextOrigin = GetNeighboringTileLocation(neighbor.GetOrigin(), dir);
+                                    //one last check - check behind the origin node to make sure it's on the next floor
+                                    EnvironmentDirection opposite = GetOpposingDirection(dir);
 
-                                    Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
+                                    Vector3 previousOrigin = GetNeighboringTileLocation(origin, opposite, node.GetLevel() + 1);
 
-                                    if (AreValidCoordinates(nextCoords))
+                                    Int3 previousCoords = CalculateTileCoordinates(previousOrigin);
+
+                                    if (AreValidCoordinates(previousCoords))
                                     {
-                                        TileNode next = GetNode(nextCoords.x, nextCoords.y, node.GetLevel());
+                                        TileNode previous = GetNode(previousCoords.x, previousCoords.y, previousCoords.z);
 
-                                        if (next.Walkable)
+                                        if (previous.Walkable)
                                         {
+                                            Debug.Log("Found staircase!");
                                             var cost = GetDirectionCost(dir);
 
-                                            node.AddPartialConnection(next, cost, true, true);
+                                            previous.AddPartialConnection(node, cost, true, true);
+                                            node.AddPartialConnection(previous, cost, true, true);
 
-                                            node.AddTransition(next, MovementType.VAULT_OBSTACLE);
+                                            node.AddPartialConnection(neighbor, cost, true, true);
+                                            neighbor.AddPartialConnection(node, cost, true, true);
+
+                                            neighbor.AddPartialConnection(next, cost, true, true);
+                                            next.AddPartialConnection(neighbor, cost, true, true);
+
+                                            node.Walkable = true;
+                                            neighbor.Walkable = true;
                                         }
                                     }
                                 }
-                            }
-                        }
-                        //check for wall vaults
-                        else if (info.IsLayerBetween(EnvironmentLayer.WALL_HALF) && AllowedMovementTypes.HasFlag(MovementType.VAULT_WALL))
-                        {
-                            TileConnectionInfo neighborInfo = EnvironmentUtil.CheckNeighborConnection(neighbor.GetOrigin(), dir);
-
-                            if (neighborInfo.IsValid())
-                            {
-                                uint cost = GetDirectionCost(dir);
-
-                                node.AddPartialConnection(neighbor, cost, true, true);
-
-                                node.AddTransition(neighbor, MovementType.VAULT_WALL);
                             }
                         }
                     }
@@ -205,91 +213,6 @@ public class TileGraph : NavGraph
         SetupNodes();
 
         ProcessNodes();
-
-        //now iterate again so we can find special connections (obstacles, wall vaults, stairs, ladders)
-        for (int Level = 0; Level < Levels; Level++)
-        {
-            for (int Row = 0; Row < Width; Row++)
-            {
-                for (int Column = 0; Column < Width; Column++)
-                {
-                    TileNode node = GetNode(Row, Column, Level);
-
-
-                    //if the current node is a stair, and it's neighbor is a stair, and the neighbor's neighbor is a floor,
-                    //string them all together
-                    //keep in mind one floor tile is at the current level, and the other is at level ++
-                    //this case only applies to one node in the staircase, so we can do all the operations at once
-
-                    if (node.layer == EnvironmentLayer.STAIRS && AllowedMovementTypes.HasFlag(MovementType.STAIRS))
-                    {
-                        Vector3 origin = (Vector3)node.position;
-
-                        //strip any existing connections since stairs have special movement
-                        node.ClearConnections(true);
-
-                        foreach (EnvironmentDirection dir in GetCardinalDirections())
-                        {
-                            Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
-
-                            Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
-
-                            if (AreValidCoordinates(neighborCoords))
-                            {
-                                //if we're next to cover, check if we can jump this tile
-                                TileNode neighbor = GetNode(neighborCoords.x, neighborCoords.y, Level);
-
-                                if (neighbor.layer == EnvironmentLayer.STAIRS)
-                                {
-                                    //get the node after this node
-                                    Vector3 nextOrigin = GetNeighboringTileLocation(neighborOrigin, dir);
-
-                                    Int3 nextCoords = CalculateTileCoordinates(nextOrigin);
-
-                                    if (AreValidCoordinates(nextCoords))
-                                    {
-                                        TileNode next = GetNode(nextCoords.x, nextCoords.y, Level);
-                                        
-                                        if (next.Walkable)
-                                        {
-                                            //one last check - check behind the origin node to make sure it's on the next floor
-                                            EnvironmentDirection opposite = GetOpposingDirection(dir);
-
-                                            Vector3 previousOrigin = GetNeighboringTileLocation(origin, opposite, Level + 1);
-
-                                            Int3 previousCoords = CalculateTileCoordinates(previousOrigin);
-
-                                            if (AreValidCoordinates(previousCoords))
-                                            {
-                                                TileNode previous = GetNode(previousCoords.x, previousCoords.y, previousCoords.z);
-
-                                                if (previous.Walkable)
-                                                {
-                                                    Debug.Log("Found staircase!");
-                                                    var cost = GetDirectionCost(dir);
-
-                                                    previous.AddPartialConnection(node, cost, true, true);
-                                                    node.AddPartialConnection(previous, cost, true, true);
-
-                                                    node.AddPartialConnection(neighbor, cost, true, true);
-                                                    neighbor.AddPartialConnection(node, cost, true, true);
-
-                                                    neighbor.AddPartialConnection(next, cost, true, true);
-                                                    next.AddPartialConnection(neighbor, cost, true, true);
-
-                                                    node.Walkable = true;
-                                                    neighbor.Walkable = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
 

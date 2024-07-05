@@ -9,7 +9,7 @@ using Pathfinding.Drawing;
 using System;
 
 namespace Pathfinding
-{
+{ 
 	[JsonOptIn]
 	// Make sure the class is not stripped out when using code stripping (see https://docs.unity3d.com/Manual/ManagedCodeStripping.html)
 	[Pathfinding.Util.Preserve]
@@ -19,7 +19,7 @@ namespace Pathfinding
 
         private Dictionary<TileNode, MovementType> _transitions;
 
-        private Dictionary<EnvironmentDirection, TileNode> _neighborMap;
+        private Dictionary<EnvironmentDirection, TileConnectionInfo> _neighborMap;
 
         private TileCoordinates _coords;
 
@@ -37,7 +37,7 @@ namespace Pathfinding
             Walkable = IsLayerWalkable(layer);
 
             _transitions = new Dictionary<TileNode, MovementType>();
-            _neighborMap = new Dictionary<EnvironmentDirection, TileNode>();
+            _neighborMap = new Dictionary<EnvironmentDirection, TileConnectionInfo>();
         }
 
         public void FindNodeConnections(TileGraph graph)
@@ -50,13 +50,14 @@ namespace Pathfinding
 
             foreach (EnvironmentDirection dir in GetAllDirections())
             {
-                TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection(origin, dir);
+                TileConnectionInfo info = CheckNeighborConnection(dir);
 
                 Int3 coords = GetNeighboringTileCoordinates(origin, dir);
 
                 if (graph.AreValidCoordinates(coords))
                 {
                     TileNode neighbor = graph.GetNode(coords.x, coords.y, Level);
+                    info.Node = neighbor; //important!
 
                     bool valid = info.IsValid() && graph.AllowedMovementTypes.HasFlag(MovementType.MOVE);
 
@@ -64,26 +65,92 @@ namespace Pathfinding
 
                     Connection connection = new Connection(neighbor, cost, valid, valid);
 
-                    _neighborMap.Add(dir, neighbor);
+                    _neighborMap.Add(dir, info);
                     found.Add(connection);
                 }
             }
 
-            this.connections = found.ToArray();
+            connections = found.ToArray();
+        }
+
+        public void FindNodeTransitions(TileGraph graph)
+        {
+            foreach (EnvironmentDirection dir in GetCardinalDirections())
+            {
+                TileConnectionInfo neighborInfo;
+                if (GetNeighborInfo(dir, out neighborInfo))
+                {
+                    TileNode neighbor = neighborInfo.Node;
+
+                    //check for jumps over half obstacles
+                    if (!neighborInfo.IsWallBetween() && graph.AllowedMovementTypes.HasFlag(MovementType.VAULT_OBSTACLE))
+                    {
+                        if (GetCoverType(neighborInfo) == EnvironmentCover.HALF)
+                        {
+                            if (!neighborInfo.IsValid())
+                            {
+                                //get the node after this node
+                                TileConnectionInfo nextInfo;
+                                if (neighbor.GetNeighborInfo(dir, out nextInfo))
+                                {
+                                    TileNode next = nextInfo.Node;
+
+                                    if (next.Walkable)
+                                    {
+                                        var cost = GetDirectionCost(dir);
+
+                                        AddPartialConnection(next, cost, true, true);
+
+                                        AddTransition(next, MovementType.VAULT_OBSTACLE);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //check for wall vaults
+                    else if (neighborInfo.IsLayerBetween(EnvironmentLayer.WALL_HALF) && graph.AllowedMovementTypes.HasFlag(MovementType.VAULT_WALL))
+                    {
+                        if (!neighborInfo.IsValid())
+                        {
+                            uint cost = GetDirectionCost(dir);
+
+                            AddPartialConnection(neighbor, cost, true, true);
+
+                            AddTransition(neighbor, MovementType.VAULT_WALL);
+                        }
+                    }
+                }
+            }
         }
 
         public bool HasCoverInDirection(EnvironmentDirection dir)
         {
-            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection((Vector3)position, dir);
+            TileConnectionInfo info = _neighborMap[dir];
 
             return (IsLayerCover(info.Obstruction));
         }
 
         public EnvironmentCover GetCoverInDirection(EnvironmentDirection dir)
         {
-            TileConnectionInfo info = EnvironmentUtil.CheckNeighborConnection((Vector3)position, dir);
+            TileConnectionInfo info = _neighborMap[dir];
 
             return GetCoverType(info);
+        }
+
+        private TileConnectionInfo CheckNeighborConnection(EnvironmentDirection dir)
+        {
+            Vector3 direction = GetDirectionVector(dir);
+            Vector3 neighborOrigin = GetNeighboringTileLocation(GetOrigin(), dir);
+
+            TileConnectionInfo info = TileConnectionInfo.Build();
+            info.Layer = EnvironmentUtil.CheckTileLayer(neighborOrigin);
+
+            Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
+
+            //now check that nothing is in the way between this tile and its neighbor (like walls or corners)
+            info.Obstruction = EnvironmentUtil.PerformRaycast(GetOrigin() + offset, direction, direction.magnitude);
+
+            return info;
         }
 
         public Dictionary<EnvironmentDirection, EnvironmentCover> GetCoverMap()
@@ -136,7 +203,7 @@ namespace Pathfinding
             return _coords.Level;
         }
 
-        public bool GetNeighborInDirection(EnvironmentDirection dir, out TileNode neighbor)
+        public bool GetNeighborInfo(EnvironmentDirection dir, out TileConnectionInfo neighbor)
         {
             if(_neighborMap.ContainsKey(dir))
             {
@@ -144,7 +211,7 @@ namespace Pathfinding
                 return true;
             }
 
-            neighbor = null;
+            neighbor = new TileConnectionInfo();
             return false;
         }
 

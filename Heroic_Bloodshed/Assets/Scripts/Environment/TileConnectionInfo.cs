@@ -1,9 +1,11 @@
 using System;
+using Pathfinding;
 using static Constants;
 
 [Serializable]
 public struct TileConnectionInfo
 {
+    public TileNode Node;
     public EnvironmentLayer Layer;
     public EnvironmentLayer Obstruction;
 
@@ -11,6 +13,7 @@ public struct TileConnectionInfo
     {
         return new TileConnectionInfo()
         {
+            Node = null,
             Layer = EnvironmentLayer.NONE,
             Obstruction = EnvironmentLayer.NONE,
         };

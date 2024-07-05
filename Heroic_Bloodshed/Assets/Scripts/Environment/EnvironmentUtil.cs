@@ -331,22 +331,6 @@ public class EnvironmentUtil
         return map;
     }
 
-    public static TileConnectionInfo CheckNeighborConnection(Vector3 origin, EnvironmentDirection dir)
-    {
-        Vector3 direction = GetDirectionVector(dir);
-        Vector3 neighborOrigin = GetNeighboringTileLocation(origin, dir);
-
-        TileConnectionInfo info = TileConnectionInfo.Build();
-        info.Layer = CheckTileLayer(neighborOrigin);
-
-        Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
-
-        //now check that nothing is in the way between this tile and its neighbor (like walls or corners)
-        info.Obstruction = PerformRaycast(origin + offset, direction, direction.magnitude);
-
-        return info;
-    }
-
     public static List<TileNode> ConvertGraphToTileNodes(List<GraphNode> graphNodes)
     {
         List<TileNode> tileNodes = new List<TileNode>();
