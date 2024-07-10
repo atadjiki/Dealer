@@ -23,16 +23,21 @@ namespace Pathfinding
 
         private TileCoordinates _coords;
 
+        private Vector3 _truePosition; //raycasted position 
+
         public void Setup(TileCoordinates coordinates, uint graphIndex)
         {
             _coords = coordinates;
 
             Vector3 origin = _coords.GetOrigin();
 
+            TileRaycastInfo raycastInfo = EnvironmentUtil.RaycastForTile(origin);
+
             // Node positions are stored as Int3. We can convert a Vector3 to an Int3 like this
-            this.position = (Int3) origin;
+            this.position = (Int3)origin; //the true position of the tile in the world. 
+            _truePosition = raycastInfo.HitInfo.point;
             this.GraphIndex = graphIndex;
-            layer = EnvironmentUtil.CheckTileLayer(origin);
+            layer = raycastInfo.Layer;
             Tag = (uint)layer;
             Walkable = IsLayerWalkable(layer);
 
@@ -140,15 +145,17 @@ namespace Pathfinding
         private TileConnectionInfo CheckNeighborConnection(EnvironmentDirection dir)
         {
             Vector3 direction = GetDirectionVector(dir);
-            Vector3 neighborOrigin = GetNeighboringTileLocation(GetOrigin(), dir);
+            Vector3 neighborOrigin = GetNeighboringTileLocation(GetGridPosition(), dir);
 
             TileConnectionInfo info = TileConnectionInfo.Build();
-            info.Layer = EnvironmentUtil.CheckTileLayer(neighborOrigin);
+            TileRaycastInfo raycastInfo  = EnvironmentUtil.RaycastForTile(neighborOrigin);
+
+            info.Layer = raycastInfo.Layer;
 
             Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
 
             //now check that nothing is in the way between this tile and its neighbor (like walls or corners)
-            Ray ray = new Ray(GetOrigin() + offset, direction);
+            Ray ray = new Ray(GetGridPosition() + offset, direction);
             RaycastHit hitInfo;
 
             if (Physics.Raycast(ray, out hitInfo, direction.magnitude))
@@ -204,9 +211,14 @@ namespace Pathfinding
             return _coords;
         }
 
-        public Vector3 GetOrigin()
+        public Vector3 GetGridPosition()
         {
             return _coords.GetOrigin();
+        }
+
+        public Vector3 GetTruePosition()
+        {
+            return _truePosition;
         }
 
         public int GetLevel()

@@ -32,12 +32,12 @@ public class EnvironmentTileSelector : EncounterEventHandler
         {
             if(node.layer == EnvironmentLayer.CHARACTER || node.layer == EnvironmentLayer.GROUND)
             {
-                Quad.transform.position = (Vector3) node.position;
+                Quad.transform.position = node.GetGridPosition();
                 Quad.SetActive(true);
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    EncounterStateMachine.OnAbilityChosen.Invoke(AbilityID.MOVE_FULL, (Vector3)node.position);
+                    EncounterStateMachine.OnAbilityChosen.Invoke(AbilityID.MOVE_FULL, node.GetGridPosition());
                 }
 
                 return;

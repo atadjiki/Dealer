@@ -46,11 +46,11 @@ public class CharacterPathRenderer : EncounterEventHandler
         TileNode node;
         if(EnvironmentUtil.GetNodeBeneathMouse(out node))
         {
-            MovementRangeType rangeType = GetRangeTypeFromPoint((Vector3)node.position);
+            MovementRangeType rangeType = GetRangeTypeFromPoint(node.GetGridPosition());
 
             if (node.layer == EnvironmentLayer.GROUND && rangeType != MovementRangeType.NONE)
             {
-                Vector3 destination = (Vector3)node.position;
+                Vector3 destination = node.GetTruePosition();
 
                 HashSet<Vector3> vectorSet = new HashSet<Vector3>(EnvironmentUtil.CalculateVectorPath(_origin, destination));
 

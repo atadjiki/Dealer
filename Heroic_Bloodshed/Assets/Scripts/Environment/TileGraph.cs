@@ -95,7 +95,7 @@ public class TileGraph : NavGraph
 
     public bool HasValidNeighborInDirection(TileNode node, EnvironmentDirection dir)
     {
-        Vector3 neighborOrigin = GetNeighboringTileLocation(node.GetOrigin(), dir);
+        Vector3 neighborOrigin = GetNeighboringTileLocation(node.GetGridPosition(), dir);
         Int3 neighborCoords = CalculateTileCoordinates(neighborOrigin);
 
         return AreValidCoordinates(neighborCoords);
@@ -138,7 +138,7 @@ public class TileGraph : NavGraph
 
             if (node.layer == EnvironmentLayer.STAIRS && AllowedMovementTypes.HasFlag(MovementType.STAIRS))
             {
-                Vector3 origin = (Vector3)node.position;
+                Vector3 origin = node.GetGridPosition();
 
                 //strip any existing connections since stairs have special movement
                 node.ClearConnections(true);
@@ -257,7 +257,7 @@ public class TileGraph : NavGraph
             {
                 TileNode node = (TileNode)graphNode;
 
-                Vector3 origin = (Vector3)node.position;
+                Vector3 origin = node.GetGridPosition();
 
                 if (node.layer != EnvironmentLayer.NONE)
                 {

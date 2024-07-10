@@ -32,7 +32,7 @@ public class MovementInfo
 
         foreach(TileNode node in Nodes)
         {
-            Vector3 vector = (Vector3) node.position;
+            Vector3 vector = node.GetTruePosition();
 
             vectors.Add(vector);
         }
@@ -42,11 +42,11 @@ public class MovementInfo
 
     public Vector3 GetStart()
     {
-        return (Vector3)Nodes[0].position;
+        return Nodes[0].GetGridPosition();
     }
 
     public Vector3 GetEnd()
     {
-        return (Vector3)Nodes[Nodes.Count-1].position;
+        return Nodes[Nodes.Count - 1].GetGridPosition();
     }
 }

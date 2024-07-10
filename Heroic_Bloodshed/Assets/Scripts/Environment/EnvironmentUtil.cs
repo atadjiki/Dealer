@@ -24,13 +24,13 @@ public class EnvironmentUtil
     }
 
     //Raycasting
-    public static EnvironmentLayer CheckTileLayer(Vector3 origin)
+    public static TileRaycastInfo RaycastForTile(Vector3 origin)
     {
+        TileRaycastInfo info = TileRaycastInfo.Build();
+
         Vector3 offset = new Vector3(0, (ENV_MAX_LVL * ENV_TILE_SIZE * ENV_LVL_STEP) + 1, 0);
 
         Ray ray = new Ray(origin + offset, Vector3.down);
-
-        EnvironmentLayer layer = EnvironmentLayer.NONE;
 
         foreach (RaycastHit hitInfo in Physics.RaycastAll(ray, offset.magnitude))
         {
@@ -42,15 +42,16 @@ public class EnvironmentUtil
                 {
                     int layerMask = hitInfo.collider.gameObject.layer;
 
-                    if(layer == EnvironmentLayer.NONE || layer == EnvironmentLayer.GROUND)
+                    if(info.Layer == EnvironmentLayer.NONE || info.Layer == EnvironmentLayer.GROUND)
                     {
-                        layer = GetLayer(layerMask);
+                        info.Layer = GetLayer(layerMask);
+                        info.HitInfo = hitInfo;
                     }
                 }
             }
         }
 
-        return layer;
+        return info;
     }
 
     public static bool GetNodeBeneathMouse(out TileNode node)
@@ -105,7 +106,7 @@ public class EnvironmentUtil
 
     public static Vector3 GetRandomLocation()
     {
-        return (Vector3) GetRandomNode().position;
+        return GetRandomNode().GetGridPosition();
     }
 
     public static List<Vector3> CalculateVectorPath(Vector3 origin, Vector3 destination)
@@ -124,8 +125,8 @@ public class EnvironmentUtil
             }
             else if (info.Type == MovementType.VAULT_OBSTACLE || info.Type == MovementType.VAULT_WALL)
             {
-                Vector3 start = (Vector3)info.Nodes[0].position;
-                Vector3 end = (Vector3)info.Nodes[1].position;
+                Vector3 start = info.Nodes[0].GetTruePosition();
+                Vector3 end = info.Nodes[1].GetTruePosition();
                 Vector3 midPoint = ((start + end) / 2) + new Vector3(0, ENV_TILE_SIZE / 2, 0);
 
                 vectors.Add(start);
@@ -225,7 +226,8 @@ public class EnvironmentUtil
 
         foreach (GraphNode node in cpath.allNodes)
         {
-            nodes.Add((Vector3)node.position);
+            TileNode tileNode = (TileNode)node;
+            nodes.Add(tileNode.GetGridPosition());
         }
 
         return nodes;
