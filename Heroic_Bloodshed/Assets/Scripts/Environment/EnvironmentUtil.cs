@@ -53,26 +53,6 @@ public class EnvironmentUtil
         return layer;
     }
 
-    public static EnvironmentLayer PerformRaycast(Vector3 origin, Vector3 direction, float range)
-    {
-        Ray ray = new Ray(origin, direction);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo, range))
-        {
-            if(hitInfo.collider != null)
-            {
-                int layerMask = hitInfo.collider.gameObject.layer;
-
-                EnvironmentLayer layer = GetLayer(layerMask);
-
-                return layer;
-            }
-        }
-
-        return EnvironmentLayer.NONE;
-    }
-
     public static bool GetNodeBeneathMouse(out TileNode node)
     {
         TileGraph graph = GetEnvironmentGraph();

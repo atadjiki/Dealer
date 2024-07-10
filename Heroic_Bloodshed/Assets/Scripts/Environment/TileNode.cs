@@ -148,7 +148,18 @@ namespace Pathfinding
             Vector3 offset = new Vector3(0, ENV_TILE_SIZE / 2, 0);
 
             //now check that nothing is in the way between this tile and its neighbor (like walls or corners)
-            info.Obstruction = EnvironmentUtil.PerformRaycast(GetOrigin() + offset, direction, direction.magnitude);
+            Ray ray = new Ray(GetOrigin() + offset, direction);
+            RaycastHit hitInfo;
+
+            if (Physics.Raycast(ray, out hitInfo, direction.magnitude))
+            {
+                if (hitInfo.collider != null)
+                {
+                    int layerMask = hitInfo.collider.gameObject.layer;
+
+                    info.Obstruction = GetLayer(layerMask);
+                }
+            }
 
             return info;
         }
