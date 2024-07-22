@@ -26,7 +26,7 @@ namespace Pathfinding {
 	///
 	/// Grid graphs are excellent for when you already have a grid-based world. But they also work well for free-form worlds.
 	///
-	/// Features:
+	/// \section gridgraph-features Features
 	/// - Throw any scene at it, and with minimal configurations you can get a good graph from it.
 	/// - Predictable pattern.
 	/// - Grid graphs work well with penalties and tags.
@@ -41,9 +41,8 @@ namespace Pathfinding {
 	/// - Perfect for terrains since it can make nodes walkable or unwalkable depending on the slope.
 	/// - Only supports a single layer, but you can use a <see cref="LayerGridGraph"/> if you need more layers.
 	///
+	/// \section gridgraph-inspector Inspector
 	/// [Open online documentation to see images]
-	///
-	/// <b>Inspector</b>
 	///
 	/// \inspectorField{Shape, inspectorGridMode}
 	/// \inspectorField{2D, is2D}
@@ -61,6 +60,7 @@ namespace Pathfinding {
 	/// \inspectorField{Account for slopes, maxStepUsesSlope}
 	/// \inspectorField{Max slope, maxSlope}
 	/// \inspectorField{Erosion iterations, erodeIterations}
+	/// \inspectorField{Erosion → Erosion Uses Tags, erosionUseTags}
 	/// \inspectorField{Use 2D physics, collision.use2D}
 	///
 	/// <i>Collision testing</i>
@@ -86,7 +86,7 @@ namespace Pathfinding {
 	/// \inspectorField{Show connections, showNodeConnections}
 	/// \inspectorField{Initial penalty, NavGraph.initialPenalty}
 	///
-	/// <b>Updating the graph during runtime</b>
+	/// \section gridgraph-updating Updating the graph during runtime
 	/// Any graph which implements the IUpdatableGraph interface can be updated during runtime.
 	/// For grid graphs this is a great feature since you can update only a small part of the grid without causing any lag like a complete rescan would.
 	///
@@ -102,7 +102,7 @@ namespace Pathfinding {
 	///
 	/// See: graph-updates (view in online documentation for working links) for more info about updating graphs during runtime
 	///
-	/// <b>Hexagonal graphs</b>
+	/// \section gridgraph-hexagonal Hexagonal graphs
 	/// The graph can be configured to work like a hexagon graph with some simple settings. The grid graph has a Shape dropdown.
 	/// If you set it to 'Hexagonal' the graph will behave as a hexagon graph.
 	/// Often you may want to rotate the graph +45 or -45 degrees.
@@ -111,7 +111,7 @@ namespace Pathfinding {
 	/// Note: Snapping to the closest node is not exactly as you would expect in a real hexagon graph,
 	/// but it is close enough that you will likely not notice.
 	///
-	/// <b>Configure using code</b>
+	/// \section gridgraph-configure-code Configure using code
 	///
 	/// A grid graph can be added and configured completely at runtime via code.
 	///
@@ -138,7 +138,7 @@ namespace Pathfinding {
 	///
 	/// See: runtime-graphs (view in online documentation for working links)
 	///
-	/// <b>Tree colliders</b>
+	/// \section gridgraph-trees Tree colliders
 	/// It seems that Unity will only generate tree colliders at runtime when the game is started.
 	/// For this reason, the grid graph will not pick up tree colliders when outside of play mode
 	/// but it will pick them up once the game starts. If it still does not pick them up

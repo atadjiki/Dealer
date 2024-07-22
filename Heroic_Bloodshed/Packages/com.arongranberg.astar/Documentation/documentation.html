@@ -575,7 +575,10 @@ code {
   margin-top: 0px;
   margin-bottom: 0px;
 }
-
+.member-list-item-header.active {
+  background-color: #eee;
+  border-bottom: 1px dashed #999;
+}
 .member-list-item-header:focus, .member-list-item-header:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
@@ -596,6 +599,10 @@ table.member-list-section a, table.member-list-section p, table.member-list-sect
   -webkit-margin-after: 0px;
   line-height: 1.5em;
   vertical-align: center;
+}
+
+.inspector-field .member-detailed {
+  padding-top: 10px;
 }
 
 .member-detailed {
@@ -668,14 +675,18 @@ table.member-list-section a, table.member-list-section p, table.member-list-sect
   width: 100%;
   height: 100%;
   background: #EEE;
-  display: none;
   padding: 5px 5px 5px 15px;
   line-height: 50%;
   border-top: 1px #AAA solid;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 .member-top-prot .protection {
   display: inline-block;
   padding: 0.4em 0.6em 0.4em 0.6em;
+}
+.member-top-prot.active {
+  opacity: 1;
 }
 
 .member-side-prot {
@@ -900,7 +911,7 @@ table.horizontalAlternative2D3D td.Alt3D {
 </style>
     <script type="text/javascript">
     var pathToRoot = "";
-    var packageVersion = "5.1.2";
+    var packageVersion = "5.1.4";
     var packageBranch = "master_Pro";
     var documentation_collection_base_url = "https://arongranberg.com/astar/documentation";
     var packageIsBeta = false;
@@ -1001,11 +1012,11 @@ table.horizontalAlternative2D3D td.Alt3D {
             <a class="navbar-brand" href="index.html">A* Pathfinding Project</a>
             <div class="dropdown package-version">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    5.1.2
+                    5.1.4
                   <span class="caret"></span>
                 </button>
                 <div class="dropdown-menu" id="package-version-alternatives">
-                  <a href="https://arongranberg.com/astar/documentation/stable/#">5.1.2</a>
+                  <a href="https://arongranberg.com/astar/documentation/stable/#">5.1.4</a>
                 </div>
             </div>
         </div>

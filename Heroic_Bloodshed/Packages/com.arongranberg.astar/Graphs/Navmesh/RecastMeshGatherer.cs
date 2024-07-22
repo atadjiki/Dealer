@@ -12,6 +12,7 @@ namespace Pathfinding.Graphs.Navmesh {
 	using Pathfinding.Jobs;
 	using Pathfinding.Drawing;
 	using UnityEngine.Profiling;
+	using Unity.Collections.LowLevel.Unsafe;
 
 	[BurstCompile]
 	public class RecastMeshGatherer {
@@ -61,6 +62,7 @@ namespace Pathfinding.Graphs.Navmesh {
 
 		struct TreeInfo {
 			public List<GatheredMesh> submeshes;
+			public Vector3 localScale;
 			public bool supportsRotation;
 		}
 
@@ -182,6 +184,8 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// Add vertex and triangle buffers that can later be used to create a <see cref="GatheredMesh"/>.
 		///
 		/// The returned index can be used in the <see cref="GatheredMesh.meshDataIndex"/> field of the <see cref="GatheredMesh"/> struct.
+		///
+		/// You can use the returned index multiple times with different matrices, to create instances of the same object in multiple locations.
 		/// </summary>
 		public int AddMeshBuffers (Vector3[] vertices, int[] triangles) {
 			return AddMeshBuffers(new NativeArray<Vector3>(vertices, Allocator.Persistent), new NativeArray<int>(triangles, Allocator.Persistent));
@@ -191,6 +195,8 @@ namespace Pathfinding.Graphs.Navmesh {
 		/// Add vertex and triangle buffers that can later be used to create a <see cref="GatheredMesh"/>.
 		///
 		/// The returned index can be used in the <see cref="GatheredMesh.meshDataIndex"/> field of the <see cref="GatheredMesh"/> struct.
+		///
+		/// You can use the returned index multiple times with different matrices, to create instances of the same object in multiple locations.
 		/// </summary>
 		public int AddMeshBuffers (NativeArray<Vector3> vertices, NativeArray<int> triangles) {
 			var meshDataIndex = -vertexBuffers.Count-1;
@@ -534,10 +540,11 @@ namespace Pathfinding.Graphs.Navmesh {
 					if (terrains[j].terrainData == null) continue;
 
 					Profiler.BeginSample("Generate terrain chunks");
-					GenerateTerrainChunks(terrains[j], bounds, desiredChunkSize);
+					bool anyTerrainChunks = GenerateTerrainChunks(terrains[j], bounds, desiredChunkSize);
 					Profiler.EndSample();
 
-					if (rasterizeTrees) {
+					// Don't rasterize trees if the terrain did not intersect the graph bounds
+					if (rasterizeTrees && anyTerrainChunks) {
 						Profiler.BeginSample("Find tree meshes");
 						// Rasterize all tree colliders on this terrain object
 						CollectTreeMeshes(terrains[j]);
@@ -547,21 +554,32 @@ namespace Pathfinding.Graphs.Navmesh {
 			}
 		}
 
-		void GenerateTerrainChunks (Terrain terrain, Bounds bounds, float desiredChunkSize) {
+		static int NonNegativeModulus (int x, int m) {
+			int r = x%m;
+			return r < 0 ? r+m : r;
+		}
+
+		/// <summary>Returns ceil(lhs/rhs), i.e lhs/rhs rounded up</summary>
+		static int CeilDivision (int lhs, int rhs) {
+			return (lhs + rhs - 1)/rhs;
+		}
+
+		bool GenerateTerrainChunks (Terrain terrain, Bounds bounds, float desiredChunkSize) {
 			var terrainData = terrain.terrainData;
 
 			if (terrainData == null)
 				throw new ArgumentException("Terrain contains no terrain data");
 
 			Vector3 offset = terrain.GetPosition();
-			Vector3 center = offset + terrainData.size * 0.5F;
+			var terrainSize = terrainData.size;
+			Vector3 center = offset + terrainSize * 0.5F;
 
 			// Figure out the bounds of the terrain in world space
-			var terrainBounds = new Bounds(center, terrainData.size);
+			var terrainBounds = new Bounds(center, terrainSize);
 
 			// Only include terrains which intersects the graph
 			if (!terrainBounds.Intersects(bounds))
-				return;
+				return false;
 
 			// Original heightmap size
 			int heightmapWidth = terrainData.heightmapResolution;
@@ -569,7 +587,7 @@ namespace Pathfinding.Graphs.Navmesh {
 
 			// Size of a single sample
 			Vector3 sampleSize = terrainData.heightmapScale;
-			sampleSize.y = terrainData.size.y;
+			sampleSize.y = terrainSize.y;
 
 			// Make chunks at least 12 quads wide
 			// since too small chunks just decreases performance due
@@ -582,27 +600,42 @@ namespace Pathfinding.Graphs.Navmesh {
 			var chunkSizeAlongZ = Mathf.CeilToInt(Mathf.Max(desiredChunkSize / (sampleSize.z * terrainDownsamplingFactor), MinChunkSize)) * terrainDownsamplingFactor;
 			chunkSizeAlongX = Mathf.Min(chunkSizeAlongX, heightmapWidth);
 			chunkSizeAlongZ = Mathf.Min(chunkSizeAlongZ, heightmapDepth);
-			var worldChunkSizeAlongX = chunkSizeAlongX * sampleSize.x;
-			var worldChunkSizeAlongZ = chunkSizeAlongZ * sampleSize.z;
 
-			// Figure out which chunks might intersect the bounding box
-			var allChunks = new IntRect(0, 0, heightmapWidth / chunkSizeAlongX, heightmapDepth / chunkSizeAlongZ);
-			var chunks = float.IsFinite(bounds.size.x) ? new IntRect(
-				Mathf.FloorToInt((bounds.min.x - offset.x) / worldChunkSizeAlongX),
-				Mathf.FloorToInt((bounds.min.z - offset.z) / worldChunkSizeAlongZ),
-				Mathf.FloorToInt((bounds.max.x - offset.x) / worldChunkSizeAlongX),
-				Mathf.FloorToInt((bounds.max.z - offset.z) / worldChunkSizeAlongZ)
-				) : allChunks;
-			chunks = IntRect.Intersection(chunks, allChunks);
-			if (!chunks.IsValid()) return;
+			Int2 startSample, chunks;
+			if (float.IsFinite(bounds.size.x)) {
+				startSample = new Int2(
+					Mathf.FloorToInt((bounds.min.x - offset.x) / sampleSize.x),
+					Mathf.FloorToInt((bounds.min.z - offset.z) / sampleSize.z)
+					);
 
-			// Sample the terrain heightmap
-			var sampleRect = new IntRect(
-				chunks.xmin * chunkSizeAlongX,
-				chunks.ymin * chunkSizeAlongZ,
-				Mathf.Min(heightmapWidth, (chunks.xmax+1) * chunkSizeAlongX) - 1,
-				Mathf.Min(heightmapDepth, (chunks.ymax+1) * chunkSizeAlongZ) - 1
-				);
+				// Ensure we always start at a multiple of the terrainDownsamplingFactor.
+				// Otherwise, the generated meshes may not look the same, depending on the original bounds.
+				// Not rounding would not technically be wrong, but this makes it more predictable.
+				startSample.x -= NonNegativeModulus(startSample.x, terrainDownsamplingFactor);
+				startSample.y -= NonNegativeModulus(startSample.y, terrainDownsamplingFactor);
+
+				// Figure out which chunks might intersect the bounding box
+				var worldChunkSizeAlongX = chunkSizeAlongX * sampleSize.x;
+				var worldChunkSizeAlongZ = chunkSizeAlongZ * sampleSize.z;
+				chunks = new Int2(
+					Mathf.CeilToInt((bounds.max.x - offset.x - startSample.x * sampleSize.x) / worldChunkSizeAlongX),
+					Mathf.CeilToInt((bounds.max.z - offset.z - startSample.y * sampleSize.z) / worldChunkSizeAlongZ)
+					);
+			} else {
+				startSample = new Int2(0, 0);
+				chunks = new Int2(CeilDivision(heightmapWidth, chunkSizeAlongX), CeilDivision(heightmapDepth, chunkSizeAlongZ));
+			}
+
+			// Figure out which samples we need from the terrain heightmap
+			var sampleRect = new IntRect(0, 0, chunks.x * chunkSizeAlongX - 1, chunks.y * chunkSizeAlongZ - 1).Offset(startSample);
+			var allSamples = new IntRect(0, 0, heightmapWidth - 1, heightmapDepth - 1);
+			// Clamp the samples to the heightmap bounds
+			sampleRect = IntRect.Intersection(sampleRect, allSamples);
+			if (!sampleRect.IsValid()) return false;
+
+			chunks = new Int2(CeilDivision(sampleRect.Width, chunkSizeAlongX), CeilDivision(sampleRect.Height, chunkSizeAlongZ));
+
+			Profiler.BeginSample("Get heightmap data");
 			float[, ] heights = terrainData.GetHeights(
 				sampleRect.xmin,
 				sampleRect.ymin,
@@ -615,63 +648,88 @@ namespace Pathfinding.Graphs.Navmesh {
 				sampleRect.Width - 1,
 				sampleRect.Height - 1
 				);
+			Profiler.EndSample();
 
-			var chunksOffset = offset + new Vector3(chunks.xmin * chunkSizeAlongX * sampleSize.x, 0, chunks.ymin * chunkSizeAlongZ * sampleSize.z);
-			for (int z = chunks.ymin; z <= chunks.ymax; z++) {
-				for (int x = chunks.xmin; x <= chunks.xmax; x++) {
-					var chunk = ConvertHeightmapChunkToGatheredMesh(
-						heights,
-						holes,
-						sampleSize,
-						chunksOffset,
-						(x - chunks.xmin) * chunkSizeAlongX,
-						(z - chunks.ymin) * chunkSizeAlongZ,
-						chunkSizeAlongX,
-						chunkSizeAlongZ,
-						terrainDownsamplingFactor
-						);
-					chunk.ApplyLayerModification(modificationsByLayer[terrain.gameObject.layer]);
-					meshes.Add(chunk);
+			unsafe {
+				var heightsSpan = new UnsafeSpan<float>(heights, out var gcHandle1);
+				var holesSpan = new UnsafeSpan<bool>(holes, out var gcHandle2);
+
+				var chunksOffset = offset + new Vector3(sampleRect.xmin * sampleSize.x, 0, sampleRect.ymin * sampleSize.z);
+				var chunksMatrix = Matrix4x4.TRS(chunksOffset, Quaternion.identity, sampleSize);
+				for (int z = 0; z < chunks.y; z++) {
+					for (int x = 0; x < chunks.x; x++) {
+						Profiler.BeginSample("Generate chunk");
+						GenerateHeightmapChunk(
+							ref heightsSpan,
+							ref holesSpan,
+							sampleRect.Width,
+							sampleRect.Height,
+							x * chunkSizeAlongX,
+							z * chunkSizeAlongZ,
+							chunkSizeAlongX,
+							chunkSizeAlongZ,
+							terrainDownsamplingFactor,
+							out var vertsSpan,
+							out var trisSpan
+							);
+						Profiler.EndSample();
+
+						var verts = vertsSpan.MoveToNativeArray(Allocator.Persistent);
+						var tris = trisSpan.MoveToNativeArray(Allocator.Persistent);
+
+						var meshDataIndex = AddMeshBuffers(verts, tris);
+
+						var chunk = new GatheredMesh {
+							meshDataIndex = meshDataIndex,
+							// An empty bounding box indicates that it should be calculated from the vertices later.
+							bounds = new Bounds(),
+							indexStart = 0,
+							indexEnd = -1,
+							areaIsTag = false,
+							area = 0,
+							solid = false,
+							matrix = chunksMatrix,
+							doubleSided = false,
+							flatten = false,
+						};
+						chunk.ApplyLayerModification(modificationsByLayer[terrain.gameObject.layer]);
+
+						meshes.Add(chunk);
+					}
 				}
-			}
-		}
 
-		/// <summary>Returns ceil(lhs/rhs), i.e lhs/rhs rounded up</summary>
-		static int CeilDivision (int lhs, int rhs) {
-			return (lhs + rhs - 1)/rhs;
+				UnsafeUtility.ReleaseGCObject(gcHandle1);
+				UnsafeUtility.ReleaseGCObject(gcHandle2);
+			}
+			return true;
 		}
 
 		/// <summary>Generates a terrain chunk mesh</summary>
-		public GatheredMesh ConvertHeightmapChunkToGatheredMesh (float[, ] heights, bool[,] holes, Vector3 sampleSize, Vector3 offset, int x0, int z0, int width, int depth, int stride) {
+		[BurstCompile]
+		public static void GenerateHeightmapChunk (ref UnsafeSpan<float> heights, ref UnsafeSpan<bool> holes, int heightmapWidth, int heightmapDepth, int x0, int z0, int width, int depth, int stride, out UnsafeSpan<Vector3> verts, out UnsafeSpan<int> tris) {
 			// Downsample to a smaller mesh (full resolution will take a long time to rasterize)
 			// Round up the width to the nearest multiple of terrainSampleSize and then add 1
 			// (off by one because there are vertices at the edge of the mesh)
-			var heightmapDepth = heights.GetLength(0);
-			var heightmapWidth = heights.GetLength(1);
 			int resultWidth = CeilDivision(Mathf.Min(width, heightmapWidth - x0), stride) + 1;
 			int resultDepth = CeilDivision(Mathf.Min(depth, heightmapDepth - z0), stride) + 1;
 
 			// Create a mesh from the heightmap
 			var numVerts = resultWidth * resultDepth;
-			var verts = new NativeArray<Vector3>(numVerts, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
-			int numTris = (resultWidth-1)*(resultDepth-1)*2*3;
-			var tris = new NativeArray<int>(numTris, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-			// Using an UnsafeSpan instead of a NativeArray is much faster when writing to the array from C#
-			var vertsSpan = verts.AsUnsafeSpan();
+			var numTris = (resultWidth-1)*(resultDepth-1)*2*3;
+			verts = new UnsafeSpan<Vector3>(Allocator.Persistent, numVerts);
+			tris = new UnsafeSpan<int>(Allocator.Persistent, numTris);
 
 			// Create lots of vertices
 			for (int z = 0; z < resultDepth; z++) {
 				int sampleZ = Math.Min(z0 + z*stride, heightmapDepth-1);
 				for (int x = 0; x < resultWidth; x++) {
 					int sampleX = Math.Min(x0 + x*stride, heightmapWidth-1);
-					vertsSpan[z*resultWidth + x] = new Vector3(sampleX * sampleSize.x, heights[sampleZ, sampleX]*sampleSize.y, sampleZ * sampleSize.z) + offset;
+					verts[z*resultWidth + x] = new Vector3(sampleX, heights[sampleZ*heightmapWidth + sampleX], sampleZ);
 				}
 			}
 
 			// Create the mesh by creating triangles in a grid like pattern
 			int triangleIndex = 0;
-			var trisSpan = tris.AsUnsafeSpan();
 			for (int z = 0; z < resultDepth-1; z++) {
 				for (int x = 0; x < resultWidth-1; x++) {
 					// Try to check if the center of the cell is a hole or not.
@@ -679,48 +737,36 @@ namespace Pathfinding.Graphs.Navmesh {
 					int sampleX = Math.Min(x0 + stride/2 + x*stride, heightmapWidth-2);
 					int sampleZ = Math.Min(z0 + stride/2 + z*stride, heightmapDepth-2);
 
-					if (holes[sampleZ, sampleX]) {
+					if (holes[sampleZ*(heightmapWidth-1) + sampleX]) {
 						// Not a hole, generate a mesh here
-						trisSpan[triangleIndex]   = z*resultWidth + x;
-						trisSpan[triangleIndex+1] = (z+1)*resultWidth + x+1;
-						trisSpan[triangleIndex+2] = z*resultWidth + x+1;
+						tris[triangleIndex]   = z*resultWidth + x;
+						tris[triangleIndex+1] = (z+1)*resultWidth + x+1;
+						tris[triangleIndex+2] = z*resultWidth + x+1;
 						triangleIndex += 3;
-						trisSpan[triangleIndex]   = z*resultWidth + x;
-						trisSpan[triangleIndex+1] = (z+1)*resultWidth + x;
-						trisSpan[triangleIndex+2] = (z+1)*resultWidth + x+1;
+						tris[triangleIndex]   = z*resultWidth + x;
+						tris[triangleIndex+1] = (z+1)*resultWidth + x;
+						tris[triangleIndex+2] = (z+1)*resultWidth + x+1;
 						triangleIndex += 3;
 					}
 				}
 			}
 
-
-			var meshDataIndex = AddMeshBuffers(verts, tris);
-
-			var mesh = new GatheredMesh {
-				meshDataIndex = meshDataIndex,
-				// An empty bounding box indicates that it should be calculated from the vertices later.
-				bounds = new Bounds(),
-				indexStart = 0,
-				indexEnd = triangleIndex,
-				areaIsTag = false,
-				area = 0,
-				solid = false,
-				matrix = Matrix4x4.identity,
-				doubleSided = false,
-				flatten = false,
-			};
-			return mesh;
+			tris = tris.Slice(0, triangleIndex);
 		}
 
 		void CollectTreeMeshes (Terrain terrain) {
+			Profiler.BeginSample("Get tree data from terrain");
 			TerrainData data = terrain.terrainData;
 			var treeInstances = data.treeInstances;
 			var treePrototypes = data.treePrototypes;
+			var terrainPos = terrain.transform.position;
+			var terrainSize = data.size;
+			Profiler.EndSample();
 
-			for (int i = 0; i < treeInstances.Length; i++) {
-				TreeInstance instance = treeInstances[i];
-				TreePrototype prot = treePrototypes[instance.prototypeIndex];
-
+			Profiler.BeginSample("Process tree prototypes");
+			var treeInfos = new TreeInfo[treePrototypes.Length];
+			for (int i = 0; i < treePrototypes.Length; i++) {
+				TreePrototype prot = treePrototypes[i];
 				// Make sure that the tree prefab exists
 				if (prot.prefab == null) {
 					continue;
@@ -732,6 +778,7 @@ namespace Pathfinding.Graphs.Navmesh {
 					// The unity terrain system only supports rotation for trees with a LODGroup on the root object.
 					// Unity still sets the instance.rotation field to values even they are not used, so we need to explicitly check for this.
 					treeInfo.supportsRotation = prot.prefab.TryGetComponent<LODGroup>(out var dummy);
+					treeInfo.localScale = prot.prefab.transform.localScale;
 
 					var colliders = ListPool<Collider>.Claim();
 					var rootMatrixInv = prot.prefab.transform.localToWorldMatrix.inverse;
@@ -751,11 +798,11 @@ namespace Pathfinding.Graphs.Navmesh {
 								mesh.ApplyLayerModification(modificationsByLayer[collider.gameObject.layer]);
 							}
 
-							// The bounds are incorrectly based on collider.bounds.
+							// The bounds are incorrectly based on collider.bounds, and may not even be initialized by the physics system.
 							// It is incorrect because the collider is on the prefab, not on the tree instance
 							// so we need to recalculate the bounds based on the actual vertex positions
 							mesh.RecalculateBounds();
-							//mesh.matrix = collider.transform.localToWorldMatrix.inverse * mesh.matrix;
+
 							treeInfo.submeshes.Add(mesh);
 						}
 					}
@@ -763,12 +810,21 @@ namespace Pathfinding.Graphs.Navmesh {
 					ListPool<Collider>.Release(ref colliders);
 					cachedTreePrefabs[prot.prefab] = treeInfo;
 				}
+				treeInfos[i] = treeInfo;
+			}
+			Profiler.EndSample();
 
-				var treePosition = terrain.transform.position +  Vector3.Scale(instance.position, data.size);
+			Profiler.BeginSample("Convert trees to meshes");
+			for (int i = 0; i < treeInstances.Length; i++) {
+				TreeInstance instance = treeInstances[i];
+				var treeInfo = treeInfos[instance.prototypeIndex];
+				if (treeInfo.submeshes == null || treeInfo.submeshes.Count == 0) continue;
+
+				var treePosition = terrainPos +  Vector3.Scale(instance.position, terrainSize);
 				var instanceSize = new Vector3(instance.widthScale, instance.heightScale, instance.widthScale);
-				var prefabScale = Vector3.Scale(instanceSize, prot.prefab.transform.localScale);
-				var rotation = treeInfo.supportsRotation ? instance.rotation : 0;
-				var matrix = Matrix4x4.TRS(treePosition, Quaternion.AngleAxis(rotation * Mathf.Rad2Deg, Vector3.up), prefabScale);
+				var prefabScale = Vector3.Scale(instanceSize, treeInfo.localScale);
+				var rotation = treeInfo.supportsRotation ? Quaternion.AngleAxis(instance.rotation * Mathf.Rad2Deg, Vector3.up) : Quaternion.identity;
+				var matrix = Matrix4x4.TRS(treePosition, rotation, prefabScale);
 
 				for (int j = 0; j < treeInfo.submeshes.Count; j++) {
 					var item = treeInfo.submeshes[j];
@@ -776,6 +832,7 @@ namespace Pathfinding.Graphs.Navmesh {
 					meshes.Add(item);
 				}
 			}
+			Profiler.EndSample();
 		}
 
 		bool ShouldIncludeCollider (Collider collider) {

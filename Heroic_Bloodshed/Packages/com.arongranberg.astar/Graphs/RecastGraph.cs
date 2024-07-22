@@ -22,7 +22,49 @@ namespace Pathfinding {
 	///
 	/// For a tutorial on how to configure a recast graph, take a look at create-recast (view in online documentation for working links).
 	///
+	/// \section recastinspector Inspector
+	///
 	/// [Open online documentation to see images]
+	///
+	/// <b>Shape</b>
+	/// \inspectorField{Dimensions, dimensionMode}
+	/// \inspectorField{Center, forcedBoundsCenter}
+	/// \inspectorField{Size, forcedBoundsSize}
+	/// \inspectorField{Rotation, rotation}
+	/// \inspectorField{Snap bounds to scene, SnapForceBoundsToScene}
+	///
+	/// <b>Input Filtering</b>
+	/// \inspectorField{Filter Objects By, collectionSettings.collectionMode}
+	/// \inspectorField{Layer Mask, collectionSettings.layerMask}
+	/// \inspectorField{Tag Mask, collectionSettings.tagMask}
+	/// \inspectorField{Rasterize Terrains, collectionSettings.rasterizeTerrain}
+	/// \inspectorField{Rasterize Trees, collectionSettings.rasterizeTrees}
+	/// \inspectorField{Heightmap Downsampling, collectionSettings.terrainHeightmapDownsamplingFactor}
+	/// \inspectorField{Rasterize Meshes, collectionSettings.rasterizeMeshes}
+	/// \inspectorField{Rasterize Colliders, collectionSettings.rasterizeColliders}
+	///
+	/// <b>Agent Characteristics</b>
+	/// \inspectorField{Character Radius, characterRadius}
+	/// \inspectorField{Character Height, walkableHeight}
+	/// \inspectorField{Max Step Height, walkableClimb}
+	/// \inspectorField{Max Slope, maxSlope}
+	/// \inspectorField{Per Layer Modifications, perLayerModifications}
+	///
+	/// <b>Rasterization</b>
+	/// \inspectorField{Voxel Size, cellSize}
+	/// \inspectorField{Use Tiles, useTiles}
+	/// \inspectorField{Tile Size, editorTileSize}
+	/// \inspectorField{Max Border Edge Length, maxEdgeLength}
+	/// \inspectorField{Edge Simplification, contourMaxError}
+	/// \inspectorField{Min Region Size, minRegionSize}
+	/// \inspectorField{Round Collider Detail, colliderRasterizeDetail}
+	///
+	/// <b>Runtime Settings</b>
+	/// \inspectorField{Affected By Navmesh Cuts, enableNavmeshCutting}
+	///
+	/// <b>Advanced</b>
+	/// \inspectorField{Relevant Graph Surface Mode, relevantGraphSurfaceMode}
+	/// \inspectorField{Initial Penalty, initialPenalty}
 	///
 	/// \section howitworks How a recast graph works
 	/// When generating a recast graph what happens is that the world is voxelized.
@@ -917,13 +959,10 @@ namespace Pathfinding {
 					graph.StartBatchTileUpdate();
 					for (int z = 0; z < tileRect.Height; z++) {
 						for (int x = 0; x < tileRect.Width; x++) {
-							var tileIndex = (z+tileRect.ymin)*graph.tileXCount + (x + tileRect.xmin);
-							graph.ClearTile(x + tileRect.xmin, z+tileRect.ymin);
-
 							var newTile = tiles[z*tileRect.Width + x];
 							// Assign the new tile
 							newTile.graph = graph;
-							graph.tiles[tileIndex] = newTile;
+							graph.ClearTile(x + tileRect.xmin, z+tileRect.ymin, newTile);
 						}
 					}
 					graph.EndBatchTileUpdate();
@@ -1247,7 +1286,7 @@ namespace Pathfinding {
 						NavmeshTile tile = tiles[x + z*tileXCount];
 						newTiles[(x - newTileBounds.xmin) + (z - newTileBounds.ymin)*newTileBounds.Width] = tile;
 					} else {
-						ClearTile(x, z);
+						ClearTile(x, z, null);
 
 						// This tile is removed, and that means some off-mesh links may need to be recalculated
 						DirtyBounds(GetTileBounds(x, z));

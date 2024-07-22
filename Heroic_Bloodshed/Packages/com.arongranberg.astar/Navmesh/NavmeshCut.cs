@@ -280,7 +280,7 @@ namespace Pathfinding {
 		}
 
 		/// <summary>Internal method to notify the NavmeshCut that it has just been used to update the navmesh</summary>
-		internal override void NotifyUpdated (GridLookup<NavmeshClipper>.Root previousState) {
+		public override void NotifyUpdated (GridLookup<NavmeshClipper>.Root previousState) {
 			previousState.previousPosition = tr.position;
 
 			if (useRotationAndScale) {

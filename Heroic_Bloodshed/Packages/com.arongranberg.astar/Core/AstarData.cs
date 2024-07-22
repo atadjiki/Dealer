@@ -396,6 +396,9 @@ namespace Pathfinding {
 
 			var gr = new List<NavGraph>(graphs);
 
+			// Trim nulls at the end
+			while (gr.Count > 0 && gr[gr.Count-1] == null) gr.RemoveAt(gr.Count-1);
+
 			// Set an offset so that the deserializer will load
 			// the graphs with the correct graph indexes
 			sr.SetGraphIndexOffset(gr.Count);

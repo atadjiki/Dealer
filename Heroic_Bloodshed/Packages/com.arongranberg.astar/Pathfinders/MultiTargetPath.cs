@@ -246,8 +246,7 @@ namespace Pathfinding {
 		}
 
 		protected override void Prepare () {
-			nnConstraint.tags = enabledTags;
-			var startNNInfo = AstarPath.active.GetNearest(startPoint, nnConstraint);
+			var startNNInfo = GetNearest(startPoint);
 			var startNode = startNNInfo.node;
 
 			if (endingCondition != null) {
@@ -289,7 +288,7 @@ namespace Pathfinding {
 
 			for (int i = 0; i < targetPoints.Length; i++) {
 				var originalTarget = targetPoints[i];
-				var endNNInfo = AstarPath.active.GetNearest(originalTarget, nnConstraint);
+				var endNNInfo = GetNearest(originalTarget);
 
 				targetNodes[i] = endNNInfo.node;
 

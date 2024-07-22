@@ -33,7 +33,7 @@ namespace Pathfinding {
 		protected void AutoRepathInspector () {
 			var mode = FindProperty("autoRepathBacking.mode");
 
-			PropertyField(mode, "Recalculate paths automatically");
+			PropertyField(mode, "Recalculate Paths Automatically");
 			if (!mode.hasMultipleDifferentValues) {
 				var modeValue = (AutoRepathPolicy.Mode)mode.enumValueIndex;
 				EditorGUI.indentLevel++;
@@ -60,7 +60,10 @@ namespace Pathfinding {
 					EditorGUILayout.Toggle("Has Path", ai.hasPath);
 					EditorGUILayout.Toggle("Path Pending", ai.pathPending);
 					if (ai.isTraversingOffMeshLink) {
-						EditorGUILayout.Toggle("Traversing off-mesh link", true);
+						EditorGUILayout.Toggle("Traversing Off-Mesh Link", true);
+					}
+					if (ai.isStopped) {
+						EditorGUILayout.Toggle("IsStopped (user controlled)", ai.isStopped);
 					}
 					EditorGUI.EndDisabledGroup();
 
@@ -68,7 +71,7 @@ namespace Pathfinding {
 					if (ai.entityExists) ai.destination = newDestination;
 
 					EditorGUI.BeginDisabledGroup(true);
-					EditorGUILayout.LabelField("Remaining distance", ai.remainingDistance.ToString("0.00"));
+					EditorGUILayout.LabelField("Remaining Distance", ai.remainingDistance.ToString("0.00"));
 					EditorGUILayout.LabelField("Speed", ai.velocity.magnitude.ToString("0.00"));
 				} else {
 					int nReachedDestination = 0;
@@ -151,6 +154,9 @@ namespace Pathfinding {
 					EditorGUILayout.HelpBox("Using the navmesh normal as the movement plane source is only recommended if you have a spherical or otherwise non-planar world. It has a performance overhead.", MessageType.Info);
 				}
 			}
+
+			this.Popup("syncPosition", new [] { new GUIContent("Move independently of transform"), new GUIContent("Move agent with transform") }, "Position Sync");
+			this.Popup("syncRotation", new [] { new GUIContent("Rotate independently of transform"), new GUIContent("Rotate agent with transform") }, "Rotation Sync");
 
 			Section("Pathfinding");
 			PathfindingSettingsInspector();

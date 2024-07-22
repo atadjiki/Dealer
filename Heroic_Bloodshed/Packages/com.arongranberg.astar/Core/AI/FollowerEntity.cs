@@ -34,7 +34,7 @@ namespace Pathfinding {
 	/// Of note is that this component shouldn't be used with a <see cref="Seeker"/> component.
 	/// It instead has its own settings for pathfinding, which are stored in the <see cref="pathfindingSettings"/> field.
 	///
-	/// <b>Features</b>
+	/// \section followerentity-features Features
 	///
 	/// - Uses Unity's ECS (Entity Component System) to move the agent. This means it is highly-performant and is able to utilize multiple threads.
 	/// - Supports local avoidance (see local-avoidance) (view in online documentation for working links).
@@ -51,7 +51,59 @@ namespace Pathfinding {
 	/// - Can keep a desired distance to walls.
 	/// - Can approach its destination with a desired facing direction.
 	///
-	/// <b>%ECS</b>
+	/// \section followerentity-inspector Inspector
+	///
+	/// <b>Shape</b>
+	/// \inspectorField{Radius, radius}
+	/// \inspectorField{Height, height}
+	/// \inspectorField{Orientation, orientation}
+	///
+	/// <b>Movement</b>
+	/// \inspectorField{Speed, maxSpeed}
+	/// \inspectorField{Rotation Speed, rotationSpeed}
+	/// \inspectorField{Max Rotation Speed, maxRotationSpeed}
+	/// \inspectorField{Allow Rotating On The Spot, movementSettings.follower.allowRotatingOnSpot}
+	/// \inspectorField{Max On Spot Rotation Speed, movementSettings.follower.maxOnSpotRotationSpeed}
+	/// \inspectorField{Slowdown Time When Turning On Spot, movementSettings.follower.slowdownTimeWhenTurningOnSpot}
+	/// \inspectorField{Position Smoothing, positionSmoothing}
+	/// \inspectorField{Rotation Smoothing, rotationSmoothing}
+	/// \inspectorField{Slowdown Time, movementSettings.follower.slowdownTime}
+	/// \inspectorField{Stop Distance, movementSettings.stopDistance}
+	/// \inspectorField{Lead In Radius When Approaching Destination, movementSettings.follower.leadInRadiusWhenApproachingDestination}
+	/// \inspectorField{Desired Wall Distance, movementSettings.desiredWallDistance}
+	/// \inspectorField{Gravity, enableGravity}
+	/// \inspectorField{Raycast Ground Mask, groundMask}
+	/// \inspectorField{Movement Plane Source, movementPlaneSource}
+	///
+	/// <b>%Pathfinding</b>
+	/// \inspectorField{Traversable Graphs, pathfindingSettings.graphMask}
+	/// \inspectorField{Tags/Penalty, pathfindingSettings.tagPenalties}
+	/// \inspectorField{Tags/Traversable, pathfindingSettings.traversableTags}
+	/// \inspectorField{Recalculate Paths Automatically, autoRepath.mode}
+	/// \inspectorField{Period, autoRepath.period}
+	///
+	/// <b>Local Avoidance</b>
+	/// \inspectorField{Enable Local Avoidance, enableLocalAvoidance}
+	/// \inspectorField{Agent Time Horizon, rvoSettings.agentTimeHorizon}
+	/// \inspectorField{Obstacle Time Horizon, rvoSettings.obstacleTimeHorizon}
+	/// \inspectorField{Max Neighbours, rvoSettings.maxNeighbours}
+	/// \inspectorField{Layer, rvoSettings.layer}
+	/// \inspectorField{Collides With, rvoSettings.collidesWith}
+	/// \inspectorField{Priority, rvoSettings.priority}
+	/// \inspectorField{Locked, rvoSettings.locked}
+	///
+	/// <b>Debug</b>
+	/// \inspectorField{Movement Debug Rendering, debugFlags}
+	/// \inspectorField{Local Avoidance Debug Rendering, rvoSettings.debug}
+	/// \inspectorField{Reached Destination, reachedDestination}
+	/// \inspectorField{Reached End Of Path, reachedEndOfPath}
+	/// \inspectorField{Has Path, hasPath}
+	/// \inspectorField{Path Pending, pathPending}
+	/// \inspectorField{Destination, destination}
+	/// \inspectorField{Remaining Distance, destination}
+	/// \inspectorField{Speed, velocity}
+	///
+	/// \section followerentity-ecs ECS
 	///
 	/// This script uses Unity's ECS (Entity Component System) to move the agent. This means it is highly-performant and is able to utilize multiple threads.
 	/// Internally, an entity is created for the agent with the following components:
@@ -108,7 +160,7 @@ namespace Pathfinding {
 	/// Instead, this script contains its own internal <see cref="FunnelModifier"/> which it uses to simplify the path before it follows it.
 	/// In also doesn't use a separate <see cref="RVOController"/> component for local avoidance, but instead it stores local avoidance settings in <see cref="rvoSettings"/>.
 	///
-	/// <b>Best practices for good performance</b>
+	/// \section followerentity-bestpractices Best practices for good performance
 	///
 	/// Using ECS components has some downsides. Accessing properties on this script is significantly slower compared to accessing properties on other movement scripts.
 	/// This is because on each property access, the script has to make sure no jobs are running concurrently, which is a relatively expensive operation.
@@ -169,6 +221,12 @@ namespace Pathfinding {
 		OrientationMode orientationBacking;
 		[SerializeField]
 		MovementPlaneSource movementPlaneSourceBacking = MovementPlaneSource.Graph;
+
+		[SerializeField]
+		bool syncPosition = true;
+
+		[SerializeField]
+		bool syncRotation = true;
 
 		/// <summary>Cached transform component</summary>
 		Transform tr;
@@ -320,6 +378,10 @@ namespace Pathfinding {
 			CancelCurrentPathRequest();
 			if (World.DefaultGameObjectInjectionWorld != null && World.DefaultGameObjectInjectionWorld.IsCreated) World.DefaultGameObjectInjectionWorld.EntityManager.DestroyEntity(entity);
 			managedState.pathTracer.Dispose();
+
+			// Note: The entity itself may actually live for another frame to handle cleanup components.
+			// But we want to completely forget about it here.
+			entity = default;
 		}
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::radius</summary>
@@ -467,7 +529,7 @@ namespace Pathfinding {
 		/// </summary>
 		public OffMeshLinks.OffMeshLinkTracer offMeshLink {
 			get {
-				if (entityStorageCache.Update(World.DefaultGameObjectInjectionWorld, entity, out var entityManager, out var storage) && entityManager.HasComponent<ManagedAgentOffMeshLinkTraversal>(entity)) {
+				if (entityStorageCache.Update(World.DefaultGameObjectInjectionWorld, entity, out var entityManager, out var storage) && entityManager.HasComponent<AgentOffMeshLinkTraversal>(entity)) {
 					agentOffMeshLinkTraversalRO.Update(entityManager);
 					var linkTraversal = agentOffMeshLinkTraversalRO[storage];
 					var linkTraversalManaged = entityManager.GetComponentData<ManagedAgentOffMeshLinkTraversal>(entity);
@@ -687,6 +749,28 @@ namespace Pathfinding {
 			}
 		}
 
+		/// <summary>\copydocref{PIDMovement.rotationSpeed}</summary>
+		public float rotationSpeed {
+			get => movement.follower.rotationSpeed;
+			set {
+				movement.follower.rotationSpeed = value;
+				if (entityStorageCache.GetComponentData(entity, ref movementSettingsAccessRW, out var movementSettings)) {
+					movementSettings.value.follower.rotationSpeed = value;
+				}
+			}
+		}
+
+		/// <summary>\copydocref{PIDMovement.maxRotationSpeed}</summary>
+		public float maxRotationSpeed {
+			get => movement.follower.maxRotationSpeed;
+			set {
+				movement.follower.maxRotationSpeed = value;
+				if (entityStorageCache.GetComponentData(entity, ref movementSettingsAccessRW, out var movementSettings)) {
+					movementSettings.value.follower.maxRotationSpeed = value;
+				}
+			}
+		}
+
 		/// <summary>\copydoc Pathfinding::IAstarAI::velocity</summary>
 		public Vector3 velocity => entityExists ? (Vector3)World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<MovementStatistics>(entity).estimatedVelocity : Vector3.zero;
 
@@ -756,6 +840,19 @@ namespace Pathfinding {
 					movement.stopDistance = value;
 					if (entityStorageCache.GetComponentData(entity, ref movementSettingsAccessRW, out var movementSettings)) {
 						movementSettings.value.stopDistance = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>\copydocref{MovementSettings.positionSmoothing}</summary>
+		public float positionSmoothing {
+			get => movement.positionSmoothing;
+			set {
+				if (movement.positionSmoothing != value) {
+					movement.positionSmoothing = value;
+					if (entityStorageCache.GetComponentData(entity, ref movementSettingsAccessRW, out var movementSettings)) {
+						movementSettings.value.positionSmoothing = value;
 					}
 				}
 			}
@@ -849,8 +946,6 @@ namespace Pathfinding {
 		static NativeList<float3> nextCornersScratch;
 		static NativeArray<int> indicesScratch;
 		static int scratchReferenceCount = 0;
-
-		/// <summary>\copydoc Pathfinding::IAstarAI::destination</summary>
 
 		/// <summary>
 		/// Position in the world that this agent should move to.
@@ -1082,12 +1177,30 @@ namespace Pathfinding {
 		/// See: <see cref="updateRotation"/>
 		/// </summary>
 		public bool updatePosition {
-			get {
-				if (!entityExists) return true;
-				var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-				return entityManager.HasComponent<SyncPositionWithTransform>(entity);
+			get => syncPosition;
+			set {
+				syncPosition = value;
+				ToggleComponent<SyncPositionWithTransform>(entity, value, false);
 			}
-			set => ToggleComponent<SyncPositionWithTransform>(entity, value, true);
+		}
+
+		/// <summary>
+		/// Determines if the character's rotation should be coupled to the Transform's rotation.
+		/// If false then all movement calculations will happen as usual, but the GameObject that this component is attached to will not rotate.
+		/// Instead, only the <see cref="rotation"/> property and the internal entity's rotation will change.
+		///
+		/// You can enable <see cref="PIDMovement.DebugFlags"/>.Rotation in <see cref="debugFlags"/> to draw a gizmos arrow in the scene view to indicate the agent's internal rotation.
+		///
+		/// See: <see cref="updatePosition"/>
+		/// See: <see cref="rotation"/>
+		/// See: <see cref="orientation"/>
+		/// </summary>
+		public bool updateRotation {
+			get => syncRotation;
+			set {
+				syncRotation = value;
+				ToggleComponent<SyncRotationWithTransform>(entity, value, false);
+			}
 		}
 
 		/// <summary>
@@ -1108,26 +1221,6 @@ namespace Pathfinding {
 					ToggleComponent<OrientationYAxisForward>(entity, value == OrientationMode.YAxisForward, false);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Determines if the character's rotation should be coupled to the Transform's rotation.
-		/// If false then all movement calculations will happen as usual, but the GameObject that this component is attached to will not rotate.
-		/// Instead, only the <see cref="rotation"/> property and the internal entity's rotation will change.
-		///
-		/// You can enable <see cref="PIDMovement.DebugFlags"/>.Rotation in <see cref="debugFlags"/> to draw a gizmos arrow in the scene view to indicate the agent's internal rotation.
-		///
-		/// See: <see cref="updatePosition"/>
-		/// See: <see cref="rotation"/>
-		/// See: <see cref="orientation"/>
-		/// </summary>
-		public bool updateRotation {
-			get {
-				if (!entityExists) return true;
-				var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-				return entityManager.HasComponent<SyncRotationWithTransform>(entity);
-			}
-			set => ToggleComponent<SyncRotationWithTransform>(entity, value, true);
 		}
 
 		/// <summary>Adds or removes a component from an entity</summary>
@@ -1503,7 +1596,6 @@ namespace Pathfinding {
 		/// In case the path has already been calculated, it will immediately replace the current path the AI is following.
 		///
 		/// If you pass null path, then the current path will be cleared and the agent will stop moving.
-		/// The agent will also abort traversing any off-mesh links it is currently traversing.
 		/// Note than unless you have also disabled <see cref="canSearch"/>, then the agent will soon recalculate its path and start moving again.
 		///
 		/// Note: Stopping the agent by passing a null path works. But this will stop the agent instantly, and it will not be able to use local avoidance or know its place on the navmesh.
@@ -1512,7 +1604,7 @@ namespace Pathfinding {
 		/// You can disable the automatic path recalculation by setting the <see cref="canSearch"/> field to false.
 		///
 		/// Note: This call will be ignored if the agent is currently traversing an off-mesh link.
-		/// Furthermore, if the agent starts traversing an off-mesh link, the current path request will be canceled (if one is currently in progress).
+		/// Furthermore, when an agent starts traversing an off-mesh link, the current path request will be canceled (if one is currently in progress).
 		///
 		/// <code>
 		/// IEnumerator Start () {
@@ -1750,6 +1842,8 @@ namespace Pathfinding {
 			// Structural changes
 			ToggleComponent<GravityState>(entity, enableGravity, false);
 			ToggleComponent<OrientationYAxisForward>(entity, orientation == OrientationMode.YAxisForward, false);
+			this.updatePosition = this.updatePosition;
+			this.updateRotation = this.updateRotation;
 			this.movementPlaneSource = this.movementPlaneSource;
 		}
 

@@ -35,6 +35,8 @@ namespace Pathfinding {
 		/// The penalty for each tag.
 		///
 		/// If null, all penalties will be treated as zero. Otherwise, the array should always have a length of exactly 32.
+		///
+		/// See: tags (view in online documentation for working links)
 		/// </summary>
 		public int[] tagPenalties;
 
@@ -43,6 +45,7 @@ namespace Pathfinding {
 		///
 		/// Note: This field is a bitmask.
 		/// See: bitmasks (view in online documentation for working links)
+		/// See: tags (view in online documentation for working links)
 		/// </summary>
 		public int traversableTags;
 

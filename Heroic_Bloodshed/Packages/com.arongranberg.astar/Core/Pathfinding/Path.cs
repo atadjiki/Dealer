@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using System.Runtime.CompilerServices;
 
 namespace Pathfinding {
 	/// <summary>Base class for all path types</summary>
@@ -80,7 +81,13 @@ namespace Pathfinding {
 
 		/// <summary>
 		/// If the path failed, this is true.
+		///
+		/// This typically happens if there's no valid node close enough to the start point of the path,
+		/// or if there's no node close enough to the target point that is reachable from the start point.
+		/// The <see cref="errorLog"/> will have more information about what happened.
+		///
 		/// See: <see cref="errorLog"/>
+		/// See: error-messages (view in online documentation for working links)
 		/// See: This is equivalent to checking path.CompleteState == PathCompleteState.Error
 		/// </summary>
 		public bool error { get { return CompleteState == PathCompleteState.Error; } }
@@ -88,6 +95,7 @@ namespace Pathfinding {
 		/// <summary>
 		/// Additional info on why a path failed.
 		/// See: <see cref="AstarPath.logPathResults"/>
+		/// See: error-messages (view in online documentation for working links)
 		/// </summary>
 		public string errorLog { get; private set; }
 
@@ -308,6 +316,28 @@ namespace Pathfinding {
 
 		public static readonly Unity.Profiling.ProfilerMarker MarkerOpenCandidateConnectionsToEnd = new Unity.Profiling.ProfilerMarker("OpenCandidateConnectionsToEnd");
 		public static readonly Unity.Profiling.ProfilerMarker MarkerTrace = new Unity.Profiling.ProfilerMarker("Trace");
+
+		/// <summary>
+		/// Paths use this to skip adding nodes to the search heap.
+		///
+		/// This is used by triangle nodes if they find an edge which is identical (but reversed) to an edge in an adjacent node.
+		/// This means that it cannot be better to visit the adjacent node's edge from any other way than what we are currently considering.
+		/// Therefore, instead of adding the node to the heap, only to pop it in the next iteration, we can skip that step and save some processing time.
+		///
+		/// After calling this function, the skipped node should be immediately opened, so that it can be searched.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SkipOverNode (uint pathNodeIndex, uint parentNodeIndex, uint fractionAlongEdge, uint hScore, uint gScore) {
+			ref var otherPathNode = ref pathHandler.pathNodes[pathNodeIndex];
+			otherPathNode.pathID = pathID;
+			otherPathNode.heapIndex = BinaryHeap.NotInHeap;
+			otherPathNode.parentIndex = parentNodeIndex;
+			otherPathNode.fractionAlongEdge = fractionAlongEdge;
+			// Make sure the path gets information about us having visited this in-between node,
+			// even if we never add it to the heap
+			OnVisitNode(parentNodeIndex, hScore, gScore);
+			pathHandler.LogVisitedNode(parentNodeIndex, hScore, gScore);
+		}
 
 		/// <summary>
 		/// Open a connection to the temporary end node if necessary.
@@ -847,6 +877,30 @@ namespace Pathfinding {
 			}
 		}
 
+		void InitializeNNConstraint () {
+			// Initialize the NNConstraint
+			nnConstraint.tags = enabledTags;
+
+			// If we are using a traversal provider, we wrap the original NNConstraint in one
+			// that takes both the constraint and the traversal provider into account.
+			// This is slightly convoluted since we want to avoid allocating an NNConstraint object.
+			if (traversalProvider != null) {
+				this.pathHandler.constraintWrapper.Set(this, nnConstraint, traversalProvider);
+			} else {
+				// Reset the wrapper to ensure it throws an exception if we accidentally use it
+				this.pathHandler.constraintWrapper.Reset();
+			}
+		}
+
+		/// <summary>
+		/// Closest point and node which is traversable by this path.
+		///
+		/// This takes both the NNConstraint and the ITraversalProvider into account.
+		/// </summary>
+		protected NNInfo GetNearest (Vector3 point) {
+			return AstarPath.active.GetNearest(point, traversalProvider != null ? pathHandler.constraintWrapper : nnConstraint);
+		}
+
 		/// <summary>
 		/// Prepares low level path variables for calculation.
 		/// Called before a path search will take place.
@@ -857,6 +911,7 @@ namespace Pathfinding {
 			this.pathHandler = pathHandler;
 			//Assign relevant path data to the pathHandler
 			pathHandler.InitializeForPath(this);
+			InitializeNNConstraint();
 
 			// Make sure that internalTagPenalties is an array which has the length 32
 			if (internalTagPenalties == null || internalTagPenalties.Length != 32)
@@ -998,7 +1053,6 @@ namespace Pathfinding {
 		/// </summary>
 		protected virtual void CalculateStep (long targetTick) {
 			int counter = 0;
-			var pathNodes = pathHandler.pathNodes;
 			var temporaryNodeStartIndex = pathHandler.temporaryNodeStartIndex;
 
 			// Continue to search as long as we haven't encountered an error and we haven't found the target
@@ -1012,7 +1066,7 @@ namespace Pathfinding {
 				}
 
 				// Select the node with the lowest F score and remove it from the open list
-				var currentPathNodeIndex = pathHandler.heap.Remove(pathNodes, out uint currentNodeG, out uint currentNodeF);
+				var currentPathNodeIndex = pathHandler.heap.Remove(pathHandler.pathNodes, out uint currentNodeG, out uint currentNodeF);
 				var currentNodeH = currentNodeF - currentNodeG;
 
 				if (currentPathNodeIndex >= temporaryNodeStartIndex) {

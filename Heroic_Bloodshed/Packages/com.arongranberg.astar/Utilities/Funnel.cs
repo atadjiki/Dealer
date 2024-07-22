@@ -711,10 +711,12 @@ namespace Pathfinding {
 			// TODO: On grid graphs this is kind of a weird way to do it.
 			// We project all points onto a plane and then unwrap them.
 			// It would be faster (and possibly more numerically accurate) to transform the points to graph space and then just use the xz coordinates.
-			// We also slow down the navmesh case by adding these 3 dot products.
-			leftPortal -= math.dot(leftPortal, projectionAxis);
-			rightPortal -= math.dot(rightPortal, projectionAxis);
-			point -= math.dot(point, projectionAxis);
+			// This branch is extremely well predicted, since it will always be true for grid graphs, and always false for other graphs.
+			if (!math.all(projectionAxis == 0)) {
+				leftPortal -= projectionAxis * math.dot(leftPortal, projectionAxis);
+				rightPortal -= projectionAxis * math.dot(rightPortal, projectionAxis);
+				point -= projectionAxis * math.dot(point, projectionAxis);
+			}
 
 			var portal = rightPortal - leftPortal;
 			var portalLengthInvSq = 1.0f / math.lengthsq(portal);

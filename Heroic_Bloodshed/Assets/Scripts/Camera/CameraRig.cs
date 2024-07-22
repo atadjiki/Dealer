@@ -1,6 +1,6 @@
-using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 [System.Serializable]
@@ -29,7 +29,7 @@ public class EnvironmentCameraSettings
 public class CameraRig : MonoBehaviour
 {
     [Header("MainCamera")]
-    [SerializeField] private CinemachineVirtualCamera CM_Main;
+    [SerializeField] private CinemachineCamera CM_Main;
 
     [Header("Settings")] //later there will be a separate rig for encounters and home base
     [SerializeField] private EnvironmentCameraSettings EnvironmentCameraSettings;
@@ -39,7 +39,7 @@ public class CameraRig : MonoBehaviour
     public static CameraRig Instance { get { return _instance; } }
 
     private CameraFollowTarget _followTarget;
-    private CinemachineFramingTransposer _framingTransposer;
+    private CinemachinePositionComposer _composer;
     private CameraBounds _bounds;
     private bool _rotating = false;
 
@@ -62,10 +62,11 @@ public class CameraRig : MonoBehaviour
         _bounds = this.gameObject.GetComponentInChildren<CameraBounds>();
         _followTarget = this.gameObject.GetComponentInChildren<CameraFollowTarget>();
 
-        _framingTransposer = CM_Main.GetCinemachineComponent<CinemachineFramingTransposer>();
-        _framingTransposer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
-        _framingTransposer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
-        _framingTransposer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
+        //TODO
+        //_composer = CM_Main.GetCinemachineComponent<CinemachinePositionComposer>();
+        //_composer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
+        //_composer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
+        //_composer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
     }
 
     private void FixedUpdate()
@@ -118,7 +119,7 @@ public class CameraRig : MonoBehaviour
 
         if (mouseScrollDelta.magnitude > 0)
         {
-            float currentDistance = _framingTransposer.m_CameraDistance;
+            float currentDistance = 0;//_composer.m_CameraDistance;
 
             float targetDistance = EnvironmentCameraSettings.MinDistance;
 
@@ -126,7 +127,7 @@ public class CameraRig : MonoBehaviour
 
             currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.smoothDeltaTime * EnvironmentCameraSettings.ZoomSpeed);
 
-            _framingTransposer.m_CameraDistance = currentDistance;
+            // _composer.m_CameraDistance = currentDistance;
         }
     }
 
@@ -245,20 +246,20 @@ public class CameraRig : MonoBehaviour
     {
         float time = 0;
 
-        float initialDistance = _framingTransposer.m_CameraDistance;
+        float initialDistance = 0;//_composer.m_CameraDistance;
 
         float targetDistance = EnvironmentCameraSettings.MaxDistance;
 
-        while (time < EnvironmentCameraSettings.ZoomDuration)
-        {
-            _framingTransposer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / EnvironmentCameraSettings.ZoomDuration);
+        //while (time < EnvironmentCameraSettings.ZoomDuration)
+        //{
+        //    _composer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / EnvironmentCameraSettings.ZoomDuration);
 
-            time += Time.smoothDeltaTime;
+        //    time += Time.smoothDeltaTime;
 
-            yield return new WaitForFixedUpdate();
-        }
+        //    yield return new WaitForFixedUpdate();
+        //}
 
-        _framingTransposer.m_CameraDistance = targetDistance;
+        //_composer.m_CameraDistance = targetDistance;
 
         yield return null;
     }

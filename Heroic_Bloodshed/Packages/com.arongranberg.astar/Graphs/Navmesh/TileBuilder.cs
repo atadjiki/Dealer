@@ -130,8 +130,8 @@ namespace Pathfinding.Graphs.Navmesh {
 
 			if (collectionSettings.rasterizeTerrain && dimensionMode == RecastGraph.DimensionMode.Dimension3D) {
 				Profiler.BeginSample("Find terrains");
-				// Split terrains up into meshes approximately the size of a single chunk
-				var desiredTerrainChunkSize = tileLayout.cellSize*math.max(tileLayout.tileSizeInVoxels.x, tileLayout.tileSizeInVoxels.y);
+				// Split terrains up into meshes approximately the size of a single tile
+				var desiredTerrainChunkSize = 0.51f * tileLayout.cellSize*(math.max(tileLayout.tileSizeInVoxels.x, tileLayout.tileSizeInVoxels.y) + 2*TileBorderSizeInVoxels);
 				meshGatherer.CollectTerrainMeshes(collectionSettings.rasterizeTrees, desiredTerrainChunkSize);
 				Profiler.EndSample();
 			}

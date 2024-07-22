@@ -49,6 +49,19 @@ namespace Pathfinding.Util {
 		}
 
 		/// <summary>
+		/// Creates a new UnsafeSpan from a 2D C# array.
+		/// The array is pinned to ensure it does not move while the span is in use.
+		///
+		/// You must unpin the pinned memory using UnsafeUtility.ReleaseGCObject when you are done with the span.
+		/// </summary>
+		public unsafe UnsafeSpan(T[,] data, out ulong gcHandle) {
+			unsafe {
+				this.ptr = (T*)UnsafeUtility.PinGCArrayAndGetDataAddress(data, out gcHandle);
+			}
+			this.length = (uint)data.Length;
+		}
+
+		/// <summary>
 		/// Allocates a new UnsafeSpan with the specified length.
 		/// The memory is not initialized.
 		///
@@ -180,6 +193,22 @@ namespace Pathfinding.Util {
 		}
 
 		/// <summary>
+		/// Moves this data to a new NativeArray.
+		///
+		/// This transfers ownership of the memory to the NativeArray, without any copying.
+		/// The NativeArray must be disposed when you are done with it.
+		///
+		/// Warning: This span must have been allocated using the specified allocator.
+		/// </summary>
+		public unsafe NativeArray<T> MoveToNativeArray (Allocator allocator) {
+			var arr = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(ptr, Length, allocator);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+			NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref arr, AtomicSafetyHandle.Create());
+#endif
+			return arr;
+		}
+
+		/// <summary>
 		/// Frees the underlaying memory.
 		///
 		/// Warning: The span must have been allocated using the specified allocator.
@@ -188,6 +217,24 @@ namespace Pathfinding.Util {
 		/// </summary>
 		public unsafe void Free (Allocator allocator) {
 			if (length > 0) AllocatorManager.Free<T>(allocator, ptr, (int)length);
+		}
+
+		/// <summary>
+		/// Returns a new span with a different size, copies the current data over to it, and frees this span.
+		///
+		/// The new span may be larger or smaller than the current span. If it is larger, the new elements will be uninitialized.
+		///
+		/// Warning: The span must have been allocated using the specified allocator.
+		///
+		/// Warning: You must never use the old span (or any other span referencing the same memory) again after calling this method.
+		///
+		/// Returns: The new span.
+		/// </summary>
+		public unsafe UnsafeSpan<T> Reallocate (Allocator allocator, int newSize) {
+			var newSpan = new UnsafeSpan<T>(allocator, newSize);
+			Slice(0, System.Math.Min(newSize, Length)).CopyTo(newSpan);
+			Free(allocator);
+			return newSpan;
 		}
 	}
 

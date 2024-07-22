@@ -548,7 +548,6 @@ namespace Pathfinding {
 
 			range *= range;
 
-			position.y = 0;
 			//Looping as 0,-1,1,-2,2,-3,3,-4,4 etc. Avoids code duplication by keeping it to one loop instead of two
 			for (int i = 0; !negAbort || !posAbort; i = i < 0 ? -i : -i-1) {
 				if (i < 0 && negAbort) continue;
@@ -572,7 +571,9 @@ namespace Pathfinding {
 					break;
 				}
 
-				if ((node.ClosestPointOnNodeXZ(position)-position).sqrMagnitude > range) {
+				var dir = node.ClosestPointOnNodeXZ(position)-position;
+				dir.y = 0;
+				if (dir.sqrMagnitude > range) {
 					if (i < 0) negAbort = true;
 					else posAbort = true;
 					continue;

@@ -31,7 +31,23 @@ namespace Pathfinding {
 	/// Note: Does not support linecast because the nodes do not have a surface.
 	///
 	/// [Open online documentation to see images]
+	///
+	/// \section pointgraph-inspector Inspector
 	/// [Open online documentation to see images]
+	///
+	/// \inspectorField{Root, root}
+	/// \inspectorField{Recursive, recursive}
+	/// \inspectorField{Tag, searchTag}
+	/// \inspectorField{Max Distance, maxDistance}
+	/// \inspectorField{Max Distance (axis aligned), limits}
+	/// \inspectorField{Raycast, raycast}
+	/// \inspectorField{Raycast → Use 2D Physics, use2DPhysics}
+	/// \inspectorField{Raycast → Thick Raycast, thickRaycast}
+	/// \inspectorField{Raycast → Thick Raycast -> Radius, thickRaycastRadius}
+	/// \inspectorField{Raycast → Mask, mask}
+	/// \inspectorField{Optimize For Sparse Graph, optimizeForSparseGraph}
+	/// \inspectorField{Nearest Node Queries Find Closest, nearestNodeDistanceMode}
+	/// \inspectorField{Initial Penalty, initialPenalty}
 	/// </summary>
 	[JsonOptIn]
 	[Pathfinding.Util.Preserve]

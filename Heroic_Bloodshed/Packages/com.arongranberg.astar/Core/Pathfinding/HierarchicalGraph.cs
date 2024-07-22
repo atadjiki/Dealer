@@ -412,6 +412,10 @@ namespace Pathfinding {
 
 				while (queue.Count > 0) queue.Dequeue().GetConnections(visitConnection, ref context, Connection.IncomingConnection | Connection.OutgoingConnection);
 
+				if (hGraph.currentConnections.Count > SlabAllocator<int>.MaxAllocationSize) {
+					throw new System.Exception("Too many connections for a single hierarchical node. Do you have thousands of off-mesh links in a single location?");
+				}
+
 				for (int i = 0; i < hGraph.currentConnections.Count; i++) {
 					var otherHierarchicalNode = hGraph.currentConnections[i];
 					Assert.AreNotEqual(otherHierarchicalNode, 0);

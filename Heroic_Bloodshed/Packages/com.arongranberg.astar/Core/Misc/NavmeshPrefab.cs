@@ -360,6 +360,10 @@ namespace Pathfinding {
 				graph.editorTileSize,
 				graph.useTiles
 				);
+			// Disable cropping to the graph's exact bounds, since this can lead to a 1 voxel border on the +X and +Z edges of the prefab,
+			// due to the cropping being conservative, to ensure the nodes are strictly inside the bounds.
+			tileLayout.graphSpaceSize.x = float.PositiveInfinity;
+			tileLayout.graphSpaceSize.z = float.PositiveInfinity;
 			var buildSettings = RecastBuilder.BuildTileMeshes(graph, tileLayout, new IntRect(0, 0, tileLayout.tileCount.x - 1, tileLayout.tileCount.y - 1));
 			buildSettings.scene = this.gameObject.scene;
 

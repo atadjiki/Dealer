@@ -1,3 +1,25 @@
+## 5.1.4 (2024-06-12)
+- Fixed an exception that could be thrown after updating a graph (regression in 5.1.3).
+- Reduced memory usage slightly.
+- Improved performance when updating a recast graph in a scene with a terrain.
+
+## 5.1.3 (2024-06-11)
+- \reflink{FollowerEntity.updatePosition} and \reflink{FollowerEntity.updateRotation} can now be set in the inspector, and the values are no longer reset if the component is disabled.
+- Fixed Unity's Random state would get reset by the FollowerEntity movement script on scene initialization.
+- Paths now take their assigned \reflink{ITraversalProvider} into account when finding the start and end nodes.
+		This fixes several issues where an agent could get stuck and not be able to calculate a path, because the node it was standing on (or the node closest to the destination)
+		was walkable according to the path's \reflink{NNConstraint}, but not according to its \reflink{ITraversalProvider}.
+- Fixed \reflink{FollowerEntity} sometimes getting stuck when traversing non-flat grid graphs.
+- Fixed \reflink{FollowerEntity} could throw an exception if it was disabled while it was traversing an off-mesh link.
+- Exposed a few more properties in the \reflink{FollowerEntity} class, and improved its documentation.
+- The number of temporary nodes for path calculations can now grow automatically. Therefore the ASTAR_MORE_MULTI_TARGET_PATH_TARGETS define is no longer needed.
+		This was only of importance if you used multi target paths with a lot of targets, or if you had a very large number of off-mesh links in your scene.
+- Fixed the 'Round Collider Detail' setting was not visible in the recast graph inspector when in 2D mode in some cases, even when it should.
+- Fixed \reflink{AstarData.DeserializeGraphsAdditive} would not remove null graphs from the end of the list of graphs before appending the new ones.
+- Fixed disabling a \reflink{NavmeshPrefab} component could later cause a null reference exception when the graph was destroyed.
+- Fixed \reflink{NavmeshPrefab}s could sometimes leave a 1 voxel wide gap at their borders (recent regression).
+- Various documentation improvements.
+
 ## 5.1.2 (2024-05-29)
 - Added \reflink{AstarPath.IsPointOnNavmesh} to more easily check if a point is on the navmesh surface of any graph.
 - Added \reflink{NavGraph.IsPointOnNavmesh}, which works the same, but only checks a single graph.

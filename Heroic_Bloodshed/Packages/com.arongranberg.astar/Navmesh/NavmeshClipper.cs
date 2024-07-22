@@ -67,7 +67,7 @@ namespace Pathfinding {
 			if (OnDisableCallback != null) OnDisableCallback(this);
 		}
 
-		internal abstract void NotifyUpdated(GridLookup<NavmeshClipper>.Root previousState);
+		public abstract void NotifyUpdated(GridLookup<NavmeshClipper>.Root previousState);
 		public abstract Rect GetBounds(GraphTransform transform, float radiusMargin);
 		public abstract bool RequiresUpdate(GridLookup<NavmeshClipper>.Root previousState);
 		public abstract void ForceUpdate();

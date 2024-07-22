@@ -41,7 +41,7 @@ namespace Pathfinding {
 		}
 
 		void DrawCollectionSettings (RecastGraph.CollectionSettings settings, RecastGraph.DimensionMode dimensionMode) {
-			settings.collectionMode = (RecastGraph.CollectionSettings.FilterMode)EditorGUILayout.EnumPopup("Filter objects by", settings.collectionMode);
+			settings.collectionMode = (RecastGraph.CollectionSettings.FilterMode)EditorGUILayout.EnumPopup("Filter Objects By", settings.collectionMode);
 
 			if (settings.collectionMode == RecastGraph.CollectionSettings.FilterMode.Layers) {
 				settings.layerMask = EditorGUILayoutx.LayerMaskField("Layer Mask", settings.layerMask);
@@ -235,7 +235,7 @@ namespace Pathfinding {
 				graph.walkableHeight = EditorGUILayout.DelayedFloatField(new GUIContent("Character Height", "Minimum distance to the roof for an area to be walkable"), graph.walkableHeight);
 				graph.walkableHeight = Mathf.Max(graph.walkableHeight, 0);
 
-				graph.walkableClimb = EditorGUILayout.FloatField(new GUIContent("Max Step Height", "How high can the character step"), graph.walkableClimb);
+				graph.walkableClimb = EditorGUILayout.FloatField(new GUIContent("Max Step Height", "How high can the character step up vertically"), graph.walkableClimb);
 
 				// A walkableClimb higher than this can cause issues when generating the navmesh since then it can in some cases
 				// Both be valid for a character to walk under an obstacle and climb up on top of it (and that cannot be handled with a navmesh without links)
@@ -283,9 +283,10 @@ namespace Pathfinding {
 
 			// This is actually a float, but to make things easier for the user, we only allow picking integers. Small changes don't matter that much anyway.
 			graph.contourMaxError = EditorGUILayout.IntSlider(new GUIContent("Edge Simplification", "Simplifies the edges of the navmesh such that it is no more than this number of voxels away from the true value.\nIn voxels."), Mathf.RoundToInt(graph.contourMaxError), 0, 5);
-			graph.minRegionSize = EditorGUILayout.FloatField(new GUIContent("Min Region Size", "Small regions will be removed. In voxels"), graph.minRegionSize);
+			graph.minRegionSize = EditorGUILayout.FloatField(new GUIContent("Min Region Size", "Small regions will be removed. In voxels. Only regions within single tiles can be removed. Regions that span multiple tiles will always be kept. If you don't use tiling, then all small regions will be removed."), graph.minRegionSize);
 
-			if (graph.collectionSettings.rasterizeColliders || (graph.dimensionMode == RecastGraph.DimensionMode.Dimension3D && graph.collectionSettings.rasterizeTerrain && graph.collectionSettings.rasterizeTrees)) {
+			var effectivelyRasterizingColliders = graph.collectionSettings.rasterizeColliders || (graph.dimensionMode == RecastGraph.DimensionMode.Dimension3D && graph.collectionSettings.rasterizeTerrain && graph.collectionSettings.rasterizeTrees) || graph.dimensionMode == RecastGraph.DimensionMode.Dimension2D;
+			if (effectivelyRasterizingColliders) {
 				DrawColliderDetail(graph.collectionSettings);
 			}
 

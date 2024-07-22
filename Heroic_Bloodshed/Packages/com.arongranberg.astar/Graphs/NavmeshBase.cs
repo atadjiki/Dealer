@@ -17,7 +17,7 @@ namespace Pathfinding {
 
 	/// <summary>Base class for <see cref="RecastGraph"/> and <see cref="NavMeshGraph"/></summary>
 	[BurstCompile]
-	public abstract class NavmeshBase : NavGraph, INavmesh, INavmeshHolder, ITransformedGraph
+	public abstract class NavmeshBase : NavGraph, INavmeshHolder, ITransformedGraph
 		, IRaycastableGraph {
 #if ASTAR_RECAST_LARGER_TILES
 		// Larger tiles
@@ -851,7 +851,7 @@ namespace Pathfinding {
 
 			for (int z = tileRect.ymin; z <= tileRect.ymax; z++) {
 				for (int x = tileRect.xmin; x <= tileRect.xmax; x++) {
-					ClearTile(x, z);
+					ClearTile(x, z, NewEmptyTile(x, z));
 				}
 			}
 			if (!wasBatching) EndBatchTileUpdate();
@@ -861,7 +861,7 @@ namespace Pathfinding {
 		/// Clear the tile at the specified coordinate.
 		/// Must be called during a batch update, see <see cref="StartBatchTileUpdate"/>.
 		/// </summary>
-		protected void ClearTile (int x, int z) {
+		protected void ClearTile (int x, int z, NavmeshTile replacement) {
 			if (!batchTileUpdate) throw new System.Exception("Must be called during a batch update. See StartBatchTileUpdate");
 			var tile = GetTile(x, z);
 			if (tile == null) return;
@@ -870,7 +870,7 @@ namespace Pathfinding {
 				if (nodes[i] != null) batchNodesToDestroy.Add(nodes[i]);
 			}
 			tile.Dispose();
-			tiles[x + z*tileXCount] = null;
+			tiles[x + z*tileXCount] = replacement;
 		}
 
 		/// <summary>Temporary buffer used in <see cref="PrepareNodeRecycling"/></summary>
@@ -1008,7 +1008,7 @@ namespace Pathfinding {
 			// if it discovers that its path contains destroyed nodes).
 			PrepareNodeRecycling(x, z, vertsInGraphSpace, trisSpan, tile.nodes);
 			// Remove previous tiles (except the nodes that were recycled above)
-			ClearTile(x, z);
+			ClearTile(x, z, null);
 
 			Profiler.EndSample();
 			Profiler.EndSample();

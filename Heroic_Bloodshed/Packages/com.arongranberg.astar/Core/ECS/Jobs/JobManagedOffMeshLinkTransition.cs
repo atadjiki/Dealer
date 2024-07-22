@@ -79,7 +79,9 @@ namespace Pathfinding.ECS {
 
 	public partial struct JobManagedOffMeshLinkTransitionCleanup : IJobEntity {
 		public void Execute (ManagedAgentOffMeshLinkTraversal managedLinkInfo) {
-			managedLinkInfo.stateMachine.OnAbortTraversingOffMeshLink();
+			// The state machine may be null if the default off-mesh link logic is used, or if the entity is destroyed on the first frame
+			// that it starts to traverse an off-mesh link.
+			if (managedLinkInfo.stateMachine != null) managedLinkInfo.stateMachine.OnAbortTraversingOffMeshLink();
 		}
 	}
 }

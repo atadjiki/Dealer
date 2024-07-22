@@ -100,6 +100,10 @@ namespace Pathfinding.Graphs.Navmesh {
 				vertsInGraphSpace.Free(Allocator.Persistent);
 				verts.Free(Allocator.Persistent);
 				tris.Free(Allocator.Persistent);
+				// Ensure Dispose is idempotent
+				vertsInGraphSpace = default;
+				verts = default;
+				tris = default;
 			}
 		}
 	}

@@ -86,6 +86,20 @@ namespace Pathfinding.ECS {
 		/// The unit for this field is seconds.
 		/// </summary>
 		public float rotationSmoothing;
+
+		/// <summary>
+		/// How much to smooth the visual position of the agent.
+		///
+		/// This does not affect movement, but smoothes out the position of the agent visually.
+		///
+		/// Recommended values are between 0.0 and 0.5.
+		/// A value of zero will disable smoothing completely.
+		///
+		/// This will make the agent seem to lag slightly behind the internal position of the agent.
+		/// It may also cut corners slightly.
+		///
+		/// The unit for this field is seconds.
+		/// </summary>
 		public float positionSmoothing;
 
 		/// <summary>

@@ -8,7 +8,9 @@ using Unity.Burst;
 
 namespace Pathfinding {
 	/// <summary>Interface for something that holds a triangle based navmesh</summary>
-	public interface INavmeshHolder : ITransformedGraph, INavmesh {
+	public interface INavmeshHolder : ITransformedGraph {
+		void GetNodes(System.Action<GraphNode> del);
+
 		/// <summary>Position of vertex number i in the world</summary>
 		Int3 GetVertex(int i);
 
@@ -385,18 +387,9 @@ namespace Pathfinding {
 									// This is great, because we can then skip adding that node to the heap just
 									// to immediatelly pop it again. This is a performance optimization.
 
-									var otherEnteringCost = path.GetTraversalCost(other);
-									ref var otherPathNode = ref pathHandler.pathNodes[adjacentPathNodeIndex];
-									otherPathNode.pathID = path.pathID;
-									otherPathNode.heapIndex = BinaryHeap.NotInHeap;
-									otherPathNode.parentIndex = pathNodeIndex;
-									otherPathNode.fractionAlongEdge = PathNode.ReverseFractionAlongEdge(pn.fractionAlongEdge);
-									// Make sure the path gets information about us having visited this in-between node,
-									// even if we never add it to the heap
-									path.OnVisitNode(adjacentPathNodeIndex, uint.MaxValue, gScore + otherEnteringCost);
-									pathHandler.LogVisitedNode(adjacentPathNodeIndex, uint.MaxValue, gScore + otherEnteringCost);
-
-									tOther.OpenAtPoint(path, adjacentPathNodeIndex, pos, sharedEdgeOnOtherNode, gScore + otherEnteringCost);
+									var otherGScore = gScore + path.GetTraversalCost(other);
+									path.SkipOverNode(adjacentPathNodeIndex, pathNodeIndex, PathNode.ReverseFractionAlongEdge(pn.fractionAlongEdge), uint.MaxValue, otherGScore);
+									tOther.OpenAtPoint(path, adjacentPathNodeIndex, pos, sharedEdgeOnOtherNode, otherGScore);
 								} else {
 									OpenSingleEdge(path, pathNodeIndex, tOther, sharedEdgeOnOtherNode, pos, gScore);
 								}

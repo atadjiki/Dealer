@@ -11,10 +11,6 @@ namespace Pathfinding {
 	using Pathfinding.Graphs.Navmesh;
 	using Unity.Mathematics;
 
-	public interface INavmesh {
-		void GetNodes(System.Action<GraphNode> del);
-	}
-
 	/// <summary>
 	/// Generates graphs based on navmeshes.
 	/// [Open online documentation to see images]
@@ -29,9 +25,20 @@ namespace Pathfinding {
 	/// For a tutorial on how to configure a navmesh graph, take a look at getstarted2 (view in online documentation for working links).
 	///
 	/// [Open online documentation to see images]
+	///
+	/// \section navmeshgraph-inspector Inspector
 	/// [Open online documentation to see images]
 	///
-	/// See: Pathfinding.RecastGraph
+	/// \inspectorField{Source Mesh, sourceMesh}
+	/// \inspectorField{Offset, offset}
+	/// \inspectorField{Rotation, rotation}
+	/// \inspectorField{Scale, scale}
+	/// \inspectorField{Recalculate Normals, recalculateNormals}
+	/// \inspectorField{Affected By Navmesh Cuts, enableNavmeshCutting}
+	/// \inspectorField{Agent Radius, navmeshCuttingCharacterRadius}
+	/// \inspectorField{Initial Penalty, initialPenalty}
+	///
+	/// See: <see cref="RecastGraph"/>
 	/// </summary>
 	[JsonOptIn]
 	[Pathfinding.Util.Preserve]
