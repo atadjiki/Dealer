@@ -7255,6 +7255,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b576f524c3bdc8449acb3731a458ac2, type: 3}
+--- !u!114 &2146016995 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6334954246609395656, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+    type: 3}
+  m_PrefabInstance: {fileID: 3745417982078976574}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &288069928526879849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7565,42 +7577,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 162252376078792543, guid: b7bf91b19fd8bbe41bc31903ff45592d,
-        type: 3}
-      propertyPath: m_CameraDistance
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.000001
+      value: -15.500001
       objectReference: {fileID: 0}
     - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 21.213203
+      value: 31.819805
       objectReference: {fileID: 0}
     - target: {fileID: 2658403232554347303, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.000001
+      value: -16.500002
       objectReference: {fileID: 0}
-    - target: {fileID: 3532728100865867468, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+    - target: {fileID: 4353731869781389209, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
-      propertyPath: weight
-      value: 1
+      propertyPath: CameraDistance
+      value: 45
       objectReference: {fileID: 0}
-    - target: {fileID: 3532728100865867468, guid: b7bf91b19fd8bbe41bc31903ff45592d,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3532728100865867468, guid: b7bf91b19fd8bbe41bc31903ff45592d,
-        type: 3}
-      propertyPath: sharedProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: a6560a915ef98420e9faacc1c7438823,
-        type: 2}
     - target: {fileID: 4731440975679905001, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_Name
@@ -7608,13 +7604,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5211779793917343026, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 8159
+      propertyPath: field of view
+      value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: 7458100956010668089, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+    - target: {fileID: 6334954246609395656, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      propertyPath: Lens.FieldOfView
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7645589047236019684, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
@@ -7666,25 +7662,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8194347906721017569, guid: b7bf91b19fd8bbe41bc31903ff45592d,
+    - target: {fileID: 8151054029680021802, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
-      propertyPath: m_RenderPostProcessing
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: CM_Main
+      value: 
+      objectReference: {fileID: 2146016995}
     - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.000001
+      value: -15.500001
       objectReference: {fileID: 0}
     - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 21.213203
+      value: 31.819805
       objectReference: {fileID: 0}
     - target: {fileID: 9076908809822032404, guid: b7bf91b19fd8bbe41bc31903ff45592d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.000001
+      value: -16.500002
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

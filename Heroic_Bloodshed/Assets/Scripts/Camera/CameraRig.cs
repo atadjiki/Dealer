@@ -61,12 +61,8 @@ public class CameraRig : MonoBehaviour
     {
         _bounds = this.gameObject.GetComponentInChildren<CameraBounds>();
         _followTarget = this.gameObject.GetComponentInChildren<CameraFollowTarget>();
-
-        //TODO
-        //_composer = CM_Main.GetCinemachineComponent<CinemachinePositionComposer>();
-        //_composer.m_CameraDistance = EnvironmentCameraSettings.DefaultDistance;
-        //_composer.m_MinimumDistance = EnvironmentCameraSettings.MinDistance;
-        //_composer.m_MaximumDistance = EnvironmentCameraSettings.MaxDistance;
+        _composer = (CinemachinePositionComposer) CM_Main.GetCinemachineComponent(CinemachineCore.Stage.Body);
+        _composer.CameraDistance = EnvironmentCameraSettings.DefaultDistance;
     }
 
     private void FixedUpdate()
@@ -119,7 +115,7 @@ public class CameraRig : MonoBehaviour
 
         if (mouseScrollDelta.magnitude > 0)
         {
-            float currentDistance = 0;//_composer.m_CameraDistance;
+            float currentDistance = _composer.CameraDistance;
 
             float targetDistance = EnvironmentCameraSettings.MinDistance;
 
@@ -127,7 +123,7 @@ public class CameraRig : MonoBehaviour
 
             currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.smoothDeltaTime * EnvironmentCameraSettings.ZoomSpeed);
 
-            // _composer.m_CameraDistance = currentDistance;
+            _composer.CameraDistance = currentDistance;
         }
     }
 
@@ -246,20 +242,20 @@ public class CameraRig : MonoBehaviour
     {
         float time = 0;
 
-        float initialDistance = 0;//_composer.m_CameraDistance;
+        float initialDistance = _composer.CameraDistance;
 
         float targetDistance = EnvironmentCameraSettings.MaxDistance;
 
-        //while (time < EnvironmentCameraSettings.ZoomDuration)
-        //{
-        //    _composer.m_CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / EnvironmentCameraSettings.ZoomDuration);
+        while (time < EnvironmentCameraSettings.ZoomDuration)
+        {
+            _composer.CameraDistance = Mathf.Lerp(initialDistance, targetDistance, time / EnvironmentCameraSettings.ZoomDuration);
 
-        //    time += Time.smoothDeltaTime;
+            time += Time.smoothDeltaTime;
 
-        //    yield return new WaitForFixedUpdate();
-        //}
+            yield return new WaitForFixedUpdate();
+        }
 
-        //_composer.m_CameraDistance = targetDistance;
+        _composer.CameraDistance = targetDistance;
 
         yield return null;
     }
